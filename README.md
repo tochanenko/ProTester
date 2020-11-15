@@ -53,3 +53,7 @@ _Spring Boot_ and _Angular_ running on one port (8080).
 **Setup proxy**
 * In "_frontend->src->main->protester-gui->src->_" **proxy.conf.json**  you can setup proxy to be able
 to get information from backend services when working with frontend.
+
+**Heroku** 
+
+https://pro-tester.herokuapp.com/

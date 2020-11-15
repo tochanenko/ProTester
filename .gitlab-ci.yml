@@ -25,5 +25,3 @@ install:
   stage: install
   script:
     - mvn install
-  only:
-    - master

@@ -15,7 +15,7 @@
 - Serhii Yablonovskyi
 - Yevhenii Deineka
 
-#How to understand and run project
+# How to understand and run project
 
 
 **Project overview**
@@ -30,6 +30,7 @@ All dependencies connected with Spring you have to import in __pom.xml__ created
 **Running the project**
 * After cloning repo , go to and press "_maven->ua.project.protester->lifecycle->_**install**".
 First it will build _Angular_ project (and install all necessary files) and then integrate _Angular_ to _Spring Boot_ app.
+        P.S. _Alternative way to run_ : go to console and run : **_mvn install_**
 * After maven installing you will be able to run application as a single module,where you would have 
 _Spring Boot_ and _Angular_ running on one port (8080).
 * After each new version we should go to maven tools and _install_ project.
@@ -44,7 +45,7 @@ _Spring Boot_ and _Angular_ running on one port (8080).
     (Or "_edit configurations -> '+' -> **npm**_" )
  
       1.package.json (go "_frontend->src->main->protester-gui->package.json_" and add it to path).
-      2.script -> **start**.
+      2.script -> start.
       3.Start it from Run button.
 * To run a separate SpringBoot server you should go to "maven->backend->lifecycle->**install**".
 * Run as SpringBootApplication from _Run_ button.

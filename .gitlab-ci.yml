@@ -1,27 +1,9 @@
 image: maven:3.6.3-jdk-11
 
 stages:
-  - validate
-  - compile
   - test
-  - install
-
-validate:
-  stage: validate
-  script:
-    - mvn validate
-
-compile:
-  stage: compile
-  script:
-    - mvn compile
 
 test:
   stage: test
   script:
     - mvn test -B
-
-install:
-  stage: install
-  script:
-    - mvn install

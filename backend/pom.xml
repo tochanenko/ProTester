@@ -41,6 +41,12 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.13.0</version>
+            <type>maven-plugin</type>
+        </dependency>
+        <dependency>
             <groupId>ua.project</groupId>
             <artifactId>frontend</artifactId>
             <version>${project.version}</version>
@@ -71,7 +77,20 @@
                     <configLocation>checkstyle-config.xml</configLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.13.0</version>
+                <executions>
+                    <execution>
+                        <id>pmd</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

@@ -68,8 +68,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                    <configLocation>checkstyle-config.xml</configLocation>
                 </configuration>
             </plugin>
         </plugins>

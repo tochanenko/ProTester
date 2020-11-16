@@ -9,18 +9,20 @@ import java.util.Optional;
 
 @Repository
 public class RoleRepository {
-    private MockDB mockDB;
+    private final MockDB mockDB;
 
     @Autowired
     public RoleRepository(MockDB mockDB) {
         this.mockDB = mockDB;
     }
 
-    public Optional<Role>findRoleByRoleName(String name){
+    public Optional<Role> findRoleByRoleName(String name) {
+
         return Optional.ofNullable(mockDB.findRoleByName(name));
     }
 
-    public Optional<Role>findRoleByRoleName(Long id){
+    public Optional<Role> findRoleByRoleName(Long id) {
+
         return Optional.ofNullable(mockDB.findRoleById(id));
     }
 }

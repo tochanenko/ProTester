@@ -1,9 +1,8 @@
 package ua.project.protester.exceptions;
 
-public class UserMapperException extends Exception {
-    private String message;
+class UserMapperException extends Exception {
 
-    public UserMapperException(String message) {
+    UserMapperException(String message) {
         super(message);
     }
 }

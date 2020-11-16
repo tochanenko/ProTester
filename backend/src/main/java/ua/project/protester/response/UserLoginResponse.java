@@ -1,5 +1,8 @@
 package ua.project.protester.response;
 
-public class UserLoginResponse {
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+class UserLoginResponse {
     private String token;
 }

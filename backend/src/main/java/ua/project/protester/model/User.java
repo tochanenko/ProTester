@@ -21,16 +21,4 @@ public class User {
 
     private Role role;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", isActive=" + isActive +
-                ", fullName='" + fullName + '\'' +
-                ", roles=" + role +
-                '}';
-    }
 }

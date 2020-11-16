@@ -2,7 +2,6 @@ package ua.project.protester.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +15,8 @@ import ua.project.protester.utils.UserMapper;
 @RestController("/api")
 public class RegistrationController {
 
-    private UserMapper userMapper;
-    private UserService userService;
+    private final UserMapper userMapper;
+    private final UserService userService;
 
     @Autowired
     public RegistrationController(UserMapper userMapper, UserService userService) {
@@ -26,9 +25,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registrate(@RequestBody UserRequest userRequest){
+    public ResponseEntity<String> registrate(@RequestBody UserRequest userRequest) {
 
-        UserDto userDto=userMapper.toDtoFromRequest(userRequest);
+        UserDto userDto  = userMapper.toDtoFromRequest(userRequest);
 
         userDto.setRoles(new Role(Roles.ROLE_ENGINEER.name()));
 

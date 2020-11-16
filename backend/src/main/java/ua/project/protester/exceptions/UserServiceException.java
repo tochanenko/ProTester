@@ -1,14 +1,11 @@
 package ua.project.protester.exceptions;
 
-public class UserServiceException extends Exception {
+class UserServiceException extends Exception {
 
-    private String message;
-
-    public UserServiceException(String message, String message1) {
+     UserServiceException(String message) {
         super(message);
-        this.message = message1;
     }
 
-    public UserServiceException() {
+     UserServiceException() {
     }
 }

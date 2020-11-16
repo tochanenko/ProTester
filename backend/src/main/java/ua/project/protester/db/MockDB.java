@@ -1,7 +1,5 @@
 package ua.project.protester.db;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ua.project.protester.model.Role;
 import ua.project.protester.model.Roles;
@@ -62,12 +60,12 @@ public class MockDB {
         return ROLES.stream().filter(role -> role.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public ResponseEntity<String> addUser(User user) {
+    public User addUser(User user) {
         String usr = user.getRole().getName();
         Role role = findRoleByName(usr);
         User userFromDB = findUserByEmail(user.getEmail());
         if (userFromDB != null) {
-            return new ResponseEntity<>("User already exists!", HttpStatus.BAD_REQUEST);
+            return null;
         }
         if (role != null) {
             role.getUsers().add(user);
@@ -78,9 +76,10 @@ public class MockDB {
             user.setRole(newRole);
             ROLES.add(newRole);
         }
+        user.setActive(true);
         user.setId((long) USERS.size() + 1);
         USERS.add(user);
-        return new ResponseEntity<>("User was successfully created!", HttpStatus.OK);
+        return user;
     }
 
 }

@@ -1,7 +1,6 @@
 package ua.project.protester.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.db.MockDB;
 import ua.project.protester.model.User;
@@ -26,7 +25,7 @@ public class UserRepository {
         return Optional.ofNullable(mockDB.findUserById(id));
     }
 
-    public ResponseEntity<String> createUser(User user) {
+    public User createUser(User user) {
         return mockDB.addUser(user);
     }
 }

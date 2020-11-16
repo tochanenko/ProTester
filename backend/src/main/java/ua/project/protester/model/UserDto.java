@@ -9,18 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserDto {
 
-    private Long id;
-
-    private String name;
+    private String email;
 
     private String password;
 
-    private String email;
-
-    private boolean isActive;
-
-    private String fullName;
-
-    private Role roles;
-
+    private Role role;
 }

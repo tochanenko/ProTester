@@ -1,37 +1,33 @@
 package ua.project.protester.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ua.project.protester.model.Role;
-import ua.project.protester.model.Roles;
-import ua.project.protester.model.UserDto;
-import ua.project.protester.request.UserRequest;
+import ua.project.protester.request.UserCreationRequest;
 import ua.project.protester.service.UserService;
-import ua.project.protester.utils.UserMapper;
 
 @RestController("/api")
 public class RegistrationController {
 
-    private final UserMapper userMapper;
     private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserMapper userMapper, UserService userService) {
-        this.userMapper = userMapper;
+    public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registrate(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<String> registrate(@RequestBody @Validated UserCreationRequest userCreationRequest) {
 
-        UserDto userDto  = userMapper.toDtoFromRequest(userRequest);
-
-        userDto.setRoles(new Role(Roles.ROLE_ENGINEER.name()));
-
-        return userService.createUser(userDto);
+        if (userService.createUser(userCreationRequest) == null) {
+         return new ResponseEntity<>("User already exist", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("User was successfully created!", HttpStatus.CREATED);
     }
+
 }
 

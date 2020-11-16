@@ -93,6 +93,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
             </plugin>
         </plugins>
     </build>

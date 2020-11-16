@@ -1,37 +1,42 @@
 package ua.project.protester.service;
 
-import org.springframework.mail.SimpleMailMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import ua.project.protester.exception.MailSendException;
 import ua.project.protester.model.UserDto;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 
 @Service
+@RequiredArgsConstructor
 public class MailService {
 
-    private static final String REGISTRATION_MAIL_BLANK =
-            "Welcome to ProTester, %s%n"
-                    + "%n"
-                    + "Your credentials:%n"
-                    + "- Login: %s%n"
-                    + "- Password: %s";
     private final JavaMailSender javaMailSender;
-
-    public MailService(final JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
+    private final TemplateEngine templateEngine;
 
     @SuppressWarnings("unused")
-    public void sendRegistrationCredentials(UserDto userDto) {
-        SimpleMailMessage mail = new SimpleMailMessage();
+    public void sendRegistrationCredentials(UserDto userDto) throws MailSendException {
+        Context context = new Context();
+        context.setVariable("user", userDto);
+        String text = templateEngine.process("mail/registration-mail", context);
 
-        mail.setTo(userDto.getEmail());
-        mail.setSubject("ProTester registration");
-        mail.setText(String.format(REGISTRATION_MAIL_BLANK,
-                userDto.getFullName(),
-                userDto.getEmail(),
-                userDto.getPassword()));
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        javaMailSender.send(mail);
+        try {
+            helper.setTo(userDto.getEmail());
+            helper.setSubject("ProTester registration");
+            helper.setText(text, true);
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new MailSendException("Failed to send mail!", e);
+        }
     }
 }

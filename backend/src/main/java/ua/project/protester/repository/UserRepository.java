@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.db.MockDB;
 import ua.project.protester.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,5 +28,12 @@ public class UserRepository {
 
     public User createUser(User user) {
         return mockDB.addUser(user);
+    }
+
+    public List<User> findAllUsers() {
+        return mockDB.findAllUsers(); }
+
+    public List<User> findUserByRoleId(Long id) {
+        return mockDB.findUserByRoleId(id);
     }
 }

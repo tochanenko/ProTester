@@ -1,19 +1,23 @@
 package ua.project.protester.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.project.protester.model.User;
-import ua.project.protester.request.UserCreationRequestDto;
 import ua.project.protester.repository.UserRepository;
+import ua.project.protester.request.UserCreationRequestDto;
+import ua.project.protester.response.UserResponse;
+import ua.project.protester.utils.UserMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final ModelMapper userMapper;
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(ModelMapper userMapper, UserRepository userRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
@@ -23,11 +27,20 @@ public class UserService {
     }
 
     public User findUserById(Long id) {
-       return userRepository.findUserById(id).orElseThrow(NullPointerException::new);
+       return userRepository.findUserById(id).orElse(null);
+    }
+
+    public List<UserResponse> findAllUsers() {
+        return userRepository.findAllUsers().stream().map(userMapper::toUserRest).collect(Collectors.toList());
     }
 
     public User createUser(UserCreationRequestDto userRequest) {
-        User user = userMapper.map(userRequest, User.class);
+        User user = userMapper.toUserFromUserRequest(userRequest);
         return userRepository.createUser(user);
     }
+
+    public List<User> findUserByRoleId(Long id) {
+        return userRepository.findUserByRoleId(id);
+    }
+
 }

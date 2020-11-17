@@ -7,6 +7,7 @@ import ua.project.protester.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MockDB {
@@ -52,12 +53,24 @@ public class MockDB {
         return USERS.stream().filter(user -> user.getEmail().equals(email)).findFirst().orElse(null);
     }
 
+    public List<User> findUserByRoleId(Long id) {
+        return USERS.stream().filter(user -> user.getRole().getId().equals(id)).collect(Collectors.toList());
+    }
+
     public Role findRoleByName(String name) {
         return ROLES.stream().filter(role -> role.getName().equals(name)).findFirst().orElse(null);
     }
 
     public Role findRoleById(Long id) {
         return ROLES.stream().filter(role -> role.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public List<Role> findAllRoles() {
+        return ROLES;
+    }
+
+    public List<User> findAllUsers() {
+        return USERS;
     }
 
     public User addUser(User user) {

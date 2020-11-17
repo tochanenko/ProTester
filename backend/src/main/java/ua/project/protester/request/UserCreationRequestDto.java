@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ua.project.protester.model.Role;
 import ua.project.protester.model.UserDto;
 
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class UserCreationRequestDto extends UserDto {
     @NotNull(message = "provide a username")
-    private String username;
+    private String name;
+
+
+    @NotNull (message = "provide a role")
+    private Role role;
 
     private String fullName;
 }

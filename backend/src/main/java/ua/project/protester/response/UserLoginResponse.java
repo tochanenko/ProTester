@@ -1,8 +1,12 @@
 package ua.project.protester.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @AllArgsConstructor
-class UserLoginResponse {
+@Data
+public class UserLoginResponse {
     private String token;
+
+    private String role;
 }

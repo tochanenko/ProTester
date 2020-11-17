@@ -1,6 +1,9 @@
 package ua.project.protester.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -24,5 +27,4 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
-
 }

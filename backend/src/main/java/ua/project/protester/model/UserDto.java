@@ -18,6 +18,4 @@ public class UserDto {
     @NotNull(message = "provide a password")
     private String password;
 
-    @NotNull (message = "provide a role")
-    private Role role;
 }

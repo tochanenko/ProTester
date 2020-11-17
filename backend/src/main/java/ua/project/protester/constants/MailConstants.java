@@ -1,12 +1,9 @@
 package ua.project.protester.constants;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
-@Component
-public final class MailConstants {
-
-    private MailConstants() {
-    }
+@UtilityClass
+public class MailConstants {
 
     public static final String REGISTRATION_MAIL_TEMPLATE = "mail/registration-mail";
 

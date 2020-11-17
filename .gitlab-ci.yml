@@ -2,8 +2,15 @@ image: maven:3.6.3-jdk-11
 
 stages:
   - test
+  - -deploy
 
 test:
   stage: test
   script:
     - mvn test -B
+
+deploy:
+  stage: deploy
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=pro-tester --api-key=$HEROKU_API_KEY

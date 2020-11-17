@@ -12,6 +12,9 @@ import ua.project.protester.model.UserDto;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import static ua.project.protester.constants.MailConstants.REGISTRATION_MAIL_SUBJECT;
+import static ua.project.protester.constants.MailConstants.REGISTRATION_MAIL_TEMPLATE;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +27,14 @@ public class MailService {
     public void sendRegistrationCredentials(UserDto userDto) throws MailSendException {
         Context context = new Context();
         context.setVariable("user", userDto);
-        String text = templateEngine.process("mail/registration-mail", context);
+        String text = templateEngine.process(REGISTRATION_MAIL_TEMPLATE, context);
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
             helper.setTo(userDto.getEmail());
-            helper.setSubject("ProTester registration");
+            helper.setSubject(REGISTRATION_MAIL_SUBJECT);
             helper.setText(text, true);
 
             javaMailSender.send(message);

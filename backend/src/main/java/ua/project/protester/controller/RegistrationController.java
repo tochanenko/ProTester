@@ -3,12 +3,13 @@ package ua.project.protester.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ua.project.protester.request.UserCreationRequest;
+import ua.project.protester.request.UserCreationRequestDto;
 import ua.project.protester.service.UserService;
+
+import javax.validation.Valid;
 
 @RestController("/api")
 public class RegistrationController {
@@ -21,11 +22,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registrate(@RequestBody @Validated UserCreationRequest userCreationRequest) {
+    public ResponseEntity<String> registrate(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) {
 
-        if (userService.createUser(userCreationRequest) == null) {
-         return new ResponseEntity<>("User already exist", HttpStatus.BAD_REQUEST);
-        }
+        userService.createUser(userCreationRequestDto);
+
         return new ResponseEntity<>("User was successfully created!", HttpStatus.CREATED);
     }
 

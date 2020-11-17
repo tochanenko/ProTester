@@ -6,11 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ua.project.protester.model.UserDto;
 
+import javax.validation.constraints.NotNull;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserCreationRequest extends UserDto {
+public class UserCreationRequestDto extends UserDto {
+    @NotNull(message = "provide a username")
     private String username;
 
     private String fullName;

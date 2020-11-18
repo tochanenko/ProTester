@@ -3,6 +3,7 @@ package ua.project.protester.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.model.Role;
 import ua.project.protester.repository.RoleRepository;
 import ua.project.protester.repository.UserRepository;
@@ -25,6 +26,7 @@ public class RoleService {
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     public Role findRoleById(Long id) {
         Role role = roleRepository.findById(id).orElse(null);
         if (role != null) {
@@ -34,12 +36,14 @@ public class RoleService {
         return null;
     }
 
+    @Transactional
     public List<Role> findAll() {
         List<Role> roles = roleRepository.findAll();
         roles.forEach(role -> role.setUsers(userRepository.findUsersByRoleId(role.getId())));
         return roles;
     }
 
+    @Transactional
     public Role findRoleByName(String name) {
         Role role = roleRepository.findRoleByName(name).orElse(null);
 

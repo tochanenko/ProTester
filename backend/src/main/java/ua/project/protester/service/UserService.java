@@ -2,6 +2,7 @@ package ua.project.protester.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.model.User;
 import ua.project.protester.repository.UserRepository;
 import ua.project.protester.request.UserCreationRequestDto;
@@ -25,6 +26,7 @@ public class UserService {
         this.roleService = roleService;
     }
 
+    @Transactional
     public int createUser(UserCreationRequestDto userRequest) {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
@@ -32,6 +34,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User findUserById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -42,6 +45,7 @@ public class UserService {
         return null;
     }
 
+    @Transactional
     public User findUserByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElse(null);
         if (user != null) {
@@ -52,6 +56,7 @@ public class UserService {
         return null;
     }
 
+    @Transactional
     public User findUserByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElse(null);
         if (user != null) {
@@ -62,17 +67,20 @@ public class UserService {
         return null;
     }
 
+    @Transactional
     public void updateUser(UserModificationDto userDto) {
         User user = userMapper.toUserFromUserModificationDto(userDto);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
         userRepository.update(user);
     }
 
+    @Transactional
     public void deleteUser(User user) {
        user.getRole().getUsers().remove(user);
        userRepository.delete(user);
     }
 
+    @Transactional
     public List<User> findAll() {
         return userRepository.findAll();
     }

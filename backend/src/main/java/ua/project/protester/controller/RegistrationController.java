@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.project.protester.exception.MailSendException;
 import ua.project.protester.request.UserCreationRequestDto;
 import ua.project.protester.service.UserService;
 
@@ -24,7 +25,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registrate(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) {
+    public ResponseEntity<String> registrate(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) throws MailSendException {
 
         userService.createUser(userCreationRequestDto);
 

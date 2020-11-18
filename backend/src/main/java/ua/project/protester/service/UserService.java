@@ -3,6 +3,7 @@ package ua.project.protester.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.MailSendException;
 import ua.project.protester.model.User;
 import ua.project.protester.repository.UserRepository;
 import ua.project.protester.request.UserCreationRequestDto;
@@ -18,19 +19,22 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final MailService mailService;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, RoleService roleService) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, RoleService roleService, MailService mailService) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.mailService = mailService;
     }
 
     @Transactional
-    public int createUser(UserCreationRequestDto userRequest) {
+    public int createUser(UserCreationRequestDto userRequest) throws MailSendException {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
         user.setActive(true);
+        mailService.sendRegistrationCredentials(userRequest);
         return userRepository.save(user);
     }
 

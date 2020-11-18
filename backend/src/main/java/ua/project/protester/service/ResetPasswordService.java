@@ -2,53 +2,55 @@ package ua.project.protester.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.project.protester.model.UserDto;
+import ua.project.protester.exception.InvalidPasswordResetTokenException;
+import ua.project.protester.exception.MailSendException;
+import ua.project.protester.exception.UserNotFoundException;
+import ua.project.protester.model.PasswordResetToken;
+import ua.project.protester.model.User;
+import ua.project.protester.repository.PasswordResetTokenRepository;
+import ua.project.protester.repository.UserRepository;
+
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class ResetPasswordService {
 
+    private static final String PASSWORD_RESET_LINK =
+            "https://pro-tester.herokuapp.com/api/forgot-password/confirm-reset?t=%s";
     private final MailService mailService;
+    private final UserRepository userRepository;
+    private final PasswordResetTokenRepository tokenRepository;
 
-    public void processResetPasswordRequest(UserDto user) {
-        // Check if user exists in db
+    public void processResetPasswordRequest(String userEmail) throws UserNotFoundException, MailSendException {
+        User user = userRepository
+                .findUserByEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
 
-        // EXISTS
-        // Create token and save it
-        String tokenValue = "";
-        // Create reset link
-        String passwordResetLink = "localhost:8080/api/forgot-password/confirm-reset?t="
-                + tokenValue;
-        // Create the email (link with token inside) and send it
-        mailService.sendResetPasswordLinkMail(user, passwordResetLink);
+        PasswordResetToken token = new PasswordResetToken(user.getId());
+        tokenRepository.save(token);
 
-        // NOT EXISTS
-        // throw exception
+        mailService.sendResetPasswordLinkMail(user, String.format(PASSWORD_RESET_LINK, token.getValue()));
     }
 
-    public String processTokenValidation(String tokenValue) {
-        // Check if token exists
+    public String processTokenValidation(String tokenValue) throws InvalidPasswordResetTokenException {
+        Date tokenExpiryDate = tokenRepository
+                .findExpiryDateByValue(tokenValue)
+                .orElseThrow(InvalidPasswordResetTokenException::new);
+        if (tokenExpiryDate.after(new Date())) {
+            throw new InvalidPasswordResetTokenException();
+        }
 
-        // EXISTS
-        // Get user email from token
-        // Return user email
-        return "user@email.com";
-
-        // NOT EXISTS
-        // throw exception
+        return userRepository
+                .findUserEmailByTokenValue(tokenValue)
+                .orElseThrow(InvalidPasswordResetTokenException::new);
     }
 
-    public void processPasswordReset(UserDto user) {
-        // Check if user email is not null
-
-        // IF NOT NULL
-        // Find user by email
-        // Update password
-        // Save user
-        // Send the email
+    public void processPasswordReset(String userEmail, String newUserPassword) throws UserNotFoundException, MailSendException {
+        User user = userRepository
+                .findUserByEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
+        userRepository.updatePassword(user, newUserPassword);
         mailService.sendPasswordUpdateMail(user);
-
-        // IF NULL
-        // throw exception
     }
 }

@@ -42,4 +42,12 @@ public class MailService {
             throw new MailSendException("Failed to send mail!", e);
         }
     }
+
+    public void sendResetPasswordLinkMail(UserDto user, String passwordResetLink) {
+        // Implement
+    }
+
+    public void sendPasswordUpdateMail(UserDto user) {
+        // Implement
+    }
 }

@@ -7,8 +7,7 @@ stages:
 test:
   stage: test
   script:
-    - chmod u+x mvnw
-    - ./mvnw test -B
+    - mvn test -B
 
 deploy:
   stage: deploy

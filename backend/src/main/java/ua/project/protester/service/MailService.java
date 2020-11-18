@@ -12,9 +12,14 @@ import ua.project.protester.model.User;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static ua.project.protester.constants.MailConstants.*;
+import static ua.project.protester.constants.MailConstants.PASSWORD_UPDATE_MAIL_SUBJECT;
+import static ua.project.protester.constants.MailConstants.PASSWORD_UPDATE_MAIL_TEMPLATE;
+import static ua.project.protester.constants.MailConstants.REGISTRATION_MAIL_SUBJECT;
+import static ua.project.protester.constants.MailConstants.REGISTRATION_MAIL_TEMPLATE;
+import static ua.project.protester.constants.MailConstants.RESET_PASSWORD_LINK_MAIL_SUBJECT;
+import static ua.project.protester.constants.MailConstants.RESET_PASSWORD_LINK_MAIL_TEMPLATE;
 
-
+@SuppressWarnings("PMD.TooManyStaticImports")
 @Service
 @RequiredArgsConstructor
 public class MailService {

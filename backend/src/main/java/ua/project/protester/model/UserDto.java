@@ -3,7 +3,7 @@ package ua.project.protester.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.project.protester.annotation.NotExistingEmail;
+import ua.project.protester.annotation.UniqueEmail;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserDto {
 
-    @NotExistingEmail(message = "user already exist")
+    @UniqueEmail(message = "User with given email already exist")
+    @NotNull
     private String email;
 
     @NotNull(message = "provide a password")

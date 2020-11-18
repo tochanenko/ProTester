@@ -1,39 +1,130 @@
 package ua.project.protester.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.db.MockDB;
 import ua.project.protester.model.User;
+import ua.project.protester.utils.UserRowMapper;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
-public class UserRepository {
-    private final MockDB mockDB;
+@PropertySource("classpath:queries/user.properties")
+public class UserRepository implements CrudRepository<User> {
+
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final Environment environment;
+    private final UserRowMapper userRowMapper;
 
     @Autowired
-    public UserRepository(MockDB mockDB) {
+    public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment environment, UserRowMapper userRowMapper) {
+        this.namedJdbcTemplate = namedJdbcTemplate;
+        this.environment = environment;
+        this.userRowMapper = userRowMapper;
+    }
 
-        this.mockDB = mockDB;
+    @Override
+    public int save(User entity) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+
+        namedParams.addValue("role_id", entity.getRole().getId());
+        namedParams.addValue("user_name", entity.getName());
+        namedParams.addValue("user_email", entity.getEmail());
+        namedParams.addValue("user_password", entity.getPassword());
+        namedParams.addValue("user_active", entity.isActive());
+        namedParams.addValue("user_full_name", entity.getFullName());
+
+        int update = namedJdbcTemplate.update(environment.getProperty("saveUser"), namedParams, keyHolder, new String[]{"user_id"});
+
+        Integer id = (Integer) (keyHolder.getKeys().get("user_id"));
+        entity.setId(id.longValue());
+
+        return update;
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_id", id);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserById"), namedParams, userRowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<User> findAll() {
+        return namedJdbcTemplate.query(environment.getProperty("findAllUsers"), userRowMapper);
+    }
+
+    @Override
+    public void update(User entity) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("role_id", entity.getRole().getId());
+        namedParams.addValue("user_name", entity.getName());
+        namedParams.addValue("user_email", entity.getEmail());
+        namedParams.addValue("user_password", entity.getPassword());
+        namedParams.addValue("user_active", entity.isActive());
+        namedParams.addValue("user_full_name", entity.getFullName());
+        namedParams.addValue("user_id", entity.getId());
+
+        namedJdbcTemplate.update(environment.getProperty("updateUser"), namedParams);
+    }
+
+    @Override
+    public void delete(User entity) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", entity.getId());
+        namedJdbcTemplate.update(environment.getProperty("deleteUser"), namedParams);
+    }
+
+    public List<User> findUsersByRoleId(Long roleId) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("role_id", roleId);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleId"), namedParams, userRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public Optional<User> findUserByEmail(String email) {
-        return Optional.ofNullable(mockDB.findUserByEmail(email));
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_email", email);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByEmail"), namedParams, userRowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public Optional<User> findUserById(Long id) {
-        return Optional.ofNullable(mockDB.findUserById(id));
+    public Optional<User> findUserByUsername(String username) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_name", username);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByUsername"), namedParams, userRowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public User createUser(User user) {
-        return mockDB.addUser(user);
-    }
-
-    public List<User> findAllUsers() {
-        return mockDB.findAllUsers(); }
-
-    public List<User> findUserByRoleId(Long id) {
-        return mockDB.findUserByRoleId(id);
+    public List<User> findAllPagination(int limit, int offset) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("limit", limit);
+            namedParams.put("offset", offset);
+            return namedJdbcTemplate.query(environment.getProperty("findAllUsersPagination"), namedParams, userRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
     }
 }

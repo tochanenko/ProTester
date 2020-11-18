@@ -1,11 +1,12 @@
 package ua.project.protester.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.project.protester.model.Role;
 import ua.project.protester.repository.RoleRepository;
+import ua.project.protester.repository.UserRepository;
 import ua.project.protester.response.RoleResponse;
-import ua.project.protester.utils.UserMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,30 +14,48 @@ import java.util.stream.Collectors;
 @Service
 public class RoleService {
 
-    private final UserMapper userMapper;
     private final RoleRepository roleRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public RoleService(UserMapper userMapper, RoleRepository roleRepository, UserService userService) {
-        this.userMapper = userMapper;
+    public RoleService(RoleRepository roleRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.roleRepository = roleRepository;
-        this.userService = userService;
-    }
-
-    public Role findRoleByName(String name) {
-        return roleRepository.findRoleByName(name).orElse(null);
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     public Role findRoleById(Long id) {
-        return roleRepository.findRoleById(id).orElse(null);
+        Role role = roleRepository.findById(id).orElse(null);
+        if (role != null) {
+            role.setUsers(userRepository.findUsersByRoleId(role.getId()));
+            return role;
+        }
+        return null;
     }
 
-    public List<RoleResponse> findAllRoles() {
+    public List<Role> findAll() {
+        List<Role> roles = roleRepository.findAll();
+        roles.forEach(role -> role.setUsers(userRepository.findUsersByRoleId(role.getId())));
+        return roles;
+    }
 
-        List<RoleResponse> roleResponses = roleRepository.findAllRoles().stream().map(role -> userMapper.getModelMapper().map(role, RoleResponse.class)).collect(Collectors.toList());
+    public Role findRoleByName(String name) {
+        Role role = roleRepository.findRoleByName(name).orElse(null);
 
-        roleResponses.forEach(roleResponse -> roleResponse.setUsers(userMapper.toUserRest(userService.findUserByRoleId(roleResponse.getId()))));
-        return roleResponses;
+        if (role != null) {
+            role.setUsers(userRepository.findUsersByRoleId(role.getId()));
+            return role;
+        }
+
+        return null;
+    }
+
+    public List<RoleResponse> getAllRoles() {
+        return findAll().stream().map(role -> modelMapper.map(role, RoleResponse.class)).collect(Collectors.toList());
+    }
+
+    public RoleResponse getRole(Long id) {
+        return modelMapper.map(findRoleById(id), RoleResponse.class);
     }
 }

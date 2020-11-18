@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.project.protester.model.User;
 import ua.project.protester.request.UserCreationRequestDto;
+import ua.project.protester.request.UserModificationDto;
 import ua.project.protester.response.UserResponse;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +38,13 @@ public class UserMapper {
 
     public List<UserResponse> toUserRest(List<User> users) {
         return users.stream().map(user -> modelMapper.map(user, UserResponse.class)).collect(Collectors.toList());
+    }
+
+    public User toUserFromUserModificationDto(UserModificationDto user) {
+        if (user != null) {
+            return modelMapper.map(user, User.class);
+        }
+        return null;
     }
 
     @PostConstruct

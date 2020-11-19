@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.model.Role;
 import ua.project.protester.utils.RoleRowMapper;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,16 @@ import java.util.Optional;
 @Repository
 public class RoleRepository implements CrudRepository<Role> {
 
-    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private  NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final RoleRowMapper roleRowMapper;
 
     @Autowired
-    public RoleRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment environment, RoleRowMapper roleRowMapper) {
-        this.namedJdbcTemplate = namedJdbcTemplate;
+    public void setDataSource(DataSource dataSource) {
+        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    public RoleRepository(Environment environment, RoleRowMapper roleRowMapper) {
         this.environment = environment;
         this.roleRowMapper = roleRowMapper;
     }

@@ -12,19 +12,23 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.model.User;
 import ua.project.protester.utils.UserRowMapper;
 
+import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 @PropertySource("classpath:queries/user.properties")
 public class UserRepository implements CrudRepository<User> {
 
-    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private  NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final UserRowMapper userRowMapper;
 
     @Autowired
-    public UserRepository(NamedParameterJdbcTemplate namedJdbcTemplate, Environment environment, UserRowMapper userRowMapper) {
-        this.namedJdbcTemplate = namedJdbcTemplate;
+    public void setDataSource(DataSource dataSource) {
+        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    public UserRepository(Environment environment, UserRowMapper userRowMapper) {
         this.environment = environment;
         this.userRowMapper = userRowMapper;
     }

@@ -21,6 +21,7 @@ public class UserService {
     private final RoleService roleService;
     private final MailService mailService;
 
+
     @Autowired
     public UserService(UserMapper userMapper, UserRepository userRepository, RoleService roleService, MailService mailService) {
         this.userMapper = userMapper;
@@ -33,7 +34,7 @@ public class UserService {
     public int createUser(UserCreationRequestDto userRequest) throws MailSendException {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
-        user.setActive(true);
+        user.setActive(userRequest.isActive());
         mailService.sendRegistrationCredentials(userRequest);
         return userRepository.save(user);
     }
@@ -75,6 +76,7 @@ public class UserService {
     public void updateUser(UserModificationDto userDto) {
         User user = userMapper.toUserFromUserModificationDto(userDto);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
+        user.getRole().getUsers().add(user);
         userRepository.update(user);
     }
 

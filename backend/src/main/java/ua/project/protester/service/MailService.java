@@ -23,7 +23,6 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
-    @SuppressWarnings("unused")
     public void sendRegistrationCredentials(UserCreationRequestDto userDto) throws MailSendException {
         Context context = new Context();
         context.setVariable("user", userDto);

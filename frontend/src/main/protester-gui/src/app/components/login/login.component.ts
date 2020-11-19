@@ -29,16 +29,14 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
     this.loginForm = this.formBuilder.group({
-      name: [null, [Validators.required]],
       email: [null, [Validators.required]],
+      password: [null, [Validators.required]],
     });
 
     if (window.sessionStorage.getItem('token')) {
       this.isLoggedIn = true;
-      console.log('є токен');
       this.router.navigateByUrl('/profile').then();
     } else {
-      console.log('немає токена');
       this.isLoggedIn = false;
     }
   }

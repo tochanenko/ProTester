@@ -48,7 +48,7 @@ public class UserService {
     public int createUser(UserCreationRequestDto userRequest) throws MailSendException {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
-        user.setActive(userRequest.isActive());
+        user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         mailService.sendRegistrationCredentials(userRequest);
         return userRepository.save(user);

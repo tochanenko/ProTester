@@ -1,6 +1,9 @@
 package ua.project.protester.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.MailSendException;
@@ -9,13 +12,14 @@ import ua.project.protester.repository.UserRepository;
 import ua.project.protester.request.UserCreationRequestDto;
 import ua.project.protester.request.UserModificationDto;
 import ua.project.protester.response.UserResponse;
+import ua.project.protester.security.UserPrincipal;
 import ua.project.protester.utils.UserMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleService roleService;
@@ -99,4 +103,14 @@ public class UserService {
         return findAll().stream().map(userMapper::toUserRest).collect(Collectors.toList());
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = findUserByEmail(s);
+        if (user != null) {
+            return new UserPrincipal(user);
+        }
+        else {
+            throw new UsernameNotFoundException("User with this email does not exist");
+        }
+    }
 }

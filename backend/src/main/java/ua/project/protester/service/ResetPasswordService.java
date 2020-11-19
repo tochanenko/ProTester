@@ -42,7 +42,8 @@ public class ResetPasswordService {
         Date tokenExpiryDate = tokenRepository
                 .findExpiryDateByValue(tokenValue)
                 .orElseThrow(InvalidPasswordResetTokenException::new);
-        if (tokenExpiryDate.after(new Date())) {
+
+        if (tokenExpiryDate.before(new Date())) {
             throw new InvalidPasswordResetTokenException();
         }
 

@@ -767,7 +767,7 @@
                         To check for other patterns in Java comments, set the format property.
         Doc ref:        http://checkstyle.sourceforge.net/config_misc.html#TodoComment
         -->
-        <module name="TodoComment"/>
+        <!--<module name="TodoComment"/>-->
 
         <!-- Included from Argona project -->
 

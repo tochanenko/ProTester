@@ -1,0 +1,48 @@
+<div class="login-form-flex">
+  <mat-card>
+    <div class="logo">
+      <img [src]="image" class="logo-img" alt="Logo">
+    </div>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+        <mat-error *ngIf="isLoginFailed">
+          {{errorMessage}}
+        </mat-error>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>username</mat-label>
+          <input matInput type="text" id="name" class="form-control" name="name" formControlName="name"
+                 [ngClass]="{ 'is-invalid': submitted && f.name.errors }" required>
+          <mat-error *ngIf="submitted && f.name.errors" class="invalid-input">
+            <mat-error *ngIf="f.name.errors.required">Field is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>password</mat-label>
+          <input matInput [type]="hidePasswordField ? 'password' : 'text'" id="password" class="form-control"
+                 name="password"
+                 formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required>
+
+          <mat-icon matSuffix (click)="hidePasswordField = !hidePasswordField">
+            {{hidePasswordField ? 'visibility_off' : 'visibility'}}
+          </mat-icon>
+          <mat-error *ngIf="submitted && f.password.errors" class="invalid-input">
+            <mat-error *ngIf="f.password.errors.required">Field is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <button mat-raised-button class="button-flex-container">
+          <p class="button-text">
+            LOGIN
+          </p>
+        </button>
+        <div class="more-info">
+          Don’t have an account?<a class="btn btn-outline-primary" style="width: 50%" routerLink="/register"> Contact
+          your administrator. </a>
+        </div>
+        <div class="more-info">
+          Forgot your <a class="btn btn-outline-primary" style="width: 50%" routerLink="/password-recover">Password?</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

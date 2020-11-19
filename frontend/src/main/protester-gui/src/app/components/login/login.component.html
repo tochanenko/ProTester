@@ -1,12 +1,12 @@
 <div class="login-form-flex">
-  <mat-card>
+  <mat-card class="content">
     <div class="logo">
       <img [src]="image" class="logo-img" alt="Logo">
     </div>
     <mat-card-content>
       <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
         <mat-error *ngIf="isLoginFailed">
-          {{errorMessage}}
+          Invalid username or password
         </mat-error>
 
         <mat-form-field class="full-width-input" appearance="outline">

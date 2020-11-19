@@ -12,12 +12,14 @@ import {CommonModule} from "@angular/common";
 import {AuthInterceptor} from "./services/auth/auth.interceptor";
 import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
+import {HeaderComponent} from './components/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistrationComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

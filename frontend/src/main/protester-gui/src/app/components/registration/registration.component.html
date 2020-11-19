@@ -7,7 +7,7 @@
       <form (ngSubmit)="onSubmit()" [formGroup]="registrationForm">
 
         <mat-error *ngIf="isSignUpFailed">
-          {{errorMessage}}
+          Username or email already exists
         </mat-error>
 
         <mat-form-field class="full-width-input" appearance="outline">
@@ -34,7 +34,7 @@
 
         <mat-form-field class="full-width-input" appearance="outline">
           <mat-label>full name</mat-label>
-          <input matInput type="tetx" id="fullName" class="form-control" name="fullName"
+          <input matInput type="text" id="fullName" class="form-control" name="fullName"
                  formControlName="fullName" [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }" required>
           <mat-error *ngIf="submitted && f.fullName.errors" class="invalid-input">
             <mat-error *ngIf="f.fullName.errors.minLength">min length</mat-error>

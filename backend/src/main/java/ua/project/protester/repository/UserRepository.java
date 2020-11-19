@@ -2,7 +2,8 @@ package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
@@ -13,12 +14,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public Optional<User> findUserByEmail(String userEmail) {
         try {
-            User user = jdbcTemplate.queryForObject(SqlTemplates.FIND_USER_BY_EMAIL,
-                    new String[]{userEmail},
+            User user = namedParameterJdbcTemplate.queryForObject(SqlTemplates.FIND_USER_BY_EMAIL,
+                    new MapSqlParameterSource().addValue("email", userEmail),
                     (rs, rowNum) -> new User(
                             rs.getLong(1),
                             rs.getString(2),
@@ -34,8 +35,9 @@ public class UserRepository {
 
     public Optional<String> findUserEmailByTokenValue(String tokenValue) {
         try {
-            String userEmail = jdbcTemplate.queryForObject(SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
-                    new String[]{tokenValue},
+            String userEmail = namedParameterJdbcTemplate.queryForObject(
+                    SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
+                    new MapSqlParameterSource().addValue("value", tokenValue),
                     String.class);
             return Optional.ofNullable(userEmail);
         } catch (DataAccessException e) {
@@ -44,6 +46,9 @@ public class UserRepository {
     }
 
     public void updatePassword(User user, String newUserPassword) {
-        jdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD, newUserPassword, user.getId());
+        namedParameterJdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD,
+                new MapSqlParameterSource()
+                        .addValue("password", newUserPassword)
+                        .addValue("id", user.getId()));
     }
 }

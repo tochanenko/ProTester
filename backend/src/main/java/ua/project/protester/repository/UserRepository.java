@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
 
 import java.util.Optional;
-
-import static ua.project.protester.constants.SqlTemplates.FIND_USER_BY_EMAIL;
-import static ua.project.protester.constants.SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE;
-import static ua.project.protester.constants.SqlTemplates.UPDATE_USER_PASSWORD;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,7 +17,7 @@ public class UserRepository {
 
     public Optional<User> findUserByEmail(String userEmail) {
         try {
-            User user = jdbcTemplate.queryForObject(FIND_USER_BY_EMAIL,
+            User user = jdbcTemplate.queryForObject(SqlTemplates.FIND_USER_BY_EMAIL,
                     new String[]{userEmail},
                     (rs, rowNum) -> new User(
                             rs.getLong(1),
@@ -37,7 +34,7 @@ public class UserRepository {
 
     public Optional<String> findUserEmailByTokenValue(String tokenValue) {
         try {
-            String userEmail = jdbcTemplate.queryForObject(FIND_USER_EMAIL_BY_TOKEN_VALUE,
+            String userEmail = jdbcTemplate.queryForObject(SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
                     new String[]{tokenValue},
                     String.class);
             return Optional.ofNullable(userEmail);
@@ -47,6 +44,6 @@ public class UserRepository {
     }
 
     public void updatePassword(User user, String newUserPassword) {
-        jdbcTemplate.update(UPDATE_USER_PASSWORD, newUserPassword, user.getId());
+        jdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD, newUserPassword, user.getId());
     }
 }

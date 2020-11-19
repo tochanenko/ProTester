@@ -108,8 +108,7 @@ public class UserService implements UserDetailsService {
         User user = findUserByEmail(s);
         if (user != null) {
             return new UserPrincipal(user);
-        }
-        else {
+        } else {
             throw new UsernameNotFoundException("User with this email does not exist");
         }
     }

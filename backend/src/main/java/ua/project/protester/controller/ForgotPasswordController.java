@@ -3,6 +3,7 @@ package ua.project.protester.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.DeactivatedUserAccessException;
 import ua.project.protester.exception.InvalidPasswordResetTokenException;
 import ua.project.protester.exception.MailSendException;
 import ua.project.protester.exception.UserNotFoundException;
@@ -25,6 +26,8 @@ public class ForgotPasswordController {
             return ResponseEntity.badRequest().build();
         } catch (MailSendException e) {
             return ResponseEntity.status(502).build();
+        } catch (DeactivatedUserAccessException e) {
+            return ResponseEntity.status(403).build();
         }
     }
 
@@ -47,6 +50,8 @@ public class ForgotPasswordController {
             return ResponseEntity.badRequest().build();
         } catch (MailSendException e) {
             return ResponseEntity.status(502).build();
+        } catch (DeactivatedUserAccessException e) {
+            return ResponseEntity.status(403).build();
         }
     }
 }

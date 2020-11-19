@@ -6,15 +6,15 @@
     <mat-card-content>
       <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
         <mat-error *ngIf="isLoginFailed">
-          Invalid username or password
+          Invalid email or password
         </mat-error>
 
         <mat-form-field class="full-width-input" appearance="outline">
-          <mat-label>username</mat-label>
-          <input matInput type="text" id="name" class="form-control" name="name" formControlName="name"
-                 [ngClass]="{ 'is-invalid': submitted && f.name.errors }" required>
-          <mat-error *ngIf="submitted && f.name.errors" class="invalid-input">
-            <mat-error *ngIf="f.name.errors.required">Field is required</mat-error>
+          <mat-label>email</mat-label>
+          <input matInput type="text" id="email" class="form-control" name="email" formControlName="email"
+                 [ngClass]="{ 'is-invalid': submitted && f.email.errors }" required>
+          <mat-error *ngIf="submitted && f.email.errors" class="invalid-input">
+            <mat-error *ngIf="f.email.errors.required">Field is required</mat-error>
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input" appearance="outline">

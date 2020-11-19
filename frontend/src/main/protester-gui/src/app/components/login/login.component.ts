@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
 
     this.loginForm = this.formBuilder.group({
       name: [null, [Validators.required]],
-      password: [null, [Validators.required]]
+      email: [null, [Validators.required]],
     });
 
     if (window.sessionStorage.getItem('token')) {
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
     }
 
     const loginResponse = {
-      name: this.f.name.value,
+      email: this.f.email.value,
       password: this.f.password.value,
     };
 

@@ -101,6 +101,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <linkXRef>false</linkXRef>
                     <printFailingErrors>true</printFailingErrors>
                 </configuration>
             </plugin>

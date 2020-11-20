@@ -20,11 +20,10 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
-    @SuppressWarnings("unused")
     public void sendRegistrationCredentials(User user) throws MailSendException {
         Context context = new Context();
         context.setVariable("user", user);
-        String text = templateEngine.process(MailConstants.REGISTRATION_MAIL_TEMPLATE, context);
+       String text = templateEngine.process(MailConstants.REGISTRATION_MAIL_TEMPLATE, context);
 
         sendMessage(user, MailConstants.REGISTRATION_MAIL_SUBJECT, text);
     }

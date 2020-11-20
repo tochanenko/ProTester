@@ -23,7 +23,7 @@ public class MailService {
     public void sendRegistrationCredentials(User user) throws MailSendException {
         Context context = new Context();
         context.setVariable("user", user);
-       String text = templateEngine.process(MailConstants.REGISTRATION_MAIL_TEMPLATE, context);
+        String text = templateEngine.process(MailConstants.REGISTRATION_MAIL_TEMPLATE, context);
 
         sendMessage(user, MailConstants.REGISTRATION_MAIL_SUBJECT, text);
     }

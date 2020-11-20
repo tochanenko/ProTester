@@ -50,8 +50,8 @@ public class UserService {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
         user.setActive(true);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         mailService.sendRegistrationCredentials(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

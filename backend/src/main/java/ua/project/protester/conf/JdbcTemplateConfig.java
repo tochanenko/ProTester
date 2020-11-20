@@ -5,12 +5,13 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:/application.properties")
-public class DataSourceConfig {
+public class JdbcTemplateConfig {
 
         @Value("${spring.datasource.username}")
         private String name;
@@ -24,7 +25,6 @@ public class DataSourceConfig {
         @Value("${spring.datasource.driver-class-name}")
         private String driverName;
 
-        @Bean
         public DataSource getDataSource() {
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
             dataSourceBuilder.driverClassName(driverName);
@@ -32,6 +32,11 @@ public class DataSourceConfig {
             dataSourceBuilder.username(name);
             dataSourceBuilder.password(password);
             return dataSourceBuilder.build();
+        }
+
+        @Bean
+        public NamedParameterJdbcTemplate getJdbcTemplate() {
+            return new NamedParameterJdbcTemplate(getDataSource());
         }
 
 }

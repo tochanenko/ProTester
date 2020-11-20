@@ -1,6 +1,6 @@
 package ua.project.protester.annotation;
 
-import ua.project.protester.exception.UserEmailValidator;
+import ua.project.protester.validators.UserEmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

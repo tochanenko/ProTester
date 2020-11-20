@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class UserService {
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
         user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        mailService.sendRegistrationCredentials(userRequest);
+        mailService.sendRegistrationCredentials(user);
         return userRepository.save(user);
     }
 
@@ -124,7 +125,7 @@ public class UserService {
 
         UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
         String role = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority()).collect(Collectors.joining());
+                .map(GrantedAuthority::getAuthority).collect(Collectors.joining());
        return new UserLoginResponse(bearer + jwt, role);
     }
 }

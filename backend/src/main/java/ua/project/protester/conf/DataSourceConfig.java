@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @PropertySource("classpath:/application.properties")
 public class DataSourceConfig {
 
-        @Value("${spring.datasource.name}")
+        @Value("${spring.datasource.username}")
         private String name;
 
         @Value("${spring.datasource.password}")

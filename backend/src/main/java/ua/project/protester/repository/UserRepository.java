@@ -1,6 +1,6 @@
 package ua.project.protester.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -14,27 +14,17 @@ import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
 import ua.project.protester.utils.UserRowMapper;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 @PropertySource("classpath:queries/user.properties")
+@RequiredArgsConstructor
 public class UserRepository implements CrudRepository<User> {
 
 
-    private  NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final UserRowMapper userRowMapper;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    public UserRepository(Environment environment, UserRowMapper userRowMapper) {
-        this.environment = environment;
-        this.userRowMapper = userRowMapper;
-    }
 
     @Override
     public int save(User entity) {

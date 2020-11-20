@@ -1,6 +1,6 @@
 package ua.project.protester.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.model.Role;
 import ua.project.protester.utils.RoleRowMapper;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,21 +16,12 @@ import java.util.Optional;
 
 @PropertySource("classpath:queries/role.properties")
 @Repository
+@RequiredArgsConstructor
 public class RoleRepository implements CrudRepository<Role> {
 
-    private  NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final RoleRowMapper roleRowMapper;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    public RoleRepository(Environment environment, RoleRowMapper roleRowMapper) {
-        this.environment = environment;
-        this.roleRowMapper = roleRowMapper;
-    }
 
     @Override
     public int save(Role entity) {

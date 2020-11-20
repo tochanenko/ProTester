@@ -1,6 +1,7 @@
 package ua.project.protester.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.project.protester.exception.DeactivatedUserAccessException;
 import ua.project.protester.exception.InvalidPasswordResetTokenException;
@@ -22,6 +23,7 @@ public class ResetPasswordService {
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void processResetPasswordRequest(String userEmail) throws UserNotFoundException, MailSendException, DeactivatedUserAccessException {
         User user = userRepository
@@ -61,7 +63,7 @@ public class ResetPasswordService {
             throw new DeactivatedUserAccessException();
         }
 
-        userRepository.updatePassword(user, newUserPassword);
+        userRepository.updatePassword(user, passwordEncoder.encode(newUserPassword));
         mailService.sendPasswordUpdateMail(user);
     }
 }

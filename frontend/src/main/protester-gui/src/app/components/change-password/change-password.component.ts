@@ -41,33 +41,11 @@ export class ChangePasswordComponent implements OnInit {
           } else {
             this.email = email;
           }
-          console.log('Email in Service')
-          console.log(this.email)
         },
         err => console.error('Observer got an error: ' + err.message),
         () => console.log('Observer got a complete notification')
       )
     });
-
-    console.log("token: " + this.token)
-
-    // this.passwordService.confirmReset(this.token).subscribe(
-    //   email => {
-    //     console.log('Before IF');
-    //     if (email == null) {
-    //       this.router.navigateByUrl('/login').then();
-    //     } else {
-    //       this.email = email;
-    //     }
-    //     console.log('Email in Service')
-    //     console.log(this.email)
-    //   },
-    //   err => console.error('Observer got an error: ' + err),
-    //   () => console.log('Observer got a complete notification')
-    // )
-
-    console.log(this.email)
-    console.log(this.token)
 
     this.recoveryForm = this.formBuilder.group({
       password: [null, Validators.compose([
@@ -93,7 +71,6 @@ export class ChangePasswordComponent implements OnInit {
     this.submitted = true;
 
     if (this.recoveryForm.invalid) {
-      console.log('invalid');
       return;
     }
 

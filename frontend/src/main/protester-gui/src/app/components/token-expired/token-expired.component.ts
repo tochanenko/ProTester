@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-token-expired',
@@ -9,7 +9,8 @@ export class TokenExpiredComponent implements OnInit {
 
   image = 'assets/logo.png';
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

@@ -1,6 +1,7 @@
 package ua.project.protester.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.MailSendException;
@@ -15,27 +16,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final MailService mailService;
-
-
-    @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, RoleService roleService, MailService mailService) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.roleService = roleService;
-        this.mailService = mailService;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public int createUser(UserCreationRequestDto userRequest) throws MailSendException {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName()));
-        user.setActive(userRequest.isActive());
-        mailService.sendRegistrationCredentials(userRequest);
+        user.setActive(true);
+        mailService.sendRegistrationCredentials(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

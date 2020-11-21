@@ -7,13 +7,13 @@ import ua.project.protester.annotation.UniqueEmail;
 
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserDto {
 
     @UniqueEmail(message = "User with given email already exist")
-    @NotNull
+    @NotNull(message = "provide an email")
     private String email;
 
     @NotNull(message = "provide a password")

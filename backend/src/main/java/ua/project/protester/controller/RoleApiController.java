@@ -1,6 +1,7 @@
 package ua.project.protester.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class RoleApiController {
         return roleService.getAllRoles();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(path = "/role/{id}")
     public RoleResponse getRole(@PathVariable(name = "id") Long id) {
         return roleService.getRole(id);

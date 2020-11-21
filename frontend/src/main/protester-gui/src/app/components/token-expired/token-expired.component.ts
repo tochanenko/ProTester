@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TokenExpiredComponent implements OnInit {
 
+  image = 'assets/logo.png';
+
   constructor() { }
 
   ngOnInit(): void {

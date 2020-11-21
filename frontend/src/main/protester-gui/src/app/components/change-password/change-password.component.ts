@@ -45,14 +45,14 @@ export class ChangePasswordComponent implements OnInit {
     )
 
     this.recoveryForm = this.formBuilder.group({
-      newPassword: [null, Validators.compose([
+      password: [null, Validators.compose([
         Validators.minLength(8),
         Validators.maxLength(30),
         Validators.pattern('[A-Za-z0-9]*')])
       ],
-      confirmPassword: [null, Validators.compose([Validators.required])]
+      passwordConfirm: [null, Validators.compose([Validators.required])]
     }, {
-      validator: CustomValidator.passwordMatchValidator('password', 'confirmPassword')
+      validator: CustomValidator.passwordMatchValidator('password', 'passwordConfirm')
     });
   }
 
@@ -61,7 +61,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   comparePasswords(): boolean {
-    return this.f.newPassword.value === this.f.confirmPassword.value
+    return this.f.password.value === this.f.passwordConfirm.value
   }
 
   onSubmit(): void {
@@ -74,7 +74,7 @@ export class ChangePasswordComponent implements OnInit {
 
     const recoveryResponse = {
       email: this.email,
-      password: this.f.newPassword
+      password: this.f.password.value
     }
 
     this.passwordService.resetPassword(recoveryResponse).subscribe(

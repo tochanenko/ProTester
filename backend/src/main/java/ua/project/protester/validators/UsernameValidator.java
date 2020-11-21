@@ -1,4 +1,4 @@
-package ua.project.protester.exception;
+package ua.project.protester.validators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.project.protester.annotation.UniqueUsername;

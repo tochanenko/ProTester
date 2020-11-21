@@ -1,37 +1,30 @@
 package ua.project.protester.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
 import ua.project.protester.utils.UserRowMapper;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 @PropertySource("classpath:queries/user.properties")
+@RequiredArgsConstructor
 public class UserRepository implements CrudRepository<User> {
 
-    private  NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final UserRowMapper userRowMapper;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    public UserRepository(Environment environment, UserRowMapper userRowMapper) {
-        this.environment = environment;
-        this.userRowMapper = userRowMapper;
-    }
 
     @Override
     public int save(User entity) {
@@ -130,5 +123,25 @@ public class UserRepository implements CrudRepository<User> {
         } catch (EmptyResultDataAccessException e) {
             return Collections.emptyList();
         }
+    }
+
+
+    public Optional<String> findUserEmailByTokenValue(String tokenValue) {
+        try {
+            String userEmail = namedJdbcTemplate.queryForObject(
+                    SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
+                    new MapSqlParameterSource().addValue("value", tokenValue),
+                    String.class);
+            return Optional.ofNullable(userEmail);
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void updatePassword(User user, String newUserPassword) {
+        namedJdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD,
+                new MapSqlParameterSource()
+                        .addValue("password", newUserPassword)
+                        .addValue("id", user.getId()));
     }
 }

@@ -14,6 +14,10 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import {ProfileComponent} from './components/profile/profile.component';
     RegistrationComponent,
     LoginComponent,
     HeaderComponent,
-    ProfileComponent
+    ProfileComponent,
+    ForgotPasswordComponent,
+    PendingPasswordComponent,
+    ChangePasswordComponent,
+    TokenExpiredComponent
   ],
   imports: [
     BrowserModule,

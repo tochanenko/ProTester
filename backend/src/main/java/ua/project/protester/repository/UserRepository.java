@@ -1,6 +1,8 @@
 package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -10,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
 import ua.project.protester.utils.UserRowMapper;
 
@@ -25,6 +26,10 @@ public class UserRepository implements CrudRepository<User> {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
     private final UserRowMapper userRowMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
+    private static final String PROPERTY_NOT_FOUND_TEMPLATE = "Could not find property '%s' in queries/user.properties";
 
     @Override
     public int save(User entity) {
@@ -127,21 +132,35 @@ public class UserRepository implements CrudRepository<User> {
 
 
     public Optional<String> findUserEmailByTokenValue(String tokenValue) {
+        String queryPropertyName = "findUserEmailByResetPasswordTokenValue";
         try {
             String userEmail = namedJdbcTemplate.queryForObject(
-                    SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
+                    Objects.requireNonNull(environment.getProperty("findUserEmailByResetPasswordTokenValue")),
                     new MapSqlParameterSource().addValue("value", tokenValue),
                     String.class);
             return Optional.ofNullable(userEmail);
         } catch (DataAccessException e) {
             return Optional.empty();
+        } catch (NullPointerException e) {
+            logger.warn(String.format(
+                    PROPERTY_NOT_FOUND_TEMPLATE,
+                    queryPropertyName));
+            return Optional.empty();
         }
     }
 
     public void updatePassword(User user, String newUserPassword) {
-        namedJdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD,
-                new MapSqlParameterSource()
-                        .addValue("password", newUserPassword)
-                        .addValue("id", user.getId()));
+        String queryPropertyName = "updateUserPassword";
+        try {
+            namedJdbcTemplate.update(
+                    Objects.requireNonNull(environment.getProperty("updateUserPassword")),
+                    new MapSqlParameterSource()
+                            .addValue("password", newUserPassword)
+                            .addValue("id", user.getId()));
+        } catch (NullPointerException e) {
+            logger.warn(String.format(
+                    PROPERTY_NOT_FOUND_TEMPLATE,
+                    queryPropertyName));
+        }
     }
 }

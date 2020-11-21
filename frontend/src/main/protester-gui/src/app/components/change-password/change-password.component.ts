@@ -32,17 +32,42 @@ export class ChangePasswordComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.token = params['t'];
+
+      this.passwordService.confirmReset(this.token).subscribe(
+        email => {
+          console.log('Before IF');
+          if (email == null) {
+            this.router.navigateByUrl('/login').then();
+          } else {
+            this.email = email;
+          }
+          console.log('Email in Service')
+          console.log(this.email)
+        },
+        err => console.error('Observer got an error: ' + err.message),
+        () => console.log('Observer got a complete notification')
+      )
     });
 
-    this.passwordService.confirmReset(this.token).subscribe(
-      email => {
-        if (email == null) {
-          this.router.navigateByUrl('/login').then();
-        } else {
-          this.email = email;
-        }
-      }
-    )
+    console.log("token: " + this.token)
+
+    // this.passwordService.confirmReset(this.token).subscribe(
+    //   email => {
+    //     console.log('Before IF');
+    //     if (email == null) {
+    //       this.router.navigateByUrl('/login').then();
+    //     } else {
+    //       this.email = email;
+    //     }
+    //     console.log('Email in Service')
+    //     console.log(this.email)
+    //   },
+    //   err => console.error('Observer got an error: ' + err),
+    //   () => console.log('Observer got a complete notification')
+    // )
+
+    console.log(this.email)
+    console.log(this.token)
 
     this.recoveryForm = this.formBuilder.group({
       password: [null, Validators.compose([
@@ -76,6 +101,10 @@ export class ChangePasswordComponent implements OnInit {
       email: this.email,
       password: this.f.password.value
     }
+
+    console.log('Changing Password...')
+    console.log(recoveryResponse.email)
+    console.log(recoveryResponse.password)
 
     this.passwordService.resetPassword(recoveryResponse).subscribe(
       data => {

@@ -20,10 +20,12 @@ export class PasswordService {
   }
 
   confirmReset(token: any): Observable<any> {
-    return this.http.get('/api/forgot-password/confirm-reset?t=' + token);
+    console.log(token);
+    return this.http.get('/api/forgot-password/confirm-reset?t=' + token, {responseType: 'text'});
   }
 
   resetPassword(user: any): Observable<any> {
+    console.log(user);
     return this.http.post('/api/forgot-password/reset-password', user, httpOptions)
   }
 

@@ -26,11 +26,12 @@ CREATE TABLE roles (
 CREATE TABLE users (
 	user_id			SERIAL PRIMARY KEY,
 	role_id			INTEGER			   NOT NULL,
-	user_name		VARCHAR(32) UNIQUE NOT NULL,
+	user_username	VARCHAR(32) UNIQUE NOT NULL,
 	user_password	CHAR(64) 		   NOT NULL,
 	user_email 		VARCHAR(32) UNIQUE NOT NULL,
 	user_active		BOOLEAN			   NOT NULL,
-	user_full_name	VARCHAR(32),	
+	user_first_name	VARCHAR(32) 	   NOT NULL,
+	user_last_name	VARCHAR(32) 	   NOT NULL,
 	CONSTRAINT user_role_fk FOREIGN KEY (role_id) REFERENCES roles (role_id)
 );
 
@@ -123,9 +124,11 @@ CREATE TABLE parameters (
 
 CREATE TABLE projects (
 	project_id 				SERIAL PRIMARY KEY,
+	creator_id				INTEGER 		   NOT NULL,
 	project_name 			VARCHAR(32) UNIQUE NOT NULL,
 	project_website_link	VARCHAR(64) UNIQUE NOT NULL,
-	project_active			BOOLEAN 		   NOT NULL
+	project_active			BOOLEAN 		   NOT NULL,
+	CONSTRAINT project_creator_fk  FOREIGN KEY (creator_id)  REFERENCES users (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE statutes (

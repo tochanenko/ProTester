@@ -24,14 +24,4 @@ public class AdminController {
         return userService.findUserByName(username);
     }
 
-    @GetMapping
-    public UserResponse findUserByFullName(@RequestParam String fullName) {
-        return userService.findUserByFullName(fullName);
-    }
-
-    @GetMapping
-    public UserResponse findUserByRoleName(@RequestParam String roleName) {
-        return userService.findUserByRolename(roleName);
-    }
-
 }

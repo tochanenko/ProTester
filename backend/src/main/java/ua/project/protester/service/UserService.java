@@ -95,7 +95,7 @@ public class UserService {
 
     @Transactional
     public List<User> findAll() {
-        List<User>users = userRepository.findAll();
+        List<User> users = userRepository.findAll();
         users.forEach(user -> user.setRole(roleService.findRoleById(user.getRole().getId())));
         return users;
     }

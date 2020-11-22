@@ -39,7 +39,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                if(userDetails.isEnabled()) {
+                if (userDetails.isEnabled()) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }

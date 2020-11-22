@@ -1,15 +1,10 @@
 package ua.project.protester.repository;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 
 
-public abstract class AbstractRepository <T> implements CrudRepository<T> {
+public abstract class AbstractRepository<T> implements CrudRepository<T> {
 
-      NamedParameterJdbcTemplate namedJdbcTemplate;
-      Environment environment;
-      RowMapper<T>rowMapper;
-      String[] template;
+    private   NamedParameterJdbcTemplate namedJdbcTemplate;
+    private   Environment environment;
+    private   RowMapper<T> rowMapper;
+    private   String[] template;
 
     public AbstractRepository() {
     }
@@ -64,33 +59,4 @@ public abstract class AbstractRepository <T> implements CrudRepository<T> {
             return Optional.empty();
         }
     }
-
-
-    //    @Override
-//    public int save(T entity) {
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-//
-//        return jdbcTemplate.update()
-//    }
-
-//    @Override
-//    public Optional<T> findById(Long id) {
-//        return Optional.empty();
-//    }
-//
-//    @Override
-//    public List<T> findAll() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void update(T entity) {
-//
-//    }
-//
-//    @Override
-//    public void delete(T entity) {
-//
-//    }
 }

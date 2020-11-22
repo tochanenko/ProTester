@@ -12,7 +12,7 @@ import ua.project.protester.model.User;
 import ua.project.protester.repository.PasswordResetTokenRepository;
 import ua.project.protester.repository.UserRepository;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -41,11 +41,11 @@ public class ResetPasswordService {
     }
 
     public String processTokenValidation(String tokenValue) throws InvalidPasswordResetTokenException {
-        Date tokenExpiryDate = tokenRepository
+        OffsetDateTime tokenExpiryDate = tokenRepository
                 .findExpiryDateByValue(tokenValue)
                 .orElseThrow(InvalidPasswordResetTokenException::new);
 
-        if (tokenExpiryDate.before(new Date())) {
+        if (tokenExpiryDate.isBefore(OffsetDateTime.now())) {
             throw new InvalidPasswordResetTokenException();
         }
 

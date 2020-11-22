@@ -12,8 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.model.PasswordResetToken;
 
-import java.util.Date;
 import java.util.Objects;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Repository
@@ -41,13 +41,13 @@ public class PasswordResetTokenRepository {
         }
     }
 
-    public Optional<Date> findExpiryDateByValue(String tokenValue) {
+    public Optional<OffsetDateTime> findExpiryDateByValue(String tokenValue) {
         String queryPropertyName = "findTokenExpiryDateByTokenValue";
         try {
-            Date expiryDate = namedParameterJdbcTemplate.queryForObject(
+            OffsetDateTime expiryDate = namedParameterJdbcTemplate.queryForObject(
                     Objects.requireNonNull(environment.getProperty("findTokenExpiryDateByTokenValue")),
                     new MapSqlParameterSource().addValue("value", tokenValue),
-                    Date.class);
+                    OffsetDateTime.class);
             return Optional.ofNullable(expiryDate);
         } catch (DataAccessException e) {
             return Optional.empty();

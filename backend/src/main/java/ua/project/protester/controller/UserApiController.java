@@ -3,6 +3,7 @@ package ua.project.protester.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.model.User;
 import ua.project.protester.request.UserModificationDto;
@@ -44,6 +45,8 @@ public class UserApiController {
         return new ResponseEntity<>("User was successfully deleted", HttpStatus.OK);
     }
 
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(path = "/user/{id}")
     public UserResponse getUser(@PathVariable(name = "id") Long id) {
         return userService.getUser(id);

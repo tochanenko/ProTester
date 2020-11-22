@@ -14,9 +14,11 @@ public class UserResponse extends UserDto {
 
     private Long id;
 
-    private String name;
+    private String firstName;
 
-    private Long role;
+    private String lastName;
+
+    private String role;
 
     private boolean isActive;
 

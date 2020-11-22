@@ -6,7 +6,7 @@
     <title>ProTester registration</title>
 </head>
 <body>
-<h1>Welcome to ProTester, <span th:text="${user.getFullName()}"></span></h1>
+<h1>Welcome to ProTester, <span th:text="${user.getFirstName()+user.getLastName()}"></span></h1>
 <br>
 <span>Your credentials:</span>
 <ul>

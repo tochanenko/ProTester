@@ -17,15 +17,19 @@ import javax.validation.constraints.NotNull;
 public class UserCreationRequestDto extends UserDto {
 
 
-    @NotNull(message = "provide username")
+    @NotNull(message = "provide a firstname")
     @UniqueUsername(message = "username already exists")
-    private String name;
+    private String firstName;
 
+    @NotNull (message = "provide a lastname")
+    private String lastName;
+
+    @UniqueUsername
+    @NotNull(message = "provie a username")
+    private String username;
 
     @NotNull (message = "provide a role")
     private Role role;
-
-    private String fullName;
 
     @NotNull(message = "provide a status")
     private boolean isActive;

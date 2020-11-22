@@ -38,7 +38,7 @@ CREATE TABLE tokens (
 	token_id			SERIAL PRIMARY KEY,
 	user_id				INTEGER 		   NOT NULL,
 	token_value			VARCHAR(64)	UNIQUE NOT NULL,
-	token_expiry_date	TIMESTAMP,
+	token_expiry_date	TIMESTAMPTZ,
 	CONSTRAINT token_user_fk FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 

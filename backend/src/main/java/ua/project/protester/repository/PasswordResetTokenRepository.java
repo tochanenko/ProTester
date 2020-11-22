@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.PasswordResetToken;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Repository
@@ -22,12 +22,12 @@ public class PasswordResetTokenRepository {
         namedParameterJdbcTemplate.update(SqlTemplates.SAVE_TOKEN, new BeanPropertySqlParameterSource(token));
     }
 
-    public Optional<Date> findExpiryDateByValue(String tokenValue) {
+    public Optional<OffsetDateTime> findExpiryDateByValue(String tokenValue) {
         try {
-            Date expiryDate = namedParameterJdbcTemplate.queryForObject(
+            OffsetDateTime expiryDate = namedParameterJdbcTemplate.queryForObject(
                     SqlTemplates.FIND_TOKEN_EXPIRY_DATE_BY_TOKEN_VALUE,
                     new MapSqlParameterSource().addValue("value", tokenValue),
-                    Date.class);
+                    OffsetDateTime.class);
             return Optional.ofNullable(expiryDate);
         } catch (DataAccessException e) {
             return Optional.empty();

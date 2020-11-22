@@ -1,6 +1,7 @@
 package ua.project.protester.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.project.protester.exception.DeactivatedUserAccessException;
 import ua.project.protester.exception.InvalidPasswordResetTokenException;
@@ -11,7 +12,7 @@ import ua.project.protester.model.User;
 import ua.project.protester.repository.PasswordResetTokenRepository;
 import ua.project.protester.repository.UserRepository;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class ResetPasswordService {
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void processResetPasswordRequest(String userEmail) throws UserNotFoundException, MailSendException, DeactivatedUserAccessException {
         User user = userRepository
@@ -39,11 +41,11 @@ public class ResetPasswordService {
     }
 
     public String processTokenValidation(String tokenValue) throws InvalidPasswordResetTokenException {
-        Date tokenExpiryDate = tokenRepository
+        OffsetDateTime tokenExpiryDate = tokenRepository
                 .findExpiryDateByValue(tokenValue)
                 .orElseThrow(InvalidPasswordResetTokenException::new);
 
-        if (tokenExpiryDate.before(new Date())) {
+        if (tokenExpiryDate.isBefore(OffsetDateTime.now())) {
             throw new InvalidPasswordResetTokenException();
         }
 
@@ -61,7 +63,7 @@ public class ResetPasswordService {
             throw new DeactivatedUserAccessException();
         }
 
-        userRepository.updatePassword(user, newUserPassword);
+        userRepository.updatePassword(user, passwordEncoder.encode(newUserPassword));
         mailService.sendPasswordUpdateMail(user);
     }
 }

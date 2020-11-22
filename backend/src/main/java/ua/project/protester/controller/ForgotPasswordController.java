@@ -18,40 +18,20 @@ public class ForgotPasswordController {
     private final ResetPasswordService resetPasswordService;
 
     @PostMapping
-    public ResponseEntity<?> resetPasswordRequest(@RequestBody User user) {
-        try {
-            resetPasswordService.processResetPasswordRequest(user.getEmail());
-            return ResponseEntity.accepted().build();
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (MailSendException e) {
-            return ResponseEntity.status(502).build();
-        } catch (DeactivatedUserAccessException e) {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity<?> resetPasswordRequest(@RequestBody User user) throws UserNotFoundException, DeactivatedUserAccessException, MailSendException {
+        resetPasswordService.processResetPasswordRequest(user.getEmail());
+        return ResponseEntity.accepted().build();
     }
 
     @GetMapping("/confirm-reset")
-    public ResponseEntity<String> validateResetToken(@RequestParam("t") String tokenValue) {
-        try {
-            String email = resetPasswordService.processTokenValidation(tokenValue);
-            return ResponseEntity.ok(email);
-        } catch (InvalidPasswordResetTokenException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<String> validateResetToken(@RequestParam("t") String tokenValue) throws InvalidPasswordResetTokenException {
+        String email = resetPasswordService.processTokenValidation(tokenValue);
+        return ResponseEntity.ok(email);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody User user) {
-        try {
-            resetPasswordService.processPasswordReset(user.getEmail(), user.getPassword());
-            return ResponseEntity.ok().build();
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (MailSendException e) {
-            return ResponseEntity.status(502).build();
-        } catch (DeactivatedUserAccessException e) {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity<?> resetPassword(@RequestBody User user) throws UserNotFoundException, DeactivatedUserAccessException, MailSendException {
+        resetPasswordService.processPasswordReset(user.getEmail(), user.getPassword());
+        return ResponseEntity.ok().build();
     }
 }

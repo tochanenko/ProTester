@@ -3,7 +3,7 @@ package ua.project.protester.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -11,17 +11,17 @@ import java.util.UUID;
 public class PasswordResetToken {
 
     /**
-     * Token expiration time in millisecond
+     * Token expiration time in minutes
      */
-    private static final int EXPIRATION = 1000 * 60 * 10;
+    private static final int EXPIRATION = 10;
 
     private String value;
     private long userId;
-    private Date expiryDate;
+    private OffsetDateTime expiryDate;
 
     public PasswordResetToken(long userId) {
         this.userId = userId;
         this.value = UUID.randomUUID().toString();
-        this.expiryDate = new Date(System.currentTimeMillis() + EXPIRATION);
+        this.expiryDate = OffsetDateTime.now().plusMinutes(EXPIRATION);
     }
 }

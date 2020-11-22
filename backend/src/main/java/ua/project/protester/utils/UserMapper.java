@@ -63,7 +63,7 @@ public class UserMapper {
     }
 
     private void mapSpecificFields(User source, UserResponse destination) {
-        destination.setRole(source.getRole().getId());
+        destination.setRole(source.getRole().getName());
     }
 
     public ModelMapper getModelMapper() {

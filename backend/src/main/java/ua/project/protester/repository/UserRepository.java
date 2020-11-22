@@ -1,6 +1,8 @@
 package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -10,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.constants.SqlTemplates;
 import ua.project.protester.model.User;
 import ua.project.protester.utils.UserRowMapper;
 
@@ -21,10 +22,13 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserRepository implements CrudRepository<User> {
 
-
+    private final UserRowMapper rowMapper;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment environment;
-    private final UserRowMapper userRowMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
+    private static final String PROPERTY_NOT_FOUND_TEMPLATE = "Could not find property '%s' in queries/user.properties";
 
     @Override
     public int save(User entity) {
@@ -32,11 +36,12 @@ public class UserRepository implements CrudRepository<User> {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
 
         namedParams.addValue("role_id", entity.getRole().getId());
-        namedParams.addValue("user_name", entity.getName());
+        namedParams.addValue("user_username", entity.getUsername());
         namedParams.addValue("user_email", entity.getEmail());
         namedParams.addValue("user_password", entity.getPassword());
         namedParams.addValue("user_active", entity.isActive());
-        namedParams.addValue("user_full_name", entity.getFullName());
+        namedParams.addValue("user_first_name", entity.getFirstName());
+        namedParams.addValue("user_last_name", entity.getLastName());
 
         int update = namedJdbcTemplate.update(environment.getProperty("saveUser"), namedParams, keyHolder, new String[]{"user_id"});
 
@@ -52,7 +57,7 @@ public class UserRepository implements CrudRepository<User> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_id", id);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserById"), namedParams, userRowMapper));
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserById"), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -60,18 +65,19 @@ public class UserRepository implements CrudRepository<User> {
 
     @Override
     public List<User> findAll() {
-        return namedJdbcTemplate.query(environment.getProperty("findAllUsers"), userRowMapper);
+        return namedJdbcTemplate.query(environment.getProperty("findAllUsers"), rowMapper);
     }
 
     @Override
     public void update(User entity) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("role_id", entity.getRole().getId());
-        namedParams.addValue("user_name", entity.getName());
+        namedParams.addValue("user_username", entity.getUsername());
         namedParams.addValue("user_email", entity.getEmail());
         namedParams.addValue("user_password", entity.getPassword());
         namedParams.addValue("user_active", entity.isActive());
-        namedParams.addValue("user_full_name", entity.getFullName());
+        namedParams.addValue("user_first_name", entity.getFirstName());
+        namedParams.addValue("user_last_name", entity.getLastName());
         namedParams.addValue("user_id", entity.getId());
 
         namedJdbcTemplate.update(environment.getProperty("updateUser"), namedParams);
@@ -84,11 +90,22 @@ public class UserRepository implements CrudRepository<User> {
         namedJdbcTemplate.update(environment.getProperty("deleteUser"), namedParams);
     }
 
+
     public List<User> findUsersByRoleId(Long roleId) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("role_id", roleId);
-            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleId"), namedParams, userRowMapper);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleId"), namedParams, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public List<User> findUsersByRoleName(String roleName) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("role_name", roleName);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleName"), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -98,7 +115,7 @@ public class UserRepository implements CrudRepository<User> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_email", email);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByEmail"), namedParams, userRowMapper));
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByEmail"), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -107,8 +124,18 @@ public class UserRepository implements CrudRepository<User> {
     public Optional<User> findUserByUsername(String username) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("user_name", username);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByUsername"), namedParams, userRowMapper));
+            namedParams.put("user_username", username);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByUsername"), namedParams, rowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<User> findUserByFullName(String fullName) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_full_name", fullName);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByFullName"), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -119,7 +146,7 @@ public class UserRepository implements CrudRepository<User> {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("limit", limit);
             namedParams.put("offset", offset);
-            return namedJdbcTemplate.query(environment.getProperty("findAllUsersPagination"), namedParams, userRowMapper);
+            return namedJdbcTemplate.query(environment.getProperty("findAllUsersPagination"), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return Collections.emptyList();
         }
@@ -127,21 +154,35 @@ public class UserRepository implements CrudRepository<User> {
 
 
     public Optional<String> findUserEmailByTokenValue(String tokenValue) {
+        String queryPropertyName = "findUserEmailByResetPasswordTokenValue";
         try {
             String userEmail = namedJdbcTemplate.queryForObject(
-                    SqlTemplates.FIND_USER_EMAIL_BY_TOKEN_VALUE,
+                    Objects.requireNonNull(environment.getProperty("findUserEmailByResetPasswordTokenValue")),
                     new MapSqlParameterSource().addValue("value", tokenValue),
                     String.class);
             return Optional.ofNullable(userEmail);
         } catch (DataAccessException e) {
             return Optional.empty();
+        } catch (NullPointerException e) {
+            logger.warn(String.format(
+                    PROPERTY_NOT_FOUND_TEMPLATE,
+                    queryPropertyName));
+            return Optional.empty();
         }
     }
 
     public void updatePassword(User user, String newUserPassword) {
-        namedJdbcTemplate.update(SqlTemplates.UPDATE_USER_PASSWORD,
-                new MapSqlParameterSource()
-                        .addValue("password", newUserPassword)
-                        .addValue("id", user.getId()));
+        String queryPropertyName = "updateUserPassword";
+        try {
+            namedJdbcTemplate.update(
+                    Objects.requireNonNull(environment.getProperty("updateUserPassword")),
+                    new MapSqlParameterSource()
+                            .addValue("password", newUserPassword)
+                            .addValue("id", user.getId()));
+        } catch (NullPointerException e) {
+            logger.warn(String.format(
+                    PROPERTY_NOT_FOUND_TEMPLATE,
+                    queryPropertyName));
+        }
     }
 }

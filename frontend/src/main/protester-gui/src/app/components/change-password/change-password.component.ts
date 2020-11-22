@@ -36,14 +36,13 @@ export class ChangePasswordComponent implements OnInit {
       this.passwordService.confirmReset(this.token).subscribe(
         email => {
           console.log('Before IF');
-          if (email == null) {
-            this.router.navigateByUrl('/login').then();
+          if (email == null || email.length == 0) {
+            this.router.navigateByUrl('/token-expired').then();
           } else {
             this.email = email;
           }
         },
-        err => console.error('Observer got an error: ' + err.message),
-        () => console.log('Observer got a complete notification')
+        err => this.router.navigateByUrl('/token-expired').then()
       )
     });
 

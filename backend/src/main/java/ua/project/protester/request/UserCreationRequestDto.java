@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class UserCreationRequestDto extends UserDto {
 
 
-    @NotNull(message = "provide username")
+    @NotNull(message = "provide a firstname")
     @UniqueUsername(message = "username already exists")
     private String firstName;
 

@@ -119,7 +119,7 @@ public class UserRepository implements CrudRepository<User> {
     public Optional<User> findUserByUsername(String username) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("user_name", username);
+            namedParams.put("user_username", username);
             return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByUsername"), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();

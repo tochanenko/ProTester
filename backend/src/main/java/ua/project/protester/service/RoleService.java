@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.model.Role;
+import ua.project.protester.model.User;
 import ua.project.protester.repository.RoleRepository;
 import ua.project.protester.repository.UserRepository;
 import ua.project.protester.response.RoleResponse;
@@ -30,7 +31,9 @@ public class RoleService {
     public Role findRoleById(Long id) {
         Role role = roleRepository.findById(id).orElse(null);
         if (role != null) {
-            role.setUsers(userRepository.findUsersByRoleId(role.getId()));
+            List<User> users = userRepository.findUsersByRoleId(role.getId());
+            users.forEach(user -> user.getRole().setName(role.getName()));
+            role.setUsers(users);
             return role;
         }
         return null;
@@ -39,7 +42,12 @@ public class RoleService {
     @Transactional
     public List<Role> findAll() {
         List<Role> roles = roleRepository.findAll();
-        roles.forEach(role -> role.setUsers(userRepository.findUsersByRoleId(role.getId())));
+        for (Role role:roles
+             ) {
+            List<User> users = userRepository.findUsersByRoleId(role.getId());
+            users.forEach(user -> user.getRole().setName(role.getName()));
+            role.setUsers(users);
+        }
         return roles;
     }
 
@@ -49,6 +57,7 @@ public class RoleService {
 
         if (role != null) {
             role.setUsers(userRepository.findUsersByRoleId(role.getId()));
+            role.getUsers().forEach(user -> user.getRole().setName(role.getName()));
             return role;
         }
 

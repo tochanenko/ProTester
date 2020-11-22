@@ -1,5 +1,7 @@
 package ua.project.protester.repository;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;

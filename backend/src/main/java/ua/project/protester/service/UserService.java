@@ -35,6 +35,20 @@ public class UserService {
     }
 
     @Transactional
+    public void updateUser(UserModificationDto userDto) {
+        User user = userMapper.toUserFromUserModificationDto(userDto);
+        user.setRole(roleService.findRoleByName(user.getRole().getName()));
+        user.getRole().getUsers().add(user);
+        userRepository.update(user);
+    }
+
+    @Transactional
+    public void deleteUser(User user) {
+       user.getRole().getUsers().remove(user);
+       userRepository.delete(user);
+    }
+
+    @Transactional
     public User findUserById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -68,22 +82,22 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(UserModificationDto userDto) {
-        User user = userMapper.toUserFromUserModificationDto(userDto);
-        user.setRole(roleService.findRoleByName(user.getRole().getName()));
-        user.getRole().getUsers().add(user);
-        userRepository.update(user);
+    public User findUserByFullname(String fullName) {
+        User user = userRepository.findUserByFullName(fullName).orElse(null);
+        if (user != null) {
+            Long roleId = user.getRole().getId();
+            user.setRole(roleService.findRoleById(roleId));
+            return user;
+        }
+        return null;
     }
 
-    @Transactional
-    public void deleteUser(User user) {
-       user.getRole().getUsers().remove(user);
-       userRepository.delete(user);
-    }
 
     @Transactional
     public List<User> findAll() {
-        return userRepository.findAll();
+        List<User>users = userRepository.findAll();
+        users.forEach(user -> user.setRole(roleService.findRoleById(user.getRole().getId())));
+        return users;
     }
 
     public UserResponse getUser(Long id) {
@@ -92,6 +106,14 @@ public class UserService {
 
     public List<UserResponse> getAllUsers() {
         return findAll().stream().map(userMapper::toUserRest).collect(Collectors.toList());
+    }
+
+    public UserResponse findUserByName(String username) {
+        return userMapper.toUserRest(findUserByUsername(username));
+    }
+
+    public UserResponse findUserByFullName(String fullName) {
+        return userMapper.toUserRest(findUserByFullname(fullName));
     }
 
 }

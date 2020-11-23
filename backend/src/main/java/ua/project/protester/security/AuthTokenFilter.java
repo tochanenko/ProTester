@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.project.protester.exception.DisabledUserException;
 import ua.project.protester.utils.JwtUtils;
 
 import javax.servlet.FilterChain;
@@ -41,6 +42,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 if (userDetails.isEnabled()) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    throw new DisabledUserException("User is deactivated!");
                 }
             }
         } catch (Exception e) {
@@ -54,7 +57,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String headerAuth = request.getHeader("Authorization");
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
+            return headerAuth.substring(7);
         }
 
         return null;

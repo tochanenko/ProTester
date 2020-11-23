@@ -85,6 +85,13 @@ public class UserRepository implements CrudRepository<User> {
         namedJdbcTemplate.update(environment.getProperty("deleteUser"), namedParams);
     }
 
+    public void deactivate(Long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedJdbcTemplate.update(environment.getProperty("deactivateUser"), namedParams);
+
+    }
+
 
     public List<User> findUsersByRoleId(Long roleId) {
         try {
@@ -126,13 +133,33 @@ public class UserRepository implements CrudRepository<User> {
         }
     }
 
-    public Optional<User> findUserByFullName(String fullName) {
+    public List<User> findUserByRolename(String roleName) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("user_full_name", fullName);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByFullName"), namedParams, rowMapper));
+            namedParams.put("role_name", roleName);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleName"), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<User> findUsersByName(String name) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_first_name", name);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersByName"), namedParams, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<User> findUsersBySurname(String surname) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_last_name", surname);
+            return namedJdbcTemplate.query(environment.getProperty("findUsersBySurname"), namedParams, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
         }
     }
 

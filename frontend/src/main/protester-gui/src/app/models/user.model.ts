@@ -1,8 +1,9 @@
 export class User {
-  name: string;
+  username: string;
   password: string;
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   role: string;
-  activated?: boolean;
+  isActive?: boolean;
 }

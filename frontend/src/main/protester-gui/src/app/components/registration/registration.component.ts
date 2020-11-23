@@ -43,9 +43,10 @@ export class RegistrationComponent implements OnInit {
 
     console.log('valid');
     const registrationResponse = {
-      name: this.f.name.value,
+      username: this.f.username.value,
       email: this.f.email.value,
-      fullName: this.f.fullName.value,
+      firstName: this.f.firstName.value,
+      lastName: this.f.lastName.value,
       password: this.f.password.value,
       role: this.f.role.value
     };
@@ -65,7 +66,7 @@ export class RegistrationComponent implements OnInit {
 
   createRegistrationForm(): void {
     this.registrationForm = this.formBuilder.group({
-      name: [null, Validators.compose([
+      username: [null, Validators.compose([
         Validators.minLength(4),
         Validators.maxLength(20),
         Validators.pattern('[A-Za-z0-9]*')])
@@ -74,9 +75,13 @@ export class RegistrationComponent implements OnInit {
         Validators.email,
         Validators.maxLength(128)])
       ],
-      fullName: [null, Validators.compose([
-        Validators.minLength(4),
-        Validators.maxLength(60)])
+      firstName: [null, Validators.compose([
+        Validators.minLength(1),
+        Validators.maxLength(30)])
+      ],
+      lastName: [null, Validators.compose([
+        Validators.minLength(1),
+        Validators.maxLength(30)])
       ],
       password: [null, Validators.compose([
         Validators.minLength(8),

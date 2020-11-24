@@ -14,6 +14,8 @@ public class UserResponse extends UserDto {
 
     private Long id;
 
+    private String username;
+
     private String firstName;
 
     private String lastName;

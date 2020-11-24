@@ -3,6 +3,7 @@ package ua.project.protester.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 
@@ -26,9 +27,9 @@ public class BaseAction {
     }
 
     public boolean hasSameSignature(BaseAction that) {
-        return this.type.equals(that.type) && this.name.equals(that.name);
+        return this.name.equals(that.name);
     }
 
-    public void invoke(Map<String, String> params) {
+    public void invoke(Map<String, String> params, WebDriver driver) {
     }
 }

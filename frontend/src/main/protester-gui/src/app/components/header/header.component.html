@@ -1,0 +1,11 @@
+<mat-toolbar>
+  <button mat-icon-button>
+    <img [src]="image" class="logo-img" alt="Logo">
+  </button>
+  <b><span class="project-name">ProTester</span></b>
+  <span class="example-spacer"></span>
+  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon *ngIf="isWhiteTheme" (click)="changeTheme()">brightness_3</mat-icon>
+    <mat-icon *ngIf="!isWhiteTheme" (click)="changeTheme()">brightness_5</mat-icon>
+  </button>
+</mat-toolbar>

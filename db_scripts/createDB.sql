@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tokens CASCADE;
-DROP TABLE IF EXISTS action_types CASCADE;
 DROP TABLE IF EXISTS actions CASCADE;
 DROP TABLE IF EXISTS compounds CASCADE;
 DROP TABLE IF EXISTS compounds_actions CASCADE;
@@ -43,17 +42,11 @@ CREATE TABLE tokens (
 	CONSTRAINT token_user_fk FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE action_types (
-	action_type_id		SERIAL PRIMARY KEY,
-	action_type_name	VARCHAR(16) NOT NULL
-);
 
 CREATE TABLE actions (
 	action_id			SERIAL PRIMARY KEY,
-	action_type_id		INTEGER		NOT NULL,
 	action_name			VARCHAR(32) NOT NULL,
-	action_description	TEXT,
-	CONSTRAINT action_type_fk FOREIGN KEY (action_type_id) REFERENCES action_types (action_type_id)
+	action_description	TEXT
 );
 
 CREATE TABLE compounds (

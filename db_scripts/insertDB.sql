@@ -14,12 +14,6 @@ VALUES ('PASSED'),
 	   ('FAILED'),
  	   ('UNKNOWN');
 
-INSERT INTO "action_types"(action_type_name)
-VALUES ('REST'),
-	   ('UI'),
-	   ('SQL'),
-	   ('TECHNICAL');
-
 INSERT INTO "libraries"(library_name, library_description)
 VALUES ('rest library actions', 'The list of all rest actions'),
 	   ('ui library actions', 'The list of all ui actions'),
@@ -64,52 +58,6 @@ VALUES ((SELECT user_id
 		FROM users
 		WHERE user_username = 'l_engineer_l'), 'estore', 'https://estore.ua/', TRUE);
 
-INSERT INTO "actions"(action_type_id, action_name, action_description)
-VALUES ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'REST'), 'language', 'choose language'),
-	   ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'REST'), 'filter', 'choose filter'),
-	   ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'REST'), 'request', 'send get request by url"" and store result in variable "name"'),
-	   ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'UI'), 'screenshot', 'make screenshot for an action'),
-	   ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'TECHNICAL'), 'item click', 'opens the page of item'),
-	   ((SELECT action_type_id
-		 FROM action_types
-		 WHERE action_type_name = 'TECHNICAL'), 'item add', 'moves the item to the cart');
-
-INSERT INTO "libraries_actions"(library_id, action_id)
-VALUES ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'rest library actions'),
-	    (SELECT action_id
-	     FROM actions
-	     WHERE action_name = 'language')),
-	   ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'rest library actions'),
-	    (SELECT action_id
-	     FROM actions
-	     WHERE action_name = 'filter')),
-	   ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'rest library actions'),
-	    (SELECT action_id
-	     FROM actions
-	     WHERE action_name = 'request')),
-	   ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'ui library actions'),
-	    (SELECT action_id
-	     FROM actions
-	     WHERE action_name = 'screenshot'));
-
 INSERT INTO "libraries_compounds"(library_id, compound_id)
 VALUES ((SELECT library_id
 		 FROM libraries
@@ -123,17 +71,3 @@ VALUES ((SELECT library_id
 	    (SELECT compound_id
 	     FROM compounds
 	     WHERE compound_name = 'pass registration'));
-		 
-INSERT INTO "compounds_actions"(action_id, compound_id)
-VALUES ((SELECT action_id
-		 FROM actions
-		 WHERE action_name = 'item click'), 
-		(SELECT compound_id
-		 FROM compounds
-		 WHERE compound_name = 'add item')),
-	   ((SELECT action_id
-		 FROM actions
-		 WHERE action_name = 'item add'), 
-		(SELECT compound_id
-		 FROM compounds
-		 WHERE compound_name = 'add item'));

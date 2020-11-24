@@ -116,7 +116,7 @@ public class ActionRepository {
         try {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             namedParameterJdbcTemplate.update(
-                    Objects.requireNonNull(env.getProperty("saveAction")),
+                    Objects.requireNonNull(env.getProperty(propertyName)),
                     new BeanPropertySqlParameterSource(codeAction),
                     keyHolder,
                     new String[]{"action_id"});

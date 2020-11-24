@@ -4,23 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Repository;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.ActionImplementationNotFoundException;
 import ua.project.protester.exception.ActionNotFoundException;
 import ua.project.protester.exception.NotUniqueActionNameException;
 import ua.project.protester.model.BaseAction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-@Repository
-@PropertySource("classpath:queries/action.properties")
 @RequiredArgsConstructor
 public class ActionRepository {
 
@@ -73,7 +74,8 @@ public class ActionRepository {
                 action.init(
                         actionMetadata.type(),
                         name,
-                        actionMetadata.description());
+                        actionMetadata.description(),
+                        actionMetadata.parameterNames());
                 actionsInCode.add(action);
                 logger.info("Action loaded: " + action.getName());
             } catch (Exception e) {
@@ -144,6 +146,4 @@ public class ActionRepository {
     public List<BaseAction> findAllActions() {
         return actions;
     }
-
-
 }

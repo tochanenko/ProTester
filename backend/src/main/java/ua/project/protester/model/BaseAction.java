@@ -15,12 +15,14 @@ public class BaseAction {
     protected Integer typeId;
     protected String name;
     protected String description;
+    protected String[] parameterNames;
 
-    public void init(Integer typeId, String name, String description) {
+    public void init(Integer typeId, String name, String description, String[] parameterNames) {
         this.id = null;
         this.typeId = typeId;
         this.name = name;
         this.description = description;
+        this.parameterNames = parameterNames;
     }
 
     public boolean hasSameSignature(BaseAction that) {

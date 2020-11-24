@@ -8,4 +8,5 @@ public @interface Action {
     String name() default "";
     int type() default 1;
     String description() default "Empty description";
+    String[] parameterNames() default {};
 }

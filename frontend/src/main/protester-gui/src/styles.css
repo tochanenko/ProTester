@@ -1,0 +1,15 @@
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+
+  background: #F2F2F2;
+  overflow: auto;
+}

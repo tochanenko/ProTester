@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ProTester registration</title>
+</head>
+<body>
+<h1>Welcome to ProTester, <span th:text="${user.getFirstName() + ' ' + user.getLastName()}"></span></h1>
+<br>
+<span>Your credentials:</span>
+<ul>
+    <li>Login : <span th:text="${user.getEmail()}"></span></li>
+    <li>Password : <span th:text="${user.getPassword()}"></span></li>
+</ul>
+</body>
+</html>

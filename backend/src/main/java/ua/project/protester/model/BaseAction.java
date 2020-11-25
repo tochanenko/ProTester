@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -15,6 +16,8 @@ public class BaseAction {
     protected Integer typeId;
     protected String name;
     protected String description;
+
+    protected Map<String, String> parameters = new HashMap<>();
 
     public void init(Integer typeId, String name, String description) {
         this.id = null;

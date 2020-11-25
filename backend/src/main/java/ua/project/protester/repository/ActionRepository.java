@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import ua.project.protester.actions.ClickAction;
+import ua.project.protester.actions.WaitAction;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.ActionImplementationNotFoundException;
 import ua.project.protester.exception.ActionNotFoundException;
@@ -75,7 +78,7 @@ public class ActionRepository {
                         name,
                         actionMetadata.description());
                 actionsInCode.add(action);
-                logger.info("Action loaded: " + action.getName());
+                logger.info("Action loaded: " + action.getName()+action);
             } catch (Exception e) {
                 logger.warn("Failed to load action class " + actionCandidate.getSimpleName() + ". Exception : " + e);
             }
@@ -109,7 +112,7 @@ public class ActionRepository {
         return actionsInCode;
     }
 
-    private void uploadActionToDb(BaseAction codeAction) {
+    public void uploadActionToDb(BaseAction codeAction) {
         String propertyName = "saveAction";
         try {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

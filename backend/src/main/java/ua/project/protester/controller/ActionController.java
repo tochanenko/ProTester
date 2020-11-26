@@ -27,21 +27,6 @@ public class ActionController {
         return actionService.findAll();
     }
 
-
-    @GetMapping("/name")
-    public BaseAction findByName(@RequestParam String name) {
-        return actionService.findActionByName(name);
-    }
-
-    @GetMapping("/type")
-    public BaseAction findByType(@RequestParam String type) {
-        return actionService.findActionByType(type);
-    }
-
-    @GetMapping("/page")
-    public List<BaseAction> findActionsPagination(@RequestParam int pageSize, @RequestParam int pageNumber) {
-        return actionService.findActionsPagination(pageSize, pageNumber);
-    }
     /*
     * {
     *    "id": 43,

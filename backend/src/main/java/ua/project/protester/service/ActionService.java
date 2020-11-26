@@ -24,9 +24,8 @@ public class ActionService {
     }
 
     public void invoke(BaseAction action) {
-        try {
 
-            BaseAction baseAction = actionRepository.findActionById(action.getId());
+            BaseAction baseAction = actionRepository.findActionByDeclarationId(action.getId()).get();
             Map<String, String> params = new HashMap<>();
 
             for(String str : action.getParameterNames()){
@@ -38,34 +37,10 @@ public class ActionService {
 
             baseAction.invoke(params,driver);
 
-        } catch (ActionNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public List<BaseAction> findAll() {
-        return actionRepository.findAllActions();
+        return actionRepository.findAllPreparedActions();
     }
 
-    public BaseAction findActionByName(String name) {
-        try {
-            return actionRepository.findActionByName(name);
-        } catch (ActionNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public BaseAction findActionByType(String type) {
-        try {
-            return actionRepository.findActionByType(type);
-        } catch (ActionNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public List<BaseAction> findActionsPagination(int pageSize, int pageNumber) {
-        return actionRepository.findActionsPagination(pageSize,pageNumber);
-    }
 }

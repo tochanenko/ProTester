@@ -1,0 +1,13 @@
+.library-new-form-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 40%;
+  margin: 50px auto;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+}

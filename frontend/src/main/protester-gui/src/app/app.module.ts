@@ -18,6 +18,8 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
+import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
+import { LibraryNewComponent } from './components/library-new/library-new.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { TokenExpiredComponent } from './components/token-expired/token-expired.
     ForgotPasswordComponent,
     PendingPasswordComponent,
     ChangePasswordComponent,
-    TokenExpiredComponent
+    TokenExpiredComponent,
+    LibraryMenuComponent,
+    LibraryNewComponent
   ],
   imports: [
     BrowserModule,

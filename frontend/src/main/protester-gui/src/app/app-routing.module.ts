@@ -8,6 +8,8 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+import {LibraryMenuComponent} from "./components/library-menu/library-menu.component";
+import {LibraryNewComponent} from "./components/library-new/library-new.component";
 
 
 const routes: Routes = [
@@ -46,6 +48,14 @@ const routes: Routes = [
   {
     path: 'token-expired',
     component: TokenExpiredComponent
+  },
+  {
+    path: 'library',
+    component: LibraryMenuComponent
+  },
+  {
+    path: 'library/new_library',
+    component: LibraryNewComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

@@ -131,32 +131,33 @@ public class ActionDeclarationRepository {
         }
     }
 
-    public Optional<ActionDeclaration> findActionDeclarationById(int id) {
-        String propertyName = "findActionDeclarationById";
-        try {
-            Optional<ActionDeclaration> actionDeclaration = Optional.ofNullable(
-                    namedParameterJdbcTemplate.queryForObject(
-                            Objects.requireNonNull(env.getProperty(propertyName)),
-                            new MapSqlParameterSource().addValue("id", id),
-                            new BeanPropertyRowMapper<>(ActionDeclaration.class)));
-            actionDeclaration.ifPresent(this::loadActionDeclarationMetadata);
-            return actionDeclaration;
-        } catch (NullPointerException e) {
-            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
-            return Optional.empty();
-        } catch (DataAccessException e) {
-            logger.warn(e.toString());
-            return Optional.empty();
-        }
+    public Optional<ActionDeclaration> findActionDeclarationById(Integer id) {
+        return findActionDeclaration(
+                "findActionDeclarationById",
+                "id",
+                id);
     }
 
     public Optional<ActionDeclaration> findActionDeclarationByClassName(String className) {
-        String propertyName = "findActionDeclarationByClassName";
+        return findActionDeclaration(
+                "findActionDeclarationByClassName",
+                "className",
+                className);
+    }
+
+    public Optional<ActionDeclaration> findActionDeclarationByActionId(Integer id) {
+        return findActionDeclaration(
+                "findActionDeclarationByActionId",
+                "id",
+                id);
+    }
+
+    private Optional<ActionDeclaration> findActionDeclaration(String propertyName, String parameterKey, Object parameterValue) {
         try {
             Optional<ActionDeclaration> actionDeclaration = Optional.ofNullable(
                     namedParameterJdbcTemplate.queryForObject(
                             Objects.requireNonNull(env.getProperty(propertyName)),
-                            new MapSqlParameterSource().addValue("className", className),
+                            new MapSqlParameterSource().addValue(parameterKey, parameterValue),
                             new BeanPropertyRowMapper<>(ActionDeclaration.class)));
             actionDeclaration.ifPresent(this::loadActionDeclarationMetadata);
             return actionDeclaration;

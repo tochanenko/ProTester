@@ -1,27 +1,34 @@
 package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.annotation.Action;
+import ua.project.protester.exception.ActionDeclarationNotFoundException;
 import ua.project.protester.exception.ActionImplementationNotFoundException;
 import ua.project.protester.exception.ActionNotFoundException;
-import ua.project.protester.exception.NotUniqueActionNameException;
+import ua.project.protester.exception.PreparedActionWithoutParametersException;
+import ua.project.protester.model.ActionDeclaration;
 import ua.project.protester.model.BaseAction;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Repository
+@PropertySource("classpath:queries/action.properties")
 @RequiredArgsConstructor
 public class ActionRepository {
 
@@ -29,121 +36,118 @@ public class ActionRepository {
     private final Logger logger = LoggerFactory.getLogger(ActionRepository.class);
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
-    private List<BaseAction> actions;
+    private final ActionDeclarationRepository actionDeclarationRepository;
+    private final ActionParameterRepository actionParameterRepository;
 
-    private static void connectAction(BaseAction dbAction, List<BaseAction> actionsInCode) {
-        BaseAction action = actionsInCode
-                .stream()
-                .filter(codeAction -> codeAction.hasSameSignature(dbAction))
-                .findFirst()
-                .orElseThrow(() -> new ActionImplementationNotFoundException(
-                        "Failed to found " + dbAction.getName() + " action implementation in code"));
-
-        action.setId(dbAction.getId());
-        action.setDescription(dbAction.getDescription());
-    }
-
-    public void syncWithDb() {
-        List<BaseAction> actionsInCode = scanForActions();
-        List<BaseAction> actionsInDb = loadActionsFromDb();
-        actions = combine(actionsInCode, actionsInDb);
-    }
-
-    private List<BaseAction> scanForActions() {
-        List<BaseAction> actionsInCode = new ArrayList<>();
-        Set<String> uniqueNames = new HashSet<>();
-        Reflections reflections = new Reflections("ua.project.protester.action");
-        Set<Class<?>> actionCandidates = reflections.getTypesAnnotatedWith(Action.class);
-        for (Class<?> actionCandidate : actionCandidates) {
-            try {
-                Action actionMetadata = actionCandidate.getAnnotation(Action.class);
-
-                String name;
-                if (actionMetadata.name().isEmpty()) {
-                    name = actionCandidate.getSimpleName();
-                } else {
-                    name = actionMetadata.name();
-                }
-
-                if (uniqueNames.contains(name)) {
-                    throw new NotUniqueActionNameException();
-                }
-                uniqueNames.add(name);
-
-                BaseAction action = (BaseAction) actionCandidate.getConstructor().newInstance();
-                action.init(
-                        actionMetadata.type(),
-                        name,
-                        actionMetadata.description(),
-                        actionMetadata.parameterNames());
-                actionsInCode.add(action);
-                logger.info("Action loaded: " + action.getName());
-            } catch (Exception e) {
-                logger.warn("Failed to load action class " + actionCandidate.getSimpleName() + ". Exception : " + e);
-            }
-        }
-
-        return actionsInCode;
-    }
-
-    private List<BaseAction> loadActionsFromDb() {
-        String propertyName = "findAllActions";
+    @Transactional
+    public Integer save(BaseAction action) throws PreparedActionWithoutParametersException {
+        String propertyName = "saveAction";
         try {
-            return namedParameterJdbcTemplate.query(
+            if (action.getPreparedParams() == null || action.getPreparedParams().isEmpty()) {
+                throw new PreparedActionWithoutParametersException();
+            }
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            namedParameterJdbcTemplate.update(
                     Objects.requireNonNull(env.getProperty(propertyName)),
-                    new BeanPropertyRowMapper<>(BaseAction.class));
+                    new BeanPropertySqlParameterSource(action),
+                    keyHolder,
+                    new String[]{"action_id"});
+            actionParameterRepository.saveParameters((Integer) keyHolder.getKey(), action.getPreparedParams());
+            return (Integer) keyHolder.getKey();
+        } catch (NullPointerException e) {
+            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
+            return 0;
+        }
+    }
+
+    public List<BaseAction> findAllPreparedActions() throws ActionImplementationNotFoundException {
+        String propertyName = "findAllPreparedActionsId";
+        try {
+            return namedParameterJdbcTemplate.queryForList(
+                    Objects.requireNonNull(env.getProperty(propertyName)),
+                    new MapSqlParameterSource(),
+                    Integer.class)
+                    .stream()
+                    .map(this::findPreparedActionById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
         } catch (NullPointerException e) {
             logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
             return Collections.emptyList();
         }
     }
 
-    private List<BaseAction> combine(List<BaseAction> actionsInCode, List<BaseAction> actionsInDb) {
-
-        actionsInDb
-                .forEach(dbAction -> connectAction(dbAction, actionsInCode));
-
-        actionsInCode
-                .stream()
-                .filter(codeAction -> codeAction.getId() == null)
-                .forEach(this::uploadActionToDb);
-
-        return actionsInCode;
-    }
-
-    private void uploadActionToDb(BaseAction codeAction) {
-        String propertyName = "saveAction";
+    public Optional<BaseAction> findPreparedActionById(Integer id) {
+        String propertyName = "findActionById";
         try {
-            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            namedParameterJdbcTemplate.update(
+            ActionDeclaration actionDeclaration = actionDeclarationRepository
+                    .findActionDeclarationByActionId(id)
+                    .orElseThrow(ActionDeclarationNotFoundException::new);
+            BaseAction action = Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
                     Objects.requireNonNull(env.getProperty(propertyName)),
-                    new BeanPropertySqlParameterSource(codeAction),
-                    keyHolder,
-                    new String[]{"action_id"});
-            Number id = keyHolder.getKey();
-            codeAction.setId((Integer) id);
+                    new MapSqlParameterSource()
+                            .addValue("id", id),
+                    new BeanPropertyRowMapper<>(BaseAction.class)))
+                    .orElseThrow(ActionNotFoundException::new);
+            loadActionMetadata(action, actionDeclaration);
+            loadActionParameters(action);
+            return Optional.of(action);
         } catch (NullPointerException e) {
             logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
+            return Optional.empty();
+        } catch (ActionDeclarationNotFoundException e) {
+            logger.warn("Failed to find action declaration");
+            return Optional.empty();
+        } catch (ActionNotFoundException e) {
+            logger.warn("Failed to find action");
+            return Optional.empty();
         }
     }
 
-    public BaseAction findActionById(int id) throws ActionNotFoundException {
-        return actions
-                .stream()
-                .filter(baseAction -> baseAction.getId() == id)
-                .findFirst()
-                .orElseThrow(ActionNotFoundException::new);
+    public Optional<BaseAction> findActionByDeclarationId(Integer declarationId) {
+        try {
+            ActionDeclaration actionDeclaration = actionDeclarationRepository
+                    .findActionDeclarationById(declarationId)
+                    .orElseThrow(ActionDeclarationNotFoundException::new);
+            BaseAction action = getActionImplementationByClassName(actionDeclaration.getClassName());
+            loadActionMetadata(action, actionDeclaration);
+            return Optional.of(action);
+        } catch (ActionDeclarationNotFoundException e) {
+            logger.warn("Failed to find action declaration");
+            return Optional.empty();
+        }
     }
 
-    public BaseAction findActionByName(String name) throws ActionNotFoundException {
-        return actions
-                .stream()
-                .filter(baseAction -> baseAction.getName().equals(name))
-                .findFirst()
-                .orElseThrow(ActionNotFoundException::new);
+    private void loadActionParameters(BaseAction baseAction) {
+        baseAction.setPreparedParams(
+                actionParameterRepository
+                        .findAllParametersByActionId(baseAction.getId()));
     }
 
-    public List<BaseAction> findAllActions() {
-        return actions;
+    private void loadActionMetadata(BaseAction action, ActionDeclaration actionDeclaration) {
+        try {
+            action.setDeclarationId(actionDeclaration.getId());
+            action.setName(actionDeclaration.getClassName());
+            action.setType(actionDeclaration.getType());
+            System.out.println(action.getDescription());
+            if (action.getDescription() == null || action.getDescription().isEmpty()) {
+                action.setDescription(actionDeclaration.getDefaultDescription());
+            }
+            Action metadata = Class.forName(actionDeclaration.getClassName()).getAnnotation(Action.class);
+            action.setParameterNames(metadata.parameterNames());
+        } catch (ClassNotFoundException e) {
+            logger.warn("Failed to load metadata for " + actionDeclaration.getClassName());
+        }
+    }
+
+    private BaseAction getActionImplementationByClassName(String className) {
+        try {
+            return (BaseAction) Class.forName(className).getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new ActionImplementationNotFoundException(
+                    "Failed to load action implementation for class " + className);
+        }
     }
 }

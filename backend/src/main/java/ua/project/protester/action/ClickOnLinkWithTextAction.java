@@ -9,9 +9,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "ClickOnLinkWithText",
         type = ActionType.TECHNICAL,
-        description = "Click on link with specified text",
+        defaultDescription = "Click on link with specified text",
         parameterNames = {"text"}
 )
 public class ClickOnLinkWithTextAction extends BaseAction {

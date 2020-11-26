@@ -9,9 +9,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "InputTextIntoFieldWithXPath",
         type = ActionType.TECHNICAL,
-        description = "Input specified text into field with specified xpath",
+        defaultDescription = "Input specified text into field with specified xpath",
         parameterNames = {"text", "xpath"}
 )
 public class InputTextIntoFieldWithXPathAction extends BaseAction {

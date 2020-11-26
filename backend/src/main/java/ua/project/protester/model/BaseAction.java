@@ -10,26 +10,30 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class BaseAction {
+public abstract class BaseAction {
 
     protected Integer id;
-    protected ActionType type;
-    protected String name;
+    protected Integer declarationId;
     protected String description;
     protected String[] parameterNames;
+    protected Map<String, String> preparedParams;
 
-    public void init(ActionType type, String name, String description, String[] parameterNames) {
-        this.id = null;
-        this.type = type;
-        this.name = name;
+    public void init(String description, String[] parameterNames) {
         this.description = description;
         this.parameterNames = parameterNames;
     }
 
     public boolean hasSameSignature(BaseAction that) {
-        return this.name.equals(that.name);
+        return this.declarationId.equals(that.declarationId);
     }
 
-    public void invoke(Map<String, String> params, WebDriver driver) {
+    public void prepare(Map<String, String> params) {
+        preparedParams = params;
+    }
+
+    public abstract void invoke(Map<String, String> params, WebDriver driver);
+
+    public void invoke(WebDriver driver) {
+        invoke(preparedParams, driver);
     }
 }

@@ -9,9 +9,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "ClickOnElementWithXPath",
         type = ActionType.TECHNICAL,
-        description = "Click on element with specified xpath",
+        defaultDescription = "Click on element with specified xpath",
         parameterNames = {"xpath"}
 )
 public class ClickOnElementWithXPathAction extends BaseAction {

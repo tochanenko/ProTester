@@ -4,10 +4,10 @@ stages:
   - test
   - deploy
 
-test:
-  stage: test
-  script:
-    - mvn test -B
+#test:
+#  stage: test
+#  script:
+#    - mvn test -B
 
 deploy:
   stage: deploy

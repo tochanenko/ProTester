@@ -18,6 +18,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
+import { ManageActionComponent } from './components/manage-action/manage-action.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -29,7 +32,8 @@ import { TokenExpiredComponent } from './components/token-expired/token-expired.
     ForgotPasswordComponent,
     PendingPasswordComponent,
     ChangePasswordComponent,
-    TokenExpiredComponent
+    TokenExpiredComponent,
+    ManageActionComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +43,9 @@ import { TokenExpiredComponent } from './components/token-expired/token-expired.
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

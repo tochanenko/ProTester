@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.model.BaseAction;
-import ua.project.protester.service.ClickService;
+import ua.project.protester.service.ActionService;
 
 import java.util.List;
 
@@ -13,17 +13,35 @@ import java.util.List;
 @RequestMapping("/api/actions")
 @RequiredArgsConstructor
 public class ActionController {
-    private final ClickService clickService;
+
+    private final ActionService actionService;
 
     @PostMapping("/execute")
-    public ResponseEntity<String>executeActions(@RequestBody List<BaseAction> actions) {
-//
-
-
-        actions.stream().forEach(action -> {action.invoke(action.getParameters());});
+    public ResponseEntity<String> executeActions(@RequestBody List<BaseAction> actions) {
+        actions.forEach(actionService::invoke);
         return new ResponseEntity<>("Action was triggered", HttpStatus.OK);
     }
 
+    @GetMapping
+    public List<BaseAction> actions() {
+        return actionService.findAll();
+    }
+
+
+    @GetMapping("/name")
+    public BaseAction findByName(@RequestParam String name) {
+        return actionService.findActionByName(name);
+    }
+
+    @GetMapping("/type")
+    public BaseAction findByType(@RequestParam String type) {
+        return actionService.findActionByType(type);
+    }
+
+    @GetMapping("/page")
+    public List<BaseAction> findActionsPagination(@RequestParam int pageSize, @RequestParam int pageNumber) {
+        return actionService.findActionsPagination(pageSize, pageNumber);
+    }
     /*
     * {
     *    "id": 43,

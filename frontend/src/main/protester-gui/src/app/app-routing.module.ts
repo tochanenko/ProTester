@@ -8,6 +8,7 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+import {ManageActionComponent} from "./components/manage-action/manage-action.component";
 
 
 const routes: Routes = [
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'token-expired',
     component: TokenExpiredComponent
+  },
+  {
+    path: 'actions',
+    component: ManageActionComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

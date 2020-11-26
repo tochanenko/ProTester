@@ -1,0 +1,50 @@
+<div class="login-form-flex">
+  <mat-card class="content">
+
+    <mat-card-content>
+
+      <div class="example-button-row">
+        <button mat-raised-button>Basic</button>
+      </div>
+      <table mat-table [dataSource]="actions" class="mat-elevation-z8">
+
+        <div>
+          <input #searchBox id="search-box" (input)="search(searchBox.value)" />
+        </div>
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let action"> {{action.description}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Type </th>
+          <td mat-cell *matCellDef="let action"> {{action.type}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell  *matHeaderCellDef ></mat-header-cell>
+          <mat-cell *matCellDef="let row" >
+            <button mat-button (click)="onRowClicked(row)" >Edit</button>
+          </mat-cell>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

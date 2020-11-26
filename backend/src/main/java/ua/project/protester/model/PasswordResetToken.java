@@ -10,11 +10,6 @@ import java.util.UUID;
 @Data
 public class PasswordResetToken {
 
-    /**
-     * Token expiration time in minutes
-     */
-    private static final int EXPIRATION = 10;
-
     private String value;
     private long userId;
     private OffsetDateTime expiryDate;
@@ -22,6 +17,10 @@ public class PasswordResetToken {
     public PasswordResetToken(long userId) {
         this.userId = userId;
         this.value = UUID.randomUUID().toString();
-        this.expiryDate = OffsetDateTime.now().plusMinutes(EXPIRATION);
+        this.expiryDate = OffsetDateTime.now();
+    }
+
+    public void setExpirationTime(int minutes) {
+        expiryDate = expiryDate.plusMinutes(minutes);
     }
 }

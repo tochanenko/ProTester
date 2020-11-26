@@ -2,10 +2,7 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.project.protester.model.UserDto;
 import ua.project.protester.response.UserLoginResponse;
 import ua.project.protester.service.AuthorizationService;
@@ -13,6 +10,7 @@ import ua.project.protester.service.AuthorizationService;
 @RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("http://localshot:4200")
 public class LoginController {
 
 

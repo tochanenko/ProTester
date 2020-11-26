@@ -1,6 +1,8 @@
 package ua.project.protester.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.project.protester.exception.DeactivatedUserAccessException;
@@ -16,10 +18,14 @@ import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:/application.properties")
 public class ResetPasswordService {
 
-    private static final String PASSWORD_RESET_LINK =
-            "https://pro-tester.herokuapp.com/api/forgot-password/confirm-reset?t=%s";
+    @Value("${custom.password.reset.link}")
+    private String passwordResetLink;
+    @Value("${custom.password.reset.token.expiration}")
+    private int tokenExpirationTime;
+
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -35,9 +41,10 @@ public class ResetPasswordService {
         }
 
         PasswordResetToken token = new PasswordResetToken(user.getId());
+        token.setExpirationTime(tokenExpirationTime);
         tokenRepository.save(token);
 
-        mailService.sendResetPasswordLinkMail(user, String.format(PASSWORD_RESET_LINK, token.getValue()));
+        mailService.sendResetPasswordLinkMail(user, String.format(passwordResetLink, token.getValue()));
     }
 
     public String processTokenValidation(String tokenValue) throws InvalidPasswordResetTokenException {

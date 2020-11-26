@@ -3,8 +3,8 @@ package ua.project.protester.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.openqa.selenium.WebDriver;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -13,21 +13,24 @@ import java.util.Map;
 public class BaseAction {
 
     protected Integer id;
-    protected Integer typeId;
+    protected ActionType type;
     protected String name;
     protected String description;
+    protected String[] parameterNames;
 
-    protected Map<String, String> parameters = new HashMap<>();
-
-    public void init(Integer typeId, String name, String description) {
+    public void init(ActionType type, String name, String description, String[] parameterNames) {
         this.id = null;
-        this.typeId = typeId;
+        this.type = type;
         this.name = name;
         this.description = description;
+        this.parameterNames = parameterNames;
     }
 
     public boolean hasSameSignature(BaseAction that) {
-        return this.typeId.equals(that.typeId) && this.name.equals(that.name);
+        return this.name.equals(that.name);
+    }
+
+    public void invoke(Map<String, String> params, WebDriver driver) {
     }
 
     public void invoke(Map<String, String> params) {

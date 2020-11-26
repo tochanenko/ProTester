@@ -36,4 +36,5 @@ public class UserApiController {
         return new ResponseEntity<>("User was successfully updated", HttpStatus.OK);
     }
 
+
 }

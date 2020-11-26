@@ -26,33 +26,4 @@ public class ActionController {
     public List<BaseAction> actions() {
         return actionService.findAll();
     }
-
-    /*
-    * {
-    *    "id": 43,
-    *    "name": "Login with username "username" and password "password",
-    *    "params": [
-    *       {
-    *           "name": "username"
-    *       },
-    *       {
-    *           "password": "password"
-    *       }
-    *   ],
-    *   "actions": [434, 343, 656]
-    * }
-    * */
-
-
-    /*
-    * Login with username "admin" and password "root"
-    *   Find input with id "username_fiend"  and set value "${username}"
-    *   Find input with id "password_fiend"  and set value "${password}"
-    *   Find button with id "${loginBtn}" and click it
-    * Find button with id "${loginBtn}" and click it
-
-     *
-    * */
-
-//    loginBtn=log_btn
 }

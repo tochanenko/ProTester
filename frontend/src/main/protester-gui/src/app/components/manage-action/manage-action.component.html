@@ -8,12 +8,6 @@
       </div>
       <table mat-table [dataSource]="actions" class="mat-elevation-z8">
 
-        <div>
-          <input #searchBox id="search-box" (input)="search(searchBox.value)" />
-        </div>
-        <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-
         <!-- Position Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>

@@ -14,8 +14,7 @@ public class WebDriverConfig {
     @Lazy
     @Bean
     public WebDriver getDriver() {
-        System.setProperty("webdriver.chrome.driver","C:\\Users\\vovan\\Downloads\\chromedriver_win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\vovan\\Downloads\\chromedriver_win32\\chromedriver.exe");
         return new ChromeDriver();
     }
 }

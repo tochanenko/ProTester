@@ -20,10 +20,10 @@ public class InputTextIntoFieldWithIdAction extends BaseAction {
         //driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
 
         driver.get("http://demo.guru99.com/");
-        WebElement element=driver.findElement(By.xpath("//input[@name='emailid']"));
+        WebElement element = driver.findElement(By.xpath("//input[@name='emailid']"));
         element.sendKeys(params.get("id"));
 
-        WebElement button=driver.findElement(By.xpath("//input[@name='btnLogin']"));
+        WebElement button = driver.findElement(By.xpath("//input[@name='btnLogin']"));
         button.click();
     }
 }

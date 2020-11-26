@@ -8,9 +8,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "GoToUrl",
         type = ActionType.REST,
-        description = "Performs get method on specified url",
+        defaultDescription = "Performs get method on specified url",
         parameterNames = {"url"}
 )
 public class GoToUrlAction extends BaseAction {

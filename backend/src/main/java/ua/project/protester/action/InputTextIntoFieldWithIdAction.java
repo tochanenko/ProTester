@@ -10,9 +10,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "InputTextIntoFieldWithId",
         type = ActionType.TECHNICAL,
-        description = "Input specified text into field with specified id",
+        defaultDescription = "Input specified text into field with specified id",
         parameterNames = {"text", "id"}
 )
 public class InputTextIntoFieldWithIdAction extends BaseAction {

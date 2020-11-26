@@ -9,9 +9,8 @@ import ua.project.protester.model.BaseAction;
 import java.util.Map;
 
 @Action(
-        name = "ClickOnElementWithId",
         type = ActionType.TECHNICAL,
-        description = "Click on element with specified id",
+        defaultDescription = "Click on element with specified id",
         parameterNames = {"id"}
 )
 public class ClickOnElementWithIdAction extends BaseAction {

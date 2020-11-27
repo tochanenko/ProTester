@@ -57,6 +57,18 @@ public class ActionRepository {
         }
     }
 
+    @Transactional
+    public void deleteById(Integer id) {
+        String propertyName = "deleteActionById";
+        try {
+            namedParameterJdbcTemplate.update(
+                    Objects.requireNonNull(env.getProperty(propertyName)),
+                    new MapSqlParameterSource().addValue("id", id));
+        } catch (NullPointerException e) {
+            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
+        }
+    }
+
     public List<BaseAction> findAllPreparedActions() throws ActionImplementationNotFoundException {
         String propertyName = "findAllPreparedActionsId";
         try {

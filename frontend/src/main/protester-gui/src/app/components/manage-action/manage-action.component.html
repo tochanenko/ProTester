@@ -3,6 +3,27 @@
 
     <mat-card-content>
 
+      <li *ngFor="let action of selectedAction">
+        <a routerLink="/actions/{{action.id}}">
+          <span class="badge">{{action.id}}</span> {{action.name}}
+        </a>
+        <button class="delete" title="delete hero"
+                (click)="delete(action)">Remove from list</button>
+        <div *ngIf="action">
+
+          <h2>{{action.name | uppercase}} Details</h2>
+          <div><span>id: </span>{{action.declarationId}}</div>
+          <div>
+            <label>name:
+              <input [(ngModel)]="action.preparedParams"  [placeholder]="action.description"/>
+            </label>
+          </div>
+
+          <button class="save" title="Save params"
+                  (click)="saveAction(action)">Save params</button>
+        </div>
+      </li>
+
       <div class="example-button-row">
         <button mat-raised-button>Basic</button>
       </div>
@@ -29,7 +50,7 @@
         <ng-container matColumnDef="actions">
           <mat-header-cell  *matHeaderCellDef ></mat-header-cell>
           <mat-cell *matCellDef="let row" >
-            <button mat-button (click)="onRowClicked(row)" >Edit</button>
+            <button mat-button (click)="onSaveClicked(row)" >Edit</button>
           </mat-cell>
         </ng-container>
 

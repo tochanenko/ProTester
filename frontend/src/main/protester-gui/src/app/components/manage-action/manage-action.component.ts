@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Action} from "../../models/action.model";
 import {ActionService} from "../../services/action/action.service";
 import {ACTIONS} from "../../mock-actions";
@@ -12,7 +12,7 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class ManageActionComponent implements OnInit,AfterViewInit {
 
-  selectedAction: Action;
+  selectedAction: Action[] = [];
 
   actions = ACTIONS;
 
@@ -39,7 +39,16 @@ export class ManageActionComponent implements OnInit,AfterViewInit {
       .subscribe(action => this.actions = action);
   }
 
-  onRowClicked(row: any) {
-    console.log('Row clicked: ', row.id)
+  onSaveClicked(action: any){
+    this.selectedAction.push(action);
+  }
+
+  delete(action: Action) {
+    console.log("Object for delete"+action.declarationId);
+    this.selectedAction.filter(act => act !== action);
+  }
+
+  saveAction(action: Action) {
+    console.log("Params"+action.preparedParams);
   }
 }

@@ -13,7 +13,6 @@ import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.ProjectMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -29,12 +28,15 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDto createProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
         log.info("IN createProject");
 
-        checkUniqueProject(projectDto);
-
         Project projectToSave = projectMapper.toEntity(projectDto);
         projectToSave.setProjectActive(true);
 
-        projectRepository.create(projectToSave);
+        try {
+            projectRepository.create(projectToSave);
+        } catch (Exception e) {
+            log.error("IN createProject - project {} already exists", projectToSave);
+            throw new ProjectAlreadyExistsException("project already exists", e);
+        }
 
         log.info("IN createProject - project {} was successfully created", projectToSave);
 
@@ -46,10 +48,14 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDto updateProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
         log.info("IN updateProject");
 
-        checkUniqueProject(projectDto);
-
         Project projectToUpdate = projectMapper.toEntity(projectDto);
-        projectRepository.update(projectToUpdate);
+
+        try {
+            projectRepository.update(projectToUpdate);
+        } catch (Exception e) {
+            log.error("IN updateProject - project {} already exists", projectToUpdate);
+            throw new ProjectAlreadyExistsException("project already exists", e);
+        }
 
         log.info("IN updateProject - project {} was successfully updated", projectToUpdate);
         return projectMapper.toResponse(projectToUpdate);
@@ -88,20 +94,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         log.info("IN getProjectDtoById - project with id {} was found", id);
         return projectMapper.toResponse(project);
-    }
-
-
-    private void checkUniqueProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
-        Optional<Project> projectByName = projectRepository.findProjectByName(projectDto.getProjectName());
-        Optional<Project> projectByLink = projectRepository.findProjectByWebsiteLink(projectDto.getProjectWebsiteLink());
-
-        if (projectByLink.isPresent() || projectByName.isPresent()) {
-            log.error("IN checkUniqueProject - project {} already exists", projectDto);
-            throw new ProjectAlreadyExistsException(
-                    String.format("project wit name=%s or link=%s already exists", projectDto.getProjectName(),
-                            projectDto.getProjectWebsiteLink())
-            );
-        }
     }
 
     private Project getProjectById(Long id) throws ProjectNotFoundException {

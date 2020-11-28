@@ -47,12 +47,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Value("${FIND_COUNT_OF_RECORDS}")
     private String findCountOdRecords;
 
-    @Value("${FIND_BY_LINK}")
-    private String findByLink;
-
-    @Value("${FIND_BY_NAME}")
-    private String findByName;
-
     @Override
     public void create(Project project) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
@@ -126,25 +120,4 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         return namedJdbcTemplate.queryForObject(findCountOdRecords, new MapSqlParameterSource(), Long.class);
     }
 
-    @Override
-    public Optional<Project> findProjectByWebsiteLink(String link) {
-        try {
-            MapSqlParameterSource namedParams = new MapSqlParameterSource();
-            namedParams.addValue("project_website_link", link);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(findByLink, namedParams, projectRowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Optional<Project> findProjectByName(String name) {
-        try {
-            MapSqlParameterSource namedParams = new MapSqlParameterSource();
-            namedParams.addValue("project_name", name);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(findByName, namedParams, projectRowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
 }

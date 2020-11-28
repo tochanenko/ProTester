@@ -23,8 +23,4 @@ public interface ProjectRepository {
 
     Long getCountOfAllProjects();
 
-    Optional<Project> findProjectByWebsiteLink(String link);
-
-    Optional<Project> findProjectByName(String name);
-
 }

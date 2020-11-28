@@ -1,7 +1,9 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
@@ -55,5 +57,11 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ProjectDto getProjectById(@PathVariable Long id) throws ProjectNotFoundException {
         return projectService.getProjectDtoById(id);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleOrderCreateException(Exception ex) {
+        return new ResponseEntity<>(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

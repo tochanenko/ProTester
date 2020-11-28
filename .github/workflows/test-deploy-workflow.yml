@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -14,8 +14,8 @@ jobs:
           java-version: 11
           java-package: jdk
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: [prepare]
     steps:
       - name: Test with Maven
-        run: mvn -B test --file pom.xml
+        run: mvn -B test --file ../pom.xml

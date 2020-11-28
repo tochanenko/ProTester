@@ -18,4 +18,4 @@ jobs:
     needs: [prepare]
     steps:
       - name: Test with Maven
-        run: mvn -B test
+        run: ../mvn -B test

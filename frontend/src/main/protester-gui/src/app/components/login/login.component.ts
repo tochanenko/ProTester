@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginResponse).subscribe(
       user => {
         this.isLoggedIn = true;
-        window.sessionStorage.setItem('token', user.accessToken);
+        window.sessionStorage.setItem('token', user.token);
         window.sessionStorage.setItem('user', JSON.stringify(user));
         this.storageService.setUser(user);
         this.router.navigateByUrl('/profile').then();

@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Input specified text into field with specified xpath",
+        description = "Input specified text into field with specified xpath",
         parameterNames = {"text", "xpath"}
 )
 public class InputTextIntoFieldWithXPathAction extends BaseAction {

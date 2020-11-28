@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.REST,
-        defaultDescription = "Performs get method on specified url",
+        description = "Performs get method on specified url",
         parameterNames = {"url"}
 )
 public class GoToUrlAction extends BaseAction {

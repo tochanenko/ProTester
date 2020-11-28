@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Click on element with specified xpath",
+        description = "Click on element with specified xpath",
         parameterNames = {"xpath"}
 )
 public class ClickOnElementWithXPathAction extends BaseAction {

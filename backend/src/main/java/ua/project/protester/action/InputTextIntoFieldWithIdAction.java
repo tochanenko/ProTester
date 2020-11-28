@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Input specified text into field with specified id",
+        description = "Input specified text into field with specified id",
         parameterNames = {"text", "id"}
 )
 public class InputTextIntoFieldWithIdAction extends BaseAction {

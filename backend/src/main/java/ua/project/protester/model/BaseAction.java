@@ -1,6 +1,5 @@
 package ua.project.protester.model;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
@@ -12,49 +11,20 @@ import java.util.Map;
 public abstract class BaseAction {
 
     protected Integer id;
-    @Getter(AccessLevel.NONE)
-    protected ActionDeclaration actionDeclaration;
+    protected String name;
+    protected ActionType type;
     protected String description;
+    protected String className;
     protected String[] parameterNames;
     protected Map<String, String> preparedParams;
 
-    public Integer getDeclarationId() {
-        return actionDeclaration.getId();
-    }
-
-    public String getName() {
-        return actionDeclaration.getClassName();
-    }
-
-    public ActionType getType() {
-        return actionDeclaration.getType();
-    }
-
-    public String getDescription() {
-        if (this.description == null || this.description.isEmpty()) {
-            return actionDeclaration.getDefaultDescription();
-        }
-        return description;
-    }
-
-    public boolean hasDefaultDescription() {
-        return description == null || description.isEmpty();
-    }
-
-    public void init(ActionDeclaration actionDeclaration, String[] parameterNames) {
-        this.actionDeclaration = actionDeclaration;
-        this.parameterNames = parameterNames;
-    }
-
-    public void init(Integer id,
-                     ActionDeclaration actionDeclaration,
-                     String description,
-                     String[] parameterNames,
-                     Map<String, String> preparedParams) {
+    public void init(Integer id, String name, ActionType type, String description, String className, String[] parameterNames) {
         this.id = id;
+        this.name = name;
+        this.type = type;
         this.description = description;
-        init(actionDeclaration, parameterNames);
-        prepare(preparedParams);
+        this.className = className;
+        this.parameterNames = parameterNames;
     }
 
     public abstract void invoke(Map<String, String> params, WebDriver driver);

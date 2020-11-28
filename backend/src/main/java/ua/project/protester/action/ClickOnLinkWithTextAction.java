@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Click on link with specified text",
+        description = "Click on link with specified text",
         parameterNames = {"text"}
 )
 public class ClickOnLinkWithTextAction extends BaseAction {

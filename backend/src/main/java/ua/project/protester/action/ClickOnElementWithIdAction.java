@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Click on element with specified id",
+        description = "Click on element with specified id",
         parameterNames = {"id"}
 )
 public class ClickOnElementWithIdAction extends BaseAction {

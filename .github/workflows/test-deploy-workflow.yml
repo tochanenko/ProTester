@@ -28,7 +28,7 @@ jobs:
         run: mvn -B test
   deploy:
     runs-on: ubuntu-18.04
-    needs: [ prepare ]
+    needs: [test]
     steps:
       - name: Deploy to Heroku
         working-directory: /home/runner/work/ProTester

@@ -27,13 +27,11 @@ public class ProjectController {
     }
 
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.OK)
     public ProjectDto updateProject(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
         return projectService.updateProject(project);
     }
 
     @PutMapping("/changeStatus/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void changeProjectStatus(@PathVariable Long id) throws ProjectNotFoundException {
         projectService.changeProjectStatus(id);
     }

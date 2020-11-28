@@ -27,4 +27,6 @@ jobs:
         run: mvn test -B
 
       - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.$HEROKU_API_KEY }}
         run: dpl --provider=heroku --app=pro-tester --api-key=$HEROKU_API_KEY

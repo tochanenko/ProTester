@@ -3,7 +3,7 @@ name: Java CI
 on: [push]
 
 jobs:
-  test:
+  prepare:
     runs-on: ubuntu-18.04
     steps:
       - name: Clone repository
@@ -13,5 +13,23 @@ jobs:
         with:
           java-version: 11
           java-package: jdk
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Install dpl
+        run: gem install dpl
+  test:
+    runs-on: ubuntu-18.04
+    needs: [prepare]
+    steps:
       - name: Test with Maven
+        working-directory: /home/runner/work/ProTester
         run: mvn -B test
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: [ prepare ]
+    steps:
+      - name: Deploy to Heroku
+        working-directory: /home/runner/work/ProTester
+        run: dpl --provider=heroku --app=pro-tester --api-key=$HEROKU_API_KEY

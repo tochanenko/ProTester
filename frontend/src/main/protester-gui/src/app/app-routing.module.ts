@@ -8,6 +8,9 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
+import {ProjectCreateComponent} from "./project/project-create/project-create.component";
+import {ProjectListComponent} from "./project/project-list/project-list.component";
 
 
 const routes: Routes = [
@@ -48,6 +51,32 @@ const routes: Routes = [
     component: TokenExpiredComponent
   },
 
+  {
+    path: 'projectMenu',
+    component: ProjectMenuComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'projectCreate',
+    component: ProjectCreateComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'projectList',
+    component: ProjectListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
 @NgModule({

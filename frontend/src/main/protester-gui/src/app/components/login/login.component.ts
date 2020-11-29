@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
 
     if (window.sessionStorage.getItem('token')) {
       this.isLoggedIn = true;
-      this.router.navigateByUrl('/profile').then();
+      this.router.navigateByUrl('/projectMenu').then();
     } else {
       this.isLoggedIn = false;
     }
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
         window.sessionStorage.setItem('token', user.token);
         window.sessionStorage.setItem('user', JSON.stringify(user));
         this.storageService.setUser(user);
-        this.router.navigateByUrl('/profile').then();
+        this.router.navigateByUrl('/projectMenu').then();
       },
       err => {
         this.errorMessage = err.error.message;

@@ -22,6 +22,6 @@ public class UserEmailValidator  implements ConstraintValidator<UniqueEmail, Str
 
 
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-     return userService.findUserByEmail(email) == null;
+     return userService.findUserByEmail(email).isEmpty();
     }
 }

@@ -22,6 +22,13 @@ public class UserMapper {
         this.modelMapper = modelMapper;
     }
 
+    public UserModificationDto toUserModificationRequestDtoFromUser(User user) {
+        if (user != null) {
+            return modelMapper.map(user, UserModificationDto.class);
+        }
+        return null;
+    }
+
     public User toUserFromUserRequest(UserCreationRequestDto user) {
         if (user != null) {
             return modelMapper.map(user, User.class);

@@ -87,7 +87,14 @@ public class UserRepository implements CrudRepository<User> {
     public void delete(User entity) {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("user_id", entity.getId());
-        namedJdbcTemplate.update(environment.getProperty("deleteUser"), namedParams);
+        namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("deleteUser")), namedParams);
+    }
+
+    public void deactivate(Long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("deactivateUser")), namedParams);
+
     }
 
 
@@ -95,7 +102,7 @@ public class UserRepository implements CrudRepository<User> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("role_id", roleId);
-            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleId"), namedParams, rowMapper);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByRoleId")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -105,7 +112,7 @@ public class UserRepository implements CrudRepository<User> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("role_name", roleName);
-            return namedJdbcTemplate.query(environment.getProperty("findUsersByRoleName"), namedParams, rowMapper);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByRoleName")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -115,7 +122,7 @@ public class UserRepository implements CrudRepository<User> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("user_email", email);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByEmail"), namedParams, rowMapper));
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(Objects.requireNonNull(environment.getProperty("findUserByEmail")), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -131,13 +138,33 @@ public class UserRepository implements CrudRepository<User> {
         }
     }
 
-    public Optional<User> findUserByFullName(String fullName) {
+    public List<User> findUserByRolename(String roleName) {
         try {
             Map<String, Object> namedParams = new HashMap<>();
-            namedParams.put("user_full_name", fullName);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findUserByFullName"), namedParams, rowMapper));
+            namedParams.put("role_name", roleName);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByRoleName")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<User> findUsersByName(String name) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_first_name", name);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByName")), namedParams, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<User> findUsersBySurname(String surname) {
+        try {
+            Map<String, Object> namedParams = new HashMap<>();
+            namedParams.put("user_last_name", surname);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersBySurname")), namedParams, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
         }
     }
 
@@ -146,7 +173,7 @@ public class UserRepository implements CrudRepository<User> {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("limit", limit);
             namedParams.put("offset", offset);
-            return namedJdbcTemplate.query(environment.getProperty("findAllUsersPagination"), namedParams, rowMapper);
+            return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findAllUsersPagination")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return Collections.emptyList();
         }

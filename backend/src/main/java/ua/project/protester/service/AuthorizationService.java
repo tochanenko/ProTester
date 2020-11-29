@@ -6,13 +6,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ua.project.protester.model.User;
 import ua.project.protester.model.UserDto;
+import ua.project.protester.repository.UserRepository;
 import ua.project.protester.response.UserLoginResponse;
-import ua.project.protester.security.UserPrincipal;
 import ua.project.protester.utils.JwtUtils;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,18 +20,20 @@ public class AuthorizationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final UserRepository userRepository;
 
     public UserLoginResponse authenticate(UserDto userDto) {
-        String bearer = "BEARER ";
+        String bearer = "Bearer ";
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.joining());
-        return new UserLoginResponse(bearer + jwt, role);
+                .map(GrantedAuthority::getAuthority).findFirst().get();
+        User user = userRepository.findUserByEmail(userDetails.getUsername()).get();
+        return new UserLoginResponse(user.getId(), user.getUsername(), user.getEmail(), bearer + jwt, role);
     }
 }

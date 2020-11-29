@@ -11,6 +11,8 @@ import {TokenExpiredComponent} from "./components/token-expired/token-expired.co
 import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 import {ProjectListComponent} from "./project/project-list/project-list.component";
+import {ManageActionComponent} from "./components/manage-action/manage-action.component";
+
 
 
 const routes: Routes = [
@@ -50,7 +52,10 @@ const routes: Routes = [
     path: 'token-expired',
     component: TokenExpiredComponent
   },
-
+  {
+    path: 'actions',
+    component: ManageActionComponent
+  },
   {
     path: 'projectMenu',
     component: ProjectMenuComponent,

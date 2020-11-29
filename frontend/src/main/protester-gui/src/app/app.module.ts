@@ -19,6 +19,7 @@ import { PendingPasswordComponent } from './components/pending-password/pending-
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
 import { ProjectMenuComponent } from './project/project-menu/project-menu.component';
+import { ProjectCreateComponent } from './project/project-create/project-create.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ProjectMenuComponent } from './project/project-menu/project-menu.compon
     PendingPasswordComponent,
     ChangePasswordComponent,
     TokenExpiredComponent,
-    ProjectMenuComponent
+    ProjectMenuComponent,
+    ProjectCreateComponent
   ],
   imports: [
     BrowserModule,

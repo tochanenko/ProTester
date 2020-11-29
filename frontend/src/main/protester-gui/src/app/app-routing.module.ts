@@ -9,6 +9,7 @@ import {PendingPasswordComponent} from "./components/pending-password/pending-pa
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
 import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
+import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 
 
 const routes: Routes = [
@@ -52,6 +53,15 @@ const routes: Routes = [
   {
     path: 'projectMenu',
     component: ProjectMenuComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'projectCreate',
+    component: ProjectCreateComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']

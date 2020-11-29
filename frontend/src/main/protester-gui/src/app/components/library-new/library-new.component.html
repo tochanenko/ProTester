@@ -1,12 +1,20 @@
 <div class="library-new-form-flex">
-  <mat-card>
-    <mat-card-content>
-      <form>
-        <mat-form-field class="full-width-input" appearance="outline">
-          <mat-label>Search</mat-label>
-          <input matInput type="text">
-        </mat-form-field>
+  <mat-card class="card">
+    <mat-card-content class="content">
+      <form id="searchForm" [formGroup]="searchForm">
+        <div class="form-wrap">
+          <mat-form-field class="full-width-input" appearance="outline">
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-label>Search library</mat-label>
+            <input matInput type="text" id="search" name="search" formControlName="search" class="search-input"
+                   (blur)="onChanges()">
+          </mat-form-field>
+        </div>
       </form>
+      <div class="content-grid">
+        <p class="grid-header">name</p>
+        <p class="grid-header">Description</p>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

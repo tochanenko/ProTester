@@ -29,9 +29,9 @@ mat-error {
 }
 
 .error-info {
-  margin-bottom: 5px;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button-flex-container {

@@ -10,6 +10,7 @@ import {ChangePasswordComponent} from "./components/change-password/change-passw
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
 import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
+import {ProjectListComponent} from "./project/project-list/project-list.component";
 
 
 const routes: Routes = [
@@ -68,6 +69,14 @@ const routes: Routes = [
     }
   },
 
+  {
+    path: 'projectList',
+    component: ProjectListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
 @NgModule({

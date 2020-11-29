@@ -8,6 +8,9 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   imports: [
@@ -19,7 +22,10 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatIconModule,
     MatSelectModule,
     MatToolbarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule
   ],
   exports: [
     MatMenuModule,
@@ -30,7 +36,10 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatIconModule,
     MatSelectModule,
     MatToolbarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule
   ]
 })
 export class MaterialModule {

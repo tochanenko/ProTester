@@ -8,10 +8,17 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+<<<<<<< HEAD
 import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
+=======
+import {ManageActionComponent} from "./components/manage-action/manage-action.component";
+import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
+import {ProjectCreateComponent} from "./project/project-create/project-create.component";
+import {ProjectListComponent} from "./project/project-list/project-list.component";
+>>>>>>> ea499f547a4bb25c323a4e0cc8dd506d4df4dcf0
 
 
 const routes: Routes = [

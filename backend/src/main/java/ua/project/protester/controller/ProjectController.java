@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
@@ -13,6 +14,7 @@ import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 
+@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
 @RestController
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
@@ -59,7 +61,7 @@ public class ProjectController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleOrderCreateException(Exception ex) {
+    public ResponseEntity<Object> handleException(Exception ex) {
         return new ResponseEntity<>(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

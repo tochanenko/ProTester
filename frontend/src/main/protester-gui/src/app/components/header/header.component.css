@@ -42,3 +42,15 @@ button {
   margin-left: 5%;
 }
 
+.menu-buttons-item {
+  font-size: 250%;
+  text-align: center;
+  color: #5C6BC0;
+}
+
+.menu-buttons {
+  display: flex;
+  justify-content: center;
+  height: 80%;
+  width: 8%;
+}

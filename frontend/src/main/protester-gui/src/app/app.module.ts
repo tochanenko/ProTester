@@ -21,6 +21,10 @@ import { TokenExpiredComponent } from './components/token-expired/token-expired.
 import { ManageActionComponent } from './components/manage-action/manage-action.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
+import {ProjectCreateComponent} from './project/project-create/project-create.component';
+import {ProjectListComponent} from './project/project-list/project-list.component';
+import {ProjectUpdateComponent} from './project/project-update/project-update.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +38,10 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     ChangePasswordComponent,
     TokenExpiredComponent,
     ManageActionComponent
+    ProjectMenuComponent,
+    ProjectCreateComponent,
+    ProjectListComponent,
+    ProjectUpdateComponent
   ],
   imports: [
     BrowserModule,

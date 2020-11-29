@@ -23,7 +23,7 @@ public class AuthorizationService {
     private final UserRepository userRepository;
 
     public UserLoginResponse authenticate(UserDto userDto) {
-        String bearer = "BEARER ";
+        String bearer = "Bearer ";
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
 

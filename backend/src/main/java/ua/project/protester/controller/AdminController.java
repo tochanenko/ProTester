@@ -25,7 +25,7 @@ public class AdminController {
     }
 
     @GetMapping("/findUsersBy")
-    public List<UserResponse> findUsersByName(@RequestParam(required = false) String name,
+    public List<UserResponse> findUsersByParam(@RequestParam(required = false) String name,
                                               @RequestParam(required = false)String surname,
                                               @RequestParam(required = false)String role,
                                               @RequestParam(required = false)String email,

@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.ActionImplementationNotFoundException;
-import ua.project.protester.model.BaseAction;
+import ua.project.protester.model.executable.AbstractAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ public class ActionRepository {
         Reflections reflections = new Reflections("ua.project.protester.action");
         Set<Class<?>> actionCandidates = reflections.getTypesAnnotatedWith(Action.class);
         for (Class<?> actionCandidate : actionCandidates) {
-            if (BaseAction.class.isAssignableFrom(actionCandidate)) {
+            if (AbstractAction.class.isAssignableFrom(actionCandidate)) {
                 actionClassesInCode.add(actionCandidate.getCanonicalName());
                 logger.info("Action implementation found: " + actionCandidate.getCanonicalName());
             } else {
@@ -115,7 +115,7 @@ public class ActionRepository {
         }
     }
 
-    private Optional<BaseAction> findAction(String propertyName, String parameterKey, Object parameterValue) {
+    private Optional<AbstractAction> findAction(String propertyName, String parameterKey, Object parameterValue) {
         try {
             return Optional.ofNullable(
                     namedParameterJdbcTemplate.queryForObject(
@@ -133,11 +133,11 @@ public class ActionRepository {
         }
     }
 
-    private BaseAction constructAction(Integer id, String className) {
+    private AbstractAction constructAction(Integer id, String className) {
         try {
             Class<?> actionClass = Class.forName(className);
 
-            BaseAction action = (BaseAction) actionClass.getConstructor().newInstance();
+            AbstractAction action = (AbstractAction) actionClass.getConstructor().newInstance();
             Action metadata = actionClass.getAnnotation(Action.class);
 
             action.init(
@@ -155,7 +155,7 @@ public class ActionRepository {
         }
     }
 
-    private BaseAction constructAction(Map.Entry<Integer, String> entry) {
+    private AbstractAction constructAction(Map.Entry<Integer, String> entry) {
         return constructAction(entry.getKey(), entry.getValue());
     }
 
@@ -176,21 +176,21 @@ public class ActionRepository {
         }
     }
 
-    public List<BaseAction> findAllActions() {
+    public List<AbstractAction> findAllActions() {
         return findAllActionRepresentations().entrySet()
                 .stream()
                 .map(this::constructAction)
                 .collect(Collectors.toList());
     }
 
-    public Optional<BaseAction> findActionById(Integer id) {
+    public Optional<AbstractAction> findActionById(Integer id) {
         return findAction(
                 "findActionById",
                 "id",
                 id);
     }
 
-    public Optional<BaseAction> findActionByClassName(String className) {
+    public Optional<AbstractAction> findActionByClassName(String className) {
         return findAction(
                 "findActionByClassName",
                 "className",

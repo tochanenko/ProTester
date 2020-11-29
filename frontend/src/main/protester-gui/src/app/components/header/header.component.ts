@@ -16,6 +16,8 @@ export class HeaderComponent implements OnInit {
   isWhiteTheme = true;
   user: User = new User();
   isAdmin: boolean = false;
+  links = [{'link': 'projectMenu', 'label': 'Projects'}, {'link': 'profile', 'label': 'Library'}];
+  activeLink = this.links[0];
   subscription: Subscription;
 
   constructor(private storageService: StorageService,

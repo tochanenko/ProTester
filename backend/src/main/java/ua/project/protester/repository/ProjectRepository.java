@@ -17,10 +17,12 @@ public interface ProjectRepository {
 
     List<ProjectDto> findAll(Pagination pagination);
 
-    List<ProjectDto> findAllFilteredByStatus(Pagination pagination);
+    List<ProjectDto> findAllByStatus(Pagination pagination);
 
     Optional<Project> findById(Long id);
 
-    Long getCountOfAllProjects();
+    Long getCountProjects(Pagination pagination);
+
+    Long getCountProjectsByStatus(Pagination pagination);
 
 }

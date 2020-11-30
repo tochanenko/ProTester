@@ -9,10 +9,9 @@ import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.Project;
 import ua.project.protester.model.ProjectDto;
 import ua.project.protester.repository.ProjectRepository;
+import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.ProjectMapper;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -72,17 +71,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDto> findAllProjects(Pagination pagination) {
+    public Page<ProjectDto> findAllProjects(Pagination pagination) {
         log.info("IN findAllProjects");
-        return pagination.isFilterPresent()
-                ? projectRepository.findAllFilteredByStatus(pagination)
-                : projectRepository.findAll(pagination);
+        return new Page<>(
+                projectRepository.findAll(pagination),
+                projectRepository.getCountProjects(pagination)
+        );
     }
 
     @Override
-    public Long getCountOfAllProjects() {
-        log.info("IN getCountOfAllProjects");
-        return projectRepository.getCountOfAllProjects();
+    public Page<ProjectDto> findAllProjectsByStatus(Pagination pagination) {
+        log.info("IN findAllProjectsByStatus");
+        return new Page<>(
+                projectRepository.findAllByStatus(pagination),
+                projectRepository.getCountProjectsByStatus(pagination)
+        );
     }
 
     @Override

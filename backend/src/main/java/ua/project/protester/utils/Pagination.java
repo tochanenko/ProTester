@@ -13,6 +13,12 @@ public class Pagination {
     private Boolean projectActive;
     private String projectName;
 
+    public Pagination(Integer pageSize, Integer pageNumber, String projectName) {
+        this.pageSize = pageSize;
+        this.pageNumber = pageNumber;
+        this.projectName = projectName;
+    }
+
     public Integer getOffset() {
         return (pageNumber - 1) * pageSize;
     }

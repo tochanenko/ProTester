@@ -3,9 +3,8 @@ package ua.project.protester.service;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.ProjectDto;
+import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
-
-import java.util.List;
 
 public interface ProjectService {
 
@@ -15,9 +14,9 @@ public interface ProjectService {
 
     void changeProjectStatus(Long projectId) throws ProjectNotFoundException;
 
-    List<ProjectDto> findAllProjects(Pagination pagination);
+    Page<ProjectDto> findAllProjects(Pagination pagination);
 
-    Long getCountOfAllProjects();
+    Page<ProjectDto> findAllProjectsByStatus(Pagination pagination);
 
     ProjectDto getProjectDtoById(Long id) throws ProjectNotFoundException;
 

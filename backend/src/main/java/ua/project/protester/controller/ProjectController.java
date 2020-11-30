@@ -1,18 +1,15 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.ProjectDto;
 import ua.project.protester.service.ProjectService;
+import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
-
-import java.util.List;
 
 @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
 @RestController
@@ -39,19 +36,24 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectDto> getAllProjects(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+    public Page<ProjectDto> getAllProjects(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                           @RequestParam(value = "projectActive", required = false) Boolean projectActive,
                                            @RequestParam(value = "projectName", defaultValue = "") String projectName) {
 
-        Pagination pagination = new Pagination(pageSize, pageNumber, projectActive, projectName);
+        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
         return projectService.findAllProjects(pagination);
     }
 
-    @GetMapping("/countOfProjects")
-    public Long getCountOfAllProjects() {
-        return projectService.getCountOfAllProjects();
+    @GetMapping("/filter")
+    public Page<ProjectDto> getAllProjectsByStatus(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                                   @RequestParam(value = "projectActive") Boolean projectActive,
+                                                   @RequestParam(value = "projectName", defaultValue = "") String projectName) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, projectActive, projectName);
+
+        return projectService.findAllProjectsByStatus(pagination);
     }
 
     @GetMapping("/{id}")
@@ -59,9 +61,4 @@ public class ProjectController {
         return projectService.getProjectDtoById(id);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception ex) {
-        return new ResponseEntity<>(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-    }
 }

@@ -1,6 +1,7 @@
 package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +19,7 @@ import ua.project.protester.utils.ProjectRowMapper;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 @PropertySource("classpath:queries/project.properties")
@@ -46,6 +48,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Value("${FIND_COUNT_OF_RECORDS}")
     private String findCountOdRecords;
+
+    @Value("${FIND_COUNT_OF_RECORDS_WITH_STATUS}")
+    private String findCountOdRecordsWithStatus;
 
     @Override
     public void create(Project project) {
@@ -94,7 +99,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<ProjectDto> findAllFilteredByStatus(Pagination pagination) {
+    public List<ProjectDto> findAllByStatus(Pagination pagination) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("pageSize", pagination.getPageSize());
         namedParams.addValue("offset", pagination.getOffset());
@@ -116,8 +121,19 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Long getCountOfAllProjects() {
-        return namedJdbcTemplate.queryForObject(findCountOdRecords, new MapSqlParameterSource(), Long.class);
+    public Long getCountProjects(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
+
+        return namedJdbcTemplate.queryForObject(findCountOdRecords, namedParams, Long.class);
     }
 
+    @Override
+    public Long getCountProjectsByStatus(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
+        namedParams.addValue("projectActive", pagination.getProjectActive());
+
+        return namedJdbcTemplate.queryForObject(findCountOdRecordsWithStatus, namedParams, Long.class);
+    }
 }

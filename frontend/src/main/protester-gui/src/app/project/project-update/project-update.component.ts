@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
@@ -11,7 +11,7 @@ import {ProjectListComponent} from "../project-list/project-list.component";
   templateUrl: './project-update.component.html',
   styleUrls: ['./project-update.component.css']
 })
-export class ProjectUpdateComponent implements OnInit {
+export class ProjectUpdateComponent implements OnInit, OnDestroy {
 
   projectUpdateForm: FormGroup;
   errorMessage = '';
@@ -32,7 +32,7 @@ export class ProjectUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.createProjectCreateForm();
 
-    this.projectService.getProjectById(this.projectId).subscribe(
+    this.subscription = this.projectService.getProjectById(this.projectId).subscribe(
       data => {
         this.projectUpdateForm.setValue(data);
       },
@@ -76,7 +76,7 @@ export class ProjectUpdateComponent implements OnInit {
       projectActive: this.f.projectActive.value
     };
 
-    this.projectService.update(projectUpdateResponse)
+    this.subscription = this.projectService.update(projectUpdateResponse)
       .subscribe(
         data => {
           this.isSuccessful = true;
@@ -93,4 +93,9 @@ export class ProjectUpdateComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {ProjectService} from "../../services/project.service";
 import {Router} from "@angular/router";
 import {ProjectFilter} from "../project-filter.model";
@@ -14,7 +14,7 @@ import {ProjectUpdateComponent} from "../project-update/project-update.component
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.css']
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, OnDestroy {
 
   dataSource: Project[];
   pageEvent: PageEvent;
@@ -32,8 +32,27 @@ export class ProjectListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchByFilter();
-    this.getPageCount();
+    this.searchProjects();
+  }
+
+  searchProjects(): void {
+    if (this.projectFilter.projectActive === '') {
+      this.subscription = this.projectService.getAll(this.projectFilter).subscribe(
+        data => {
+          this.dataSource = data.list;
+          this.projectsCount = data.totalItems;
+        },
+        error => console.log('error in initDataSource')
+      );
+    } else {
+      this.subscription = this.projectService.getAllFiltered(this.projectFilter).subscribe(
+        data => {
+          this.dataSource = data.list;
+          this.projectsCount = data.totalItems;
+        },
+        error => console.log('error in initDataSource')
+      );
+    }
   }
 
   onPaginateChange(event: PageEvent): void {
@@ -41,19 +60,26 @@ export class ProjectListComponent implements OnInit {
     this.projectFilter.pageSize = event.pageSize;
     this.projectFilter.pageNumber = this.projectFilter.pageNumber + 1;
 
-    this.searchByFilter();
+    this.searchProjects();
   }
 
-  getPageCount(): void {
-    this.subscription = this.projectService.getPageCount().subscribe(
-      data => this.projectsCount = data,
-      error => console.log('pageCount')
-    );
+  onFilterChange(event: any): void {
+    this.searchProjects();
+  }
+
+  FilterIsActive(isActive: string): void {
+    this.projectFilter.projectActive = isActive;
+    this.searchProjects();
+  }
+
+  canUpdateProject(creatorId: number): boolean {
+    const currentUser = this.storageService.getUser;
+    return creatorId === currentUser.id || currentUser.role === 'ADMIN';
   }
 
   changeStatus(id: number): void {
     this.subscription = this.projectService.changeStatus(id).subscribe(
-      data => this.searchByFilter(),
+      data => this.searchProjects(),
       error => console.log('not changed')
     );
   }
@@ -67,31 +93,8 @@ export class ProjectListComponent implements OnInit {
     });
 
     this.subscription = updateDialogRef.afterClosed().subscribe(() => {
-      this.searchByFilter();
+      this.searchProjects();
     });
-  }
-
-  onFilterChange(event: any): void {
-    this.searchByFilter();
-  }
-
-  FilterIsActive(isActive: string): void {
-    this.projectFilter.projectActive = isActive;
-    this.searchByFilter();
-  }
-
-  searchByFilter(): void {
-    this.subscription = this.projectService.getAll(this.projectFilter).subscribe(
-      data => {
-        this.dataSource = data;
-      },
-      error => console.log('error in initDataSource')
-    );
-  }
-
-  canUpdateProject(creatorId: number): boolean {
-    const currentUser = this.storageService.getUser;
-    return creatorId === currentUser.id || currentUser.role === 'ADMIN';
   }
 
   ngOnDestroy(): void {

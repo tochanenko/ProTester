@@ -20,6 +20,6 @@ public class UsernameValidator implements ConstraintValidator<UniqueUsername, St
     }
 
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return userService.findUserByUsername(username) == null;
+        return userService.findUserByUsername(username).isEmpty();
     }
 }

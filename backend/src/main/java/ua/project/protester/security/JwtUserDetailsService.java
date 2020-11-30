@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ua.project.protester.model.User;
 import ua.project.protester.service.UserService;
 
+import java.util.Optional;
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
@@ -20,11 +22,11 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.findUserByEmail(email);
+        Optional<User> user = userService.findUserByEmail(email);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User with email: " + email + " not found");
         }
-        return new UserPrincipal(user);
+        return new UserPrincipal(user.get());
     }
 }

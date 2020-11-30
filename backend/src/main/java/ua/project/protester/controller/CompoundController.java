@@ -2,10 +2,10 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ua.project.protester.exception.CompoundNotFoundException;
-import ua.project.protester.exception.InnerCompoundDeleteException;
-import ua.project.protester.model.executable.Compound;
-import ua.project.protester.request.CreateCompoundRequest;
+import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
+import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
+import ua.project.protester.model.executable.OuterComponent;
+import ua.project.protester.request.CreateOuterComponentRequest;
 import ua.project.protester.service.CompoundService;
 
 import java.util.List;
@@ -18,17 +18,17 @@ public class CompoundController {
     private final CompoundService compoundService;
 
     @PostMapping
-    public void createCompound(@RequestBody CreateCompoundRequest request) {
+    public void createCompound(@RequestBody CreateOuterComponentRequest request) {
         compoundService.saveCompound(request);
     }
 
     @GetMapping
-    public List<Compound> getAllCompounds() {
+    public List<OuterComponent> getAllCompounds() {
         return compoundService.getAllCompounds();
     }
 
     @GetMapping("/{id}")
-    public Compound getCompound(@PathVariable int id) throws CompoundNotFoundException {
+    public OuterComponent getCompound(@PathVariable int id) throws CompoundNotFoundException {
         return compoundService.getCompoundById(id);
     }
 

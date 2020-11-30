@@ -13,21 +13,33 @@ import java.util.Map;
 @Setter
 @Getter
 @ToString
-public class Compound extends ExecutableComponent {
+public class OuterComponent extends ExecutableComponent {
 
-    private Integer id;
-    private List<Step> steps;
+    protected Integer id;
+    protected List<Step> steps;
 
-    private static boolean isParameterPlaceholder(String parameter) {
+    protected static boolean isParameterPlaceholder(String parameter) {
         return parameter.startsWith("${") && parameter.endsWith("}");
     }
 
-    private static String extractParameterValue(String parameter) {
+    protected static String extractParameterValue(String parameter) {
         return isParameterPlaceholder(parameter)
                 ?
                 parameter.substring(2, parameter.length() - 1)
                 :
                 parameter;
+    }
+
+    protected Map<String, String> fitInputParameters(Map<String, String> inputParameters, Map<String, String> mapping) {
+        Map<String, String> result = new HashMap<>();
+        mapping.forEach((key, value) -> {
+            if (isParameterPlaceholder(value)) {
+                result.put(key, inputParameters.get(extractParameterValue(value)));
+            } else {
+                result.put(key, value);
+            }
+        });
+        return result;
     }
 
     public String[] getParameterNames() {
@@ -39,9 +51,9 @@ public class Compound extends ExecutableComponent {
                 .stream()
                 .map(Step::getParameters)
                 .flatMap(map -> map.values().stream())
-                .filter(Compound::isParameterPlaceholder)
+                .filter(OuterComponent::isParameterPlaceholder)
                 .distinct()
-                .map(Compound::extractParameterValue)
+                .map(OuterComponent::extractParameterValue)
                 .toArray(String[]::new);
         return parameterNames;
     }
@@ -57,17 +69,5 @@ public class Compound extends ExecutableComponent {
         steps.forEach(step -> step.getComponent().execute(
                 fitInputParameters(params, step.getParameters()),
                 driver));
-    }
-
-    private Map<String, String> fitInputParameters(Map<String, String> inputParameters, Map<String, String> mapping) {
-        Map<String, String> result = new HashMap<>();
-        mapping.forEach((key, value) -> {
-            if (isParameterPlaceholder(value)) {
-                result.put(key, inputParameters.get(extractParameterValue(value)));
-            } else {
-                result.put(key, value);
-            }
-        });
-        return result;
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.ActionMapperException;
-import ua.project.protester.exception.ActionNotFoundException;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;

@@ -1,4 +1,4 @@
-package ua.project.protester.exception;
+package ua.project.protester.exception.executable.action;
 
 public class ActionNotFoundException extends RuntimeException {
 

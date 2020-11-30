@@ -3,11 +3,10 @@ package ua.project.protester.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
-import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
-import ua.project.protester.model.executable.Step;
+import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
+import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.request.CreateOuterComponentRequest;
 
@@ -16,12 +15,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CompoundService {
-
+public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveCompound(CreateOuterComponentRequest compoundRequest) {
+    public void saveTestScenario(CreateOuterComponentRequest compoundRequest) {
         OuterComponent newOuterComponent = new OuterComponent();
         newOuterComponent.setName(compoundRequest.getName());
         newOuterComponent.setDescription(compoundRequest.getDescription());
@@ -34,27 +32,34 @@ public class CompoundService {
                                 null,
                                 stepRepresentation.getParameters()))
                         .collect(Collectors.toList()));
-        outerComponentRepository.saveOuterComponent(newOuterComponent, true);
+        outerComponentRepository.saveOuterComponent(newOuterComponent, false);
     }
 
-    public List<OuterComponent> getAllCompounds() {
-        return outerComponentRepository.findAllOuterComponents(true);
+    @Transactional
+    public void updateTestScenario(int id, CreateOuterComponentRequest compoundRequest) throws TestScenarioNotFoundException {
+        if (outerComponentRepository.existsOuterComponentWithId(id, false)) {
+            outerComponentRepository.deleteOuterComponentById(id, false);
+            saveTestScenario(compoundRequest);
+        } else {
+            throw new TestScenarioNotFoundException();
+        }
     }
 
-    public OuterComponent getCompoundById(int id) throws CompoundNotFoundException {
+    public List<OuterComponent> getAllTestScenarios() {
+        return outerComponentRepository.findAllOuterComponents(false);
+    }
+
+    public OuterComponent getTestScenarioById(int id) throws TestScenarioNotFoundException {
         try {
-            return outerComponentRepository.findOuterComponentById(id, true)
+            return outerComponentRepository.findOuterComponentById(id, false)
                     .orElseThrow(OuterComponentNotFoundException::new);
         } catch (OuterComponentNotFoundException e) {
-            throw new CompoundNotFoundException(e);
+            throw new TestScenarioNotFoundException(e);
         }
     }
 
     @Transactional
-    public void deleteCompoundById(int id) throws InnerCompoundDeleteException {
-        if (outerComponentRepository.compoundWithIdIsInnerComponent(id)) {
-            throw new InnerCompoundDeleteException("Attempt to delete inner compound");
-        }
-        outerComponentRepository.deleteOuterComponentById(id, true);
+    public void deleteTestScenarioById(int id) {
+        outerComponentRepository.deleteOuterComponentById(id, false);
     }
 }

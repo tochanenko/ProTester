@@ -49,3 +49,5 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
           SLACK_CHANNEL: git
+          SLACK_USERNAME: GitHub
+          SLACK_ICON: https://i.pinimg.com/236x/91/f3/4d/91f34df079492758dba4263f64df7122--jack-nicholson-stephen-kings.jpg

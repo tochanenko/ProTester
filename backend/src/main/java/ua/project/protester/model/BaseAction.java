@@ -41,6 +41,10 @@ public abstract class BaseAction {
         return description == null || description.isEmpty();
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void init(ActionDeclaration actionDeclaration, String[] parameterNames) {
         this.actionDeclaration = actionDeclaration;
         this.parameterNames = parameterNames;
@@ -57,7 +61,7 @@ public abstract class BaseAction {
         prepare(preparedParams);
     }
 
-    public abstract void invoke(Map<String, String> params, WebDriver driver);
+        public abstract void invoke(Map<String, String> params, WebDriver driver);
 
     public void invoke(WebDriver driver) {
         invoke(preparedParams, driver);

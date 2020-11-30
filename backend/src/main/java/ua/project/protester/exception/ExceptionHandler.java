@@ -23,8 +23,8 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @NonNull
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  @NonNull HttpHeaders headers,
-                                                                  @NonNull HttpStatus status,
+                                                                 @NonNull HttpHeaders headers,
+                                                                 @NonNull HttpStatus status,
                                                                   @NonNull WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();

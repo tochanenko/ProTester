@@ -14,17 +14,22 @@ export class HeaderComponent implements OnInit {
 
   image = 'assets/logo.png';
   isWhiteTheme = true;
-  user: User;
+  user: User = new User();
+  isAdmin: boolean = false;
+  links = [{'link': 'projectMenu', 'label': 'Projects'}, {'link': 'profile', 'label': 'Library'}];
+  activeLink = this.links[0];
   subscription: Subscription;
 
-  constructor(private storageService: StorageService, private authService: AuthService, private router: Router) {
-    this.subscription = this.storageService.currentUser.subscribe(user => {
-      this.user = user;
-    });
+  constructor(private storageService: StorageService,
+              private authService: AuthService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-
+    this.subscription = this.storageService.currentUser.subscribe(user => {
+      this.user = user;
+      this.isAdmin = user != null && user.role === 'ADMIN';
+    });
   }
 
   changeTheme(): void {

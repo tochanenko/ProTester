@@ -1,0 +1,64 @@
+<div class="login-form-flex">
+  <mat-card class="content">
+
+    <mat-card-content>
+
+      <li *ngFor="let action of selectedAction">
+        <a routerLink="/actions/{{action.id}}">
+          <span class="badge">{{action.id}}</span> {{action.name}}
+        </a>
+        <button class="delete" title="delete hero"
+                (click)="delete(action)">Remove from list</button>
+        <div *ngIf="action">
+
+          <h2>{{action.name | uppercase}} Details</h2>
+          <div><span>id: </span>{{action.declarationId}}</div>
+          <div>
+            <label>name:
+              <input [(ngModel)]="action.preparedParams"  [placeholder]="action.description"/>
+            </label>
+          </div>
+
+          <button class="save" title="Save params"
+                  (click)="saveAction(action)">Save params</button>
+        </div>
+      </li>
+
+      <div class="example-button-row">
+        <button mat-raised-button>Basic</button>
+      </div>
+      <table mat-table [dataSource]="actions" class="mat-elevation-z8">
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let action"> {{action.description}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Type </th>
+          <td mat-cell *matCellDef="let action"> {{action.type}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell  *matHeaderCellDef ></mat-header-cell>
+          <mat-cell *matCellDef="let row" >
+            <button mat-button (click)="onSaveClicked(row)" >Edit</button>
+          </mat-cell>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      </table>
+
+    </mat-card-content>
+  </mat-card>
+</div>

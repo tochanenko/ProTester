@@ -11,6 +11,7 @@ import ua.project.protester.repository.UserRepository;
 import ua.project.protester.response.RoleResponse;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,15 +29,15 @@ public class RoleService {
     }
 
     @Transactional
-    public Role findRoleById(Long id) {
-        Role role = roleRepository.findById(id).orElse(null);
+    public Optional<Role> findRoleById(Long id) {
+        Role role = roleRepository.findById(id).orElseThrow(null);
         if (role != null) {
             List<User> users = userRepository.findUsersByRoleId(role.getId());
             users.forEach(user -> user.getRole().setName(role.getName()));
             role.setUsers(users);
-            return role;
+            return Optional.ofNullable(role);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Transactional
@@ -52,16 +53,13 @@ public class RoleService {
     }
 
     @Transactional
-    public Role findRoleByName(String name) {
+    public Optional<Role> findRoleByName(String name) {
         Role role = roleRepository.findRoleByName(name).orElse(null);
-
         if (role != null) {
-            role.setUsers(userRepository.findUsersByRoleId(role.getId()));
-            role.getUsers().forEach(user -> user.getRole().setName(role.getName()));
-            return role;
+        role.setUsers(userRepository.findUsersByRoleId(role.getId()));
+        role.getUsers().forEach(user -> user.getRole().setName(role.getName()));
         }
-
-        return null;
+        return Optional.empty();
     }
 
     public List<RoleResponse> getAllRoles() {

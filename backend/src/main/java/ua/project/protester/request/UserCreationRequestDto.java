@@ -25,7 +25,7 @@ public class UserCreationRequestDto extends UserDto {
     private String lastName;
 
     @UniqueUsername
-    @NotNull(message = "provie a username")
+    @NotNull(message = "provide a username")
     private String username;
 
     @NotNull (message = "provide a role")

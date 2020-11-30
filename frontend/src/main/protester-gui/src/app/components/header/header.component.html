@@ -4,32 +4,29 @@
   </button>
   <b><span class="project-name">ProTester</span></b>
 
-  <div class="toolbar-buttons" *ngIf="user">
-    | <a mat-button routerLink="/projects" class="projects_button">Projects</a> |
-    <a mat-button routerLink="/library" class="library_button">Library</a> |
-  </div>
+  <nav mat-tab-nav-bar class="toolbar-buttons" *ngIf="user">
+    <a mat-tab-link class="projects_button" *ngFor="let link of links"
+       (click)="activeLink = link"
+       [routerLink]="link.link"
+       [active]="activeLink == link"> {{link.label}} </a>
+  </nav>
   <span class="example-spacer"></span>
 
-  <button mat-icon-button>
-    <mat-icon *ngIf="isWhiteTheme" (click)="changeTheme()">brightness_3</mat-icon>
-    <mat-icon *ngIf="!isWhiteTheme" (click)="changeTheme()">brightness_5</mat-icon>
-  </button>
-
-  <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="user">
-    <mat-icon>keyboard_arrow_down</mat-icon>
+  <button mat-button [matMenuTriggerFor]="menu" *ngIf="user" class="menu-buttons">
+    <mat-icon class="menu-buttons-item">keyboard_arrow_down</mat-icon>
+    <mat-icon class="menu-buttons-item">perm_identity</mat-icon>
   </button>
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item>
       <span>Profile</span>
     </button>
+    <button mat-menu-item *ngIf="isAdmin">
+      <span>Users</span>
+    </button>
     <button mat-menu-item (click)="logout()">
       <span>Sign out</span>
     </button>
   </mat-menu>
-
-  <button mat-icon-button *ngIf="user">
-    <mat-icon>perm_identity</mat-icon>
-  </button>
 
 </mat-toolbar>

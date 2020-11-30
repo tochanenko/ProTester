@@ -62,4 +62,11 @@ public class ActionParameterRepository {
             logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
         }
     }
+
+    public void deleteActionFromActionParameter(Integer actionId) {
+        String propertyName = "deleteActionParametersByActionId";
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("actionId", actionId);
+        namedParameterJdbcTemplate.update(Objects.requireNonNull(env.getProperty(propertyName)), namedParams);
+    }
 }

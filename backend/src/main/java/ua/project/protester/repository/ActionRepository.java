@@ -153,4 +153,38 @@ public class ActionRepository {
                     "Failed to load action implementation for class " + actionDeclaration.getClassName());
         }
     }
+
+    public List<BaseAction> findEmptyActions() {
+        String propertyName = "findAllActionsDeclarationByClassName";
+        try {
+            List<Integer> classNames = namedParameterJdbcTemplate.query(
+                    Objects.requireNonNull(env.getProperty(propertyName)), (resultSet, i) -> resultSet.getInt(1));
+            return  classNames
+                    .stream()
+                    .map(this::findActionByDeclarationId)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new ActionImplementationNotFoundException(
+                    "Failed to load action implementation for");
+        }
+    }
+
+    public void deletePreparedActionByActionId(Integer actionId) {
+        actionParameterRepository.deleteActionFromActionParameter(actionId);
+        String propertyName = "deletePreparedActionByActionId";
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("id", actionId);
+        namedParameterJdbcTemplate.update(Objects.requireNonNull(env.getProperty(propertyName)), namedParams);
+    }
+
+    public Optional<BaseAction> findPreparedActionByActionId(Integer id) {
+            ActionDeclaration actionDeclaration = actionDeclarationRepository.findActionDeclarationByActionId(id).get();
+            BaseAction action = getActionImplementationByDeclaration(actionDeclaration);
+            action.prepare(actionParameterRepository.findAllParametersByActionId(id));
+            return Optional.of(action);
+
+    }
+
 }

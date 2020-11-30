@@ -3,7 +3,7 @@ VALUES ('ADMIN'),
        ('MANAGER'),
        ('ENGINEER');
 
-INSERT INTO "statutes"(status_name)
+INSERT INTO "statuses"(status_name)
 VALUES ('PASSED'),
 	   ('FINISHED'),
 	   ('IN PROGRESS'),

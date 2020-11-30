@@ -14,13 +14,14 @@ import java.util.Map;
 @ToString
 public class ActionRequestModel {
 
-    private Integer declarationId;
-
-    private Map<String, String> preparedParams;
-
-    private ActionType actionType;
+    private Integer id;
 
     private String description;
 
     private String name;
+
+    private ActionType type;
+
+    private Map<String, String> preparedParams;
+
 }

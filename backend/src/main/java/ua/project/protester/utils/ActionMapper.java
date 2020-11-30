@@ -3,9 +3,12 @@ package ua.project.protester.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.project.protester.exception.ActionMapperException;
-import ua.project.protester.model.BaseAction;
+
+import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;
+
+import java.util.Optional;
 
 @Component
 public class ActionMapper {
@@ -17,14 +20,13 @@ public class ActionMapper {
         this.actionRepository = actionRepository;
     }
 
-    public BaseAction toBaseActionFromActionRequest(ActionRequestModel action) {
+    public Optional<AbstractAction> toAbstractActionFromActionRequest(ActionRequestModel action) {
         if (action != null) {
-            BaseAction baseAction = actionRepository.findActionByDeclarationId(action.getDeclarationId())
+            AbstractAction baseAction = actionRepository.findActionById(action.getId())
                     .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was'nt found"));
             baseAction.prepare(action.getPreparedParams());
-            baseAction.setDescription(action.getDescription());
-            return baseAction;
+            return Optional.of(baseAction);
         }
-        return null;
+        return Optional.empty();
     }
 }

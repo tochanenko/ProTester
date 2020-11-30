@@ -2,20 +2,25 @@ package ua.project.protester.action;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.model.ActionType;
-import ua.project.protester.model.BaseAction;
+import ua.project.protester.model.executable.AbstractAction;
 
 import java.util.Map;
 
 @Action(
         type = ActionType.TECHNICAL,
-        defaultDescription = "Click on link with specified text",
+        description = "Click on link with specified text",
         parameterNames = {"text"}
 )
-public class ClickOnLinkWithTextAction extends BaseAction {
+public class ClickOnLinkWithTextAction extends AbstractAction {
     @Override
-    public void invoke(Map<String, String> params, WebDriver driver) {
-        driver.findElement(By.linkText(params.get("text"))).click();
+    public void execute(Map<String, String> params, WebDriver driver) {
+        try {
+            driver.findElement(By.linkText(params.get("text"))).click();
+        } catch (WebDriverException ex) {
+            System.out.println(ex.getClass().getName());
+        }
     }
 }

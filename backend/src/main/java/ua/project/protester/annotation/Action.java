@@ -7,7 +7,8 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Action {
+    String name() default "";
     ActionType type() default ActionType.TECHNICAL;
-    String defaultDescription() default "Empty description";
+    String description() default "Empty description";
     String[] parameterNames() default {};
 }

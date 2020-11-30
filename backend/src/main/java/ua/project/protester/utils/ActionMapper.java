@@ -3,7 +3,6 @@ package ua.project.protester.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.project.protester.exception.ActionMapperException;
-
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;

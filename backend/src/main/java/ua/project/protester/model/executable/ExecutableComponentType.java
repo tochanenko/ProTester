@@ -5,5 +5,6 @@ public enum ExecutableComponentType {
     SQL,
     UI,
     TECHNICAL,
-    COMPOUND
+    COMPOUND,
+    TEST_SCENARIO
 }

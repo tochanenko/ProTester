@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth/auth.service";
 import {Router} from "@angular/router";
 import {Role} from "../../models/role.model";
 import {CustomValidator} from "../../services/customVaidator.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
 
   registrationForm: FormGroup;
   isSuccessful = false;
@@ -21,6 +22,7 @@ export class RegistrationComponent implements OnInit {
   hidePasswordField = true;
   hideConfirmPasswordField = true;
   image = 'assets/logo.png';
+  private subscription: Subscription;
 
   constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) {
   }
@@ -41,7 +43,6 @@ export class RegistrationComponent implements OnInit {
       return;
     }
 
-    console.log('valid');
     const registrationResponse = {
       username: this.f.username.value,
       email: this.f.email.value,
@@ -51,7 +52,7 @@ export class RegistrationComponent implements OnInit {
       role: this.f.role.value
     };
 
-    this.authService.register(registrationResponse)
+    this.subscription = this.authService.register(registrationResponse)
       .subscribe(
         data => {
           this.isSuccessful = true;
@@ -96,8 +97,14 @@ export class RegistrationComponent implements OnInit {
   }
 
   getAllRoles(): void {
-    this.authService.getRoles().subscribe(
+    this.subscription = this.authService.getRoles().subscribe(
       data => this.roles = data,
       error => this.errorMessage = error);
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

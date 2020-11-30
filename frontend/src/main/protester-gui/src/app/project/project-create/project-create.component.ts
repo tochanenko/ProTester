@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {StorageService} from "../../services/auth/storage.service";
@@ -10,7 +10,7 @@ import {Subscription} from "rxjs";
   templateUrl: './project-create.component.html',
   styleUrls: ['./project-create.component.css']
 })
-export class ProjectCreateComponent implements OnInit {
+export class ProjectCreateComponent implements OnInit, OnDestroy {
 
   projectCreateForm: FormGroup;
   errorMessage = '';

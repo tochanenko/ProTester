@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import ua.project.protester.model.ActionType;
+import ua.project.protester.model.executable.ExecutableComponentType;
 
 import java.util.Map;
 
@@ -14,13 +14,14 @@ import java.util.Map;
 @ToString
 public class ActionRequestModel {
 
-    private Integer declarationId;
-
-    private Map<String, String> preparedParams;
-
-    private ActionType actionType;
+    private Integer id;
 
     private String description;
 
     private String name;
+
+    private ExecutableComponentType type;
+
+    private Map<String, String> preparedParams;
+
 }

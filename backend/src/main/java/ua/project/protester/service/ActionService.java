@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.ActionMapperException;
 import ua.project.protester.exception.ActionNotFoundException;
-import ua.project.protester.exception.PreparedActionWithoutParametersException;
-import ua.project.protester.model.BaseAction;
+import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;
 import ua.project.protester.utils.ActionMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ActionService {
@@ -30,50 +30,28 @@ public class ActionService {
     }
 
     @Transactional
-    public void invokeAllPreparedStatements() {
-        actionRepository.findAllPreparedActions().forEach(baseAction -> baseAction.invoke(driver));
+    public void invoke(List<ActionRequestModel> actions) {
+        actions.stream()
+                .map(action -> actionMapper.toAbstractActionFromActionRequest(action)
+                .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was`nt mapped")))
+                .forEach(baseAction -> baseAction.execute(driver));
     }
 
     @Transactional
-    public void prepareAndSaveActions(List<ActionRequestModel> action) {
-
-        List<BaseAction> actions = action
-                .stream()
-                .map(actionMapper::toBaseActionFromActionRequest)
-                .collect(Collectors.toList());
-        actions.forEach(preparedAction -> {
-            try {
-                actionRepository.save(preparedAction);
-            } catch (PreparedActionWithoutParametersException e) {
-                e.printStackTrace();
-            }
-        });
+    public AbstractAction findActionByActionId(Integer id) {
+        return actionRepository.findActionById(id)
+                .orElseThrow(ActionNotFoundException::new);
     }
 
     @Transactional
-    public void invokePreparedActionByActionId(Integer id) {
-        actionRepository.findPreparedActionById(id)
-                .orElseThrow(() -> new ActionNotFoundException("Action was not find"))
-                .invoke(driver);
+    public AbstractAction findActionByClassName(String className) {
+        return actionRepository.findActionByClassName(className)
+                .orElseThrow(ActionNotFoundException::new);
     }
 
     @Transactional
-    public BaseAction findPreparedActionByActionId(Integer id) {
-        return actionRepository.findPreparedActionById(id).orElseThrow(ActionNotFoundException::new);
+    public List<AbstractAction> findAllActions() {
+        return actionRepository.findAllActions();
     }
 
-    @Transactional
-    public List<BaseAction> findAllEmptyActions() {
-        return actionRepository.findEmptyActions();
-    }
-
-    @Transactional
-    public List<BaseAction> findAllPreparedActions() {
-        return actionRepository.findAllPreparedActions();
-    }
-
-    @Transactional
-    public void deletePreparedActionByActionId(Integer id) {
-        actionRepository.deletePreparedActionByActionId(id);
-    }
 }

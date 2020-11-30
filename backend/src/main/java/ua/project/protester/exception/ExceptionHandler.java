@@ -1,5 +1,6 @@
 package ua.project.protester.exception;
 
+import org.openqa.selenium.WebDriverException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -151,6 +152,16 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Project not found!");
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(WebDriverException.class)
+    public ResponseEntity<Object> handleWebDriverException(
+            WebDriverException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getClass().getName());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
 }

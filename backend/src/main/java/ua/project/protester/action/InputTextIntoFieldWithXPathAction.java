@@ -3,19 +3,19 @@ package ua.project.protester.action;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.annotation.Action;
-import ua.project.protester.model.ActionType;
-import ua.project.protester.model.BaseAction;
+import ua.project.protester.model.executable.ExecutableComponentType;
+import ua.project.protester.model.executable.AbstractAction;
 
 import java.util.Map;
 
 @Action(
-        type = ActionType.TECHNICAL,
-        defaultDescription = "Input specified text into field with specified xpath",
+        type = ExecutableComponentType.TECHNICAL,
+        description = "Input specified text into field with specified xpath",
         parameterNames = {"text", "xpath"}
 )
-public class InputTextIntoFieldWithXPathAction extends BaseAction {
+public class InputTextIntoFieldWithXPathAction extends AbstractAction {
     @Override
-    public void invoke(Map<String, String> params, WebDriver driver) {
+    public void execute(Map<String, String> params, WebDriver driver) {
         driver.findElement(By.xpath(params.get("xpath"))).sendKeys(params.get("text"));
     }
 }

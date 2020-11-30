@@ -1,13 +1,14 @@
 package ua.project.protester.annotation;
 
-import ua.project.protester.model.ActionType;
+import ua.project.protester.model.executable.ExecutableComponentType;
 
 import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Action {
-    ActionType type() default ActionType.TECHNICAL;
-    String defaultDescription() default "Empty description";
+    String name() default "";
+    ExecutableComponentType type() default ExecutableComponentType.TECHNICAL;
+    String description() default "Empty description";
     String[] parameterNames() default {};
 }

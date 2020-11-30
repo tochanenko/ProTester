@@ -2,19 +2,19 @@ package ua.project.protester.action;
 
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.annotation.Action;
-import ua.project.protester.model.ActionType;
-import ua.project.protester.model.BaseAction;
+import ua.project.protester.model.executable.ExecutableComponentType;
+import ua.project.protester.model.executable.AbstractAction;
 
 import java.util.Map;
 
 @Action(
-        type = ActionType.REST,
-        defaultDescription = "Performs get method on specified url",
+        type = ExecutableComponentType.REST,
+        description = "Performs get method on specified url",
         parameterNames = {"url"}
 )
-public class GoToUrlAction extends BaseAction {
+public class GoToUrlAction extends AbstractAction {
     @Override
-    public void invoke(Map<String, String> params, WebDriver driver) {
+    public void execute(Map<String, String> params, WebDriver driver) {
         driver.get(params.get("url"));
     }
 }

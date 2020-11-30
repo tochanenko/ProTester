@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth/auth.service";
 import {Router} from "@angular/router";
 import {StorageService} from "../../services/auth/storage.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   hide = true;
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   hidePasswordField = true;
   image = 'assets/logo.png';
+  private subscription: Subscription;
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -57,7 +59,7 @@ export class LoginComponent implements OnInit {
       password: this.f.password.value,
     };
 
-    this.authService.login(loginResponse).subscribe(
+    this.subscription = this.authService.login(loginResponse).subscribe(
       user => {
         this.isLoggedIn = true;
         window.sessionStorage.setItem('token', user.token);
@@ -74,5 +76,11 @@ export class LoginComponent implements OnInit {
 
   forgotPassword(): void {
     this.router.navigateByUrl('/forgot-password').then();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

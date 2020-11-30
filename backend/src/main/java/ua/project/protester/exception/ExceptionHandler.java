@@ -134,6 +134,26 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(ProjectAlreadyExistsException.class)
+    public ResponseEntity<Object> handleProjectAlreadyExistsException(
+            ProjectAlreadyExistsException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Project already exists!");
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<Object> handleProjectNotFoundException(
+            ProjectNotFoundException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Project not found!");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(WebDriverException.class)
     public ResponseEntity<Object> handleWebDriverException(
             WebDriverException ex, WebRequest request) {

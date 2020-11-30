@@ -3,7 +3,6 @@ package ua.project.protester.model.executable;
 import lombok.Getter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
-import ua.project.protester.model.ActionType;
 
 import java.util.Map;
 
@@ -12,10 +11,11 @@ import java.util.Map;
 public abstract class AbstractAction extends ExecutableComponent {
 
     protected Integer id;
+    protected ExecutableComponentType type;
     protected String className;
     protected Map<String, String> preparedParams;
 
-    public void init(Integer id, String name, ActionType type, String description, String className, String[] parameterNames) {
+    public void init(Integer id, String name, ExecutableComponentType type, String description, String className, String[] parameterNames) {
         this.id = id;
         this.name = name;
         this.type = type;

@@ -29,4 +29,9 @@ public class ActionController {
         return new ResponseEntity<>("Actions was triggered", HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public AbstractAction findActionById(@PathVariable Integer id) {
+        return actionService.findActionByActionId(id);
+    }
+
 }

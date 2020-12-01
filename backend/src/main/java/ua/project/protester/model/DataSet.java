@@ -18,4 +18,10 @@ public class DataSet {
     private String description;
 
     private Map<String, String> dataset;
+
+    public DataSet(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

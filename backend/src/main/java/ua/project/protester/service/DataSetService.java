@@ -27,8 +27,15 @@ public class DataSetService {
     }
 
     @Transactional
-    public void updateDataSet(DataSet dataSet) {
-        dataSetRepository.updateDataSet(dataSet);
+    public DataSetResponse updateDataSet(DataSet dataSet) {
+
+        return dataSetMapper.toDataSetResponseFromDataSet(
+                dataSetRepository.updateDataSet(dataSet));
+    }
+
+    @Transactional
+    public void deleteDataSetById(Long id) {
+        dataSetRepository.deleteDataSetById(id);
     }
 
     @Transactional
@@ -36,6 +43,13 @@ public class DataSetService {
         return dataSetMapper.toDataSetResponseFromDataSet(
                 dataSetRepository.findDataSetById(id)
                 .orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found!")));
+    }
+
+    @Transactional
+    public DataSetResponse findDataSetByName(String name) {
+        return dataSetMapper.toDataSetResponseFromDataSet(
+                dataSetRepository.findDataSetByName(name)
+                        .orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found!")));
     }
 
     @Transactional

@@ -20,7 +20,7 @@ public class DataSetMapper {
         if (dataSet == null) {
             throw new RuntimeException();
         }
-        return modelMapper.map(dataSet,DataSetResponse.class);
+        return modelMapper.map(dataSet, DataSetResponse.class);
     }
 
 }

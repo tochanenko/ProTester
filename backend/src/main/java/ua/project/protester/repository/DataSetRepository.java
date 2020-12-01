@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.model.DataSet;
-import ua.project.protester.response.DataSetResponse;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
@@ -29,6 +28,7 @@ public class DataSetRepository {
 
     public DataSet saveDataSet(DataSet dataSet) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        log.info("saving {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
 
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveDataSet"),
@@ -37,14 +37,14 @@ public class DataSetRepository {
                         .addValue("data_set_description", dataSet.getDescription()),
                 keyHolder,
                 new String[]{"data_set_id"});
-        log.info("saving {} dataset with description {}",dataSet.getName(), dataSet.getDescription());
-        Long id = ((Long)keyHolder.getKey());
-        dataSet.setId(id);
-        dataSet.getDataset().forEach( (key, value) -> saveParams(id, key, value));
+        log.info("saving {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
+        Integer id = (Integer) keyHolder.getKey();
+        dataSet.setId(id.longValue());
+        dataSet.getDataset().forEach((key, value) -> saveParams(id.longValue(), key, value));
         return dataSet;
     }
 
-    public void updateDataSet(DataSet dataSet) {
+    public DataSet updateDataSet(DataSet dataSet) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         namedParameterJdbcTemplate.update(
@@ -55,9 +55,19 @@ public class DataSetRepository {
                         .addValue("data_set_description", dataSet.getDescription()),
                 keyHolder,
                 new String[]{"data_set_id"});
-        log.info("updating {} dataset with description {}",dataSet.getName(), dataSet.getDescription());
+        log.info("updating {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
 
-        dataSet.getDataset().forEach( (key, value) -> saveParams(dataSet.getId(), key, value));
+        deleteParamsById(dataSet.getId());
+        dataSet.getDataset().forEach((key, value) -> saveParams(dataSet.getId(), key, value));
+
+        return dataSet;
+    }
+
+    public void deleteDataSetById(Long id) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "deleteDataSet"),
+                new MapSqlParameterSource()
+                        .addValue("data_set_id", id));
     }
 
     private Map<String, String> findParamsById(Long id) {
@@ -69,6 +79,12 @@ public class DataSetRepository {
                         rs.getString("key"),
                         rs.getString("value")));
         return parameters;
+    }
+
+    private void deleteParamsById(Long id) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "deleteParamsById"),
+                new MapSqlParameterSource().addValue("data_set_id", id));
     }
 
     private void saveParams(Long id, String key, String value) {
@@ -93,16 +109,18 @@ public class DataSetRepository {
             if (dataSet == null) {
                 return Optional.empty();
             }
-             dataSet.setDataset(findParamsById(id));
+            dataSet.setDataset(findParamsById(dataSet.getId()));
              return Optional.of(dataSet);
         } catch (DataAccessException e) {
-             log.warn("dataset with id {} was`nt found",id);
+             log.warn("dataset with id {} was`nt found", id);
             throw new DataSetNotFoundException("Data set was`nt found!");
         }
     }
 
+
     public Optional<DataSet> findDataSetByName(String name) {
         try {
+
             DataSet dataSet = namedParameterJdbcTemplate.queryForObject(
                     PropertyExtractor.extract(env, "findDataSetByName"),
                     new MapSqlParameterSource().addValue("data_set_name", name),
@@ -111,21 +129,22 @@ public class DataSetRepository {
                             rs.getString("data_set_name"),
                             rs.getString("data_set_description"))
             );
+
             if (dataSet == null) {
                 return Optional.empty();
             }
             dataSet.setDataset(findParamsById(dataSet.getId()));
             return Optional.of(dataSet);
-        } catch (DataAccessException e) {
-            log.warn("dataset with name {} was`nt found",name);
-            throw new DataSetNotFoundException("Data set was`nt found!");
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("dataset with name {} was`nt found", name);
+            return Optional.empty();
         }
     }
 
     public List<DataSet> findAll() {
         try {
             List<DataSet> dataSet = namedParameterJdbcTemplate.query(
-                    PropertyExtractor.extract(env, "findDataSetByName"),
+                    PropertyExtractor.extract(env, "findAll"),
                     (rs, rowNum) -> new DataSet(
                             rs.getLong("data_set_id"),
                             rs.getString("data_set_name"),

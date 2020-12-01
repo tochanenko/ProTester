@@ -30,7 +30,6 @@ public class UserRepository implements CrudRepository<User> {
 
     @Override
     public int save(User entity) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
 
         namedParams.addValue("role_id", entity.getRole().getId());
@@ -40,7 +39,10 @@ public class UserRepository implements CrudRepository<User> {
         namedParams.addValue("user_active", entity.isActive());
         namedParams.addValue("user_first_name", entity.getFirstName());
         namedParams.addValue("user_last_name", entity.getLastName());
-        log.info("saving user {}",entity);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        log.info("saving user {}", entity);
         int update = namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("saveUser")), namedParams, keyHolder, new String[]{"user_id"});
 
         Integer id = (Integer) (keyHolder.getKeys().get("user_id"));
@@ -57,7 +59,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("user_id", id);
             return Optional.ofNullable(namedJdbcTemplate.queryForObject(Objects.requireNonNull(environment.getProperty("findUserById")), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with id {} was`nt found",id);
+            log.warn("user with id {} was`nt found", id);
             return Optional.empty();
         }
     }
@@ -80,7 +82,7 @@ public class UserRepository implements CrudRepository<User> {
         namedParams.addValue("user_last_name", entity.getLastName());
         namedParams.addValue("user_id", entity.getId());
 
-        log.info("updating user {}",entity);
+        log.info("updating user {}", entity);
         namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("updateUser")), namedParams);
     }
 
@@ -105,7 +107,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("role_id", roleId);
             return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByRoleId")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with role id {} was`nt found",roleId);
+            log.warn("user with role id {} was`nt found", roleId);
             return null;
         }
     }
@@ -116,7 +118,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("user_email", email);
             return Optional.ofNullable(namedJdbcTemplate.queryForObject(Objects.requireNonNull(environment.getProperty("findUserByEmail")), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with email {} was`nt found",email);
+            log.warn("user with email {} was`nt found", email);
             return Optional.empty();
         }
     }
@@ -127,7 +129,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("user_username", username);
             return Optional.ofNullable(namedJdbcTemplate.queryForObject(Objects.requireNonNull(environment.getProperty("findUserByUsername")), namedParams, rowMapper));
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with username {} was`nt found",username);
+            log.warn("user with username {} was`nt found", username);
             return Optional.empty();
         }
     }
@@ -138,7 +140,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("role_name", roleName);
             return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByRoleName")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with rolename {} was`nt found",roleName);
+            log.warn("user with rolename {} was`nt found", roleName);
             return new ArrayList<>();
         }
     }
@@ -149,7 +151,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("user_first_name", name);
             return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersByName")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with name {} was`nt found",name);
+            log.warn("user with name {} was`nt found", name);
             return new ArrayList<>();
         }
     }
@@ -160,7 +162,7 @@ public class UserRepository implements CrudRepository<User> {
             namedParams.put("user_last_name", surname);
             return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findUsersBySurname")), namedParams, rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("user with surname {} was`nt found",surname);
+            log.warn("user with surname {} was`nt found", surname);
             return new ArrayList<>();
         }
     }

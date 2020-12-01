@@ -1,4 +1,4 @@
-package ua.project.protester.exception;
+package ua.project.protester.exception.executable.compound;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

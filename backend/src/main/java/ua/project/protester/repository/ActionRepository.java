@@ -9,7 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
-import ua.project.protester.exception.ActionImplementationNotFoundException;
+import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 
 import java.util.*;

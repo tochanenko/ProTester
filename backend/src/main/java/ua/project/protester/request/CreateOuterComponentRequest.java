@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateCompoundRequest {
+public class CreateOuterComponentRequest {
 
     private String name;
     private String description;

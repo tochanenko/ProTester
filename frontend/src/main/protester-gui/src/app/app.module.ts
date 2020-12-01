@@ -20,6 +20,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
 import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
 import { LibraryNewComponent } from './components/library-new/library-new.component';
+import { LibrarySearchComponent } from './components/library-search/library-search.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { LibraryNewComponent } from './components/library-new/library-new.compon
     ChangePasswordComponent,
     TokenExpiredComponent,
     LibraryMenuComponent,
-    LibraryNewComponent
+    LibraryNewComponent,
+    LibrarySearchComponent
   ],
   imports: [
     BrowserModule,

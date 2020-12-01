@@ -10,6 +10,7 @@ import {ChangePasswordComponent} from "./components/change-password/change-passw
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
 import {LibraryMenuComponent} from "./components/library-menu/library-menu.component";
 import {LibraryNewComponent} from "./components/library-new/library-new.component";
+import {LibrarySearchComponent} from "./components/library-search/library-search.component";
 
 
 const routes: Routes = [
@@ -54,8 +55,12 @@ const routes: Routes = [
     component: LibraryMenuComponent
   },
   {
-    path: 'library/new_library',
+    path: 'library/new',
     component: LibraryNewComponent
+  },
+  {
+    path: 'library/search',
+    component: LibrarySearchComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

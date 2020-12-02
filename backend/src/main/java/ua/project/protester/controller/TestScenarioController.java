@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.request.CreateOuterComponentRequest;
+import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.TestScenarioService;
 
 import java.util.List;
@@ -16,12 +16,12 @@ public class TestScenarioController {
     private final TestScenarioService testScenarioService;
 
     @PostMapping
-    public void createTestScenario(@RequestBody CreateOuterComponentRequest request) {
+    public void createTestScenario(@RequestBody OuterComponentRepresentation request) {
         testScenarioService.saveTestScenario(request);
     }
 
     @PutMapping("/{id}")
-    public void updateTestScenario(@RequestBody CreateOuterComponentRequest request, @PathVariable int id) throws TestScenarioNotFoundException {
+    public void updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws TestScenarioNotFoundException {
         testScenarioService.updateTestScenario(id, request);
     }
 

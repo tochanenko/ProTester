@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.request.CreateOuterComponentRequest;
+import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.CompoundService;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class CompoundController {
     private final CompoundService compoundService;
 
     @PostMapping
-    public void createCompound(@RequestBody CreateOuterComponentRequest request) {
+    public void createCompound(@RequestBody OuterComponentRepresentation request) {
         compoundService.saveCompound(request);
     }
 

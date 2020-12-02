@@ -1,0 +1,68 @@
+<div class="library-new-form">
+  <mat-card class="card">
+    <mat-card-title>
+      <span class="material-icons chrome_reader_mode">chrome_reader_mode</span>
+    </mat-card-title>
+    <form (ngSubmit)="onSubmit()" [formGroup]="libraryCreateForm">
+      <div class="lib-title-container">
+        <mat-label class="lib-name">Name:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+          <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
+                 placeholder="Library name...">
+        </mat-form-field>
+      </div>
+      <div class="lib-title-container">
+        <mat-label class="lib-description">Description:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+              <textarea matInput type="text" id="description" name="description" formControlName="description"
+                        class="create-input" placeholder="Library description..."></textarea>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-grid-list cols="2" rowHeight="45px">
+          <mat-grid-tile class="grid-header" [rowspan]="tiles[0].rows">COMPOUNDS</mat-grid-tile>
+          <mat-grid-tile class="grid-header" [rowspan]="tiles[1].rows">ACTIONS</mat-grid-tile>
+          <mat-grid-tile [rowspan]="tiles[2].rows">
+            <div class="compound-tile-inner">
+              <div *ngIf="states.length == 0" class="tile-label-wrapper">
+                <mat-label class="tile-label"> Add compounds</mat-label>
+              </div>
+              <cdk-virtual-scroll-viewport *ngIf="states.length > 0" class="example-viewport" itemSize="60">
+                <dl class="example-dl">
+                  <ng-container *cdkVirtualFor="let state of states">
+                    <dt class="example-dt">{{state.name}}</dt>
+                    <dd class="example-dd">{{state.capital}}</dd>
+                  </ng-container>
+                </dl>
+              </cdk-virtual-scroll-viewport>
+              <button mat-icon-button>
+                <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+              </button>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile [rowspan]="tiles[3].rows">
+            <div class="compound-tile-inner">
+              <div *ngIf="states.length == 0" class="tile-label-wrapper">
+                <mat-label class="tile-label"> Add actions</mat-label>
+              </div>
+              <cdk-virtual-scroll-viewport *ngIf="states.length > 0" class="example-viewport" itemSize="60">
+                <dl class="example-dl">
+                  <ng-container *cdkVirtualFor="let state of states">
+                    <dt class="example-dt">{{state.name}}</dt>
+                    <dd class="example-dd">{{state.capital}}</dd>
+                  </ng-container>
+                </dl>
+              </cdk-virtual-scroll-viewport>
+              <button mat-icon-button>
+                <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+              </button>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+      <button mat-raised-button class="button-flex-container">
+        <p class="button-text">CREATE</p>
+      </button>
+    </form>
+  </mat-card>
+</div>

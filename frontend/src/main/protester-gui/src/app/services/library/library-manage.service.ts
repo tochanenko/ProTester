@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Library} from "../../models/library.model";
+import {filter, map, tap} from "rxjs/operators";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -16,4 +17,5 @@ export class LibraryManageService {
   getAllLibraries() : Observable<Library[]> {
     return this.http.get<Library[]>("assets/libraries.json", httpOptions);
   }
+
 }

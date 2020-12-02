@@ -4,6 +4,7 @@ import {PageEvent} from "@angular/material/paginator";
 import {Library} from "../../models/library.model";
 import {LibraryFilter} from "./library-filter.model";
 import {LibraryManageService} from "../../services/library/library-manage.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-library-search',
@@ -20,6 +21,8 @@ export class LibrarySearchComponent implements OnInit {
   librariesCount = 10;
   libraryFilter: LibraryFilter = new LibraryFilter();
 
+  private subscription: Subscription;
+
   constructor(private formBuilder: FormBuilder, private libraryService: LibraryManageService) { }
 
   ngOnInit(): void {
@@ -28,26 +31,29 @@ export class LibrarySearchComponent implements OnInit {
     })
     this.searchByFilter();
     this.getLibrariesCount();
-
   }
 
   searchByFilter(): void {
-    this.libraryService.getAllLibraries().subscribe(data =>
+    this.subscription = this.libraryService.getAllLibraries().subscribe(data =>
     {
+      let filtered_libraries = data.filter(library => library.name.includes(this.libraryFilter.libraryName));
+      this.librariesCount = filtered_libraries.length;
+
       let pageSize = this.libraryFilter.pageSize;
       let pageNumber = this.libraryFilter.pageNumber;
       let range = pageSize * pageNumber;
-      this.dataSource = data['libraries'].slice(range, pageSize + range);
+      this.dataSource = filtered_libraries.slice(range, pageSize + range);
     });
   }
 
   getLibrariesCount(): void {
-    this.libraryService.getAllLibraries().subscribe( data => {
-      this.librariesCount = data['libraries'].length;
+    this.subscription = this.libraryService.getAllLibraries().subscribe( data => {
+      this.librariesCount = data.length;
     });
   }
 
   onPaginateChange(event): void {
+    console.log(event);
     this.libraryFilter.pageNumber = event.pageIndex;
     this.libraryFilter.pageSize = event.pageSize;
 
@@ -59,13 +65,15 @@ export class LibrarySearchComponent implements OnInit {
     return this.searchForm.controls;
   }
 
-  onChanges(): void {
-    console.log(this.f.search.value);
+  onFormBlurs(): void {
+    this.libraryFilter.libraryName = this.f.search.value;
+    this.searchByFilter();
   }
 
-  onSubmit(): void {
-    let a = this.f.search.value
-    console.log(a);
+  ngOnDestroy() : void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
 }

@@ -21,6 +21,7 @@ import { TokenExpiredComponent } from './components/token-expired/token-expired.
 import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
 import { LibraryNewComponent } from './components/library-new/library-new.component';
 import { LibrarySearchComponent } from './components/library-search/library-search.component';
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { LibrarySearchComponent } from './components/library-search/library-sear
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    ScrollingModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

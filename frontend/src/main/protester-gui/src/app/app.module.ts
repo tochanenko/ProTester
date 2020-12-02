@@ -22,6 +22,13 @@ import { LibraryMenuComponent } from './components/library-menu/library-menu.com
 import { LibraryNewComponent } from './components/library-new/library-new.component';
 import { LibrarySearchComponent } from './components/library-search/library-search.component';
 import {ScrollingModule} from "@angular/cdk/scrolling";
+import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.component';
+import {
+  MAT_BOTTOM_SHEET_DATA,
+  MAT_BOTTOM_SHEET_DEFAULT_OPTIONS,
+  MatBottomSheetRef
+} from "@angular/material/bottom-sheet";
+
 
 @NgModule({
   declarations: [
@@ -36,7 +43,8 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
     TokenExpiredComponent,
     LibraryMenuComponent,
     LibraryNewComponent,
-    LibrarySearchComponent
+    LibrarySearchComponent,
+    BottomSheetComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +57,7 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
     MaterialModule,
     ScrollingModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]
 })
 export class AppModule {

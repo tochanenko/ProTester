@@ -8,9 +8,10 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
-import {LibraryMenuComponent} from "./components/library-menu/library-menu.component";
-import {LibraryNewComponent} from "./components/library-new/library-new.component";
+import {LibraryMenuComponent} from './components/library-menu/library-menu.component';
+import {LibraryNewComponent} from './components/library-new/library-new.component';
 import {LibrarySearchComponent} from "./components/library-search/library-search.component";
+import {BottomSheetComponent} from "./components/bottom-sheet/bottom-sheet.component";
 
 
 const routes: Routes = [
@@ -61,6 +62,10 @@ const routes: Routes = [
   {
     path: 'library/search',
     component: LibrarySearchComponent
+  },
+  {
+    path: 'bottom-sheet',
+    component: BottomSheetComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

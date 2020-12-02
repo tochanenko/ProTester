@@ -22,6 +22,12 @@
   color: #4F4F4F;
 }
 
+.projects_button, .library_button {
+  font-style: normal;
+  font-size: 20px;
+  color: #4F4F4F;
+}
+
 .logo-img {
   height: 90%;
   width: 120%;
@@ -32,4 +38,19 @@ button {
   margin-right: 15px;
 }
 
+.toolbar-buttons {
+  margin-left: 5%;
+}
 
+.menu-buttons-item {
+  font-size: 250%;
+  text-align: center;
+  color: #5C6BC0;
+}
+
+.menu-buttons {
+  display: flex;
+  justify-content: center;
+  height: 80%;
+  width: 8%;
+}

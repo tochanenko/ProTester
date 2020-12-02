@@ -1,4 +1,4 @@
-package ua.project.protester.utils;
+package ua.project.protester.utils.project;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package ua.project.protester.repository;
+package ua.project.protester.repository.project;
 
 import ua.project.protester.model.Project;
 import ua.project.protester.model.ProjectDto;
@@ -17,12 +17,12 @@ public interface ProjectRepository {
 
     List<ProjectDto> findAll(Pagination pagination);
 
-    List<ProjectDto> findAllByStatus(Pagination pagination);
+    List<ProjectDto> findAllByStatus(Pagination pagination, Boolean isActive);
 
     Optional<Project> findById(Long id);
 
     Long getCountProjects(Pagination pagination);
 
-    Long getCountProjectsByStatus(Pagination pagination);
+    Long getCountProjectsByStatus(Pagination pagination, Boolean isActive);
 
 }

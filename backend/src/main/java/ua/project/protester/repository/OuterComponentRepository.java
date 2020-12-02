@@ -217,7 +217,7 @@ public class OuterComponentRepository {
                             :
                             findOuterComponentById(outerComponentId, true).orElseThrow(ExecutableComponentNotFoundException::new);
 
-            Map<String, String> parameters = stepParameterRepository.findAllByStepId(id);
+            Map<String, String> parameters = stepParameterRepository.findAllDataSetParamsId(id);
 
             return new Step(id, isAction, component, parameters);
         } catch (OuterComponentNotFoundException e) {

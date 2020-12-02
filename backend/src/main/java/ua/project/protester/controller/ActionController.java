@@ -17,7 +17,6 @@ public class ActionController {
 
     private final ActionService actionService;
 
-
     @GetMapping
     public List<AbstractAction> findAllActions() {
         return actionService.findAllActions();

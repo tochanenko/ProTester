@@ -38,7 +38,7 @@ public class StepParameterRepository {
                         .addValue("value", value));
     }
 
-    public Map<String, String> findAllByStepId(int id) {
+    public Map<String, String> findAllDataSetParamsId(int id) {
         Map<String, String> parameters = new HashMap<>();
         namedParameterJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findAllByStepId"),

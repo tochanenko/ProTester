@@ -15,7 +15,6 @@ import java.util.Map;
 @ToString
 public class OuterComponent extends ExecutableComponent {
 
-    protected Integer id;
     protected List<Step> steps;
 
     protected static boolean isParameterPlaceholder(String parameter) {

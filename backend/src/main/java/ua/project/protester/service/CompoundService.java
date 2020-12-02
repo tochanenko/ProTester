@@ -9,7 +9,7 @@ import ua.project.protester.exception.executable.OuterComponentNotFoundException
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.request.CreateOuterComponentRequest;
+import ua.project.protester.request.OuterComponentRepresentation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class CompoundService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveCompound(CreateOuterComponentRequest compoundRequest) {
+    public void saveCompound(OuterComponentRepresentation compoundRequest) {
         OuterComponent newOuterComponent = new OuterComponent();
         newOuterComponent.setName(compoundRequest.getName());
         newOuterComponent.setDescription(compoundRequest.getDescription());

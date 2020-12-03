@@ -1,6 +1,6 @@
 package ua.project.protester.exception;
 
-public class LibraryNotFoundException extends Exception{
+public class LibraryNotFoundException extends Exception {
     public LibraryNotFoundException() {
         super();
     }

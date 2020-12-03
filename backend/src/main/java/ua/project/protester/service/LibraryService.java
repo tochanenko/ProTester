@@ -3,7 +3,6 @@ package ua.project.protester.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.Step;
@@ -57,19 +56,21 @@ public class LibraryService {
         libraryRepository.updateLibrary(updateLibrary, id);
     }
 
-
+    @Transactional
     public List<Library> getAllLibraries() {
         return libraryRepository.findAllLibraries();
     }
 
+    @Transactional
     public Library getLibraryByName(String name) throws LibraryNotFoundException {
         return libraryRepository.findByName(name).orElseThrow(LibraryNotFoundException::new);
     }
 
+    @Transactional
     public Library getLibraryById(int id) throws LibraryNotFoundException {
         try {
              return libraryRepository.findLibraryById(id).orElseThrow(LibraryNotFoundException::new);
-        } catch(LibraryNotFoundException e) {
+        } catch (LibraryNotFoundException e) {
             throw new LibraryNotFoundException();
         }
     }

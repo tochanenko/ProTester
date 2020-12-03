@@ -75,11 +75,16 @@ public class LibraryRepository  {
                 new BeanPropertyRowMapper<>(Library.class)
         );
 
-        allLibraries.forEach(library -> { library.setComponents(findAllLibraryStorageById(library.getId())); });
+        allLibraries
+                .forEach(library -> {
+                    library.setComponents(
+                            findAllLibraryStorageById(library.getId()));
+                });
+
         return allLibraries;
     }
 
-    public Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException{
+    public Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException {
         String sql = PropertyExtractor.extract(env, "findLibraryById");
 
         try {
@@ -88,7 +93,7 @@ public class LibraryRepository  {
                     new MapSqlParameterSource().addValue("library_id", id),
                     new BeanPropertyRowMapper<>(Library.class)
             );
-            if(library == null) {
+            if (library == null) {
                 return  Optional.empty();
             }
 
@@ -145,7 +150,7 @@ public class LibraryRepository  {
 
     }
 
-    private Step initLibraryStorage(int id, boolean isAction,int actionId, int compoundId) {
+    private Step initLibraryStorage(int id, boolean isAction, int actionId, int compoundId) {
         try {
             ExecutableComponent component =
                     isAction

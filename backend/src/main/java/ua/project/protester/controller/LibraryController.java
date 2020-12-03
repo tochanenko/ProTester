@@ -18,13 +18,13 @@ import java.util.List;
 public class LibraryController {
     private final LibraryService libraryService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createLibrary(@RequestBody LibraryRequestModel request) {
         libraryService.createLibrary(request);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public void updateLibrary(@RequestBody LibraryRequestModel request, @RequestParam int id) {
         libraryService.updateLibrary(request, id);
     }
@@ -45,7 +45,7 @@ public class LibraryController {
     }
 
     @GetMapping("/name")
-    public Library getLibraryName(@RequestParam String name) throws LibraryNotFoundException{
+    public Library getLibraryName(@RequestParam String name) throws LibraryNotFoundException {
         return libraryService.getLibraryByName(name);
     }
 }

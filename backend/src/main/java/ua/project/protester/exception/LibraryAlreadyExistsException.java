@@ -1,6 +1,6 @@
 package ua.project.protester.exception;
 
-public class LibraryAlreadyExistsException extends Exception{
+public class LibraryAlreadyExistsException extends Exception {
     public LibraryAlreadyExistsException() {
         super();
     }

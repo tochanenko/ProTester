@@ -15,6 +15,14 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
 
+
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
@@ -24,6 +32,9 @@ import {ProjectMenuComponent} from './project/project-menu/project-menu.componen
 import {ProjectCreateComponent} from './project/project-create/project-create.component';
 import {ProjectListComponent} from './project/project-list/project-list.component';
 import {ProjectUpdateComponent} from './project/project-update/project-update.component';
+import { ActionsListComponent } from './actions/actions-list/actions-list.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { ActionUpdateComponent } from './actions/action-update/action-update.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +51,9 @@ import {ProjectUpdateComponent} from './project/project-update/project-update.co
     ProjectCreateComponent,
     ProjectListComponent,
     ProjectUpdateComponent,
-    ManageActionComponent
+    ManageActionComponent,
+    ActionsListComponent,
+    ActionUpdateComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +63,15 @@ import {ProjectUpdateComponent} from './project/project-update/project-update.co
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSortModule,
+    MatTableModule,
+    MatTooltipModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

@@ -12,6 +12,8 @@ import {ProjectMenuComponent} from "./project/project-menu/project-menu.componen
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {ActionUpdateComponent} from "./actions/action-update/action-update.component";
 
 
 
@@ -54,7 +56,11 @@ const routes: Routes = [
   },
   {
     path: 'actions',
-    component: ManageActionComponent
+    component: ActionsListComponent
+  },
+  {
+    path: 'actionUpdate',
+    component: ActionUpdateComponent
   },
   {
     path: 'projectMenu',

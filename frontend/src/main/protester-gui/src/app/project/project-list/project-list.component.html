@@ -29,7 +29,7 @@
     <ng-container matColumnDef="NAME">
       <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a [routerLink]="" (click)="navigateToProject(element.projectId)">{{element.projectName}}</a>
+        <a [routerLink]="" (click)="navigateToTestCaseList(element.projectId)">{{element.projectName}}</a>
       </mat-cell>
     </ng-container>
 

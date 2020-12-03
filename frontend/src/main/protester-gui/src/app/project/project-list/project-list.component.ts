@@ -97,6 +97,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     });
   }
 
+  navigateToTestCaseList(id: number): void {
+    this.router.navigateByUrl('/test-case-list/' + id).then();
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

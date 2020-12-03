@@ -12,7 +12,7 @@ import {ProjectMenuComponent} from "./project/project-menu/project-menu.componen
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
-
+import {TestCaseListComponent} from "./components/test-case-list/test-case-list.component";
 
 
 const routes: Routes = [
@@ -81,6 +81,11 @@ const routes: Routes = [
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
+  },
+
+  {
+    path: 'test-case-list/:id',
+    component: TestCaseListComponent,
   },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];

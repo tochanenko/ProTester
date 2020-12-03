@@ -8,6 +8,7 @@ import {ActionService} from "../../services/action/action.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {ACTIONS} from "../../mock-actions";
 import {MatSort} from "@angular/material/sort";
+import {ActionUpdateComponent} from "../action-update/action-update.component";
 
 @Component({
   selector: 'app-actions-list',
@@ -40,11 +41,21 @@ export class ActionsListComponent implements OnInit {
   }
 
 
+  openUpdateDialog(actionId: number): void {
+
+    const updateDialogRef = this.dialog.open(ActionUpdateComponent, {
+      height: 'auto',
+      width: '50%',
+      data: {id: actionId}
+    });
+
+    this.subscription = updateDialogRef.afterClosed().subscribe(() => {
+      // this.searchProjects();
+    });
+  }
+
   onNavigate(productCode){
     console.log(`product code ${productCode}`)
   }
 
-  edit(action: Action) {
-    console.log(`action ${action.description}`)
-  }
 }

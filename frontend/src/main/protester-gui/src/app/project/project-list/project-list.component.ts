@@ -55,6 +55,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
+  navigateToProject(id: number) {
+    this.router.navigate('/test-case-list',id);
+  }
+  
   onPaginateChange(event: PageEvent): void {
     this.projectFilter.pageNumber = event.pageIndex;
     this.projectFilter.pageSize = event.pageSize;

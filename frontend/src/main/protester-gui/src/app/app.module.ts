@@ -35,6 +35,8 @@ import {ProjectUpdateComponent} from './project/project-update/project-update.co
 import { ActionsListComponent } from './actions/actions-list/actions-list.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { ActionUpdateComponent } from './actions/action-update/action-update.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import { TestCaseCreateComponent } from './test-case/test-case-create/test-case-create.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { ActionUpdateComponent } from './actions/action-update/action-update.com
     ProjectUpdateComponent,
     ManageActionComponent,
     ActionsListComponent,
-    ActionUpdateComponent
+    ActionUpdateComponent,
+    TestCaseCreateComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { ActionUpdateComponent } from './actions/action-update/action-update.com
     BrowserAnimationsModule,
     MaterialModule,
     ReactiveFormsModule,
+    MatDialogModule,
     MatButtonModule,
     MatIconModule,
     MatSortModule,

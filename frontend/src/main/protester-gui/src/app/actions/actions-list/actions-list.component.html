@@ -1,5 +1,11 @@
-<div class="example-container mat-elevation-z8" >
 
+<div class="search-action">
+
+
+
+</div>
+
+<mat-card class="action-list">
   <mat-table #table [dataSource]="dataSource" matSort>
     <!-- First Column ID-->
     <ng-container matColumnDef="NAME">
@@ -20,17 +26,17 @@
     </ng-container>
     <!-- Action Column -->
     <ng-container matColumnDef="EDIT">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Edit </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT </mat-header-cell>
       <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
-                                                   color="primary" (click)="edit(element)">
+                                                   color="primary" (click)="openUpdateDialog(element.id)">
         <mat-icon>edit</mat-icon>
       </button> </mat-cell>
     </ng-container>
+
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-
-</div>
+</mat-card>

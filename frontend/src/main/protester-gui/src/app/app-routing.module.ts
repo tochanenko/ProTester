@@ -65,28 +65,28 @@ const routes: Routes = [
   {
     path: 'projectMenu',
     component: ProjectMenuComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
 
   {
     path: 'projectCreate',
     component: ProjectCreateComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
 
   {
     path: 'projectList',
     component: ProjectListComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];

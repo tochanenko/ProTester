@@ -14,9 +14,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
-import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.ExecutableComponentType;
+import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.utils.PropertyExtractor;
 
@@ -50,13 +50,7 @@ public class OuterComponentRepository {
                 new String[]{idColumnName});
         Integer outerComponentId = (Integer) keyHolder.getKey();
 
-        ListIterator<Step> outerComponentStepsIterator = outerComponent.getSteps().listIterator();
-        Step outerComponentStep;
-        while (outerComponentStepsIterator.hasNext()) {
-            int outerComponentStepOrder = outerComponentStepsIterator.nextIndex();
-            outerComponentStep = outerComponentStepsIterator.next();
-            saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
-        }
+        saveOuterComponentSteps(outerComponent, outerComponentId, isCompound);
     }
 
     public List<OuterComponent> findAllOuterComponents(boolean areCompounds) {
@@ -125,6 +119,17 @@ public class OuterComponentRepository {
                 new MapSqlParameterSource().addValue("name", name));
     }
 
+    public void updateTestScenario(int id, OuterComponent updatedOuterComponent) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "updateTestScenario"),
+                new MapSqlParameterSource()
+                        .addValue("id", id)
+                        .addValue("name", updatedOuterComponent.getName())
+                        .addValue("description", updatedOuterComponent.getDescription()));
+        deleteTestScenarioSteps(id);
+        saveOuterComponentSteps(updatedOuterComponent, id, false);
+    }
+
     public boolean existsOuterComponentWithId(int id, boolean isCompound) {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "findOuterCompoundIdByOuterCompoundId")
@@ -148,6 +153,22 @@ public class OuterComponentRepository {
                     Integer.class);
         } catch (DataAccessException e) {
             return false;
+        }
+    }
+
+    private void deleteTestScenarioSteps(Integer id) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "deleteStepsByTestScenarioId"),
+                new MapSqlParameterSource().addValue("id", id));
+    }
+
+    private void saveOuterComponentSteps(OuterComponent outerComponent, Integer outerComponentId, boolean isCompound) {
+        ListIterator<Step> outerComponentStepsIterator = outerComponent.getSteps().listIterator();
+        Step outerComponentStep;
+        while (outerComponentStepsIterator.hasNext()) {
+            int outerComponentStepOrder = outerComponentStepsIterator.nextIndex();
+            outerComponentStep = outerComponentStepsIterator.next();
+            saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
         }
     }
 

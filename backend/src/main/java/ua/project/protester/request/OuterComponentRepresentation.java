@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateOuterComponentRequest {
+public class OuterComponentRepresentation {
 
     private String name;
     private String description;

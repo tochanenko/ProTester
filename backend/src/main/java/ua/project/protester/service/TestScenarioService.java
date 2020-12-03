@@ -8,7 +8,7 @@ import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.request.CreateOuterComponentRequest;
+import ua.project.protester.request.OuterComponentRepresentation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,27 +19,16 @@ public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveTestScenario(CreateOuterComponentRequest compoundRequest) {
-        OuterComponent newOuterComponent = new OuterComponent();
-        newOuterComponent.setName(compoundRequest.getName());
-        newOuterComponent.setDescription(compoundRequest.getDescription());
-        newOuterComponent.setSteps(
-                compoundRequest.getSteps()
-                        .stream()
-                        .map(stepRepresentation -> new Step(
-                                stepRepresentation.getId(),
-                                stepRepresentation.isAction(),
-                                null,
-                                stepRepresentation.getParameters()))
-                        .collect(Collectors.toList()));
+    public void saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
+        OuterComponent newOuterComponent = constructOuterComponentFromRepresentation(outerComponentRepresentation);
         outerComponentRepository.saveOuterComponent(newOuterComponent, false);
     }
 
     @Transactional
-    public void updateTestScenario(int id, CreateOuterComponentRequest compoundRequest) throws TestScenarioNotFoundException {
+    public void updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws TestScenarioNotFoundException {
         if (outerComponentRepository.existsOuterComponentWithId(id, false)) {
-            outerComponentRepository.deleteOuterComponentById(id, false);
-            saveTestScenario(compoundRequest);
+            OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
+            outerComponentRepository.updateTestScenario(id, updatedTestScenario);
         } else {
             throw new TestScenarioNotFoundException();
         }
@@ -61,5 +50,21 @@ public class TestScenarioService {
     @Transactional
     public void deleteTestScenarioById(int id) {
         outerComponentRepository.deleteOuterComponentById(id, false);
+    }
+
+    private OuterComponent constructOuterComponentFromRepresentation(OuterComponentRepresentation representation) {
+        OuterComponent newOuterComponent = new OuterComponent();
+        newOuterComponent.setName(representation.getName());
+        newOuterComponent.setDescription(representation.getDescription());
+        newOuterComponent.setSteps(
+                representation.getSteps()
+                        .stream()
+                        .map(stepRepresentation -> new Step(
+                                stepRepresentation.getId(),
+                                stepRepresentation.isAction(),
+                                null,
+                                stepRepresentation.getParameters()))
+                        .collect(Collectors.toList()));
+        return newOuterComponent;
     }
 }

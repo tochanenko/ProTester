@@ -9,6 +9,7 @@ import java.util.Map;
 @Setter
 @Getter
 public abstract class ExecutableComponent {
+    protected Integer id;
     protected String name;
     protected String description;
     protected ExecutableComponentType type;

@@ -20,10 +20,10 @@ import {PendingPasswordComponent} from './components/pending-password/pending-pa
 import {ChangePasswordComponent} from './components/change-password/change-password.component';
 import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
 import {ManageActionComponent} from './components/manage-action/manage-action.component';
-import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
-import {ProjectCreateComponent} from './project/project-create/project-create.component';
-import {ProjectListComponent} from './project/project-list/project-list.component';
-import {ProjectUpdateComponent} from './project/project-update/project-update.component';
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
+import {ProjectUpdateComponent} from './components/project/project-update/project-update.component';
 import {TestCaseListComponent} from './components/test-case-list/test-case-list.component';
 
 @NgModule({

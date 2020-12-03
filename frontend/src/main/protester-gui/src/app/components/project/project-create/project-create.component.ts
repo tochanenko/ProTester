@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {StorageService} from "../../services/auth/storage.service";
-import {ProjectService} from "../../services/project.service";
+import {StorageService} from "../../../services/auth/storage.service";
+import {ProjectService} from "../../../services/project.service";
 import {Subscription} from "rxjs";
 
 @Component({

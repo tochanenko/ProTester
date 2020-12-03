@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ProjectService} from "../../services/project.service";
+import {ProjectService} from "../../../services/project.service";
 import {Router} from "@angular/router";
-import {ProjectFilter} from "../project-filter.model";
-import {StorageService} from "../../services/auth/storage.service";
+import {ProjectFilter} from "../../../models/project/project-filter.model";
+import {StorageService} from "../../../services/auth/storage.service";
 import {PageEvent} from "@angular/material/paginator";
-import {Project} from "../project.model";
+import {Project} from "../../../models/project/project.model";
 import {MatDialog} from "@angular/material/dialog";
 import {ProjectUpdateComponent} from "../project-update/project-update.component";
 
@@ -95,10 +95,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.subscription = updateDialogRef.afterClosed().subscribe(() => {
       this.searchProjects();
     });
-  }
-
-  navigateToTestCaseList(id: number): void {
-    this.router.navigateByUrl('/test-case-list/' + id).then();
   }
 
   ngOnDestroy(): void {

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.Step;
 
 import java.util.List;

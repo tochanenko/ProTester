@@ -1,4 +1,4 @@
-package ua.project.protester.service;
+package ua.project.protester.service.project;
 
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
@@ -16,7 +16,7 @@ public interface ProjectService {
 
     Page<ProjectDto> findAllProjects(Pagination pagination);
 
-    Page<ProjectDto> findAllProjectsByStatus(Pagination pagination);
+    Page<ProjectDto> findAllProjectsByStatus(Pagination pagination, Boolean isActive);
 
     ProjectDto getProjectDtoById(Long id) throws ProjectNotFoundException;
 

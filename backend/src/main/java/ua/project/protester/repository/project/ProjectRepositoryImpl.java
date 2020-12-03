@@ -1,4 +1,4 @@
-package ua.project.protester.repository;
+package ua.project.protester.repository.project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.model.Project;
 import ua.project.protester.model.ProjectDto;
 import ua.project.protester.utils.Pagination;
-import ua.project.protester.utils.ProjectDtoRowMapper;
-import ua.project.protester.utils.ProjectRowMapper;
+import ua.project.protester.utils.project.ProjectDtoRowMapper;
+import ua.project.protester.utils.project.ProjectRowMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,18 +93,18 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("pageSize", pagination.getPageSize());
         namedParams.addValue("offset", pagination.getOffset());
-        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
 
         return namedJdbcTemplate.query(getAllProjects, namedParams, new ProjectDtoRowMapper());
     }
 
     @Override
-    public List<ProjectDto> findAllByStatus(Pagination pagination) {
+    public List<ProjectDto> findAllByStatus(Pagination pagination, Boolean isActive) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("pageSize", pagination.getPageSize());
         namedParams.addValue("offset", pagination.getOffset());
-        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
-        namedParams.addValue("projectActive", pagination.getProjectActive());
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+        namedParams.addValue("projectActive", isActive);
 
         return namedJdbcTemplate.query(getAllProjectsFiltered, namedParams, new ProjectDtoRowMapper());
     }
@@ -123,16 +123,16 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public Long getCountProjects(Pagination pagination) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
 
         return namedJdbcTemplate.queryForObject(findCountOdRecords, namedParams, Long.class);
     }
 
     @Override
-    public Long getCountProjectsByStatus(Pagination pagination) {
+    public Long getCountProjectsByStatus(Pagination pagination, Boolean isActive) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("filterProjectName", pagination.getProjectName() + "%");
-        namedParams.addValue("projectActive", pagination.getProjectActive());
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+        namedParams.addValue("projectActive", isActive);
 
         return namedJdbcTemplate.queryForObject(findCountOdRecordsWithStatus, namedParams, Long.class);
     }

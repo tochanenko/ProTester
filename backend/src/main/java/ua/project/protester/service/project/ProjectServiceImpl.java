@@ -1,4 +1,4 @@
-package ua.project.protester.service;
+package ua.project.protester.service.project;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +8,10 @@ import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.Project;
 import ua.project.protester.model.ProjectDto;
-import ua.project.protester.repository.ProjectRepository;
+import ua.project.protester.repository.project.ProjectRepository;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
-import ua.project.protester.utils.ProjectMapper;
+import ua.project.protester.utils.project.ProjectMapper;
 
 @Service
 @Slf4j
@@ -80,11 +80,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Page<ProjectDto> findAllProjectsByStatus(Pagination pagination) {
+    public Page<ProjectDto> findAllProjectsByStatus(Pagination pagination, Boolean isActive) {
         log.info("IN findAllProjectsByStatus");
         return new Page<>(
-                projectRepository.findAllByStatus(pagination),
-                projectRepository.getCountProjectsByStatus(pagination)
+                projectRepository.findAllByStatus(pagination, isActive),
+                projectRepository.getCountProjectsByStatus(pagination, isActive)
         );
     }
 

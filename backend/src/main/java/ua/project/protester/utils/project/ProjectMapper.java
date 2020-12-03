@@ -1,4 +1,4 @@
-package ua.project.protester.utils;
+package ua.project.protester.utils.project;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

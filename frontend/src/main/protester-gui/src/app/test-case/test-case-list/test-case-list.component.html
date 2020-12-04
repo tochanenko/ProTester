@@ -17,6 +17,15 @@
       <mat-cell *matCellDef="let element">{{element.scenarioId}}</mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="DATASET">
+      <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <ng-container *ngFor="let datasets of element.dataSetResponseList">
+          {{ datasets.name}}
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="EDIT">
       <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT </mat-header-cell>
       <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"

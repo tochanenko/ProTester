@@ -1,3 +1,5 @@
+import {DataSetResponse} from "../models/data-set-response";
+
 export class TestCaseModel {
   id?: number;
   name?: string;
@@ -5,5 +7,5 @@ export class TestCaseModel {
   projectId?: number;
   authorId?: number;
   scenarioId: number;
-  dataSetResponseList: Array<>
+  dataSetResponseList: Array<DataSetResponse>;
 }

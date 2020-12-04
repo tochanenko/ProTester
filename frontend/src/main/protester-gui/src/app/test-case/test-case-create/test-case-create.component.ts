@@ -65,7 +65,7 @@ export class TestCaseCreateComponent implements OnInit {
       description: this.f.description.value,
       scenarioId: this.f.scenarioId.value,
       authorId: this.storageService.getUser.id,
-      dataSetId: this.f.dataSet.value
+      dataSetResponseList: this.f.datasetResponceList.value
     };
 
     this.subscription = this.testCaseService.create(testCaseCreateResponse)

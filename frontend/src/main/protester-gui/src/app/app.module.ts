@@ -30,6 +30,7 @@ import {ProjectMenuComponent} from "./components/project/project-menu/project-me
 import {ProjectCreateComponent} from "./components/project/project-create/project-create.component";
 import {ProjectListComponent} from "./components/project/project-list/project-list.component";
 import {ProjectUpdateComponent} from "./components/project/project-update/project-update.component";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {ProjectUpdateComponent} from "./components/project/project-update/projec
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    MatSelectModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

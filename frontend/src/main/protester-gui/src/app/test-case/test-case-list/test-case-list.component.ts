@@ -23,7 +23,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   testCaseFilter: TestCaseFilter = new TestCaseFilter();
   projectsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
-  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'EDIT'];
+  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'EDIT'];
   private subscription: Subscription;
 
   constructor(private testCaseService: TestCaseService,

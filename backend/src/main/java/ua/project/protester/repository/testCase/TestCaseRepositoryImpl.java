@@ -98,12 +98,14 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         log.info("IN TestCaseRepositoryImpl findById id={}", id);
 
         try {
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(
+            Optional<TestCase> testCase = Optional.ofNullable(namedJdbcTemplate.queryForObject(
                     PropertyExtractor.extract(env, "findTestCaseById"),
                     new MapSqlParameterSource()
                             .addValue("test_case_id", id),
                     testCaseRowMapper));
 
+            testCase.ifPresent(aCase -> aCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(aCase.getId())));
+            return testCase;
         } catch (EmptyResultDataAccessException e) {
             log.warn("testCase with id {} was not found", id);
             return Optional.empty();

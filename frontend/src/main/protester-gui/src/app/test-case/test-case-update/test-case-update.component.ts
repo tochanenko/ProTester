@@ -9,6 +9,7 @@ import {StorageService} from '../../services/auth/storage.service';
 import {TestCaseListComponent} from "../test-case-list/test-case-list.component";
 import {TestScenario} from "../../models/test-scenario";
 import {TestScenarioService} from "../../services/test-scenario/test-scenario-service";
+import {DataSetResponse} from "../../models/data-set-response";
 
 @Component({
   selector: 'app-test-case-update',
@@ -18,6 +19,8 @@ import {TestScenarioService} from "../../services/test-scenario/test-scenario-se
 export class TestCaseUpdateComponent implements OnInit {
   testCaseUpdateForm: FormGroup;
   testScenario: TestScenario[] = [];
+  dataSet: DataSetResponse[] = [];
+  scenarioId: number;
   testCaseId: number;
   errorMessage = '';
   submitted = false;
@@ -40,7 +43,7 @@ export class TestCaseUpdateComponent implements OnInit {
     this.createTestCaseUpdateForm();
     this.subscription = this.testCaseService.getFilterById(this.testCaseId).subscribe(
       data => {
-        console.log(`Changing data` + data);
+        console.log(`Changing data` + data.dataSetResponseList.toString());
         this.testCaseUpdateForm.setValue(data);
       },
       error => {
@@ -79,7 +82,8 @@ export class TestCaseUpdateComponent implements OnInit {
       name: this.f.name.value,
       scenarioId: this.f.scenarioId.value,
       projectId: this.f.projectId.value,
-      authorId: this.storageService.getUser.id
+      authorId: this.storageService.getUser.id,
+      dataSetResponseList: this.f.dataSetResponseList.value
     };
 
 

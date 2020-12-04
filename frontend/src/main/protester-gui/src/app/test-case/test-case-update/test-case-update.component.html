@@ -19,10 +19,20 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Test scenarios</mat-label>
-        <mat-select [(value)]="testScenario" formControlName="scenarioId">
-          <mat-option *ngFor="let scenario of testScenario">{{scenario.name}}</mat-option>
+        <mat-label>Test case scenario</mat-label>
+        <mat-select  formControlName="scenarioId">
+          <mat-option *ngFor="let sc of testScenario" [value]="sc.id">
+            {{sc.name}}
+          </mat-option>
         </mat-select>
+      </mat-form-field>
+
+
+      <mat-form-field class="full-width-input" appearance="outline">
+        <mat-label>TestCase description </mat-label>
+        <input matInput type="text" id="dataset" class="form-control"
+               formControlName="dataSetResponseList"
+               [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
       </mat-form-field>
 
       <div class="error-info">
@@ -31,8 +41,8 @@
         </mat-error>
       </div>
 
-      <button mat-raised-button class="button-flex-container">
-        <p class="button-text">UPDATE</p>
+      <button mat-raised-button class="button-flex-container" [disabled]="true">
+        <p class="button-text">Will be done</p>
       </button>
 
     </form>

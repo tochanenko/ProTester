@@ -36,6 +36,7 @@ public class LibraryController {
     @GetMapping
     public List<Library> getList(@RequestParam int count,
                                  @RequestParam int offset) {
+        System.out.println("12345");
         return libraryService.getList(count, offset);
     }
 

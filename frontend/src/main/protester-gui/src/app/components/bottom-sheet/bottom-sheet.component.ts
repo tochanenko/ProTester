@@ -43,6 +43,5 @@ export class BottomSheetComponent implements OnInit{
 
 
   ngOnInit() {
-    console.log(this.data);
   }
 }

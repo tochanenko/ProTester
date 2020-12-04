@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Library} from "../../models/library.model";
 import {filter, map, tap} from "rxjs/operators";
@@ -18,7 +18,7 @@ export class LibraryManageService {
   constructor(private http: HttpClient) { }
 
   getAllLibraries() : Observable<Library[]> {
-    return this.http.get<Library[]>("assets/libraries.json", httpOptions);
+    return this.http.get<Library[]>("api/library?count=10&offset=1", httpOptions);
   }
 
   getAllActions(): Observable<Action[]> {
@@ -27,6 +27,10 @@ export class LibraryManageService {
 
   getAllCompounds(): Observable<OuterComponent[]> {
     return this.http.get<OuterComponent[]>("api/compounds", httpOptions);
+  }
+
+  createLibrary(library: {}): Observable<any> {
+    return this.http.post("api/library", library, httpOptions);
   }
 
 }

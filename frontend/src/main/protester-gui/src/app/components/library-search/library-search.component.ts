@@ -34,15 +34,8 @@ export class LibrarySearchComponent implements OnInit {
   }
 
   searchByFilter(): void {
-    this.subscription = this.libraryService.getAllLibraries().subscribe(data =>
-    {
-      let filtered_libraries = data.filter(library => library.name.includes(this.libraryFilter.libraryName));
-      this.librariesCount = filtered_libraries.length;
-
-      let pageSize = this.libraryFilter.pageSize;
-      let pageNumber = this.libraryFilter.pageNumber;
-      let range = pageSize * pageNumber;
-      this.dataSource = filtered_libraries.slice(range, pageSize + range);
+    this.subscription = this.libraryService.getAllLibraries().subscribe(data => {
+      this.dataSource = data;
     });
   }
 

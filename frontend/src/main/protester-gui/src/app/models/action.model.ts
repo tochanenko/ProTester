@@ -5,5 +5,4 @@ export class Action extends ExecutableComponent{
   className: string;
   declarationId: number;
   preparedParams: Map<string,string>;
-
 }

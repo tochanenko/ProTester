@@ -7,6 +7,8 @@ import {Action} from "../../models/action.model";
 import {OuterComponent} from "../../models/outer.model";
 import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {Subscription} from "rxjs";
+import {Library} from "../../models/library.model";
+import {Step} from "../../models/step.model";
 
 export interface Tile {
   rows: number;
@@ -65,6 +67,46 @@ export class LibraryNewComponent implements OnInit {
   }
 
   onSubmit(): void {
+    const f = this.formControls;
+
+
+    if (this.libraryCreateForm.invalid) {
+      return;
+    }
+
+    if (this.actions.length === 0 && this.compounds.length === 0) {
+      console.error("Set action or compound");
+      return;
+    }
+    let libraryCreateRequest = {};
+    let action_step = new Step();
+    let compound_step = new Step();
+
+    libraryCreateRequest['description'] = f.description.value;
+    libraryCreateRequest['name'] = f.name.value;
+    libraryCreateRequest['id'] = 1;
+    libraryCreateRequest['components'] = [];
+    if (this.actions.length > 0) {
+      this.actions.map(action => {
+        action_step.isAction = true;
+        action_step.id = 1;
+        action_step.component = action;
+        action_step.parameters = null;
+        libraryCreateRequest['components'].push(action_step);
+      })
+    }
+
+    if (this.compounds.length > 0) {
+      this.compounds.map(compound => {
+        compound_step.isAction = false;
+        compound_step.component = compound;
+        compound_step.parameters = null;
+        libraryCreateRequest['components'].push(compound_step);
+      })
+    }
+    console.log(libraryCreateRequest);
+
+    this.libraryService.createLibrary(libraryCreateRequest).subscribe()
   }
 
   get formControls() {
@@ -79,7 +121,6 @@ export class LibraryNewComponent implements OnInit {
 
   updateCompoundsArray(): void {
     this.compoundSubscription = this.interactionService.compoundArrayObserver.subscribe(compound => {
-      console.log(compound);
       this.compounds.push(compound);
     });
   }
@@ -93,7 +134,6 @@ export class LibraryNewComponent implements OnInit {
   }
 
   openBottomSheetWithActions(): void {
-    console.log(this.actions);
 
     this._bottomSheet.open(BottomSheetComponent, {
       data: {

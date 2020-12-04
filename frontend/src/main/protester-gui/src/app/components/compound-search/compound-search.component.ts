@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Library} from "../../models/library.model";
 import {PageEvent} from "@angular/material/paginator";
 import {LibraryFilter} from "../library-search/library-filter.model";
 import {Subscription} from "rxjs";
 import {CompoundManageService} from "../../services/compound-manage.service";
+import {OuterComponent} from "../../models/outer.model";
 
 @Component({
   selector: 'app-compound-search',
@@ -13,7 +13,7 @@ import {CompoundManageService} from "../../services/compound-manage.service";
 })
 export class CompoundSearchComponent implements OnInit {
   searchForm: FormGroup;
-  dataSource: Library[];
+  dataSource: OuterComponent[];
   pageEvent: PageEvent;
 
   columnsToDisplay: string[] = ['NAME', 'DESCRIPTION', 'CONF'];

@@ -15,28 +15,21 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
 
-
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatSortModule} from '@angular/material/sort';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import { MatPaginatorModule } from '@angular/material/paginator';
-
-import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
-import { ChangePasswordComponent } from './components/change-password/change-password.component';
-import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
-import { ManageActionComponent } from './components/manage-action/manage-action.component';
+import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
+import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
+import {ChangePasswordComponent} from './components/change-password/change-password.component';
+import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
+import {ManageActionComponent} from './components/manage-action/manage-action.component';
 import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
 import {ProjectCreateComponent} from './project/project-create/project-create.component';
 import {ProjectListComponent} from './project/project-list/project-list.component';
 import {ProjectUpdateComponent} from './project/project-update/project-update.component';
-import { ActionsListComponent } from './actions/actions-list/actions-list.component';
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import { ActionUpdateComponent } from './actions/action-update/action-update.component';
-import {MatDialogModule} from "@angular/material/dialog";
-import { TestCaseCreateComponent } from './test-case/test-case-create/test-case-create.component';
+import {ActionsListComponent} from './actions/actions-list/actions-list.component';
+import {ActionUpdateComponent} from './actions/action-update/action-update.component';
+import { TestCaseUpdateComponent } from './test-case/test-case-update/test-case-update.component';
+import {TestCaseCreateComponent} from './test-case/test-case-create/test-case-create.component';
+import {TestCaseListComponent} from './test-case/test-case-list/test-case-list.component';
+
 
 @NgModule({
   declarations: [
@@ -54,8 +47,10 @@ import { TestCaseCreateComponent } from './test-case/test-case-create/test-case-
     ProjectListComponent,
     ProjectUpdateComponent,
     ManageActionComponent,
+    TestCaseListComponent,
     ActionsListComponent,
     ActionUpdateComponent,
+    TestCaseUpdateComponent,
     TestCaseCreateComponent
   ],
   imports: [
@@ -66,16 +61,7 @@ import { TestCaseCreateComponent } from './test-case/test-case-create/test-case-
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSortModule,
-    MatTableModule,
-    MatTooltipModule,
-    MatPaginatorModule,
-    MatProgressSpinnerModule
+    MaterialModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

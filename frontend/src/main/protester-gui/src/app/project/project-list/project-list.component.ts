@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ProjectService} from "../../services/project.service";
-import {Router} from "@angular/router";
-import {ProjectFilter} from "../project-filter.model";
-import {StorageService} from "../../services/auth/storage.service";
-import {PageEvent} from "@angular/material/paginator";
-import {Project} from "../project.model";
-import {MatDialog} from "@angular/material/dialog";
-import {ProjectUpdateComponent} from "../project-update/project-update.component";
+import {ProjectService} from '../../services/project.service';
+import {Router} from '@angular/router';
+import {ProjectFilter} from '../project-filter.model';
+import {StorageService} from '../../services/auth/storage.service';
+import {PageEvent} from '@angular/material/paginator';
+import {Project} from '../project.model';
+import {MatDialog} from '@angular/material/dialog';
+import {ProjectUpdateComponent} from '../project-update/project-update.component';
 
 @Component({
   selector: 'app-project-list',
@@ -55,10 +55,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToProject(id: number) {
-    this.router.navigate('/test-case-list',id);
-  }
-  
   onPaginateChange(event: PageEvent): void {
     this.projectFilter.pageNumber = event.pageIndex;
     this.projectFilter.pageSize = event.pageSize;
@@ -100,7 +96,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       this.searchProjects();
     });
   }
-
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

@@ -56,7 +56,7 @@ export class TestCaseCreateComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    if (this.projectCreateForm.invalid) {
+    if (this.testCaseForm.invalid) {
       return;
     }
 
@@ -65,14 +65,14 @@ export class TestCaseCreateComponent implements OnInit {
       description: this.f.description.value,
       scenarioId: this.f.scenarioId.value,
       authorId: this.storageService.getUser.id,
-      dataSetId: this.dataSet.value
+      dataSetId: this.f.dataSet.value
     };
 
-    this.subscription = this.testCaseService.create(projectCreateResponse)
+    this.subscription = this.testCaseService.create(testCaseCreateResponse)
       .subscribe(
         data => {
           this.isSuccessful = true;
-          this.router.navigateByUrl('/projectList').then();
+          this.router.navigateByUrl('/test-case-list').then();
         },
         err => {
           this.errorMessage = err.error.message;

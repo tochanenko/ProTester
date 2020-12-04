@@ -1,8 +1,8 @@
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
-import {ProjectFilter} from "../project/project-filter.model";
-import {Project} from "../project/project.model";
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {ProjectFilter} from '../project/project-filter.model';
+import {Project} from '../project/project.model';
 import {ProjectResponse} from '../project/project-response.model';
 
 const httpOptions = {

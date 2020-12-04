@@ -3,7 +3,6 @@ export class TestCaseModel {
   name?: string;
   description?: string;
   projectId?: number;
-  authorId? : number;
+  authorId?: number;
   scenarioId: number;
-  dataSetId?: Array<number>;
 }

@@ -10,10 +10,7 @@ import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;
-import ua.project.protester.response.ActionResponse;
 import ua.project.protester.utils.ActionMapper;
-import ua.project.protester.utils.Page;
-import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 

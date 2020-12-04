@@ -1,14 +1,6 @@
+import {TestCaseModel} from './test-case.model';
+
 export class TestCaseResponse {
-
-  id: number;
-
-  name: string;
-
-  description: string;
-
-  projectId: number;
-
-  authorId: number;
-
-  scenarioId: number;
+  list: TestCaseModel[];
+  totalItems: number;
 }

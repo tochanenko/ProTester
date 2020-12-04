@@ -1,10 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {ActionService} from "../../services/action/action.service";
+import {ActionService} from '../../services/action/action.service';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Subscription} from "rxjs";
-import {ActionsListComponent} from "../actions-list/actions-list.component";
+import {Router} from '@angular/router';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Subscription} from 'rxjs';
+import {ActionsListComponent} from '../actions-list/actions-list.component';
 
 @Component({
   selector: 'app-action-update',
@@ -29,11 +29,11 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
     this.actionId = data.id;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createActionUpdateForm();
     this.subscription = this.actionService.getActionById(this.actionId).subscribe(
       data => {
-        console.log(`Changing data`+data);
+        console.log(`Changing data` + data);
         this.actionUpdateForm.setValue(data);
       },
       error => {
@@ -50,12 +50,12 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
 
   createActionUpdateForm(): void {
     this.actionUpdateForm = this.formBuilder.group({
-      description:['',Validators.required],
-      id:[''],
-      name:[''],
-      type:[''],
-      parameterNames:[''],
-      preparedParams:['']
+      description: ['', Validators.required],
+      id: [''],
+      name: [''],
+      type: [''],
+      parameterNames: [''],
+      preparedParams: ['']
     });
   }
 

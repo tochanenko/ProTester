@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
 import { of } from 'rxjs';
 import {Action} from "../../actions/action.model";
@@ -42,6 +42,10 @@ export class ActionService {
   // getActionById(id: number): Observable<Project> {
   //   return this.http.get<Project>(`/api/project/${id}`);
   // }
+
+  getAll(): Observable<Action[]> {
+    return this.http.get<Action[]>(`/api/actions`);
+  }
 
   getActionById(id: number): Observable<Action> {
     return of(ACTIONS.filter( action => action.id === id)[0]);

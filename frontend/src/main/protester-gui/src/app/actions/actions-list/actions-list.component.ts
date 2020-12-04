@@ -19,11 +19,12 @@ export class ActionsListComponent implements OnInit {
 
 
   actions = ACTIONS;
+  // actions: Action[];
   dataSource = new MatTableDataSource<Action>(this.actions);
   pageEvent: PageEvent;
-  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'TYPE','EDIT'];
-  @ViewChild(MatPaginator,{static:false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static:false}) sort: MatSort;
+  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'TYPE', 'EDIT'];
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
 
   private subscription: Subscription;
 
@@ -31,6 +32,7 @@ export class ActionsListComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog) {
   }
+
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -54,8 +56,8 @@ export class ActionsListComponent implements OnInit {
     });
   }
 
-  onNavigate(productCode){
-    console.log(`product code ${productCode}`)
+  onNavigate(productCode): void{
+    console.log(`product code ${productCode}`);
   }
 
 }

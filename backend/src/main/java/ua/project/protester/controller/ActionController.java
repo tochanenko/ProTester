@@ -4,13 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.project.protester.model.ProjectDto;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.request.ActionRequestModel;
-import ua.project.protester.response.ActionResponse;
 import ua.project.protester.service.ActionService;
-import ua.project.protester.utils.Page;
-import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 

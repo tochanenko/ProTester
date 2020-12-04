@@ -12,7 +12,7 @@ import {PageEvent} from "@angular/material/paginator";
 })
 export class UsersListComponent implements OnInit {
 
-  displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'role', 'status'];
+  displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'role', 'status', 'actions'];
   dataSource = new MatTableDataSource();
   usersList = null;
 

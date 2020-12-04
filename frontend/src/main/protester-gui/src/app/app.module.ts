@@ -24,11 +24,10 @@ import { LibrarySearchComponent } from './components/library-search/library-sear
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.component';
 import {
-  MAT_BOTTOM_SHEET_DATA,
-  MAT_BOTTOM_SHEET_DEFAULT_OPTIONS,
-  MatBottomSheetRef
+  MAT_BOTTOM_SHEET_DEFAULT_OPTIONS
 } from "@angular/material/bottom-sheet";
 import {MatTabsModule} from "@angular/material/tabs";
+import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
 
 
 @NgModule({
@@ -45,7 +44,8 @@ import {MatTabsModule} from "@angular/material/tabs";
     LibraryMenuComponent,
     LibraryNewComponent,
     LibrarySearchComponent,
-    BottomSheetComponent
+    BottomSheetComponent,
+    CompoundSearchComponent
   ],
   imports: [
     BrowserModule,

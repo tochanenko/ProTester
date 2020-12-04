@@ -11,7 +11,7 @@ import {TokenExpiredComponent} from "./components/token-expired/token-expired.co
 import {LibraryMenuComponent} from './components/library-menu/library-menu.component';
 import {LibraryNewComponent} from './components/library-new/library-new.component';
 import {LibrarySearchComponent} from "./components/library-search/library-search.component";
-import {BottomSheetComponent} from "./components/bottom-sheet/bottom-sheet.component";
+import {CompoundSearchComponent} from "./components/compound-search/compound-search.component";
 
 
 const routes: Routes = [
@@ -64,8 +64,8 @@ const routes: Routes = [
     component: LibrarySearchComponent
   },
   {
-    path: 'bottom-sheet',
-    component: BottomSheetComponent
+    path: 'compound',
+    component: CompoundSearchComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

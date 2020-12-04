@@ -10,8 +10,6 @@ import java.util.Map;
 @ToString
 public abstract class AbstractAction extends ExecutableComponent {
 
-    protected Integer id;
-    protected ExecutableComponentType type;
     protected String className;
     protected Map<String, String> preparedParams;
 

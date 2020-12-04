@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.model.TestCase;
+import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 import ua.project.protester.utils.testcase.TestCaseRowMapper;
@@ -27,6 +28,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final Environment env;
     private final TestCaseRowMapper testCaseRowMapper;
+    private final DataSetRepository dataSetRepository;
 
     @Override
     public TestCase create(TestCase testCase, List<Long> dataSet) {
@@ -119,10 +121,17 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         namedParams.addValue("filterName", pagination.getSearchField() + "%");
         namedParams.addValue("project_id", projectId);
 
-        return namedJdbcTemplate.query(
+        List<TestCase> testCaseList = namedJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findAllByProject"),
                 namedParams,
                 testCaseRowMapper);
+
+        testCaseList.forEach(
+                list -> list.setDataSetList(dataSetRepository.findDataSetByTestCaseId(list.getId()))
+        );
+
+        testCaseList.forEach(System.out::print);
+        return testCaseList;
     }
 
     @Override

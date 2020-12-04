@@ -2,6 +2,7 @@ package ua.project.protester.repository;
 
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
+import ua.project.protester.utils.PaginationLibrary;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +12,13 @@ public interface LibraryRepository {
 
     void updateLibrary(Library library, int id);
 
-    List<Library> getList(int count, int offset);
+    List<Library> findAll(PaginationLibrary paginationLibrary);
 
     Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException;
 
     Optional<Library> findByName(String name);
 
     void deleteLibraryById(Integer id);
+
+    Long getCountLibraries(PaginationLibrary paginationLibrary);
 }

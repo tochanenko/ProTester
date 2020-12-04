@@ -8,8 +8,9 @@ import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.LibraryRepository;
 import ua.project.protester.request.LibraryRequestModel;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.PaginationLibrary;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,8 +61,11 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public List<Library> getList(int count, int offset) {
-        return libraryRepository.getList(count, offset);
+    public Page<Library> findAll(PaginationLibrary paginationLibrary) {
+        return new Page<>(
+                libraryRepository.findAll(paginationLibrary),
+                libraryRepository.getCountLibraries(paginationLibrary)
+        );
     }
 
     @Override

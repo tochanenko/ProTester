@@ -1,3 +1,15 @@
+.mat-cell {
+  padding-right: 24px;
+}
+
+.active-user {
+  color: green;
+}
+
+.deactivated-user {
+  color: red;
+}
+
 .more-info {
   text-align: center;
   margin-top: 10px;

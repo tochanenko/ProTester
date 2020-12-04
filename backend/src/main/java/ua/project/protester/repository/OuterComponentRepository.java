@@ -18,6 +18,7 @@ import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
+import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.List;
@@ -53,13 +54,17 @@ public class OuterComponentRepository {
         saveOuterComponentSteps(outerComponent, outerComponentId, isCompound);
     }
 
-    public List<OuterComponent> findAllOuterComponents(boolean areCompounds) {
+    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter) {
         String sql = areCompounds
                 ? PropertyExtractor.extract(env, "findAllCompounds")
                 : PropertyExtractor.extract(env, "findAllTestScenarios");
 
         List<OuterComponent> allOuterComponents = namedParameterJdbcTemplate.query(
                 sql,
+                new MapSqlParameterSource()
+                        .addValue("pageSize", filter.getPageSize())
+                        .addValue("offset", filter.getOffset())
+                        .addValue("filterName", filter.getOuterComponentName() + '%'),
                 new BeanPropertyRowMapper<>(OuterComponent.class));
 
         ExecutableComponentType componentsType = areCompounds
@@ -74,6 +79,18 @@ public class OuterComponentRepository {
                 });
 
         return allOuterComponents;
+    }
+
+    public Long countOuterComponents(boolean isCompound, OuterComponentFilter filter) {
+        String sql = isCompound
+                ? PropertyExtractor.extract(env, "countCompounds")
+                : PropertyExtractor.extract(env, "countTestScenarios");
+
+        return namedParameterJdbcTemplate.queryForObject(
+                sql,
+                new MapSqlParameterSource()
+                        .addValue("filterName", filter.getOuterComponentName() + '%'),
+                Long.class);
     }
 
     public Optional<OuterComponent> findOuterComponentById(Integer id, boolean isCompound) throws OuterComponentNotFoundException {

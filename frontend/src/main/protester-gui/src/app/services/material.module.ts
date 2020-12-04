@@ -6,25 +6,46 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSelectModule} from "@angular/material/select";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   imports: [
+    MatMenuModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatGridListModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatTabsModule
   ],
   exports: [
+    MatMenuModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatGridListModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatTabsModule
   ]
 })
 export class MaterialModule {

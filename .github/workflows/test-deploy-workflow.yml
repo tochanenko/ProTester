@@ -1,0 +1,86 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+
+  ante_pipeline_notification:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          SLACK_CHANNEL: git
+          SLACK_USERNAME: GitHub
+          SLACK_ICON: https://i.pinimg.com/236x/91/f3/4d/91f34df079492758dba4263f64df7122--jack-nicholson-stephen-kings.jpg
+          SLACK_MESSAGE: 'Pipeline execution starts'
+          SLACK_COLOR: '#4682B4'
+
+  pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          java-package: jdk
+
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Install dpl
+        run: gem install dpl
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Test with Maven
+        run: mvn test -B
+
+      - name: Deploy to Heroku
+        if: contains( github.ref, 'master')
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: dpl --provider=heroku --app=pro-tester --api-key=$HEROKU_API_KEY
+
+  post_pipeline_notification_on_success:
+    runs-on: ubuntu-18.04
+    needs: pipeline
+    if: ${{ success() }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          SLACK_CHANNEL: git
+          SLACK_USERNAME: GitHub
+          SLACK_ICON: https://i.pinimg.com/236x/91/f3/4d/91f34df079492758dba4263f64df7122--jack-nicholson-stephen-kings.jpg
+          SLACK_MESSAGE: 'Pipeline has passed'
+
+  post_pipeline_notification_on_failure:
+    runs-on: ubuntu-18.04
+    needs: pipeline
+    if: ${{ failure() }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+          SLACK_CHANNEL: git
+          SLACK_USERNAME: GitHub
+          SLACK_ICON: https://i.pinimg.com/236x/91/f3/4d/91f34df079492758dba4263f64df7122--jack-nicholson-stephen-kings.jpg
+          SLACK_MESSAGE: 'Pipeline has failed'
+          SLACK_COLOR: '#FF0000'

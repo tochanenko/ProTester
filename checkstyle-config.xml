@@ -675,7 +675,7 @@
                         String b = (a==null || a.length<1) ? null : a.substring(1);
         Doc ref:        http://checkstyle.sourceforge.net/config_coding.html#AvoidInlineConditionals
         -->
-        <module name="AvoidInlineConditionals"/>
+        <!-- <module name="AvoidInlineConditionals"/> -->
 
         <!--
         Description:    Detects empty statements (standalone ";" semicolon).

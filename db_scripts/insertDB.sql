@@ -3,7 +3,7 @@ VALUES ('ADMIN'),
        ('MANAGER'),
        ('ENGINEER');
 
-INSERT INTO "statutes"(status_name)
+INSERT INTO "statuses"(status_name)
 VALUES ('PASSED'),
 	   ('FINISHED'),
 	   ('IN PROGRESS'),
@@ -57,17 +57,3 @@ VALUES ((SELECT user_id
 	   ((SELECT user_id
 		FROM users
 		WHERE user_username = 'l_engineer_l'), 'estore', 'https://estore.ua/', TRUE);
-
-INSERT INTO "libraries_compounds"(library_id, compound_id)
-VALUES ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'registration library compounds'),
-	    (SELECT compound_id
-	     FROM compounds
-	     WHERE compound_name = 'fail registration')),
-	   ((SELECT library_id
-		 FROM libraries
-		 WHERE library_name = 'registration library compounds'),
-	    (SELECT compound_id
-	     FROM compounds
-	     WHERE compound_name = 'pass registration'));

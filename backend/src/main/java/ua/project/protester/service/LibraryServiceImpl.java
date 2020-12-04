@@ -20,6 +20,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public void createLibrary(LibraryRequestModel libraryRequest) {
+        System.out.println(libraryRequest.toString());
         Library newLibrary = new Library();
         newLibrary.setName(libraryRequest.getName());
         newLibrary.setDescription(libraryRequest.getDescription());

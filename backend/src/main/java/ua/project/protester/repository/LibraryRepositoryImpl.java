@@ -149,7 +149,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
         return namedParameterJdbcTemplate.query(
                 sql,
-                new MapSqlParameterSource().addValue("libraries_storage", id),
+                new MapSqlParameterSource().addValue("library_id", id),
                 (rs, rowNum) -> initLibraryStorage(
                         rs.getInt("library_storage_id"),
                         rs.getBoolean("is_action"),
@@ -192,7 +192,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                         .addValue("is_action", step.isAction())
                         .addValue("library_id", libraryId)
                         .addValue("action_id", step.isAction() ? step.getId() : null)
-                        .addValue("compound_id", step.isAction() ? null : step.getComponent().getId())
+                        .addValue("compound_id", step.isAction() ? null : step.getId())
         );
     }
 }

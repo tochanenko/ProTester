@@ -2,7 +2,6 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
@@ -11,7 +10,6 @@ import ua.project.protester.service.LibraryService;
 
 import java.util.List;
 
-@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
 @RestController
 @RequestMapping("/api/library")
 @RequiredArgsConstructor
@@ -25,8 +23,8 @@ public class LibraryController {
         libraryService.createLibrary(request);
     }
 
-    @PutMapping
-    public void updateLibrary(@RequestBody LibraryRequestModel request, @RequestParam int id) {
+    @PutMapping("/{id}")
+    public void updateLibrary(@RequestBody LibraryRequestModel request, @PathVariable int id) {
         libraryService.updateLibrary(request, id);
     }
 

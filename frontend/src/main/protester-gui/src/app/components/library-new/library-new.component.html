@@ -9,6 +9,11 @@
         <mat-form-field class="full-width-input" appearance="outline">
           <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
                  placeholder="Library name...">
+          <mat-error *ngIf="formControls.name.errors" class="invalid-input">
+            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length - {{validatorsConfig.name.maxLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length - {{validatorsConfig.name.minLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="lib-title-container">
@@ -16,6 +21,10 @@
         <mat-form-field class="full-width-input" appearance="outline">
               <textarea matInput type="text" id="description" name="description" formControlName="description"
                         class="create-input" placeholder="Library description..."></textarea>
+              <mat-error *ngIf="formControls.description.errors" class="invalid-input">
+                <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length - {{validatorsConfig.description.maxLength}} symbols</mat-error>
+                <mat-error *ngIf="formControls.description.errors.required">Description is required</mat-error>
+              </mat-error>
         </mat-form-field>
       </div>
       <div class="component-table">
@@ -30,7 +39,7 @@
         <div class="content">
           <div class="compound-tile-inner actions-tile">
             <div *ngIf="actions.length == 0" class="tile-label-wrapper">
-              <mat-label class="tile-label"> Add compounds</mat-label>
+              <mat-label class="tile-label"> Add actions</mat-label>
             </div>
             <div class="component-container">
               <mat-accordion *ngIf="actions.length > 0">
@@ -43,7 +52,9 @@
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <p>{{component.description}}</p>
-
+                  <button mat-icon-button (click)="deleteComponentFromArray(actions, component.id)">
+                    <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+                  </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
@@ -67,7 +78,9 @@
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <p>{{component.description}}</p>
-
+                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
+                    <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+                  </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>

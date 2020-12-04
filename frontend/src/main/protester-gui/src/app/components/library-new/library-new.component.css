@@ -43,6 +43,7 @@
   height: 100%;
   margin-left: 8%;
   margin-right: 8%;
+  margin-bottom: 10px;
   font-style: normal;
   font-weight: 500;
   font-size: 24px;
@@ -69,6 +70,10 @@ form {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+mat-error {
+  font-size: 12px;
 }
 
 .component-table {

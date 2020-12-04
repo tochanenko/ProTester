@@ -11,6 +11,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
     MatMenuModule,
     MatPaginatorModule,
     MatGridListModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatExpansionModule
   ],
   exports: [
     MatCardModule,
@@ -39,7 +41,8 @@ import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
     MatMenuModule,
     MatPaginatorModule,
     MatGridListModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatExpansionModule
   ]
 })
 export class MaterialModule {

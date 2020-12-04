@@ -1,10 +1,9 @@
-export class Action {
+import {ExecutableComponent} from "./executable.model";
+
+export class Action extends ExecutableComponent{
   id: number;
+  className: string;
   declarationId: number;
-  type:  string;
-  name: string;
-  description: string;
-  parameterNames: Array<string>;
   preparedParams: Map<string,string>;
 
 }

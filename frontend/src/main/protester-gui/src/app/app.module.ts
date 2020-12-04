@@ -28,6 +28,7 @@ import {
   MAT_BOTTOM_SHEET_DEFAULT_OPTIONS,
   MatBottomSheetRef
 } from "@angular/material/bottom-sheet";
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import {
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    ScrollingModule
+    ScrollingModule,
+    MatTabsModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]

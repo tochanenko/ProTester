@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/library")
 @RequiredArgsConstructor
 public class LibraryController {
+
     private final LibraryService libraryService;
 
     @PostMapping
@@ -35,17 +36,18 @@ public class LibraryController {
     }
 
     @GetMapping
-    public List<Library> findAll() {
-        return libraryService.getAllLibraries();
+    public List<Library> getList(@RequestParam int count,
+                                 @RequestParam int offset) {
+        return libraryService.getList(count, offset);
     }
 
     @GetMapping("/{id}")
-    public Library getLibraryId(@PathVariable int id) throws LibraryNotFoundException {
+    public Library getLibraryById(@PathVariable int id) throws LibraryNotFoundException {
         return libraryService.getLibraryById(id);
     }
 
     @GetMapping("/name")
-    public Library getLibraryName(@RequestParam String name) throws LibraryNotFoundException {
-        return libraryService.getLibraryByName(name);
+    public Library findLibraryByName(@RequestParam String name) throws LibraryNotFoundException {
+        return libraryService.findLibraryByName(name);
     }
 }

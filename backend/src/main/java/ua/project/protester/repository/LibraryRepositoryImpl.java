@@ -20,6 +20,7 @@ import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.utils.LibraryRowMapper;
+import ua.project.protester.utils.PaginationLibrary;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.List;
@@ -70,11 +71,12 @@ public class LibraryRepositoryImpl implements LibraryRepository {
     }
 
     @Override
-    public List<Library> getList(int count, int offset) {
-        String sql = PropertyExtractor.extract(env, "getList");
+    public List<Library> findAll(PaginationLibrary paginationLibrary) {
+        String sql = PropertyExtractor.extract(env, "findAll");
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("count", count);
-        namedParams.addValue("offset", offset);
+        namedParams.addValue("count", paginationLibrary.getPageSize());
+        namedParams.addValue("offset", paginationLibrary.getOffset());
+
         List<Library> allLibraries = namedParameterJdbcTemplate.query(
                 sql,
                 namedParams,
@@ -88,6 +90,15 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 });
 
         return allLibraries;
+    }
+
+    @Override
+    public Long getCountLibraries(PaginationLibrary paginationLibrary) {
+        String sql = PropertyExtractor.extract(env, "findCountOfLibraries");
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("filterLibraryName", paginationLibrary.getName() + "%");
+
+        return namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
     }
 
     @Override

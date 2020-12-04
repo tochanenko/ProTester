@@ -7,8 +7,8 @@ import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.request.LibraryRequestModel;
 import ua.project.protester.service.LibraryService;
-
-import java.util.List;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.PaginationLibrary;
 
 @RestController
 @RequestMapping("/api/library")
@@ -34,9 +34,13 @@ public class LibraryController {
     }
 
     @GetMapping
-    public List<Library> getList(@RequestParam int count,
-                                 @RequestParam int offset) {
-        return libraryService.getList(count, offset);
+    public Page<Library> getAll(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                @RequestParam(value = "libraryName", defaultValue = "") String libraryName) {
+
+        PaginationLibrary pagination = new PaginationLibrary(pageSize, pageNumber, libraryName);
+
+        return libraryService.findAll(pagination);
     }
 
     @GetMapping("/{id}")

@@ -25,6 +25,7 @@ import {ProjectCreateComponent} from './project/project-create/project-create.co
 import {ProjectListComponent} from './project/project-list/project-list.component';
 import {ProjectUpdateComponent} from './project/project-update/project-update.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { ViewUserComponent } from './components/view-user/view-user.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UsersListComponent } from './components/users-list/users-list.component
     ProjectListComponent,
     ProjectUpdateComponent,
     ManageActionComponent,
-    UsersListComponent
+    UsersListComponent,
+    ViewUserComponent
   ],
   imports: [
     BrowserModule,

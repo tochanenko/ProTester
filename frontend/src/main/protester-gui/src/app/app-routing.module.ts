@@ -13,6 +13,7 @@ import {ProjectCreateComponent} from "./project/project-create/project-create.co
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
 import {UsersListComponent} from "./components/users-list/users-list.component";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
 
 
 const routes: Routes = [
@@ -86,6 +87,15 @@ const routes: Routes = [
   {
     path: 'users_list',
     component: UsersListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'user',
+    component: ViewUserComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']

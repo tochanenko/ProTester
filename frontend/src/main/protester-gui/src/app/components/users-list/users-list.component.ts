@@ -40,6 +40,26 @@ export class UsersListComponent implements OnInit {
     return event;
   }
 
+  activate(id: any) {
+    // TODO. No API for user activation implemented
+  }
+
+  deactivate(id: any) {
+    this.userService.deactivateUser(id).subscribe(
+      res => {
+        this.userService.getAll().subscribe(
+          users => {
+            this.length = users.length;
+            this.usersList = users;
+            this.dataSource = users;
+          },
+          err => console.log(err)
+        );
+      },
+      err => console.log(err)
+    );
+  }
+
   ngOnInit(): void {
 
   }

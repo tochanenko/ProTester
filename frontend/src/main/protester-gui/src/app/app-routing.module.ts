@@ -13,6 +13,7 @@ import {ProjectCreateComponent} from './components/project/project-create/projec
 import {ProjectListComponent} from './components/project/project-list/project-list.component';
 import {TestCaseListComponent} from './test-case/test-case-list/test-case-list.component';
 import {ActionsListComponent} from './actions/actions-list/actions-list.component';
+import {UsersListComponent} from "./components/users-list/users-list.component";
 
 
 const routes: Routes = [
@@ -82,15 +83,30 @@ const routes: Routes = [
   {
     path: 'actions',
     component: ActionsListComponent,
+    data: {
+    roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
   {
     path: 'test-case-list/:id',
     component: TestCaseListComponent,
+    data: {
+    roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+  {path: 'users_list',
+    component: UsersListComponent,
+    canActivate: [AuthGuard],
+    data: {
+    roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

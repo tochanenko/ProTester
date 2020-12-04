@@ -14,8 +14,6 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
-
-
 import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
 import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
 import {ChangePasswordComponent} from './components/change-password/change-password.component';
@@ -31,6 +29,7 @@ import {ProjectCreateComponent} from "./components/project/project-create/projec
 import {ProjectListComponent} from "./components/project/project-list/project-list.component";
 import {ProjectUpdateComponent} from "./components/project/project-update/project-update.component";
 import {MatSelectModule} from "@angular/material/select";
+import { UsersListComponent } from './components/users-list/users-list.component';
 
 @NgModule({
   declarations: [
@@ -47,12 +46,12 @@ import {MatSelectModule} from "@angular/material/select";
     ProjectCreateComponent,
     ProjectListComponent,
     ProjectUpdateComponent,
-    ManageActionComponent,
     TestCaseListComponent,
     ActionsListComponent,
     ActionUpdateComponent,
     TestCaseUpdateComponent,
-    TestCaseCreateComponent
+    TestCaseCreateComponent,
+    UsersListComponent
   ],
   imports: [
     BrowserModule,

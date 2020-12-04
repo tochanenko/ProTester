@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ProjectMenuComponent } from './project-menu.component';
+import {ProjectMenuComponent} from './project-menu.component';
 
 describe('ProjectMenuComponent', () => {
   let component: ProjectMenuComponent;

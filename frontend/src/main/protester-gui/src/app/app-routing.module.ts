@@ -8,16 +8,10 @@ import {ForgotPasswordComponent} from './components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
 import {ChangePasswordComponent} from './components/change-password/change-password.component';
 import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
-import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
-import {ProjectCreateComponent} from './project/project-create/project-create.component';
-import {ProjectListComponent} from './project/project-list/project-list.component';
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
 import {TestCaseListComponent} from './test-case/test-case-list/test-case-list.component';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatSortModule} from '@angular/material/sort';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import {ActionsListComponent} from './actions/actions-list/actions-list.component';
 
 

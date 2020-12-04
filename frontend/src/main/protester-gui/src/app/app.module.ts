@@ -15,21 +15,21 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
 
+
 import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
 import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
 import {ChangePasswordComponent} from './components/change-password/change-password.component';
 import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
 import {ManageActionComponent} from './components/manage-action/manage-action.component';
-import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
-import {ProjectCreateComponent} from './project/project-create/project-create.component';
-import {ProjectListComponent} from './project/project-list/project-list.component';
-import {ProjectUpdateComponent} from './project/project-update/project-update.component';
 import {ActionsListComponent} from './actions/actions-list/actions-list.component';
 import {ActionUpdateComponent} from './actions/action-update/action-update.component';
 import { TestCaseUpdateComponent } from './test-case/test-case-update/test-case-update.component';
 import {TestCaseCreateComponent} from './test-case/test-case-create/test-case-create.component';
 import {TestCaseListComponent} from './test-case/test-case-list/test-case-list.component';
-
+import {ProjectMenuComponent} from "./components/project/project-menu/project-menu.component";
+import {ProjectCreateComponent} from "./components/project/project-create/project-create.component";
+import {ProjectListComponent} from "./components/project/project-list/project-list.component";
+import {ProjectUpdateComponent} from "./components/project/project-update/project-update.component";
 
 @NgModule({
   declarations: [

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,6 @@ public class TestCaseResponse {
     private Long authorId;
 
     private Long scenarioId;
+
+    private List<DataSetResponse> dataSetResponseList;
 }

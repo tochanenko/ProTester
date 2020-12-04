@@ -4,7 +4,6 @@ import {PageEvent} from '@angular/material/paginator';
 import {Subscription} from 'rxjs';
 import {StorageService} from '../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
-import {ProjectUpdateComponent} from '../../project/project-update/project-update.component';
 import {TestCaseModel} from '../test-case.model';
 import {TestCaseService} from '../../services/test-case/test-case-service';
 import {TestCaseFilter} from '../test-case-filter';

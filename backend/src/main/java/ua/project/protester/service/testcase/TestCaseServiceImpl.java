@@ -54,7 +54,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     @Override
     public TestCaseResponse findById(Long id) throws TestCaseNotFoundException {
-        log.info("IN delete findById, id={}", id);
+        log.info("IN  findById, id={}", id);
 
         TestCase testCase = getTestCaseById(id);
         return testCaseMapper.toResponse(testCase);

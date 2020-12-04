@@ -1,9 +1,9 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {ProjectFilter} from '../project/project-filter.model';
-import {Project} from '../project/project.model';
-import {ProjectResponse} from '../project/project-response.model';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs";
+import {ProjectFilter} from "../models/project/project-filter.model";
+import {Project} from "../models/project/project.model";
+import {ProjectResponse} from '../models/project/project-response.model';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

@@ -1,10 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {ProjectService} from '../../services/project.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ProjectListComponent} from '../project-list/project-list.component';
+import {Subscription} from "rxjs";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
+import {ProjectService} from "../../../services/project.service";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {ProjectListComponent} from "../project-list/project-list.component";
 
 @Component({
   selector: 'app-project-update',

@@ -12,7 +12,7 @@ import {ProjectMenuComponent} from "./project/project-menu/project-menu.componen
 import {ProjectCreateComponent} from "./project/project-create/project-create.component";
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
-
+import {UsersListComponent} from "./components/users-list/users-list.component";
 
 
 const routes: Routes = [
@@ -82,10 +82,22 @@ const routes: Routes = [
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
   },
+
+  {
+    path: 'users_list',
+    component: UsersListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

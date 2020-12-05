@@ -16,13 +16,13 @@ public class TestScenarioController {
     private final TestScenarioService testScenarioService;
 
     @PostMapping
-    public void createTestScenario(@RequestBody OuterComponentRepresentation request) {
-        testScenarioService.saveTestScenario(request);
+    public OuterComponent createTestScenario(@RequestBody OuterComponentRepresentation request) {
+        return testScenarioService.saveTestScenario(request);
     }
 
     @PutMapping("/{id}")
-    public void updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws TestScenarioNotFoundException {
-        testScenarioService.updateTestScenario(id, request);
+    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) {
+        return testScenarioService.updateTestScenario(id, request);
     }
 
     @GetMapping
@@ -39,7 +39,7 @@ public class TestScenarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTestScenario(@PathVariable int id) {
-        testScenarioService.deleteTestScenarioById(id);
+    public OuterComponent deleteTestScenario(@PathVariable int id) {
+        return testScenarioService.deleteTestScenarioById(id);
     }
 }

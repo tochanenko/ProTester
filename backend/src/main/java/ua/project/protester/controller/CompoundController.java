@@ -18,8 +18,8 @@ public class CompoundController {
     private final CompoundService compoundService;
 
     @PostMapping
-    public void createCompound(@RequestBody OuterComponentRepresentation request) {
-        compoundService.saveCompound(request);
+    public OuterComponent createCompound(@RequestBody OuterComponentRepresentation request) {
+        return compoundService.saveCompound(request);
     }
 
     @GetMapping
@@ -36,7 +36,7 @@ public class CompoundController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCompound(@PathVariable int id) throws InnerCompoundDeleteException {
-        compoundService.deleteCompoundById(id);
+    public OuterComponent deleteCompound(@PathVariable int id) throws InnerCompoundDeleteException {
+        return compoundService.deleteCompoundById(id);
     }
 }

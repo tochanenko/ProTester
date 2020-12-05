@@ -22,7 +22,7 @@ public class CompoundService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveCompound(OuterComponentRepresentation compoundRequest) {
+    public OuterComponent saveCompound(OuterComponentRepresentation compoundRequest) {
         OuterComponent newOuterComponent = new OuterComponent();
         newOuterComponent.setName(compoundRequest.getName());
         newOuterComponent.setDescription(compoundRequest.getDescription());
@@ -35,7 +35,7 @@ public class CompoundService {
                                 null,
                                 stepRepresentation.getParameters()))
                         .collect(Collectors.toList()));
-        outerComponentRepository.saveOuterComponent(newOuterComponent, true);
+        return outerComponentRepository.saveOuterComponent(newOuterComponent, true).orElse(null);
     }
 
     public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter) {
@@ -54,10 +54,10 @@ public class CompoundService {
     }
 
     @Transactional
-    public void deleteCompoundById(int id) throws InnerCompoundDeleteException {
+    public OuterComponent deleteCompoundById(int id) throws InnerCompoundDeleteException {
         if (outerComponentRepository.compoundWithIdIsInnerComponent(id)) {
             throw new InnerCompoundDeleteException("Attempt to delete inner compound");
         }
-        outerComponentRepository.deleteOuterComponentById(id, true);
+        return outerComponentRepository.deleteOuterComponentById(id, true).orElse(null);
     }
 }

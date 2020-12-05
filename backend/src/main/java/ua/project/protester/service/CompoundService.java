@@ -38,9 +38,9 @@ public class CompoundService {
         return outerComponentRepository.saveOuterComponent(newOuterComponent, true).orElse(null);
     }
 
-    public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter) {
+    public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
-                outerComponentRepository.findAllOuterComponents(true, filter),
+                outerComponentRepository.findAllOuterComponents(true, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(true, filter));
     }
 

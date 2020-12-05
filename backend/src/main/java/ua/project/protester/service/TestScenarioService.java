@@ -31,9 +31,9 @@ public class TestScenarioService {
         return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
     }
 
-    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter) {
+    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
-                outerComponentRepository.findAllOuterComponents(false, filter),
+                outerComponentRepository.findAllOuterComponents(false, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(false, filter));
     }
 

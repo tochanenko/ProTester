@@ -28,9 +28,10 @@ public class TestScenarioController {
     @GetMapping
     public Page<OuterComponent> getAllTestScenarios(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                     @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                                    @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName) {
+                                                    @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName,
+                                                    @RequestParam(value = "loadSteps", defaultValue = "true") boolean loadSteps) {
         OuterComponentFilter filter = new OuterComponentFilter(pageSize, pageNumber, scenarioName);
-        return testScenarioService.getAllTestScenarios(filter);
+        return testScenarioService.getAllTestScenarios(filter, loadSteps);
     }
 
     @GetMapping("/{id}")

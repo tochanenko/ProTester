@@ -21,10 +21,7 @@ import ua.project.protester.model.executable.Step;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.utils.PropertyExtractor;
 
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @PropertySource("classpath:queries/outer-component.properties")
 @Repository
@@ -60,7 +57,7 @@ public class OuterComponentRepository {
         }
     }
 
-    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter) {
+    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter, boolean loadSteps) {
         String sql = areCompounds
                 ? PropertyExtractor.extract(env, "findAllCompounds")
                 : PropertyExtractor.extract(env, "findAllTestScenarios");
@@ -78,11 +75,17 @@ public class OuterComponentRepository {
                 : ExecutableComponentType.TEST_SCENARIO;
 
         allOuterComponents
-                .forEach(outerComponent -> {
-                    outerComponent.setType(componentsType);
-                    outerComponent.setSteps(
-                            findAllOuterComponentStepsById(outerComponent.getId(), areCompounds));
-                });
+                .forEach(outerComponent -> outerComponent.setType(componentsType));
+        if (loadSteps) {
+            allOuterComponents
+                    .forEach(outerComponent ->
+                            outerComponent.setSteps(
+                                    findAllOuterComponentStepsById(outerComponent.getId(), areCompounds)));
+        } else {
+            allOuterComponents
+                    .forEach(outerComponent ->
+                            outerComponent.setSteps(Collections.emptyList()));
+        }
 
         return allOuterComponents;
     }

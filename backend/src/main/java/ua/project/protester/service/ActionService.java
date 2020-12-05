@@ -12,6 +12,7 @@ import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;
 import ua.project.protester.utils.ActionMapper;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -51,7 +52,8 @@ public class ActionService {
 
     @Transactional
     public List<AbstractAction> findAllActions() {
-        return actionRepository.findAllActions();
+        // return actionRepository.findAllActions();
+        return Collections.emptyList();
     }
 
 }

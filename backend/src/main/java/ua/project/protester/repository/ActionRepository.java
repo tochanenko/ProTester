@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
+import ua.project.protester.request.ActionFilter;
+import ua.project.protester.utils.Page;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -176,11 +178,24 @@ public class ActionRepository {
         }
     }
 
-    public List<AbstractAction> findAllActions() {
-        return findAllActionRepresentations().entrySet()
+    public Page<AbstractAction> findAllActions(ActionFilter actionFilter) {
+        List<AbstractAction> actions = findAllActionRepresentations().entrySet()
                 .stream()
                 .map(this::constructAction)
+                .filter(abstractAction -> abstractAction.getName().startsWith(actionFilter.getFilterName()))
+                .filter(abstractAction ->
+                        actionFilter.getType() == null || abstractAction.getType().equals(actionFilter.getType()))
                 .collect(Collectors.toList());
+        if (actions.size() >= actionFilter.getOffset()) {
+            return new Page<>(
+                    actions.subList(
+                            actionFilter.getOffset(),
+                            Math.min(actions.size(), actionFilter.getOffset() + actionFilter.getPageSize())),
+                    (long) actions.size());
+        }
+        return new Page<>(
+                Collections.emptyList(),
+                0L);
     }
 
     public Optional<AbstractAction> findActionById(Integer id) {

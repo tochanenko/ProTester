@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class BaseFilter {
 
-    private final Integer pageSize;
-    private final Integer pageNumber;
-    private final String filterName;
+    protected final Integer pageSize;
+    protected final Integer pageNumber;
+    protected final String filterName;
 
     public Integer getOffset() {
         return (pageNumber - 1) * pageSize;

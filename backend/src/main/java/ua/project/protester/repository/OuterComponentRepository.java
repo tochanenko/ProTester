@@ -18,7 +18,7 @@ import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
-import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.request.BaseFilter;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class OuterComponentRepository {
         saveOuterComponentSteps(outerComponent, outerComponentId, isCompound);
     }
 
-    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter) {
+    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, BaseFilter filter) {
         String sql = areCompounds
                 ? PropertyExtractor.extract(env, "findAllCompounds")
                 : PropertyExtractor.extract(env, "findAllTestScenarios");
@@ -64,7 +64,7 @@ public class OuterComponentRepository {
                 new MapSqlParameterSource()
                         .addValue("pageSize", filter.getPageSize())
                         .addValue("offset", filter.getOffset())
-                        .addValue("filterName", filter.getOuterComponentName() + '%'),
+                        .addValue("filterName", filter.getFilterName() + '%'),
                 new BeanPropertyRowMapper<>(OuterComponent.class));
 
         ExecutableComponentType componentsType = areCompounds
@@ -81,7 +81,7 @@ public class OuterComponentRepository {
         return allOuterComponents;
     }
 
-    public Long countOuterComponents(boolean isCompound, OuterComponentFilter filter) {
+    public Long countOuterComponents(boolean isCompound, BaseFilter filter) {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "countCompounds")
                 : PropertyExtractor.extract(env, "countTestScenarios");
@@ -89,7 +89,7 @@ public class OuterComponentRepository {
         return namedParameterJdbcTemplate.queryForObject(
                 sql,
                 new MapSqlParameterSource()
-                        .addValue("filterName", filter.getOuterComponentName() + '%'),
+                        .addValue("filterName", filter.getFilterName() + '%'),
                 Long.class);
     }
 

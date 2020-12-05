@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.request.BaseFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.TestScenarioService;
 import ua.project.protester.utils.Page;
@@ -29,7 +29,7 @@ public class TestScenarioController {
     public Page<OuterComponent> getAllTestScenarios(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                     @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
                                                     @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName) {
-        OuterComponentFilter filter = new OuterComponentFilter(pageSize, pageNumber, scenarioName);
+        BaseFilter filter = new BaseFilter(pageSize, pageNumber, scenarioName);
         return testScenarioService.getAllTestScenarios(filter);
     }
 

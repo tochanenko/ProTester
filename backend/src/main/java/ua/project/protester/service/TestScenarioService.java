@@ -8,7 +8,7 @@ import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.request.BaseFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.utils.Page;
 
@@ -35,7 +35,7 @@ public class TestScenarioService {
         }
     }
 
-    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter) {
+    public Page<OuterComponent> getAllTestScenarios(BaseFilter filter) {
         return new Page<>(
                 outerComponentRepository.findAllOuterComponents(false, filter),
                 outerComponentRepository.countOuterComponents(false, filter));

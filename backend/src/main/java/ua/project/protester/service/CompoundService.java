@@ -9,7 +9,7 @@ import ua.project.protester.exception.executable.OuterComponentNotFoundException
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.request.BaseFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.utils.Page;
 
@@ -38,7 +38,7 @@ public class CompoundService {
         outerComponentRepository.saveOuterComponent(newOuterComponent, true);
     }
 
-    public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter) {
+    public Page<OuterComponent> getAllCompounds(BaseFilter filter) {
         return new Page<>(
                 outerComponentRepository.findAllOuterComponents(true, filter),
                 outerComponentRepository.countOuterComponents(true, filter));

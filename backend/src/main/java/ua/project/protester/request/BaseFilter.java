@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class OuterComponentFilter {
+public class BaseFilter {
 
     private final Integer pageSize;
     private final Integer pageNumber;
-    private final String outerComponentName;
+    private final String filterName;
 
     public Integer getOffset() {
         return (pageNumber - 1) * pageSize;

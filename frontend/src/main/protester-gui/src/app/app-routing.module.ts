@@ -1,19 +1,19 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {LoginComponent} from './components/login/login.component';
-import {RegistrationComponent} from './components/registration/registration.component';
-import {ProfileComponent} from './components/profile/profile.component';
-import {AuthGuard} from './services/auth/auth.guard';
-import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
-import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
-import {ChangePasswordComponent} from './components/change-password/change-password.component';
-import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
-import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
+import {LoginComponent} from "./components/login/login.component";
+import {RegistrationComponent} from "./components/registration/registration.component";
+import {ProfileComponent} from "./components/profile/profile.component";
+import {AuthGuard} from "./services/auth/auth.guard";
+import {ForgotPasswordComponent} from "./components/forgot-password/forgot-password.component";
+import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
+import {ChangePasswordComponent} from "./components/change-password/change-password.component";
+import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component'
 import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
 import {ProjectListComponent} from './components/project/project-list/project-list.component';
-import {TestCaseListComponent} from './test-case/test-case-list/test-case-list.component';
-import {ActionsListComponent} from './actions/actions-list/actions-list.component';
-
+import {UsersListComponent} from "./components/users-list/users-list.component";
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
 
 const routes: Routes = [
   {
@@ -53,6 +53,10 @@ const routes: Routes = [
     component: TokenExpiredComponent
   },
   {
+    path: 'actions',
+    component: ActionsListComponent
+  },
+  {
     path: 'projectMenu',
     component: ProjectMenuComponent,
     canActivate: [AuthGuard],
@@ -80,17 +84,27 @@ const routes: Routes = [
   },
 
   {
-    path: 'actions',
-    component: ActionsListComponent,
+    path: 'users_list',
+    component: UsersListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
   {
     path: 'test-case-list/:id',
     component: TestCaseListComponent,
+    canActivate: [AuthGuard],
+    data:{
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

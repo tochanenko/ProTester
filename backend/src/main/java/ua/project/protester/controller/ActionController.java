@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.project.protester.model.ProjectDto;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.request.ActionRequestModel;
 import ua.project.protester.service.ActionService;
 import ua.project.protester.utils.Page;
-import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 
@@ -24,11 +22,9 @@ public class ActionController {
     @GetMapping
     public Page<AbstractAction> getAllProjects(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                           @RequestParam(value = "actionName", defaultValue = "") String actionName,
-                                               @RequestParam(value = "actionType",required = false) String actionType ) {
+                                           @RequestParam(value = "actionName", defaultValue = "") String actionName, @RequestParam(value = "actionType", required = false) String actionType) {
         ExecutableComponentType type = null;
-        if(actionType != null)
-        {
+        if (actionType != null) {
             type = ExecutableComponentType.valueOf(actionType);
         }
         return actionService.findAllProjects(pageSize, pageNumber, actionName, type);

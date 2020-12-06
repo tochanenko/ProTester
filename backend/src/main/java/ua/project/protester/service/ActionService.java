@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.ActionMapperException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
-import ua.project.protester.model.ProjectDto;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.repository.ActionRepository;
@@ -15,7 +14,6 @@ import ua.project.protester.request.ActionFilter;
 import ua.project.protester.request.ActionRequestModel;
 import ua.project.protester.utils.ActionMapper;
 import ua.project.protester.utils.Page;
-import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 

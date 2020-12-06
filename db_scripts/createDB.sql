@@ -48,7 +48,8 @@ CREATE TABLE tokens (
 
 CREATE TABLE actions (
                          action_id			  SERIAL PRIMARY KEY,
-                         action_class VARCHAR(256) NOT NULL
+                         action_class VARCHAR(256) NOT NULL,
+                         action_description TEXT
 );
 
 CREATE TABLE compounds (

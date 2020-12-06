@@ -21,7 +21,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   pageEvent: PageEvent;
 
   testCaseFilter: TestCaseFilter = new TestCaseFilter();
-  projectsCount = 10;
+  testCasesCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'EDIT'];
   private subscription: Subscription;
@@ -41,7 +41,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
     this.subscription = this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
       data => {
         this.dataSource = data.list;
-        this.projectsCount = data.totalItems;
+        this.testCasesCount = data.totalItems;
       },
       error => console.log('error in initDataSource')
     );

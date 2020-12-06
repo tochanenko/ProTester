@@ -1,4 +1,4 @@
-<mat-card class="project-list">
+<mat-card class="test-case-list">
 
   <mat-table [dataSource]="dataSource">
 
@@ -40,7 +40,7 @@
   </mat-table>
   <mat-paginator class="header"
                  [pageSizeOptions]="pageSizeOptions"
-                 [length]="projectsCount"
+                 [length]="testCasesCount"
                  [pageSize]="testCaseFilter.pageSize"
                  (page)="pageEvent = $event; onPaginateChange($event)">
 

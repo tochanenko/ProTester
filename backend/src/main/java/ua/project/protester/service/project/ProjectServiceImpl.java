@@ -70,6 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("IN changeProjectStatus - project status {} was changed", projectToArchive);
     }
 
+    @Transactional
     @Override
     public Page<ProjectDto> findAllProjects(Pagination pagination) {
         log.info("IN findAllProjects");
@@ -79,6 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
         );
     }
 
+    @Transactional
     @Override
     public Page<ProjectDto> findAllProjectsByStatus(Pagination pagination, Boolean isActive) {
         log.info("IN findAllProjectsByStatus");

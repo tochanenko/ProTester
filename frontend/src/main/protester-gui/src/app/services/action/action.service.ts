@@ -1,9 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
-import { of } from 'rxjs';
 import {Action} from "../../actions/action.model";
-import {ACTIONS} from "../../mock-actions";
+import {ActionFilter} from "../../actions/action-filter.model";
+import {ActionResponse} from "../../actions/action-response";
+
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,43 +25,35 @@ export class ActionService {
   constructor(private http: HttpClient) {
   }
 
-  // getAll(filter: ProjectFilter): Observable<ProjectResponse> {
-  //   let params = new HttpParams();
-  //   params = params.append('pageSize', String(filter.pageSize));
-  //   params = params.append('pageNumber', String(filter.pageNumber));
-  //   params = params.append('projectName', filter.projectName);
-  //
-  //   return this.http.get<ProjectResponse>('/api/project', {params});
-  // }
-  //
-  // getAllFiltered(filter: ProjectFilter): Observable<ProjectResponse> {
-  //   let params = new HttpParams();
-  //   params = params.append('pageSize', String(filter.pageSize));
-  //   params = params.append('pageNumber', String(filter.pageNumber));
-  //   params = params.append('projectName', filter.projectName);
-  //   params = params.append('projectActive', filter.projectActive);
-  //
-  //   return this.http.get<ProjectResponse>('/api/project/filter', {params});
-  // }
-
-  // getActionById(id: number): Observable<Project> {
-  //   return this.http.get<Project>(`/api/project/${id}`);
-  // }
-
-  getAll(): Observable<Action[]> {
-    return this.http.get<Action[]>(`/api/actions`);
+  update(actionUpdateResponse: Action): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('newDescription', String(actionUpdateResponse.description));
+    return this.http.put<any>(`/api/actions/${actionUpdateResponse.id}`, httpOptions, {params});
   }
+  getAll(filter: ActionFilter): Observable<ActionResponse> {
+    let params = new HttpParams();
+    params = params.append('pageSize', String(filter.pageSize));
+    params = params.append('pageNumber', String(filter.pageNumber));
+    params = params.append('actionName', filter.actionName);
 
+    return this.http.get<ActionResponse>('/api/actions', {params});
+  }
+  getAllFiltered(filter: ActionFilter): Observable<ActionResponse> {
+    let params = new HttpParams();
+    params = params.append('pageSize', String(filter.pageSize));
+    params = params.append('pageNumber', String(filter.pageNumber));
+    params = params.append('actionName', filter.actionName);
+    params = params.append('actionType', filter.actionType);
+
+    return this.http.get<ActionResponse>('/api/actions', {params});
+  }
+  // getActionById(id: number): Observable<Action> {
+  //   return of(ACTIONS.filter( action => action.id === id)[0]);
+  // }
   getActionById(id: number): Observable<Action> {
-    return of(ACTIONS.filter( action => action.id === id)[0]);
+    return this.http.get<Action>(`/api/actions/${id}`);
   }
-
   getPageCount(): Observable<any> {
     return this.http.get<number>('/api/project/countOfProjects');
-  }
-
-  update(actionUpdateResponse: Action): Observable<any> {
-    console.log(actionUpdateResponse);
-    return of(actionUpdateResponse);
   }
 }

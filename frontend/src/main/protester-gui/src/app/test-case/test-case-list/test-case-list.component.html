@@ -31,7 +31,7 @@
     <ng-container matColumnDef="DATASET">
       <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let datasets of element.dataSetResponseList">
+        <ng-container *ngFor="let datasets of element.dataSetResponseList" >
           {{ datasets.name}}
         </ng-container>
       </mat-cell>

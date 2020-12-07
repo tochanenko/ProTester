@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -39,13 +39,11 @@ export class TestCaseUpdateComponent implements OnInit {
   }
   ngOnInit(): void {
     this.createTestCaseUpdateForm();
-
     this.testCaseService.getFilterById(this.testCaseId).subscribe(
       data => {
-        console.log(`NAME = ${data.name}`);
+        console.log(`DATASET ${JSON.stringify(data.dataSetResponseList)}`);
         this.dataSet = data.dataSetResponseList;
-        console.log(`DATASET = ${this.dataSet}`);
-        this.testCaseUpdateForm.setValue(data);
+        this.testCaseUpdateForm.patchValue(data);
       },
       error => {
         console.log(error);
@@ -70,7 +68,7 @@ export class TestCaseUpdateComponent implements OnInit {
       projectId: [''],
       authorId: [''],
       scenarioId: [''],
-      dataSetResponse: [[]]
+      dataSetResponse: ''
     });
   }
 
@@ -81,7 +79,7 @@ export class TestCaseUpdateComponent implements OnInit {
       return;
     }
 
-    console.log('valid');
+    console.log(JSON.stringify(this.testCaseUpdateForm.value));
 
     const testCaseUpdateResponse = {
       id: this.testCaseId,

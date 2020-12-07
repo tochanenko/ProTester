@@ -18,16 +18,25 @@
                [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
       </mat-form-field>
 
-      <mat-form-field appearance="fill" formControlName="dataSetResponse">
-        <mat-label>Favorite animal</mat-label>
-        <mat-select >
-          <mat-option *ngFor="let animal of dataSet" [value]="animal">
-            {{animal.name}}
+<!--      <mat-form-field appearance="fill" >-->
+<!--        <mat-label>Test Scenario</mat-label>-->
+<!--        <mat-select class="form-control" formControlName="scenarioId">-->
+<!--          <mat-option *ngFor="let ts of testScenario" [value]="ts.id">-->
+<!--            {{ts.name}}-->
+<!--          </mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+
+      <mat-form-field appearance="fill" >
+        <mat-label>DataSets</mat-label>
+        <mat-select class="form-control" formControlName="dataSetResponse">
+          <mat-option *ngFor="let dt of dataSet" [value]="dt">
+            {{dt.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button mat-raised-button class="button-flex-container" [disabled]="true">
+      <button mat-raised-button class="button-flex-container" >
         <p class="button-text">Will be done</p>
       </button>
 

@@ -66,6 +66,9 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
       this.searchCases();
     });
   }
+  searchTestCases($event: KeyboardEvent):void {
+    this.searchCases();
+  }
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

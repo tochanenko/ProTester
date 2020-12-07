@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.model.DataSet;
+import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
@@ -159,6 +160,41 @@ public class DataSetRepository {
             log.warn("datasets were`nt found");
             return Collections.emptyList();
         }
+    }
+
+    public List<DataSet> findAll(Pagination pagination) {
+        System.out.println("IN REPO  " + pagination.getSearchField());
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("pageSize", pagination.getPageSize());
+        namedParams.addValue("offset", pagination.getOffset());
+        namedParams.addValue("dataSetName", pagination.getSearchField() + "%");
+
+        try {
+            List<DataSet> dataSet = namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findAllPaginated"),
+                    namedParams,
+                    (rs, rowNum) -> new DataSet(
+                            rs.getLong("data_set_id"),
+                            rs.getString("data_set_name"),
+                            rs.getString("data_set_description"))
+            );
+            if (dataSet.size() == 0) {
+                return Collections.emptyList();
+            }
+            dataSet.forEach(dataSet1 -> dataSet1.setDataset(findParamsById(dataSet1.getId())));
+            return dataSet;
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("datasets were`nt found");
+            return Collections.emptyList();
+        }
+    }
+
+    public Long count(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("dataSetName", pagination.getSearchField() + "%");
+
+        return namedParameterJdbcTemplate.queryForObject(PropertyExtractor.extract(env, "countDataSet"),
+                namedParams, Long.class);
     }
 
     public Optional<String> findValueByKeyAndId(Long id, String key) {

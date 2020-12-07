@@ -1,4 +1,4 @@
-<div class="update-form">
+<div class="test-case-update-form-flex">
 
   <mat-dialog-content class="mat-update">
 
@@ -18,28 +18,14 @@
                [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
       </mat-form-field>
 
-      <mat-form-field appearance="fill">
-        <mat-label>Test case scenario</mat-label>
-        <mat-select  formControlName="scenarioId">
-          <mat-option *ngFor="let sc of testScenario" [value]="sc.id">
-            {{sc.name}}
+      <mat-form-field appearance="fill" formControlName="dataSetResponse">
+        <mat-label>Favorite animal</mat-label>
+        <mat-select >
+          <mat-option *ngFor="let animal of dataSet" [value]="animal">
+            {{animal.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-
-      <mat-form-field class="full-width-input" appearance="outline">
-        <mat-label>TestCase description </mat-label>
-        <input matInput type="text" id="dataset" class="form-control"
-               formControlName="dataSetResponseList"
-               [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
-      </mat-form-field>
-
-      <div class="error-info">
-        <mat-error *ngIf="isFailed">
-          Project name or link already exists
-        </mat-error>
-      </div>
 
       <button mat-raised-button class="button-flex-container" [disabled]="true">
         <p class="button-text">Will be done</p>

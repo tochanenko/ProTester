@@ -1,5 +1,16 @@
 <mat-card class="test-case-list">
 
+  <div class="search-test-case">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Search project</mat-label>
+      <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="testCaseFilter.testCaseName"
+             (keyup)="searchTestCases($event)">
+    </mat-form-field>
+
+  </div>
+
+
   <mat-table [dataSource]="dataSource">
 
     <ng-container matColumnDef="NAME">

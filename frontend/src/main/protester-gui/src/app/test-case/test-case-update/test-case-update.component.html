@@ -30,7 +30,7 @@
       <mat-form-field appearance="fill" >
         <mat-label>DataSets</mat-label>
         <mat-select class="form-control" formControlName="dataSetResponse">
-          <mat-option *ngFor="let dt of dataSet" [value]="dt">
+          <mat-option *ngFor="let dt of dataSet" [value]="dt.id">
             {{dt.name}}
           </mat-option>
         </mat-select>

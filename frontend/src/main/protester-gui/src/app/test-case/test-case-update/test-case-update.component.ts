@@ -68,7 +68,7 @@ export class TestCaseUpdateComponent implements OnInit {
       projectId: [''],
       authorId: [''],
       scenarioId: [''],
-      dataSetResponse: ''
+      dataSetResponse: ['']
     });
   }
 
@@ -88,7 +88,7 @@ export class TestCaseUpdateComponent implements OnInit {
       scenarioId: this.f.scenarioId.value,
       projectId: this.f.projectId.value,
       authorId: this.storageService.getUser.id,
-      dataSetResponseList: this.f.dataSetResponse.value
+      dataSetId: this.f.dataSetResponse.value
     };
 
 

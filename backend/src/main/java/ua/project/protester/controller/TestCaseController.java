@@ -2,6 +2,7 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.TestCaseNotFoundException;
 import ua.project.protester.request.TestCaseRequest;
@@ -30,9 +31,9 @@ public class TestCaseController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTestCase(@PathVariable Long id) throws TestCaseNotFoundException {
+    public ResponseEntity<String> deleteTestCase(@PathVariable Long id) throws TestCaseNotFoundException {
         testCaseService.delete(id);
-        return "deleted";
+        return new ResponseEntity<String>("deleted", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

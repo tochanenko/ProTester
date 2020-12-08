@@ -95,7 +95,7 @@ const routes: Routes = [
     path: 'test-case-list/:id',
     component: TestCaseListComponent,
     canActivate: [AuthGuard],
-    data:{
+    data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
   },

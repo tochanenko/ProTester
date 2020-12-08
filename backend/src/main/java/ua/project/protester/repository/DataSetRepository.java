@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.model.DataSet;
 import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
@@ -111,10 +110,11 @@ public class DataSetRepository {
                 return Optional.empty();
             }
             dataSet.setDataset(findParamsById(dataSet.getId()));
+            dataSet.setTestScenarios(findTestScenariosByDataSetId(dataSet.getId()));
              return Optional.of(dataSet);
         } catch (DataAccessException e) {
              log.warn("dataset with id {} was`nt found", id);
-            throw new DataSetNotFoundException("Data set was`nt found!");
+            return Optional.empty();
         }
     }
 
@@ -182,6 +182,7 @@ public class DataSetRepository {
                 return Collections.emptyList();
             }
             dataSet.forEach(dataSet1 -> dataSet1.setDataset(findParamsById(dataSet1.getId())));
+            dataSet.forEach(dataSet1 -> dataSet1.setTestScenarios(findTestScenariosByDataSetId(dataSet1.getId())));
             return dataSet;
         } catch (EmptyResultDataAccessException e) {
             log.warn("datasets were`nt found");
@@ -201,6 +202,14 @@ public class DataSetRepository {
         return Optional.ofNullable(findParamsById(id).get(key));
     }
 
+
+    private List<Long> findTestScenariosByDataSetId(Long id) {
+        return namedParameterJdbcTemplate.queryForList(
+                PropertyExtractor.extract(env, "findAllTestScenariosByDataSetId"),
+                new MapSqlParameterSource()
+                        .addValue("data_set_id", id), Long.class);
+    }
+
     public List<DataSet> findDataSetByTestCaseId(Long id) {
         List<DataSet> dataSetList = namedParameterJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findAllDataSetByTestCase"),
@@ -211,6 +220,7 @@ public class DataSetRepository {
                         rs.getString("data_set_name"),
                         rs.getString("data_set_description")));
         dataSetList.forEach(ds -> ds.setDataset(findParamsById(ds.getId())));
+        dataSetList.forEach(ds -> ds.setTestScenarios(findTestScenariosByDataSetId(ds.getId())));
         return dataSetList;
     }
 }

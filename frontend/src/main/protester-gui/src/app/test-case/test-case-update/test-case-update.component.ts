@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -17,7 +17,7 @@ import {DataSetResponse} from "../../models/data-set-response";
 })
 export class TestCaseUpdateComponent implements OnInit {
   testCaseUpdateForm: FormGroup;
-  selectedDataSet: DataSetResponse;
+  selectedDataSet: DataSetResponse[];
   testScenario: TestScenario[] = [];
   dataSet: DataSetResponse[] = [];
   scenarioId: number;
@@ -38,11 +38,17 @@ export class TestCaseUpdateComponent implements OnInit {
     this.testCaseId = data.id;
   }
   ngOnInit(): void {
+    this.testCaseService.getAllDataSets().subscribe( data => {
+        this.dataSet = data.list;
+      }
+    );
+    this.testScenarioService.getAll().subscribe( data =>
+      {
+        this.testScenario = data.list; }
+    );
     this.createTestCaseUpdateForm();
     this.testCaseService.getFilterById(this.testCaseId).subscribe(
       data => {
-        console.log(`DATASET ${JSON.stringify(data.dataSetResponseList)}`);
-        this.dataSet = data.dataSetResponseList;
         this.testCaseUpdateForm.patchValue(data);
       },
       error => {
@@ -50,11 +56,6 @@ export class TestCaseUpdateComponent implements OnInit {
         this.isFailed = true;
         this.errorMessage = error;
       });
-    this.testScenarioService.getAll().subscribe( data =>
-    {
-      console.log(data);
-      this.testScenario = data; }
-    );
   }
   get f() {
     return this.testCaseUpdateForm.controls;

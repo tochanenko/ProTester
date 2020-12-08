@@ -19,7 +19,6 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
-import { ManageActionComponent } from './components/manage-action/manage-action.component';
 import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
 import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
 import {ProjectListComponent} from './components/project/project-list/project-list.component';
@@ -49,7 +48,6 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     ProjectUpdateComponent,
     ActionsListComponent,
     ActionUpdateComponent,
-    ManageActionComponent,
     UsersListComponent,
     TestCaseListComponent,
     TestCaseUpdateComponent,

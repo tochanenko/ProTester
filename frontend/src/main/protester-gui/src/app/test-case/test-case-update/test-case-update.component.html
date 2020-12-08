@@ -18,20 +18,20 @@
                [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
       </mat-form-field>
 
-<!--      <mat-form-field appearance="fill" >-->
-<!--        <mat-label>Test Scenario</mat-label>-->
-<!--        <mat-select class="form-control" formControlName="scenarioId">-->
-<!--          <mat-option *ngFor="let ts of testScenario" [value]="ts.id">-->
-<!--            {{ts.name}}-->
-<!--          </mat-option>-->
-<!--        </mat-select>-->
-<!--      </mat-form-field>-->
+      <mat-form-field appearance="fill" >
+        <mat-label>Test Scenario</mat-label>
+        <mat-select class="form-control" formControlName="scenarioId">
+          <mat-option *ngFor="let ts of testScenario" [value]="ts.id">
+            {{ts.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
       <mat-form-field appearance="fill" >
         <mat-label>DataSets</mat-label>
-        <mat-select class="form-control" formControlName="dataSetResponse">
+        <mat-select class="form-control" formControlName="dataSetResponse" multiple>
           <mat-option *ngFor="let dt of dataSet" [value]="dt.id">
-            {{dt.name}}
+            <a>{{dt.name}}</a>
           </mat-option>
         </mat-select>
       </mat-form-field>

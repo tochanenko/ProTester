@@ -1,5 +1,5 @@
 export class LibraryFilter {
   pageSize = 5;
-  pageNumber = 0;
+  pageNumber = 1;
   libraryName = '';
 }

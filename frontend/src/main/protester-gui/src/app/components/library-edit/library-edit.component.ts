@@ -7,20 +7,16 @@ import {Action} from "../../models/action.model";
 import {OuterComponent} from "../../models/outer.model";
 import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {Subscription} from "rxjs";
+import {Library} from "../../models/library.model";
 import {Step} from "../../models/step.model";
-import {Router} from "@angular/router";
-
-export interface Tile {
-  rows: number;
-  text: string;
-}
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
-  selector: 'app-library-new',
-  templateUrl: './library-new.component.html',
-  styleUrls: ['./library-new.component.css']
+  selector: 'app-library-edit',
+  templateUrl: './library-edit.component.html',
+  styleUrls: ['./library-edit.component.css']
 })
-export class LibraryNewComponent implements OnInit {
+export class LibraryEditComponent implements OnInit {
   validatorsConfig = {
     name: {
       minLength: 5,
@@ -33,26 +29,27 @@ export class LibraryNewComponent implements OnInit {
 
   private actionSubscription: Subscription;
   private compoundSubscription: Subscription;
-  libraryCreateForm: FormGroup;
-  tiles: Tile[] = [
-    {text: 'ACTIONS & COMPOUNDS', rows: 1},
-    {text: 'Three', rows: 7},
-  ];
+  private componentSubscription: Subscription;
+  libraryUpdateForm: FormGroup;
 
   actions: Action[] = [];
   compounds: OuterComponent[] = [];
   bottomSheetData = {};
+  library_id: number;
+  library: Library;
 
   constructor(
     private formBuilder: FormBuilder,
     private _bottomSheet: MatBottomSheet,
     private libraryService: LibraryManageService,
     private interactionService: LibraryBottomsheetInteractionService,
-    private router: Router
-    ) {
-  }
+    private router: Router,
+    private activateRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.getIdFromParams();
+    this.getLibraryById(this.library_id);
     this.createForm();
     this.getAllActionsForBottomSheet();
     this.getAllCompoundsForBottomSheet();
@@ -61,17 +58,44 @@ export class LibraryNewComponent implements OnInit {
   }
 
   createForm(): void {
-    this.libraryCreateForm = this.formBuilder.group({
+    this.libraryUpdateForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), Validators.maxLength(this.validatorsConfig.name.maxLength)]],
       description: ['', [Validators.required, Validators.maxLength(this.validatorsConfig.description.maxLength)]]
     })
   }
 
+  getIdFromParams(): void {
+    this.componentSubscription = this.activateRoute.queryParams.subscribe(params=>this.library_id=params['id']);
+  }
+
+  getLibraryById(id: number): void {
+    this.libraryService.getLibraryById(id).subscribe(library => {
+      this.library = library;
+      console.log(library);
+
+      let f = this.formControls;
+      f.name.setValue(library.name);
+      f.description.setValue(library.description);
+
+      library.components.forEach(component => {
+        let inner;
+        if (component['action']) {
+          inner = <Action> component.component;
+          this.actions.push(new Action(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.className, inner.prepared, inner.preparedParams))
+        } else
+          {
+            inner = <OuterComponent> component.component;
+            this.compounds.push(new OuterComponent(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.steps))
+        }
+      })
+    });
+  }
+
   onSubmit(): void {
+    console.error("SUBMIT")
     const f = this.formControls;
 
-
-    if (this.libraryCreateForm.invalid) {
+    if (this.libraryUpdateForm.invalid) {
       return;
     }
 
@@ -79,41 +103,41 @@ export class LibraryNewComponent implements OnInit {
       console.error("Set action or compound");
       return;
     }
-    let libraryCreateRequest = {};
-    let action_step = new Step();
-    let compound_step = new Step();
+    let libraryUpdateRequest = {};
+    console.log(libraryUpdateRequest);
 
-    libraryCreateRequest['description'] = f.description.value;
-    libraryCreateRequest['name'] = f.name.value;
-    libraryCreateRequest['id'] = 1;
-    libraryCreateRequest['components'] = [];
+
+    libraryUpdateRequest['description'] = f.description.value;
+    libraryUpdateRequest['name'] = f.name.value;
+    libraryUpdateRequest['id'] = this.library_id;
+    libraryUpdateRequest['components'] = [];
     if (this.actions.length > 0) {
       this.actions.map(action => {
+        let action_step = new Step();
         action_step.isAction = true;
         action_step.id = action.id;
-        libraryCreateRequest['components'].push(action_step);
+        libraryUpdateRequest['components'].push(action_step);
       })
     }
 
     if (this.compounds.length > 0) {
       this.compounds.map(compound => {
+        let compound_step = new Step();
         compound_step.id = compound.id;
         compound_step.isAction = false;
-        libraryCreateRequest['components'].push(compound_step);
+        libraryUpdateRequest['components'].push(compound_step);
       })
     }
-    console.log(libraryCreateRequest);
-
-    this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
+    this.libraryService.updateLibrary(libraryUpdateRequest, this.library.id).subscribe(() => {
         this.router.navigateByUrl('/library/search').then();
       },
-      ()=> {
+      () => {
         console.error("Error of creation");
       })
   }
 
   get formControls() {
-    return this.libraryCreateForm.controls;
+    return this.libraryUpdateForm.controls;
   }
 
   updateActionsArray(): void {

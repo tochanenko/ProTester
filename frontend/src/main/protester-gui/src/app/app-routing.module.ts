@@ -12,6 +12,8 @@ import {LibraryMenuComponent} from './components/library-menu/library-menu.compo
 import {LibraryNewComponent} from './components/library-new/library-new.component';
 import {LibrarySearchComponent} from "./components/library-search/library-search.component";
 import {CompoundSearchComponent} from "./components/compound-search/compound-search.component";
+import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
+import {LibraryViewComponent} from "./components/library-view/library-view.component";
 
 
 const routes: Routes = [
@@ -62,6 +64,14 @@ const routes: Routes = [
   {
     path: 'library/search',
     component: LibrarySearchComponent
+  },
+  {
+    path: 'library/edit',
+    component: LibraryEditComponent
+  },
+  {
+    path: 'library/view',
+    component: LibraryViewComponent
   },
   {
     path: 'compound',

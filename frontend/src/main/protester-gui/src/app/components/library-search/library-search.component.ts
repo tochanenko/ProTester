@@ -5,6 +5,7 @@ import {Library} from "../../models/library.model";
 import {LibraryFilter} from "./library-filter.model";
 import {LibraryManageService} from "../../services/library/library-manage.service";
 import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-library-search',
@@ -23,7 +24,7 @@ export class LibrarySearchComponent implements OnInit {
 
   private subscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder, private libraryService: LibraryManageService) { }
+  constructor(private formBuilder: FormBuilder, private libraryService: LibraryManageService, private router: Router) { }
 
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
@@ -33,23 +34,41 @@ export class LibrarySearchComponent implements OnInit {
     this.getLibrariesCount();
   }
 
+  goToEdit(id): void {
+    if (id) {
+      this.router.navigate(['library/edit'], {queryParams: {id: id}}).then();
+    }
+  }
+
+  goToView(id): void {
+    if (id) {
+      this.router.navigate(['library/view'], {queryParams: {id: id}}).then();
+    }
+  }
+
+  deleteLibraryById(id): void {
+    if (id) {
+      this.libraryService.deleteLibrary(id).subscribe(() => {
+        this.searchByFilter();
+      }, error => console.error(error))
+    }
+  }
+
   searchByFilter(): void {
-    this.subscription = this.libraryService.getAllLibraries().subscribe(data => {
-      this.dataSource = data;
+    this.subscription = this.libraryService.getAllLibraries(this.libraryFilter).subscribe(data => {
+      this.dataSource = data["list"];
     });
   }
 
   getLibrariesCount(): void {
-    this.subscription = this.libraryService.getAllLibraries().subscribe( data => {
-      this.librariesCount = data.length;
+    this.subscription = this.libraryService.getAllLibraries(this.libraryFilter).subscribe( data => {
+      this.librariesCount = data["totalItems"];
     });
   }
 
   onPaginateChange(event): void {
-    console.log(event);
-    this.libraryFilter.pageNumber = event.pageIndex;
+    this.libraryFilter.pageNumber = event.pageIndex + 1;
     this.libraryFilter.pageSize = event.pageSize;
-
     this.searchByFilter();
   }
 

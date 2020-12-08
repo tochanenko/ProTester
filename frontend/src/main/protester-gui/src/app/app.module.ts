@@ -28,6 +28,8 @@ import {
 } from "@angular/material/bottom-sheet";
 import {MatTabsModule} from "@angular/material/tabs";
 import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
+import { LibraryEditComponent } from './components/library-edit/library-edit.component';
+import { LibraryViewComponent } from './components/library-view/library-view.component';
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { CompoundSearchComponent } from './components/compound-search/compound-s
     LibraryNewComponent,
     LibrarySearchComponent,
     BottomSheetComponent,
-    CompoundSearchComponent
+    CompoundSearchComponent,
+    LibraryEditComponent,
+    LibraryViewComponent
   ],
   imports: [
     BrowserModule,

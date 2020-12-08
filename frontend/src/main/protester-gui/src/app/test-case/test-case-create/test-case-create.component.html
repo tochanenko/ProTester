@@ -31,7 +31,7 @@
         <mat-label>DataSets</mat-label>
         <mat-select class="form-control" formControlName="dataSetResponse" multiple>
           <mat-option *ngFor="let dt of dataSet" [value]="dt.id">
-            <a [routerLink]="'/login'">{{dt.name}}</a>
+            <a >{{dt.name}}</a>
           </mat-option>
         </mat-select>
       </mat-form-field>

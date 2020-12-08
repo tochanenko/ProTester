@@ -43,6 +43,6 @@ export class TestCaseService {
     return this.http.get<DataSetRequestResponse>(`/api/dataset`);
   }
   deleteTestCase(id: number): Observable<any> {
-   return this.http.delete<string>(`/api/testCase/${id}`, httpOptions);
+   return this.http.delete<string>(`/api/testCase/${id}`);
   }
 }

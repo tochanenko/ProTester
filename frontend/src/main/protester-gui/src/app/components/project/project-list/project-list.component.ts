@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {ProjectService} from "../../../services/project.service";
-import {Router} from "@angular/router";
-import {ProjectFilter} from "../../../models/project/project-filter.model";
-import {StorageService} from "../../../services/auth/storage.service";
-import {PageEvent} from "@angular/material/paginator";
-import {Project} from "../../../models/project/project.model";
-import {MatDialog} from "@angular/material/dialog";
-import {ProjectUpdateComponent} from "../project-update/project-update.component";
+import {ProjectService} from '../../../services/project.service';
+import {Router} from '@angular/router';
+import {ProjectFilter} from '../../../models/project/project-filter.model';
+import {StorageService} from '../../../services/auth/storage.service';
+import {PageEvent} from '@angular/material/paginator';
+import {Project} from '../../../models/project/project.model';
+import {MatDialog} from '@angular/material/dialog';
+import {ProjectUpdateComponent} from '../project-update/project-update.component';
 
 @Component({
   selector: 'app-project-list',

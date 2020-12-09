@@ -30,9 +30,8 @@ public class TestCaseController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTestCase(@PathVariable Long id) throws TestCaseNotFoundException {
+    public void deleteTestCase(@PathVariable Long id) throws TestCaseNotFoundException {
         testCaseService.delete(id);
-        return "deleted";
     }
 
     @GetMapping("/{id}")

@@ -20,24 +20,20 @@ public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
+    public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
         OuterComponent newOuterComponent = constructOuterComponentFromRepresentation(outerComponentRepresentation);
-        outerComponentRepository.saveOuterComponent(newOuterComponent, false);
+        return outerComponentRepository.saveOuterComponent(newOuterComponent, false).orElse(null);
     }
 
     @Transactional
-    public void updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws TestScenarioNotFoundException {
-        if (outerComponentRepository.existsOuterComponentWithId(id, false)) {
-            OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
-            outerComponentRepository.updateTestScenario(id, updatedTestScenario);
-        } else {
-            throw new TestScenarioNotFoundException();
-        }
+    public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) {
+        OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
+        return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
     }
 
-    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter) {
+    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
-                outerComponentRepository.findAllOuterComponents(false, filter),
+                outerComponentRepository.findAllOuterComponents(false, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(false, filter));
     }
 
@@ -51,8 +47,8 @@ public class TestScenarioService {
     }
 
     @Transactional
-    public void deleteTestScenarioById(int id) {
-        outerComponentRepository.deleteOuterComponentById(id, false);
+    public OuterComponent deleteTestScenarioById(int id) {
+        return outerComponentRepository.deleteOuterComponentById(id, false).orElse(null);
     }
 
     private OuterComponent constructOuterComponentFromRepresentation(OuterComponentRepresentation representation) {

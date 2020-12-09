@@ -52,8 +52,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         Integer id = (Integer) keyHolder.getKey();
         testCase.setId(id.longValue());
 
-        dataSet.forEach(i -> saveDataSet(id.longValue(), i));
-
+        saveDataSet(testCase.getId(), dataSet);
         return testCase;
     }
 
@@ -74,10 +73,8 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                 new String[]{"test_case_id"});
 
         log.info("updating testCase {}", testCase.getName());
-
         deleteDataSet(testCase.getId());
-        dataSet.forEach(i -> saveDataSet(testCase.getId(), i));
-
+        saveDataSet(testCase.getId(), dataSet);
         return testCase;
     }
 
@@ -157,6 +154,10 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                 new MapSqlParameterSource()
                         .addValue("test_case_id", testCaseId)
                         .addValue("data_set_id", dataSetId));
+    }
+
+    public void saveDataSet(Long testCaseId, List<Long> dataSetId) {
+        dataSetId.forEach(dataSet -> saveDataSet(testCaseId, dataSet));
     }
 
     private void deleteDataSet(Long id) {

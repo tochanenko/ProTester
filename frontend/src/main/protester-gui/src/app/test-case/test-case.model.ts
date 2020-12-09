@@ -7,5 +7,5 @@ export class TestCaseModel {
   projectId?: number;
   authorId?: number;
   scenarioId: number;
-  dataSetResponseList: Array<DataSetResponse>;
+  dataSetResponseList?: Array<DataSetResponse>;
 }

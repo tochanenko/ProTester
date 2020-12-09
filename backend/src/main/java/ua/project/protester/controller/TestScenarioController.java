@@ -16,21 +16,22 @@ public class TestScenarioController {
     private final TestScenarioService testScenarioService;
 
     @PostMapping
-    public void createTestScenario(@RequestBody OuterComponentRepresentation request) {
-        testScenarioService.saveTestScenario(request);
+    public OuterComponent createTestScenario(@RequestBody OuterComponentRepresentation request) {
+        return testScenarioService.saveTestScenario(request);
     }
 
     @PutMapping("/{id}")
-    public void updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws TestScenarioNotFoundException {
-        testScenarioService.updateTestScenario(id, request);
+    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) {
+        return testScenarioService.updateTestScenario(id, request);
     }
 
     @GetMapping
     public Page<OuterComponent> getAllTestScenarios(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                     @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                                    @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName) {
+                                                    @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName,
+                                                    @RequestParam(value = "loadSteps", defaultValue = "true") boolean loadSteps) {
         OuterComponentFilter filter = new OuterComponentFilter(pageSize, pageNumber, scenarioName);
-        return testScenarioService.getAllTestScenarios(filter);
+        return testScenarioService.getAllTestScenarios(filter, loadSteps);
     }
 
     @GetMapping("/{id}")
@@ -39,7 +40,7 @@ public class TestScenarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTestScenario(@PathVariable int id) {
-        testScenarioService.deleteTestScenarioById(id);
+    public OuterComponent deleteTestScenario(@PathVariable int id) {
+        return testScenarioService.deleteTestScenarioById(id);
     }
 }

@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ActionsListComponent} from '../../actions/actions-list/actions-list.component';
 import {TestCaseService} from '../../services/test-case/test-case-service';
 import {StorageService} from '../../services/auth/storage.service';
 import {TestCaseListComponent} from "../test-case-list/test-case-list.component";
@@ -18,6 +17,7 @@ import {DataSetResponse} from "../../models/data-set-response";
 })
 export class TestCaseUpdateComponent implements OnInit {
   testCaseUpdateForm: FormGroup;
+  selectedDataSet: DataSetResponse[];
   testScenario: TestScenario[] = [];
   dataSet: DataSetResponse[] = [];
   scenarioId: number;
@@ -38,13 +38,18 @@ export class TestCaseUpdateComponent implements OnInit {
     this.testCaseId = data.id;
   }
   ngOnInit(): void {
+    this.testCaseService.getAllDataSets().subscribe( data => {
+        this.dataSet = data.list;
+      }
+    );
     this.testScenarioService.getAll().subscribe( data =>
-      data.forEach( elem => this.testScenario.push(elem)));
+      {
+        this.testScenario = data.list; }
+    );
     this.createTestCaseUpdateForm();
-    this.subscription = this.testCaseService.getFilterById(this.testCaseId).subscribe(
+    this.testCaseService.getFilterById(this.testCaseId).subscribe(
       data => {
-        console.log(`Changing data` + data.dataSetResponseList.toString());
-        this.testCaseUpdateForm.setValue(data);
+        this.testCaseUpdateForm.patchValue(data);
       },
       error => {
         console.log(error);
@@ -63,7 +68,8 @@ export class TestCaseUpdateComponent implements OnInit {
       description: [''],
       projectId: [''],
       authorId: [''],
-      scenarioId: ['']
+      scenarioId: [''],
+      dataSetResponse: ['']
     });
   }
 
@@ -74,7 +80,7 @@ export class TestCaseUpdateComponent implements OnInit {
       return;
     }
 
-    console.log('valid');
+    console.log(JSON.stringify(this.testCaseUpdateForm.value));
 
     const testCaseUpdateResponse = {
       id: this.testCaseId,
@@ -83,7 +89,7 @@ export class TestCaseUpdateComponent implements OnInit {
       scenarioId: this.f.scenarioId.value,
       projectId: this.f.projectId.value,
       authorId: this.storageService.getUser.id,
-      dataSetResponseList: this.f.dataSetResponseList.value
+      dataSetId: this.f.dataSetResponse.value
     };
 
 

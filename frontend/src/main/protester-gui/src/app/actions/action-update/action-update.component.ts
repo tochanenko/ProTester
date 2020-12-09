@@ -33,6 +33,7 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
     this.createActionUpdateForm();
     this.subscription = this.actionService.getActionById(this.actionId).subscribe(
       data => {
+        console.log(data);
         console.log(`Changing data` + data);
         this.actionUpdateForm.setValue(data);
       },
@@ -55,7 +56,9 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
       name: [''],
       type: [''],
       parameterNames: [''],
-      preparedParams: ['']
+      preparedParams: [''],
+      className: [''],
+      prepared: ['']
     });
   }
 
@@ -72,7 +75,6 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
       id: this.actionId,
       description: this.f.description.value,
     };
-
 
     this.subscription = this.actionService.update(actionUpdateResponse)
       .subscribe(

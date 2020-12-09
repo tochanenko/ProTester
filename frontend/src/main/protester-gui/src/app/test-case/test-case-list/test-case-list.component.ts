@@ -8,6 +8,9 @@ import {TestCaseModel} from '../test-case.model';
 import {TestCaseService} from '../../services/test-case/test-case-service';
 import {TestCaseFilter} from '../test-case-filter';
 import {TestCaseUpdateComponent} from '../test-case-update/test-case-update.component';
+import {TestScenario} from "../../models/test-scenario";
+import {TestScenarioService} from "../../services/test-scenario/test-scenario-service";
+import {TestCaseCreateComponent} from "../test-case-create/test-case-create.component";
 
 @Component({
   selector: 'app-test-case-list',
@@ -20,17 +23,19 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   dataSource: TestCaseModel[];
   pageEvent: PageEvent;
 
+  testScenario: TestScenario = new TestScenario();
   testCaseFilter: TestCaseFilter = new TestCaseFilter();
-  projectsCount = 10;
+  testCasesCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
-  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'EDIT'];
+  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'EDIT', 'DELETE'];
   private subscription: Subscription;
 
   constructor(private testCaseService: TestCaseService,
+              private testScenarioService: TestScenarioService,
               private route: ActivatedRoute,
-              private storageService: StorageService,
               public dialog: MatDialog) {
     route.params.subscribe(params => this.projectId = params[`id`]);
+    console.log(`Project id in test-case-list ${this.projectId}`);
   }
 
   ngOnInit(): void {
@@ -41,7 +46,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
     this.subscription = this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
       data => {
         this.dataSource = data.list;
-        this.projectsCount = data.totalItems;
+        this.testCasesCount = data.totalItems;
       },
       error => console.log('error in initDataSource')
     );
@@ -66,9 +71,29 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
       this.searchCases();
     });
   }
+  openCreateDialog(): void {
+    const createDialogRef = this.dialog.open(TestCaseCreateComponent, {
+      height: 'auto',
+      width: '50%',
+      data: {id: this.projectId}
+    });
+
+    this.subscription = createDialogRef.afterClosed().subscribe(() => {
+      this.searchCases();
+    });
+  }
+  searchTestCases($event: KeyboardEvent):void {
+    this.searchCases();
+  }
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  deleteCase(id: number): void {
+    console.log(`deleted id ${id}`);
+    this.testCaseService.deleteTestCase(id).subscribe();
+    this.searchCases();
   }
 }

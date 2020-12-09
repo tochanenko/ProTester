@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.TestCaseNotFoundException;
 import ua.project.protester.model.TestCase;
+import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
@@ -23,6 +24,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private final TestCaseRepository testCaseRepository;
     private final TestCaseMapper testCaseMapper;
+    private final DataSetRepository dataSetRepository;
 
     @Transactional
     @Override
@@ -39,7 +41,6 @@ public class TestCaseServiceImpl implements TestCaseService {
         log.info("IN update testCase, {}", testCaseRequest);
 
         TestCase testCase = testCaseMapper.toEntity(testCaseRequest);
-
         return testCaseMapper.toResponse(testCaseRepository.update(testCase, testCaseRequest.getDataSetId()));
     }
 

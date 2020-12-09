@@ -165,4 +165,14 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(TestCaseNotFoundException.class)
+    public ResponseEntity<Object> handleTestCaseNotFoundException(
+            TestCaseNotFoundException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Test not found!");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
 }

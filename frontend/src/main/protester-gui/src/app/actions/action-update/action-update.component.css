@@ -1,0 +1,63 @@
+.action-update-form-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  margin-top: 4%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-form-field {
+  width: 100%;
+  min-width: 300px;
+}
+
+.invalid-input {
+  margin-bottom: 10px;
+}
+
+.button-flex-container {
+  background: #5C6BC0;
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.button-text {
+  font-size: 14px;
+  line-height: 16px;
+
+  text-align: center;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.mat-radio-group {
+  display: flex;
+  width: 40%;
+  font-size: 14px;
+  justify-content: space-around;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2%;
+}
+
+::ng-deep .mat-dialog-content {
+  width: 100%;
+  height: 60%;
+  overflow: hidden;
+}
+
+.error-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

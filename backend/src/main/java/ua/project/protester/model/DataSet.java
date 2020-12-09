@@ -2,6 +2,7 @@ package ua.project.protester.model;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -18,6 +19,8 @@ public class DataSet {
     private String description;
 
     private Map<String, String> dataset;
+
+    private List<Long> testScenarios;
 
     public DataSet(Long id, String name, String description) {
         this.id = id;

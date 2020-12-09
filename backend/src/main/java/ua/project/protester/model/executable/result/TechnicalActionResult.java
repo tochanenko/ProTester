@@ -1,9 +1,7 @@
 package ua.project.protester.model.executable.result;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ua.project.protester.model.executable.AbstractAction;
 
 @Getter
 @Setter

@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 public abstract class AbstractAction extends ExecutableComponent {
 
     protected String className;
-    protected Map<String, String> preparedParams;
 
     public void init(Integer id, String name, ExecutableComponentType type, String description, String className, String[] parameterNames) {
         this.id = id;

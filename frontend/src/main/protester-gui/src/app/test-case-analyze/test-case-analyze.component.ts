@@ -14,7 +14,7 @@ export class TestCaseAnalyzeComponent implements OnInit {
       name: 'test case 1',
       userId: 2,
       testCaseId: 3,
-      status: ExecutionStatus.IN_PROGRESS,
+      status: ExecutionStatus.FAILED,
       startDate: '02/03/101',
       endDate: '04/02/303',
       innerResults: [

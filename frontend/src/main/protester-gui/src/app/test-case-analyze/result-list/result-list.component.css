@@ -10,6 +10,14 @@
   margin-top: 0.8%;
 }
 
+.action-failed-result {
+  border: 2px solid #ff0000;
+  width: 96%;
+  margin-left: 2.8%;
+  margin-top: 0.8%;
+}
+
+
 .expansion-body {
   background: #F2F2F2;
   box-shadow: none;

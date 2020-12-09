@@ -14,7 +14,7 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="action-info">
+    <mat-card class="action-info" [ngClass]="{'action-failed-result':testCaseResult.status === 'FAILED'}">
       <mat-card-content>
         <p>result</p>
         <p>result</p>

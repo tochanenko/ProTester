@@ -38,7 +38,8 @@ export enum ExecutionStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   FINISHED = 'FINISHED',
   SUSPENDED = 'SUSPENDED',
-  RESUMED = 'RESUMED'
+  RESUMED = 'RESUMED',
+  FAILED = 'FAILED'
 }
 
 export enum ActionType {

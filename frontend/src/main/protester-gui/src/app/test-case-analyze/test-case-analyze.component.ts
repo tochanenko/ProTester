@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActionStatus, ActionType, ExecutionStatus, TestCaseResult} from './result.model';
+import {ExecutableComponentType, Status, TestCaseResult} from './result.model';
 
 @Component({
   selector: 'app-test-case-run',
@@ -11,118 +11,110 @@ export class TestCaseAnalyzeComponent implements OnInit {
   resultList: TestCaseResult[] = [
     {
       id: 1,
-      name: 'test case 1',
       userId: 2,
+      name: 'Test case 1',
       testCaseId: 3,
-      status: ExecutionStatus.FAILED,
+      status: Status.PASSED,
       startDate: '02/03/101',
       endDate: '04/02/303',
       innerResults: [
         {
           id: 4,
-          name: 'action1',
-          startDate: '9393',
-          endDate: '400404',
+          actionName: 'action1',
+          startDate: '06/04/2020',
+          endDate: '06/05/2020',
+          extra: {url: 'url1', sssd: 'sss', ryu: 'sks', ska: 'skskss'},
+          message: 'message1',
+          type: ExecutableComponentType.REST,
+          status: Status.PASSED,
+        },
+        {
+          id: 4,
+          actionName: 'action2',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
           extra: {url: 'url1', sssd: 'sss'},
-          status: ActionStatus.FAILED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
+          message: 'message',
+          type: ExecutableComponentType.UI,
+          status: Status.IN_PROGRESS,
         },
         {
           id: 4,
-          name: 'action2',
-          startDate: '9393',
-          endDate: '400404',
-          extra: {url: 'url2', sssd: 'sss2'},
-          status: ActionStatus.PASSED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
+          actionName: 'action3',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.SQL,
+          status: Status.FAILED,
         },
         {
           id: 4,
-          name: 'action3',
-          startDate: '9393',
-          endDate: '400404',
-          extra: {url: 'url3', sssd: 'sss3'},
-          status: ActionStatus.FAILED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
+          actionName: 'action4',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
         },
-        {
-          id: 4,
-          name: 'action4',
-          startDate: '9393',
-          endDate: '400404',
-          extra: {url: 'url4', sssd: 'sss4'},
-          status: ActionStatus.FAILED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
-        }
       ]
     },
 
     {
-      id: 1,
-      name: 'test case 2',
+      id: 2,
       userId: 2,
+      name: 'Test case 2',
       testCaseId: 3,
-      status: ExecutionStatus.FINISHED,
-      startDate: '02/03/101',
-      endDate: '04/02/303',
+      status: Status.FAILED,
+      startDate: '03/04/2020',
+      endDate: '03/05/2020',
       innerResults: [
         {
           id: 4,
-          name: 'action5',
-          startDate: '9393',
-          endDate: '400404',
+          actionName: 'action5',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
           extra: {url: 'url1', sssd: 'sss'},
-          status: ActionStatus.STOPPED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
         },
         {
           id: 4,
-          name: 'action6',
-          startDate: '9393',
-          endDate: '400404',
+          actionName: 'action6',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
           extra: {url: 'url1', sssd: 'sss'},
-          status: ActionStatus.NOT_STARTED,
-          type: ActionType.TECHNICAL,
-          // rest
-          restInfo: 'rest info'
+          message: 'message',
+          type: ExecutableComponentType.TECHNICAL,
+          status: Status.IN_PROGRESS,
         },
         {
           id: 4,
-          name: 'action7',
-          startDate: '9393',
-          endDate: '400404',
+          actionName: 'action7',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
           extra: {url: 'url1', sssd: 'sss'},
-          status: ActionStatus.FAILED,
-          type: ActionType.REST,
-          // rest
-          restInfo: 'rest info'
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
         },
         {
           id: 4,
-          name: 'action8',
-          startDate: '9393',
-          endDate: '400404',
-          status: ActionStatus.PASSED,
-          type: ActionType.SQL,
-          // rest
-          restInfo: 'rest info'
-        }
+          actionName: 'action8',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.NOT_STARTED,
+        },
       ]
     },
   ];
 
   constructor() {
-    console.log(this.resultList);
   }
 
   ngOnInit(): void {

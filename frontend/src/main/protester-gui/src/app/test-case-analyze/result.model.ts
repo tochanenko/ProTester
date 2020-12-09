@@ -3,7 +3,7 @@ export class TestCaseResult {
   userId: number;
   name: string;
   testCaseId: number;
-  status: ExecutionStatus;
+  status: Status;
   startDate = '';
   endDate = '';
   innerResults: ActionResult[];
@@ -11,38 +11,23 @@ export class TestCaseResult {
 
 export class ActionResult {
   id: number;
-  name: string;
+  actionName: string;
   startDate = '';
   endDate = '';
   extra?: { [name: string]: string };
-  result?: boolean;
-  status: ActionStatus;
-  type: ActionType;
-
-  // rest
-  restInfo?: string;
-  // technical
-  technicalInfo?: string;
-
+  message?: string;
+  type: ExecutableComponentType;
+  status: Status;
 }
 
-export enum ActionStatus {
+export enum Status {
   PASSED = 'PASSED',
-  FAILED = 'FAILED',
-  STOPPED = 'STOPPED',
-  NOT_STARTED = 'NOT_STARTED'
-}
-
-export enum ExecutionStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  FINISHED = 'FINISHED',
-  SUSPENDED = 'SUSPENDED',
-  RESUMED = 'RESUMED',
+  IN_PROGRESS = 'IN PROGRESS',
+  NOT_STARTED = 'NOT STARTED',
   FAILED = 'FAILED'
 }
 
-export enum ActionType {
+export enum ExecutableComponentType {
   REST = 'REST',
   SQL = 'SQL',
   TECHNICAL = 'TECHNICAL',

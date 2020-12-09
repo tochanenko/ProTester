@@ -1,4 +1,4 @@
-.test-case-list-card {
+.test-case-info-card {
   width: 26%;
   margin-top: 20px;
   margin-left: 2%;
@@ -8,7 +8,7 @@
   overflow-y: auto;
 }
 
-.step-info-card {
+.result-list-card {
   width: 70%;
   margin-top: 20px;
   margin-right: 2%;
@@ -17,6 +17,6 @@
   min-height: 300px;
   overflow-y: auto;
 }
-.test-case-run {
+.test-case-analyze {
   min-height: 500px;
 }

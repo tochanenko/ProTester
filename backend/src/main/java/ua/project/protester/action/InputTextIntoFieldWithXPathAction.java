@@ -16,7 +16,7 @@ import java.util.Map;
 )
 public class InputTextIntoFieldWithXPathAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver) {
         try {
             driver.findElement(By.xpath(params.get("xpath"))).sendKeys(params.get("text"));
         } catch (WebDriverException ex) {

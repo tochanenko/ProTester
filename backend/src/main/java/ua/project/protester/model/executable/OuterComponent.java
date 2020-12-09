@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import ua.project.protester.model.executable.result.AbstractActionResult;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Setter
 @Getter
@@ -57,16 +56,20 @@ public class OuterComponent extends ExecutableComponent {
         return parameterNames;
     }
 
-    public void print() {
-        System.out.println("Compound " + id + " " + name);
-        System.out.println("| " + description);
-        System.out.println("| " + Arrays.toString(getParameterNames()));
-    }
-
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
         steps.forEach(step -> step.getComponent().execute(
                 fitInputParameters(params, step.getParameters()),
-                driver));
+                driver,
+                callback));
+    }
+
+    public List<AbstractActionResult> executeForResult(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
+        final List<AbstractActionResult> results = new LinkedList<>();
+        execute(
+                params,
+                driver,
+                callback.andThen(results::add));
+        return results;
     }
 }

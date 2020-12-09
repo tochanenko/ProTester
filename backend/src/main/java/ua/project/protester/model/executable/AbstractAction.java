@@ -3,8 +3,14 @@ package ua.project.protester.model.executable;
 import lombok.Getter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.model.executable.result.AbstractActionResult;
+import ua.project.protester.model.executable.result.RestActionResult;
+import ua.project.protester.model.executable.result.TechnicalActionResult;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Getter
 @ToString
@@ -23,17 +29,30 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public abstract void execute(Map<String, String> params, WebDriver driver);
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
+        AbstractActionResult result;
+        switch (this.type) {
+            case TECHNICAL:
+                result = new TechnicalActionResult();
+                break;
+            default:
+            case REST:
+                result = new RestActionResult();
+        }
 
-    public void execute(WebDriver driver) {
-        execute(preparedParams, driver);
+        result.setStartDate(OffsetDateTime.now());
+
+        try {
+            logic(params, driver);
+            result.setEndDate(OffsetDateTime.now());
+            result.setResult(true);
+        } catch (ActionExecutionException e) {
+            result.setEndDate(OffsetDateTime.now());
+            result.setResult(false);
+        }
+
+        callback.accept(result);
     }
 
-    public void prepare(Map<String, String> preparedParams) {
-        this.preparedParams = preparedParams;
-    }
-
-    public boolean isPrepared() {
-        return preparedParams != null && !preparedParams.isEmpty();
-    }
+    protected abstract void logic(Map<String, String> params, WebDriver driver) throws ActionExecutionException;
 }

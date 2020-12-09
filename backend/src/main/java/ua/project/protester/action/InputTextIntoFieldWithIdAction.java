@@ -16,7 +16,7 @@ import java.util.Map;
 )
 public class InputTextIntoFieldWithIdAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver) {
         try {
             driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
         } catch (WebDriverException ex) {

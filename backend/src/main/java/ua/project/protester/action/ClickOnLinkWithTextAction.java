@@ -16,7 +16,7 @@ import java.util.Map;
 )
 public class ClickOnLinkWithTextAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver) {
         try {
             driver.findElement(By.linkText(params.get("text"))).click();
         } catch (WebDriverException ex) {

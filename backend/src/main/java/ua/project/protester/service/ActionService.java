@@ -31,10 +31,10 @@ public class ActionService {
 
     @Transactional
     public void invoke(List<ActionRequestModel> actions) {
-        actions.stream()
-                .map(action -> actionMapper.toAbstractActionFromActionRequest(action)
-                .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was`nt mapped")))
-                .forEach(baseAction -> baseAction.execute(driver));
+//        actions.stream()
+//                .map(action -> actionMapper.toAbstractActionFromActionRequest(action)
+//                .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was`nt mapped")))
+//                .forEach(baseAction -> baseAction.execute(driver));
     }
 
     @Transactional

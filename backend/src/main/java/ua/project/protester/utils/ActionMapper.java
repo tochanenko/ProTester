@@ -23,7 +23,7 @@ public class ActionMapper {
         if (action != null) {
             AbstractAction baseAction = actionRepository.findActionById(action.getId())
                     .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was'nt found"));
-            baseAction.prepare(action.getPreparedParams());
+//            baseAction.prepare(action.getPreparedParams());
             return Optional.of(baseAction);
         }
         return Optional.empty();

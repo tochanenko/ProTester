@@ -34,26 +34,20 @@ export class CompoundSearchComponent implements OnInit {
   }
 
   searchByFilter(): void {
-    this.subscription = this.compoundService.getAllCompounds().subscribe(data =>
-    {
-      let filtered_compounds = data.filter(compound => compound.name.includes(this.libraryFilter.libraryName));
-      this.librariesCount = filtered_compounds.length;
-
-      let pageSize = this.libraryFilter.pageSize;
-      let pageNumber = this.libraryFilter.pageNumber;
-      let range = pageSize * pageNumber;
-      this.dataSource = filtered_compounds.slice(range, pageSize + range);
+    this.subscription = this.compoundService.getAllCompounds(this.libraryFilter).subscribe(data =>
+    { console.log(this.libraryFilter);
+      this.dataSource = data["list"];
     });
   }
 
   getLibrariesCount(): void {
-    this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
-      this.librariesCount = data.length;
+    this.subscription = this.compoundService.getAllCompounds(this.libraryFilter).subscribe( data => {
+      this.librariesCount = data["totalItems"];
     });
   }
 
   onPaginateChange(event): void {
-    this.libraryFilter.pageNumber = event.pageIndex;
+    this.libraryFilter.pageNumber = event.pageIndex + 1;
     this.libraryFilter.pageSize = event.pageSize;
 
     this.searchByFilter();

@@ -30,6 +30,7 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    TestCaseAnalyzeModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

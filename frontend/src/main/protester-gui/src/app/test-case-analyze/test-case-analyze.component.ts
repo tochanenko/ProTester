@@ -3,10 +3,10 @@ import {ActionResult, TestCaseResult} from './result.model';
 
 @Component({
   selector: 'app-test-case-run',
-  templateUrl: './test-case-run.component.html',
-  styleUrls: ['./test-case-run.component.css']
+  templateUrl: './test-case-analyze.component.html',
+  styleUrls: ['./test-case-analyze.component.css']
 })
-export class TestCaseRunComponent implements OnInit {
+export class TestCaseAnalyzeComponent implements OnInit {
 
   resultList: TestCaseResult[] = [
     {

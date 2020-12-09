@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActionResult, TestCaseResult} from './result.model';
+import {ActionStatus, ActionType, ExecutionStatus, TestCaseResult} from './result.model';
 
 @Component({
   selector: 'app-test-case-run',
@@ -11,45 +11,54 @@ export class TestCaseAnalyzeComponent implements OnInit {
   resultList: TestCaseResult[] = [
     {
       id: 1,
+      name: 'test case 1',
       userId: 2,
       testCaseId: 3,
-      statusId: 1,
+      status: ExecutionStatus.IN_PROGRESS,
       startDate: '02/03/101',
       endDate: '04/02/303',
       innerResults: [
         {
           id: 4,
+          name: 'action1',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url1', sssd: 'sss'},
-          result: true,
+          status: ActionStatus.FAILED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action2',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url2', sssd: 'sss2'},
-          result: true,
+          status: ActionStatus.PASSED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action3',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url3', sssd: 'sss3'},
-          result: true,
+          status: ActionStatus.FAILED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action4',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url4', sssd: 'sss4'},
-          result: true,
+          status: ActionStatus.FAILED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         }
@@ -58,44 +67,53 @@ export class TestCaseAnalyzeComponent implements OnInit {
 
     {
       id: 1,
+      name: 'test case 2',
       userId: 2,
       testCaseId: 3,
-      statusId: 1,
+      status: ExecutionStatus.FINISHED,
       startDate: '02/03/101',
       endDate: '04/02/303',
       innerResults: [
         {
           id: 4,
+          name: 'action5',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url1', sssd: 'sss'},
-          result: true,
+          status: ActionStatus.STOPPED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action6',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url1', sssd: 'sss'},
-          result: true,
+          status: ActionStatus.NOT_STARTED,
+          type: ActionType.TECHNICAL,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action7',
           startDate: '9393',
           endDate: '400404',
           extra: {url: 'url1', sssd: 'sss'},
-          result: true,
+          status: ActionStatus.FAILED,
+          type: ActionType.REST,
           // rest
           restInfo: 'rest info'
         },
         {
           id: 4,
+          name: 'action8',
           startDate: '9393',
           endDate: '400404',
-          result: true,
+          status: ActionStatus.PASSED,
+          type: ActionType.SQL,
           // rest
           restInfo: 'rest info'
         }

@@ -1,8 +1,9 @@
 export class TestCaseResult {
   id: number;
   userId: number;
+  name: string;
   testCaseId: number;
-  statusId: number;
+  status: ExecutionStatus;
   startDate = '';
   endDate = '';
   innerResults: ActionResult[];
@@ -10,10 +11,13 @@ export class TestCaseResult {
 
 export class ActionResult {
   id: number;
+  name: string;
   startDate = '';
   endDate = '';
   extra?: { [name: string]: string };
-  result: boolean;
+  result?: boolean;
+  status: ActionStatus;
+  type: ActionType;
 
   // rest
   restInfo?: string;
@@ -22,11 +26,19 @@ export class ActionResult {
 
 }
 
-export enum TestStatus {
+export enum ActionStatus {
   PASSED = 'PASSED',
   FAILED = 'FAILED',
   STOPPED = 'STOPPED',
   NOT_STARTED = 'NOT_STARTED'
+}
+
+export enum ExecutionStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FINISHED = 'FINISHED',
+  SUSPENDED = 'SUSPENDED',
+  RESUMED = 'RESUMED'
 }
 
 export enum ActionType {

@@ -15,7 +15,7 @@ export class ResultListComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.testCaseResult);
+    // console.log(this.testCaseResult);
   }
 
 }

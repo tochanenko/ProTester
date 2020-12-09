@@ -17,7 +17,6 @@
   margin-top: 0.8%;
 }
 
-
 .expansion-body {
   background: #F2F2F2;
   box-shadow: none;
@@ -65,7 +64,36 @@ mat-expansion-panel-header {
   color: rgba(0, 0, 0, 0.87)
 }
 
+.action-name {
+  display: flex;
+  align-items: center;
+}
 
 .test-case-info {
   background: #F4F2FF;
+}
+
+.passed {
+  color: #4CAF50;
+  margin-right: 7px;
+}
+
+.failed {
+  color: #F44336;
+  margin-right: 7px;
+}
+
+.stopped {
+  color: #FF9800;
+  margin-right: 7px;
+}
+
+.not_started {
+  color: #9E9E9E;
+  margin-right: 7px;
+}
+
+.in_progress {
+  color: #2196F3;
+  margin-right: 7px;
 }

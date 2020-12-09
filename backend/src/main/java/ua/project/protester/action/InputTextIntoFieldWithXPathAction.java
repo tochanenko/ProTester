@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.AbstractAction;
+import ua.project.protester.model.executable.result.ActionResult;
 
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 )
 public class InputTextIntoFieldWithXPathAction extends AbstractAction {
     @Override
-    protected void logic(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) {
         try {
             driver.findElement(By.xpath(params.get("xpath"))).sendKeys(params.get("text"));
         } catch (WebDriverException ex) {

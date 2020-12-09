@@ -2,18 +2,18 @@ package ua.project.protester.model.executable.result;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-public class TestCaseResult {
+@ToString
+public class ActionResult {
     private Integer id;
-    private Integer userId;
-    private Integer testCaseId;
-    private Integer statusId;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
-    private List<ActionResult> innerResults;
+    private Map<String, String> extra;
+    private boolean result;
 }

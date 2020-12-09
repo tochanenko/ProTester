@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
-import {Action} from "../../models/action.model";
+import {Action} from "../../actions/action.model";
 import {ActionService} from "../../services/action/action.service";
 import {ACTIONS} from "../../mock-actions";
 import {MatTableDataSource} from "@angular/material/table";
@@ -31,22 +31,13 @@ export class ManageActionComponent implements OnInit,AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.getHeroes();
   }
 
-  getHeroes(): void {
-    this.actionService.getActions()
-      .subscribe(action => this.actions = action);
-  }
 
   onSaveClicked(action: any){
     this.selectedAction.push(action);
   }
 
-  delete(action: Action) {
-    console.log("Object for delete"+action.declarationId);
-    this.selectedAction.filter(act => act !== action);
-  }
 
   saveAction(action: Action) {
     console.log("Params"+action.preparedParams);

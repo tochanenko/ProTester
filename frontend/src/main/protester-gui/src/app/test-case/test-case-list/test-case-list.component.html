@@ -1,0 +1,48 @@
+<mat-card class="project-list">
+
+  <mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="NAME">
+      <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
+      <mat-cell *matCellDef="let element"><a> {{element.name}}</a></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="DESCRIPTION">
+      <mat-header-cell *matHeaderCellDef class="header">DESCRIPTION</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.description}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="SCENARIO">
+      <mat-header-cell *matHeaderCellDef class="header">TEST-SCENARIO</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.scenarioId}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="DATASET">
+      <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <ng-container *ngFor="let datasets of element.dataSetResponseList">
+          {{ datasets.name}}
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="EDIT">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT </mat-header-cell>
+      <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
+                                                   color="primary" (click)="openUpdateDialog(element.id)">
+        <mat-icon>edit</mat-icon>
+      </button> </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
+  <mat-paginator class="header"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [length]="projectsCount"
+                 [pageSize]="testCaseFilter.pageSize"
+                 (page)="pageEvent = $event; onPaginateChange($event)">
+
+  </mat-paginator>
+</mat-card>

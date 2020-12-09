@@ -1,0 +1,42 @@
+
+<div class="search-action">
+
+
+
+</div>
+
+<mat-card class="action-list">
+  <mat-table #table [dataSource]="dataSource" matSort>
+    <!-- First Column ID-->
+    <ng-container matColumnDef="NAME">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> NAME </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Second Column -->
+    <ng-container matColumnDef="DESCRIPTION">
+      <mat-header-cell *matHeaderCellDef > DESCRIPTION </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+    </ng-container>
+
+    <!-- Fourth Column -->
+    <ng-container matColumnDef="TYPE">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> TYPE </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.type }} </mat-cell>
+    </ng-container>
+    <!-- Action Column -->
+    <ng-container matColumnDef="EDIT">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT </mat-header-cell>
+      <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
+                                                   color="primary" (click)="openUpdateDialog(element.id)">
+        <mat-icon>edit</mat-icon>
+      </button> </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</mat-card>

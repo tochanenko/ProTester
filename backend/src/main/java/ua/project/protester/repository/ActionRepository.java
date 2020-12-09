@@ -196,4 +196,10 @@ public class ActionRepository {
                 "className",
                 className);
     }
+
+    public Optional<AbstractAction> updateAction(AbstractAction action) {
+        AbstractAction abstractAction = findActionById(action.getId()).get();
+        abstractAction.setDescription(action.getDescription());
+        return Optional.of(abstractAction);
+    }
 }

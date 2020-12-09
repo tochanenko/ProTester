@@ -88,12 +88,12 @@ public class DataSetRepository {
     }
 
     private void saveParams(Long id, String key, String value) {
-            namedParameterJdbcTemplate.update(
-                    PropertyExtractor.extract(env, "saveDataSetParameter"),
-                    new MapSqlParameterSource()
-                            .addValue("data_set_id", id)
-                            .addValue("key", key)
-                            .addValue("value", value));
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "saveDataSetParameter"),
+                new MapSqlParameterSource()
+                        .addValue("data_set_id", id)
+                        .addValue("key", key)
+                        .addValue("value", value));
         }
 
     public Optional<DataSet> findDataSetById(Long id) {
@@ -162,7 +162,20 @@ public class DataSetRepository {
     }
 
     public Optional<String> findValueByKeyAndId(Long id, String key) {
-       return Optional.ofNullable(findParamsById(id).get(key));
+        return Optional.ofNullable(findParamsById(id).get(key));
+    }
+
+    public List<DataSet> findDataSetByTestCaseId(Long id) {
+        List<DataSet> dataSetList = namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findAllDataSetByTestCase"),
+                new MapSqlParameterSource()
+                        .addValue("test_case_id", id),
+                (rs, rowNum) -> new DataSet(
+                        rs.getLong("data_set_id"),
+                        rs.getString("data_set_name"),
+                        rs.getString("data_set_description")));
+        dataSetList.forEach(ds -> ds.setDataset(findParamsById(ds.getId())));
+        return dataSetList;
     }
 }
 

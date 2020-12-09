@@ -13,6 +13,7 @@ import {ProjectCreateComponent} from "./project/project-create/project-create.co
 import {ProjectListComponent} from "./project/project-list/project-list.component";
 import {ManageActionComponent} from "./components/manage-action/manage-action.component";
 import {UsersListComponent} from "./components/users-list/users-list.component";
+import {DatasetListComponent} from "./dataset/dataset-list/dataset-list.component";
 
 
 const routes: Routes = [
@@ -77,6 +78,15 @@ const routes: Routes = [
   {
     path: 'projectList',
     component: ProjectListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'datasetList',
+    component: DatasetListComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']

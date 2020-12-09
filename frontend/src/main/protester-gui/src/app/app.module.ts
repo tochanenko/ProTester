@@ -25,6 +25,9 @@ import {ProjectCreateComponent} from './project/project-create/project-create.co
 import {ProjectListComponent} from './project/project-list/project-list.component';
 import {ProjectUpdateComponent} from './project/project-update/project-update.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { DatasetListComponent } from './dataset/dataset-list/dataset-list.component';
+import { DatasetCreateComponent } from './dataset/dataset-create/dataset-create.component';
+import { DatasetEditComponent } from './dataset/dataset-edit/dataset-edit.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,10 @@ import { UsersListComponent } from './components/users-list/users-list.component
     ProjectListComponent,
     ProjectUpdateComponent,
     ManageActionComponent,
-    UsersListComponent
+    UsersListComponent,
+    DatasetListComponent,
+    DatasetCreateComponent,
+    DatasetEditComponent
   ],
   imports: [
     BrowserModule,

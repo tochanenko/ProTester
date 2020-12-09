@@ -8,13 +8,12 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
-import {ProjectMenuComponent} from "./project/project-menu/project-menu.component";
-import {ProjectCreateComponent} from "./project/project-create/project-create.component";
-import {ProjectListComponent} from "./project/project-list/project-list.component";
-import {ManageActionComponent} from "./components/manage-action/manage-action.component";
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component'
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
 import {UsersListComponent} from "./components/users-list/users-list.component";
-import {DatasetListComponent} from "./dataset/dataset-list/dataset-list.component";
-
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
 
 const routes: Routes = [
   {
@@ -55,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'actions',
-    component: ManageActionComponent
+    component: ActionsListComponent
   },
   {
     path: 'projectMenu',
@@ -85,15 +84,6 @@ const routes: Routes = [
   },
 
   {
-    path: 'datasetList',
-    component: DatasetListComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
-  },
-
-  {
     path: 'users_list',
     component: UsersListComponent,
     canActivate: [AuthGuard],
@@ -101,7 +91,14 @@ const routes: Routes = [
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
   },
-
+  {
+    path: 'test-case-list/:id',
+    component: TestCaseListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
 

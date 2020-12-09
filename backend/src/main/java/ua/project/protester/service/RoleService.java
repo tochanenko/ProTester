@@ -35,7 +35,7 @@ public class RoleService {
             List<User> users = userRepository.findUsersByRoleId(role.getId());
             users.forEach(user -> user.getRole().setName(role.getName()));
             role.setUsers(users);
-            return Optional.ofNullable(role);
+            return Optional.of(role);
         }
         return Optional.empty();
     }
@@ -58,6 +58,7 @@ public class RoleService {
         if (role != null) {
         role.setUsers(userRepository.findUsersByRoleId(role.getId()));
         role.getUsers().forEach(user -> user.getRole().setName(role.getName()));
+        return Optional.of(role);
         }
         return Optional.empty();
     }

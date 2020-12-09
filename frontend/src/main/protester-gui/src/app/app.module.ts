@@ -31,6 +31,7 @@ import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-up
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [

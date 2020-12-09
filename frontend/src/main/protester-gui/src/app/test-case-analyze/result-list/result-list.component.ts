@@ -10,6 +10,8 @@ export class ResultListComponent implements OnInit {
 
   @Input() testCaseResult: TestCaseResult;
 
+  panelOpenState = true;
+
   constructor() { }
 
   ngOnInit(): void {

@@ -8,14 +8,12 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="result-list-card" >
-    <mat-card-content>
+  <div class="result-list-card" >
       <app-result-list
         *ngFor="let result of resultList"
         [testCaseResult]="result"
       ></app-result-list>
-    </mat-card-content>
-  </mat-card>
+  </div>
 
 </div>
 

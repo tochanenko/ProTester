@@ -1,0 +1,63 @@
+.mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.action-info {
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  width: 96%;
+  margin-left: 3%;
+  margin-top: 0.8%;
+}
+
+.expansion-body {
+  background: #F2F2F2;
+  box-shadow: none;
+}
+
+.test-case-title {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
+  line-height: 30px;
+
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.test-case-info {
+  display: flex;
+  margin-top: -1%;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  width: 99%;
+}
+
+mat-expansion-panel-header {
+  margin: 0;
+}
+
+.more {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.action-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.87)
+}
+
+
+.test-case-info {
+  background: #F4F2FF;
+}

@@ -45,5 +45,5 @@ export enum ActionType {
   REST = 'REST',
   SQL = 'SQL',
   TECHNICAL = 'TECHNICAL',
-
+  UI = 'UI'
 }

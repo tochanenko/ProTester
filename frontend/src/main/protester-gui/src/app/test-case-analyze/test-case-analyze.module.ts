@@ -6,6 +6,8 @@ import { TestCaseInfoComponent } from './test-case-info/test-case-info.component
 import { ResultListComponent } from './result-list/result-list.component';
 import {FlexLayoutModule } from '@angular/flex-layout';
 import {MaterialModule} from '../services/material.module';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [TestCaseAnalyzeComponent, TestCaseInfoComponent, ResultListComponent],
@@ -21,7 +23,9 @@ import {MaterialModule} from '../services/material.module';
         //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
         // }
       }
-    ])
+    ]),
+    MatExpansionModule,
+    MatChipsModule
   ],
   exports: [RouterModule]
 })

@@ -1,9 +1,7 @@
 .test-case-info-card {
-  width: 26%;
+  width: 28%;
   margin-top: 20px;
-  margin-left: 2%;
-  margin-right: 1%;
-  max-height: 800px;
+  margin-left: 1%;
   min-height: 300px;
   overflow-y: auto;
 }
@@ -11,10 +9,8 @@
 .result-list-card {
   width: 70%;
   margin-top: 20px;
-  margin-right: 2%;
-  margin-left: 1%;
-  max-height: 800px;
   min-height: 300px;
+  margin-right: 1%;
   overflow-y: auto;
 }
 .test-case-analyze {

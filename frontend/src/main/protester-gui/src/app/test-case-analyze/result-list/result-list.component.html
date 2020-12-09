@@ -1,1 +1,49 @@
-<p>result-list works!</p>
+<mat-accordion class="expansion-body">
+
+  <mat-expansion-panel (opened)="panelOpenState = true"
+                       (closed)="panelOpenState = false" [expanded]="true" class="expansion-body">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="test-case-title">
+        Test case 1
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-card class="test-case-info">
+      <mat-card-content>
+        info about test case
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="action-info">
+      <mat-card-content>
+        <p>result</p>
+        <p>result</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="action-info">
+      <mat-card-title>
+        <div class="action-header">
+          <span>title</span>
+          <mat-chip-list aria-label="Action Type">
+            <mat-chip color="warn" selected>REST</mat-chip>
+            <mat-chip color="primary" selected>SQL</mat-chip>
+            <mat-chip color="warn" selected>TECHNICAL</mat-chip>
+            <mat-chip color="primary" selected>UI</mat-chip>
+          </mat-chip-list>
+        </div>
+      </mat-card-title>
+      <mat-card-content>
+        <p>result</p>
+        <p>result</p>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-expansion-panel>
+
+  <br>
+
+</mat-accordion>
+
+<br>
+<br>

@@ -1,0 +1,22 @@
+.test-case-list-card {
+  width: 26%;
+  margin-top: 20px;
+  margin-left: 2%;
+  margin-right: 1%;
+  max-height: 800px;
+  min-height: 300px;
+  overflow-y: auto;
+}
+
+.step-info-card {
+  width: 70%;
+  margin-top: 20px;
+  margin-right: 2%;
+  margin-left: 1%;
+  max-height: 800px;
+  min-height: 300px;
+  overflow-y: auto;
+}
+.test-case-run {
+  min-height: 500px;
+}

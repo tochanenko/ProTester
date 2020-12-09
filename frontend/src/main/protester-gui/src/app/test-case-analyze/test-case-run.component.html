@@ -1,0 +1,19 @@
+<div fxLayout="row" class="test-case-run">
+
+  <mat-card class="test-case-list-card" >
+    <mat-card-content>
+      <app-test-run-info
+        *ngFor="let l of resultList"
+        [testCaseExecution]="l"></app-test-run-info>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="step-info-card" >
+      <app-steps-info-new
+        *ngFor="let step of resultList"
+        [testCaseExecution]="step"
+      ></app-steps-info-new>
+  </div>
+
+</div>
+

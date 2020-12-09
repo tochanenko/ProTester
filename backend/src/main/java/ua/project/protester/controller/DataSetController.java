@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.model.DataSet;
 import ua.project.protester.response.DataSetResponse;
 import ua.project.protester.service.DataSetService;
-
-import java.util.List;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.Pagination;
 
 @RestController
 @RequestMapping("/api/dataset")
@@ -18,8 +18,14 @@ public class DataSetController {
     private final DataSetService dataSetService;
 
     @GetMapping
-    public List<DataSetResponse> findAll() {
-        return dataSetService.findAll();
+    public Page<DataSetResponse> findAll(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                                @RequestParam(value = "dataSetName", defaultValue = "") String dataSetName) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, dataSetName);
+
+        System.out.println("dataSetName" + dataSetName);
+        return dataSetService.findAllDataSets(pagination);
     }
 
     @PostMapping

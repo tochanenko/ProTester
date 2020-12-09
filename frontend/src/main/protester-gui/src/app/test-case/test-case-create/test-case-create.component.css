@@ -1,0 +1,48 @@
+.project-update-form-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  margin-top: 4%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-form-field {
+  width: 100%;
+  min-width: 300px;
+}
+
+.invalid-input {
+  margin-bottom: 10px;
+}
+
+.button-flex-container {
+  background: #5C6BC0;
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.button-text {
+  font-size: 14px;
+  line-height: 16px;
+
+  text-align: center;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+
+.error-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

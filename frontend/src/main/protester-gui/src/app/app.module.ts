@@ -19,13 +19,17 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
-import { ManageActionComponent } from './components/manage-action/manage-action.component';
-import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
-import {ProjectCreateComponent} from './project/project-create/project-create.component';
-import {ProjectListComponent} from './project/project-list/project-list.component';
-import {ProjectUpdateComponent} from './project/project-update/project-update.component';
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
+import {ProjectUpdateComponent} from './components/project/project-update/project-update.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
-import { ViewUserComponent } from './components/view-user/view-user.component';
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {ActionUpdateComponent} from "./actions/action-update/action-update.component";
+import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
+import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
+import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 
 @NgModule({
   declarations: [
@@ -42,9 +46,12 @@ import { ViewUserComponent } from './components/view-user/view-user.component';
     ProjectCreateComponent,
     ProjectListComponent,
     ProjectUpdateComponent,
-    ManageActionComponent,
+    ActionsListComponent,
+    ActionUpdateComponent,
     UsersListComponent,
-    ViewUserComponent
+    TestCaseListComponent,
+    TestCaseUpdateComponent,
+    TestCaseCreateComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +61,8 @@ import { ViewUserComponent } from './components/view-user/view-user.component';
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    NgxMatSelectSearchModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]

@@ -11,8 +11,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.model.DataSet;
+import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
@@ -88,12 +88,12 @@ public class DataSetRepository {
     }
 
     private void saveParams(Long id, String key, String value) {
-            namedParameterJdbcTemplate.update(
-                    PropertyExtractor.extract(env, "saveDataSetParameter"),
-                    new MapSqlParameterSource()
-                            .addValue("data_set_id", id)
-                            .addValue("key", key)
-                            .addValue("value", value));
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "saveDataSetParameter"),
+                new MapSqlParameterSource()
+                        .addValue("data_set_id", id)
+                        .addValue("key", key)
+                        .addValue("value", value));
         }
 
     public Optional<DataSet> findDataSetById(Long id) {
@@ -110,10 +110,11 @@ public class DataSetRepository {
                 return Optional.empty();
             }
             dataSet.setDataset(findParamsById(dataSet.getId()));
+            dataSet.setTestScenarios(findTestScenariosByDataSetId(dataSet.getId()));
              return Optional.of(dataSet);
         } catch (DataAccessException e) {
              log.warn("dataset with id {} was`nt found", id);
-            throw new DataSetNotFoundException("Data set was`nt found!");
+            return Optional.empty();
         }
     }
 
@@ -161,8 +162,66 @@ public class DataSetRepository {
         }
     }
 
+    public List<DataSet> findAll(Pagination pagination) {
+        System.out.println("IN REPO  " + pagination.getSearchField());
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("pageSize", pagination.getPageSize());
+        namedParams.addValue("offset", pagination.getOffset());
+        namedParams.addValue("dataSetName", pagination.getSearchField() + "%");
+
+        try {
+            List<DataSet> dataSet = namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findAllPaginated"),
+                    namedParams,
+                    (rs, rowNum) -> new DataSet(
+                            rs.getLong("data_set_id"),
+                            rs.getString("data_set_name"),
+                            rs.getString("data_set_description"))
+            );
+            if (dataSet.size() == 0) {
+                return Collections.emptyList();
+            }
+            dataSet.forEach(dataSet1 -> dataSet1.setDataset(findParamsById(dataSet1.getId())));
+            dataSet.forEach(dataSet1 -> dataSet1.setTestScenarios(findTestScenariosByDataSetId(dataSet1.getId())));
+            return dataSet;
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("datasets were`nt found");
+            return Collections.emptyList();
+        }
+    }
+
+    public Long count(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("dataSetName", pagination.getSearchField() + "%");
+
+        return namedParameterJdbcTemplate.queryForObject(PropertyExtractor.extract(env, "countDataSet"),
+                namedParams, Long.class);
+    }
+
     public Optional<String> findValueByKeyAndId(Long id, String key) {
-       return Optional.ofNullable(findParamsById(id).get(key));
+        return Optional.ofNullable(findParamsById(id).get(key));
+    }
+
+
+    private List<Long> findTestScenariosByDataSetId(Long id) {
+        return namedParameterJdbcTemplate.queryForList(
+                PropertyExtractor.extract(env, "findAllTestScenariosByDataSetId"),
+                new MapSqlParameterSource()
+                        .addValue("data_set_id", id), Long.class);
+    }
+
+    public List<DataSet> findDataSetByTestCaseId(Long id) {
+        List<DataSet> dataSetList = namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findAllDataSetByTestCase"),
+                new MapSqlParameterSource()
+                        .addValue("test_case_id", id),
+                (rs, rowNum) -> new DataSet(
+                        rs.getLong("data_set_id"),
+                        rs.getString("data_set_name"),
+                        rs.getString("data_set_description")));
+        dataSetList.forEach(ds -> ds.setDataset(findParamsById(ds.getId())));
+        dataSetList.forEach(ds -> ds.setTestScenarios(findTestScenariosByDataSetId(ds.getId())));
+        return dataSetList;
     }
 }
 

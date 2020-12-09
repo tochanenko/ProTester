@@ -9,9 +9,10 @@ import ua.project.protester.exception.executable.OuterComponentNotFoundException
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
+import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
+import ua.project.protester.utils.Page;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +22,7 @@ public class CompoundService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public void saveCompound(OuterComponentRepresentation compoundRequest) {
+    public OuterComponent saveCompound(OuterComponentRepresentation compoundRequest) {
         OuterComponent newOuterComponent = new OuterComponent();
         newOuterComponent.setName(compoundRequest.getName());
         newOuterComponent.setDescription(compoundRequest.getDescription());
@@ -34,11 +35,13 @@ public class CompoundService {
                                 null,
                                 stepRepresentation.getParameters()))
                         .collect(Collectors.toList()));
-        outerComponentRepository.saveOuterComponent(newOuterComponent, true);
+        return outerComponentRepository.saveOuterComponent(newOuterComponent, true).orElse(null);
     }
 
-    public List<OuterComponent> getAllCompounds() {
-        return outerComponentRepository.findAllOuterComponents(true);
+    public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter, boolean loadSteps) {
+        return new Page<>(
+                outerComponentRepository.findAllOuterComponents(true, filter, loadSteps),
+                outerComponentRepository.countOuterComponents(true, filter));
     }
 
     public OuterComponent getCompoundById(int id) throws CompoundNotFoundException {
@@ -51,10 +54,10 @@ public class CompoundService {
     }
 
     @Transactional
-    public void deleteCompoundById(int id) throws InnerCompoundDeleteException {
+    public OuterComponent deleteCompoundById(int id) throws InnerCompoundDeleteException {
         if (outerComponentRepository.compoundWithIdIsInnerComponent(id)) {
             throw new InnerCompoundDeleteException("Attempt to delete inner compound");
         }
-        outerComponentRepository.deleteOuterComponentById(id, true);
+        return outerComponentRepository.deleteOuterComponentById(id, true).orElse(null);
     }
 }

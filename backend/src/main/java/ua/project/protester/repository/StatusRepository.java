@@ -23,7 +23,7 @@ public class StatusRepository {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "getId"),
                 new MapSqlParameterSource()
-                        .addValue("label", label),
+                        .addValue("label", label.toString()),
                 Integer.class);
     }
 

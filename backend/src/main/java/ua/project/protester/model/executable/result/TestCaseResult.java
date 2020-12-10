@@ -13,6 +13,7 @@ public class TestCaseResult {
     private Integer userId;
     private Integer testCaseId;
     private Integer statusId;
+    private ResultStatus status;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private List<ActionResult> innerResults;

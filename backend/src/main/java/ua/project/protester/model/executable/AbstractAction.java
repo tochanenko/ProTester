@@ -32,7 +32,6 @@ public abstract class AbstractAction extends ExecutableComponent {
         result.setActionName(name);
         result.setType(type);
         result.setStartDate(OffsetDateTime.now());
-
         try {
             logic(params, driver, result);
             result.setEndDate(OffsetDateTime.now());

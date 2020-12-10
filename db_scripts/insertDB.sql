@@ -6,26 +6,13 @@ VALUES ('ADMIN'),
 INSERT INTO "statuses"(status_name)
 VALUES ('PASSED'),
 	   ('FINISHED'),
-	   ('IN PROGRESS'),
+	   ('IN_PROGRESS'),
 	   ('RESUMED'),
 	   ('SUSPENDED'),
 	   ('STOPPED'),
-	   ('NOT STARTED'),
+	   ('NOT_STARTED'),
 	   ('FAILED'),
  	   ('UNKNOWN');
-
-INSERT INTO "libraries"(library_name, library_description)
-VALUES ('rest library actions', 'The list of all rest actions'),
-	   ('ui library actions', 'The list of all ui actions'),
-	   ('sql library actions', 'The list of all sql actions'),
-	   ('technical library actions', 'The list of all techical actions'),
-	   ('registration library compounds', 'The list of all registations compounds');
-
-INSERT INTO "compounds"(compound_name, compound_description)
-VALUES ('fail registration', 'The system should not register a user'),
-	   ('pass registration', 'The system should register a user'), 
-	   ('add item', 'Add item to cart, cart must have 1 item'),
-	   ('check cart', 'Add item to cart then delete it, cart must be empty');
 
 INSERT INTO "users"(role_id, user_username, user_password, user_email, user_active, user_first_name, user_last_name)
 VALUES ((SELECT role_id
@@ -46,14 +33,3 @@ VALUES ((SELECT role_id
 	   ((SELECT role_id
 		 FROM roles
 		 WHERE role_name = 'ENGINEER'), 'engineIS', '123qwerty', 'enginispro@gmail.com', FALSE, 'Lucid', 'Dream');
-
-INSERT INTO "projects"(creator_id, project_name, project_website_link, project_active)
-VALUES ((SELECT user_id
-		FROM users
-		WHERE user_username = 'admin'), 'rozetka', 'https://rozetka.com.ua/', TRUE),
-	   ((SELECT user_id
-		FROM users
-		WHERE user_username = 'promanager'), 'allo', 'https://allo.ua/', TRUE),
-	   ((SELECT user_id
-		FROM users
-		WHERE user_username = 'l_engineer_l'), 'estore', 'https://estore.ua/', TRUE);

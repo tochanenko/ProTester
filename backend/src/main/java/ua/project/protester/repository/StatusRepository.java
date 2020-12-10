@@ -19,15 +19,7 @@ public class StatusRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
 
-    public Integer getPassedId() {
-        return getIdByLabel(ResultStatus.PASSED);
-    }
-
-    public Integer getFailedId() {
-        return getIdByLabel(ResultStatus.FAILED);
-    }
-
-    private Integer getIdByLabel(ResultStatus label) {
+    public Integer getIdByLabel(ResultStatus label) {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "getId"),
                 new MapSqlParameterSource()

@@ -1,0 +1,139 @@
+package ua.project.protester.repository.project;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import ua.project.protester.model.Project;
+import ua.project.protester.model.ProjectDto;
+import ua.project.protester.utils.Pagination;
+import ua.project.protester.utils.project.ProjectDtoRowMapper;
+import ua.project.protester.utils.project.ProjectRowMapper;
+
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
+@Repository
+@RequiredArgsConstructor
+@PropertySource("classpath:queries/project.properties")
+public class ProjectRepositoryImpl implements ProjectRepository {
+
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    private final ProjectRowMapper projectRowMapper;
+
+    @Value("${CREATE_PROJECT}")
+    private String createProject;
+
+    @Value("${UPDATE_PROJECT}")
+    private String updateProject;
+
+    @Value("${UPDATE_PROJECT_STATUS}")
+    private String updateProjectStatus;
+
+    @Value("${GET_ALL_PROJECTS}")
+    private String getAllProjects;
+
+    @Value("${GET_ALL_PROJECTS_FILTERED}")
+    private String getAllProjectsFiltered;
+
+    @Value("${FIND_BY_ID}")
+    private String findById;
+
+    @Value("${FIND_COUNT_OF_RECORDS}")
+    private String findCountOdRecords;
+
+    @Value("${FIND_COUNT_OF_RECORDS_WITH_STATUS}")
+    private String findCountOdRecordsWithStatus;
+
+    @Override
+    public void create(Project project) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_name", project.getProjectName());
+        namedParams.addValue("project_website_link", project.getProjectWebsiteLink());
+        namedParams.addValue("project_active", project.getProjectActive());
+        namedParams.addValue("creator_id", project.getCreatorId());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedJdbcTemplate.update(createProject, namedParams, keyHolder);
+
+        Integer id = (Integer) (keyHolder.getKeys().get("project_id"));
+        project.setProjectId(id.longValue());
+    }
+
+    @Override
+    public void update(Project project) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_id", project.getProjectId());
+        namedParams.addValue("project_name", project.getProjectName());
+        namedParams.addValue("project_website_link", project.getProjectWebsiteLink());
+        namedParams.addValue("project_active", project.getProjectActive());
+
+        namedJdbcTemplate.update(updateProject, namedParams);
+    }
+
+    @Override
+    public void changeProjectStatus(Long id, Boolean isActive) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_id", id);
+        namedParams.addValue("project_active", isActive);
+
+        namedJdbcTemplate.update(updateProjectStatus, namedParams);
+    }
+
+    @Override
+    public List<ProjectDto> findAll(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("pageSize", pagination.getPageSize());
+        namedParams.addValue("offset", pagination.getOffset());
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+
+        return namedJdbcTemplate.query(getAllProjects, namedParams, new ProjectDtoRowMapper());
+    }
+
+    @Override
+    public List<ProjectDto> findAllByStatus(Pagination pagination, Boolean isActive) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("pageSize", pagination.getPageSize());
+        namedParams.addValue("offset", pagination.getOffset());
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+        namedParams.addValue("projectActive", isActive);
+
+        return namedJdbcTemplate.query(getAllProjectsFiltered, namedParams, new ProjectDtoRowMapper());
+    }
+
+    @Override
+    public Optional<Project> findById(Long id) {
+        try {
+            MapSqlParameterSource namedParams = new MapSqlParameterSource();
+            namedParams.addValue("project_id", id);
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(findById, namedParams, projectRowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Long getCountProjects(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+
+        return namedJdbcTemplate.queryForObject(findCountOdRecords, namedParams, Long.class);
+    }
+
+    @Override
+    public Long getCountProjectsByStatus(Pagination pagination, Boolean isActive) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("filterProjectName", pagination.getSearchField() + "%");
+        namedParams.addValue("projectActive", isActive);
+
+        return namedJdbcTemplate.queryForObject(findCountOdRecordsWithStatus, namedParams, Long.class);
+    }
+}

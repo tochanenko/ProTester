@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class OuterComponentFilter {
-
     private final Integer pageSize;
     private final Integer pageNumber;
     private final String outerComponentName;

@@ -9,10 +9,7 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.model.Role;
 import ua.project.protester.utils.RoleRowMapper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @PropertySource("classpath:queries/role.properties")
 @Repository
@@ -43,7 +40,7 @@ public class RoleRepository implements CrudRepository<Role> {
 
     @Override
     public List<Role> findAll() {
-        return namedJdbcTemplate.query(environment.getProperty("findAllRoles"), roleRowMapper);
+        return namedJdbcTemplate.query(Objects.requireNonNull(environment.getProperty("findAllRoles")), roleRowMapper);
     }
 
     @Override
@@ -60,7 +57,7 @@ public class RoleRepository implements CrudRepository<Role> {
         try {
             Map<String, Object> namedParams = new HashMap<>();
             namedParams.put("role_name", name);
-            return Optional.ofNullable(namedJdbcTemplate.queryForObject(environment.getProperty("findRoleByName"), namedParams, roleRowMapper));
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(Objects.requireNonNull(environment.getProperty("findRoleByName")), namedParams, roleRowMapper));
         } catch (EmptyResultDataAccessException e) {
 
             return Optional.empty();

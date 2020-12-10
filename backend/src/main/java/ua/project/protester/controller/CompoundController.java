@@ -18,16 +18,17 @@ public class CompoundController {
     private final CompoundService compoundService;
 
     @PostMapping
-    public void createCompound(@RequestBody OuterComponentRepresentation request) {
-        compoundService.saveCompound(request);
+    public OuterComponent createCompound(@RequestBody OuterComponentRepresentation request) {
+        return compoundService.saveCompound(request);
     }
 
     @GetMapping
     public Page<OuterComponent> getAllCompounds(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                 @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                                @RequestParam(value = "compoundName", defaultValue = "") String compoundName) {
+                                                @RequestParam(value = "compoundName", defaultValue = "") String compoundName,
+                                                @RequestParam(value = "loadSteps", defaultValue = "true") boolean loadSteps) {
         OuterComponentFilter filter = new OuterComponentFilter(pageSize, pageNumber, compoundName);
-        return compoundService.getAllCompounds(filter);
+        return compoundService.getAllCompounds(filter, loadSteps);
     }
 
     @GetMapping("/{id}")
@@ -36,7 +37,7 @@ public class CompoundController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCompound(@PathVariable int id) throws InnerCompoundDeleteException {
-        compoundService.deleteCompoundById(id);
+    public OuterComponent deleteCompound(@PathVariable int id) throws InnerCompoundDeleteException {
+        return compoundService.deleteCompoundById(id);
     }
 }

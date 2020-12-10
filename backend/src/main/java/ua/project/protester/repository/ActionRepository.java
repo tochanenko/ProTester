@@ -1,25 +1,28 @@
 package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
+import ua.project.protester.model.executable.ActionRepresentation;
+import ua.project.protester.request.ActionFilter;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ActionRepository {
 
-    private static final String PROPERTY_NOT_FOUND_TEMPLATE = "Could not find property '%s' in queries/action.properties";
-    private final Logger logger = LoggerFactory.getLogger(ActionRepository.class);
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
 
@@ -38,30 +41,30 @@ public class ActionRepository {
     }
 
     public void syncWithDb() {
-        logger.info("Starting action synchronization");
-        logger.info("Performing action implementations scanning...");
+        log.info("Starting action synchronization");
+        log.info("Performing action implementations scanning...");
         List<String> actionClassesInCode = scanForActionClassesInCode();
-        logger.info(String.format(
+        log.info(String.format(
                 "Action scan complete, found %d action implementations",
                 actionClassesInCode.size()));
-        logger.info("Performing action classes loading from DB...");
+        log.info("Performing action classes loading from DB...");
         List<String> actionCLassesInDb = loadAllActionClassesFromDb();
-        logger.info(String.format(
+        log.info(String.format(
                 "Loaded %d action classes from DB. Full list: %s",
                 actionCLassesInDb.size(),
                 actionCLassesInDb));
-        logger.info("Performing integrity check...");
+        log.info("Performing integrity check...");
         List<String> newActionClasses = checkIntegrity(actionClassesInCode, actionCLassesInDb);
-        logger.info(String.format(
+        log.info(String.format(
                 "Integrity check complete, found %d new action implementations. Full list: %s",
                 newActionClasses.size(),
                 newActionClasses));
         if (newActionClasses.size() > 0) {
-            logger.info("Performing new actions uploading to DB...");
+            log.info("Performing new actions uploading to DB...");
             uploadNewActionsToDb(newActionClasses);
-            logger.info("Actions uploading complete");
+            log.info("Actions uploading complete");
         }
-        logger.info("Action synchronization complete");
+        log.info("Action synchronization complete");
     }
 
     private List<String> scanForActionClassesInCode() {
@@ -71,25 +74,19 @@ public class ActionRepository {
         for (Class<?> actionCandidate : actionCandidates) {
             if (AbstractAction.class.isAssignableFrom(actionCandidate)) {
                 actionClassesInCode.add(actionCandidate.getCanonicalName());
-                logger.info("Action implementation found: " + actionCandidate.getCanonicalName());
+                log.info("Action implementation found: " + actionCandidate.getCanonicalName());
             } else {
-                logger.warn("Failed to load action class " + actionCandidate.getCanonicalName());
+                log.warn("Failed to load action class " + actionCandidate.getCanonicalName());
             }
         }
         return actionClassesInCode;
     }
 
     private List<String> loadAllActionClassesFromDb() {
-        String propertyName = "findAllActionClasses";
-        try {
-            return namedParameterJdbcTemplate.queryForList(
-                    Objects.requireNonNull(env.getProperty(propertyName)),
-                    new MapSqlParameterSource(),
-                    String.class);
-        } catch (NullPointerException e) {
-            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
-            return Collections.emptyList();
-        }
+        return namedParameterJdbcTemplate.queryForList(
+                PropertyExtractor.extract(env, "findAllActionClasses"),
+                new MapSqlParameterSource(),
+                String.class);
     }
 
     private List<String> checkIntegrity(List<String> actionClassesInCode, List<String> actionClassesInDb) {
@@ -104,36 +101,29 @@ public class ActionRepository {
     }
 
     private void uploadNewActionToDb(String newActionClass) {
-        String propertyName = "saveAction";
-        try {
-            namedParameterJdbcTemplate.update(
-                    Objects.requireNonNull(env.getProperty(propertyName)),
-                    new MapSqlParameterSource()
-                            .addValue("className", newActionClass));
-        } catch (NullPointerException e) {
-            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
-        }
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "saveAction"),
+                new MapSqlParameterSource()
+                        .addValue("className", newActionClass));
     }
 
     private Optional<AbstractAction> findAction(String propertyName, String parameterKey, Object parameterValue) {
         try {
             return Optional.ofNullable(
                     namedParameterJdbcTemplate.queryForObject(
-                            Objects.requireNonNull(env.getProperty(propertyName)),
+                            PropertyExtractor.extract(env, propertyName),
                             new MapSqlParameterSource().addValue(parameterKey, parameterValue),
                             (rs, rowNum) -> constructAction(
                                     rs.getInt("id"),
-                                    rs.getString("className"))));
-        } catch (NullPointerException e) {
-            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
-            return Optional.empty();
+                                    rs.getString("className"),
+                                    rs.getString("description"))));
         } catch (DataAccessException e) {
-            logger.warn(e.toString());
+            log.warn(e.toString());
             return Optional.empty();
         }
     }
 
-    private AbstractAction constructAction(Integer id, String className) {
+    private AbstractAction constructAction(Integer id, String className, String description) {
         try {
             Class<?> actionClass = Class.forName(className);
 
@@ -144,7 +134,7 @@ public class ActionRepository {
                     id,
                     metadata.name().isEmpty() ? actionClass.getSimpleName() : metadata.name(),
                     metadata.type(),
-                    metadata.description(),
+                    description == null || description.isEmpty() ? metadata.description() : description,
                     className,
                     metadata.parameterNames());
 
@@ -155,32 +145,38 @@ public class ActionRepository {
         }
     }
 
-    private AbstractAction constructAction(Map.Entry<Integer, String> entry) {
-        return constructAction(entry.getKey(), entry.getValue());
+    private AbstractAction constructAction(ActionRepresentation actionRepresentation) {
+        return constructAction(
+                actionRepresentation.getId(),
+                actionRepresentation.getClassName(),
+                actionRepresentation.getDescription());
     }
 
-    public Map<Integer, String> findAllActionRepresentations() {
-        String propertyName = "findAllActions";
-        try {
-            Map<Integer, String> actionRepresentations = new HashMap<>();
-            namedParameterJdbcTemplate.query(
-                    Objects.requireNonNull(env.getProperty(propertyName)),
-                    new MapSqlParameterSource(),
-                    (rs, rowNum) -> actionRepresentations.put(
-                            rs.getInt("id"),
-                            rs.getString("className")));
-            return actionRepresentations;
-        } catch (NullPointerException e) {
-            logger.warn(String.format(PROPERTY_NOT_FOUND_TEMPLATE, propertyName));
-            return Collections.emptyMap();
-        }
+    public List<ActionRepresentation> findAllActionRepresentations() {
+        return namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findAllActions"),
+                new MapSqlParameterSource(),
+                new BeanPropertyRowMapper<>(ActionRepresentation.class));
     }
 
-    public List<AbstractAction> findAllActions() {
-        return findAllActionRepresentations().entrySet()
+    public Page<AbstractAction> findAllActions(ActionFilter actionFilter) {
+        List<AbstractAction> actions = findAllActionRepresentations()
                 .stream()
                 .map(this::constructAction)
+                .filter(abstractAction -> abstractAction.getName().startsWith(actionFilter.getFilterName()))
+                .filter(abstractAction ->
+                        actionFilter.getType() == null || abstractAction.getType().equals(actionFilter.getType()))
                 .collect(Collectors.toList());
+        if (actions.size() >= actionFilter.getOffset()) {
+            return new Page<>(
+                    actions.subList(
+                            actionFilter.getOffset(),
+                            Math.min(actions.size(), actionFilter.getOffset() + actionFilter.getPageSize())),
+                    (long) actions.size());
+        }
+        return new Page<>(
+                Collections.emptyList(),
+                0L);
     }
 
     public Optional<AbstractAction> findActionById(Integer id) {
@@ -195,5 +191,14 @@ public class ActionRepository {
                 "findActionByClassName",
                 "className",
                 className);
+    }
+
+    public Optional<AbstractAction> updateActionDescriptionById(Integer id, String newDescription) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "updateActionDescriptionById"),
+                new MapSqlParameterSource()
+                        .addValue("id", id)
+                        .addValue("description", newDescription));
+        return findActionById(id);
     }
 }

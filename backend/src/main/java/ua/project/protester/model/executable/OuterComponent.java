@@ -81,6 +81,7 @@ public class OuterComponent extends ExecutableComponent {
                     callback.andThen(innerResults::add));
         } catch (ActionExecutionException e) {
             // TODO: add catch
+            e.printStackTrace();
         }
         result.setEndDate(OffsetDateTime.now());
         result.setInnerResults(innerResults);

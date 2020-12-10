@@ -26,4 +26,12 @@ public class StatusRepository {
                         .addValue("label", label),
                 Integer.class);
     }
+
+    public ResultStatus getLabelById(Integer id) {
+        return ResultStatus.valueOf(namedParameterJdbcTemplate.queryForObject(
+                PropertyExtractor.extract(env, "getLabel"),
+                new MapSqlParameterSource()
+                        .addValue("id", id),
+                String.class));
+    }
 }

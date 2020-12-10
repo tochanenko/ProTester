@@ -58,6 +58,13 @@ public class OuterComponent extends ExecutableComponent {
 
     @Override
     public void execute(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
+        for (Step comp: steps
+             ) {
+            System.out.println("PARAMETERS" + comp.getParameters());
+            System.out.println("NAME " + comp.getId());
+            System.out.println("IS ACTION " + comp.getParameters());
+            System.out.println("\n");
+        }
         steps.forEach(step -> step.getComponent().execute(
                 fitInputParameters(params, step.getParameters()),
                 driver,

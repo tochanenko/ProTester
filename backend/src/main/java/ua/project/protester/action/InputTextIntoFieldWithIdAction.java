@@ -18,6 +18,7 @@ public class InputTextIntoFieldWithIdAction extends AbstractAction {
     @Override
     protected void logic(Map<String, String> params, WebDriver driver) {
         try {
+            System.out.println("RESULT  id: " + params.get("id") + " text: "+ params.get("text"));
             driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());

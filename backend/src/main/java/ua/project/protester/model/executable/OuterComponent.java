@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.result.ActionResult;
 import ua.project.protester.model.executable.result.TestCaseResult;
 
@@ -59,11 +60,13 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) {
-        steps.forEach(step -> step.getComponent().execute(
-                fitInputParameters(params, step.getParameters()),
-                driver,
-                callback));
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+        for (Step step: steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    driver,
+                    callback);
+        }
     }
 
     public TestCaseResult executeForResult(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) {
@@ -71,10 +74,14 @@ public class OuterComponent extends ExecutableComponent {
         final List<ActionResult> innerResults = new LinkedList<>();
 
         result.setStartDate(OffsetDateTime.now());
-        execute(
-                params,
-                driver,
-                callback.andThen(innerResults::add));
+        try {
+            execute(
+                    params,
+                    driver,
+                    callback.andThen(innerResults::add));
+        } catch (ActionExecutionException e) {
+            // TODO: add catch
+        }
         result.setEndDate(OffsetDateTime.now());
         result.setInnerResults(innerResults);
 

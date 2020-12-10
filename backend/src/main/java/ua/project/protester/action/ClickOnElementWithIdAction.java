@@ -18,7 +18,7 @@ import java.util.Map;
 )
 public class ClickOnElementWithIdAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) {
         try {
             driver.findElement(By.id(params.get("id"))).click();
         } catch (WebDriverException ex) {

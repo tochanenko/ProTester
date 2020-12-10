@@ -24,9 +24,4 @@ public class ActionC extends AbstractAction {
         }
         System.out.println("C with param: " + params.get("c"));
     }
-
-    @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
-
-    }
 }

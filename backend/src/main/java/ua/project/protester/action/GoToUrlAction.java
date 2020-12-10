@@ -17,7 +17,7 @@ import java.util.Map;
 )
 public class GoToUrlAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) {
 
         try {
             driver.get(params.get("url"));

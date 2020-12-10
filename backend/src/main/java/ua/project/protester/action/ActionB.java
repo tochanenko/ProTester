@@ -16,6 +16,7 @@ import java.util.Map;
 )
 public class ActionB extends AbstractAction {
 
+    @Override
     protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) throws ActionExecutionException {
         try {
             Thread.sleep(1000);
@@ -23,10 +24,5 @@ public class ActionB extends AbstractAction {
             throw new ActionExecutionException();
         }
         System.out.println("B with param: " + params.get("b"));
-    }
-
-    @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
-
     }
 }

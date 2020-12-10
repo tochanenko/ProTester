@@ -18,7 +18,7 @@ import java.util.Map;
 )
 public class ClickOnElementWithXPathAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) {
         try {
             driver.findElement(By.xpath(params.get("xpath"))).click();
         } catch (WebDriverException ex) {

@@ -26,9 +26,4 @@ public class ActionA extends AbstractAction {
         result.setExtra(Map.of("technical", "VAL"));
         System.out.println("A with param: " + params.get("a"));
     }
-
-    @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
-
-    }
 }

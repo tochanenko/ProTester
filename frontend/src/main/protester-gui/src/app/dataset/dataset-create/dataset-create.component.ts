@@ -9,6 +9,7 @@ import {Subscription} from "rxjs";
   templateUrl: './dataset-create.component.html',
   styleUrls: ['./dataset-create.component.css']
 })
+
 export class DatasetCreateComponent implements OnInit, OnDestroy {
 
   datasetCreateForm: FormGroup;
@@ -23,7 +24,7 @@ export class DatasetCreateComponent implements OnInit, OnDestroy {
               private datasetService: DatasetService) { }
 
   ngOnInit(): void {
-
+  this.createDataSetCreateForm();
   }
 
   get f() {
@@ -34,7 +35,7 @@ export class DatasetCreateComponent implements OnInit, OnDestroy {
     this.datasetCreateForm = this.formBuilder.group({
       name: [null, Validators.compose([Validators.minLength(4),
                                                Validators.maxLength(50)])],
-      description: [null, Validators.compose([Validators.required])]
+      description: [null, Validators.compose([Validators.required])],
     });
   }
 

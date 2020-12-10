@@ -1,5 +1,5 @@
 export  class DataSetFilterModel {
-  pageSize = 5;
+  pageSize = 10;
   pageNumber = 1;
   name = '';
 }

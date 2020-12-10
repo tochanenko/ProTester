@@ -1,6 +1,6 @@
 .dataset-list {
   height: 100%;
-  width: 90%;
+  width: 65%;
   margin: 0 auto;
 }
 
@@ -41,7 +41,7 @@ mat-card {
 }
 
 .mat-column-CONF {
-  width: auto;
+  flex: 0 0 5%;
 }
 
 .search-dataset {
@@ -54,6 +54,15 @@ mat-card {
   margin-bottom: 2%;
 }
 
+.create-button {
+  background: #FFFFFF;
+  border: 1px solid rgba(92, 107, 192, 0.54);
+  box-sizing: border-box;
+  border-radius: 6px;
+  width: 25%;
+  height: 50px;
+  margin-top: 0.5%;
+}
 .mat-form-field {
   width: 50%;
   height: 4%;

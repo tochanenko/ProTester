@@ -30,6 +30,11 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {DatasetListComponent} from "./dataset/dataset-list/dataset-list.component";
+import  {DatasetCreateComponent} from "./dataset/dataset-create/dataset-create.component";
+import {DatasetEditComponent} from "./dataset/dataset-edit/dataset-edit.component";
+import { DatasetDeleteComponent } from './dataset/dataset-delete/dataset-delete.component';
+import { DatasetViewComponent } from './dataset/dataset-view/dataset-view.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +56,12 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     UsersListComponent,
     TestCaseListComponent,
     TestCaseUpdateComponent,
-    TestCaseCreateComponent
+    TestCaseCreateComponent,
+    DatasetListComponent,
+    DatasetCreateComponent,
+    DatasetEditComponent,
+    DatasetDeleteComponent,
+    DatasetViewComponent
   ],
   imports: [
     BrowserModule,

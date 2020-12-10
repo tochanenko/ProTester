@@ -4,8 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.AbstractAction;
+import ua.project.protester.model.executable.result.ActionResult;
 
 import java.util.Map;
 
@@ -22,5 +24,10 @@ public class InputTextIntoFieldWithIdAction extends AbstractAction {
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());
         }
+    }
+
+    @Override
+    protected void logic(Map<String, String> params, WebDriver driver, ActionResult result) throws ActionExecutionException {
+
     }
 }

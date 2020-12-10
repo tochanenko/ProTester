@@ -8,6 +8,9 @@ import {StorageService} from "../../services/auth/storage.service";
 import {MatDialog} from "@angular/material/dialog";
 import {DataSetFilterModel} from "../dataset-filter.model";
 import {DatasetEditComponent} from "../dataset-edit/dataset-edit.component";
+import {DatasetDeleteComponent} from "../dataset-delete/dataset-delete.component";
+import {DatasetCreateComponent} from "../dataset-create/dataset-create.component";
+import {DatasetViewComponent} from "../dataset-view/dataset-view.component";
 
 @Component({
   selector: 'app-dataset-list',
@@ -57,6 +60,29 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     this.searchDataset();
   }
 
+  openCreateDialog(): void {
+    const createDialogRef = this.dialog.open(DatasetCreateComponent,  {
+      height: 'auto',
+      width: '50%'
+    });
+
+    this.subscription = createDialogRef.afterClosed().subscribe( () => {
+      this.searchDataset();
+    })
+  }
+
+  openViewDialog(id: number): void {
+    const viewDialogRef = this.dialog.open(DatasetViewComponent, {
+      height: 'auto',
+      width: '50%',
+      data: {id: id}
+      });
+
+    this.subscription = viewDialogRef.afterClosed().subscribe( () => {
+      this.searchDataset();
+    })
+  }
+
   openEditDialog(id: number): void {
     const editDialogRef = this.dialog.open(DatasetEditComponent, {
       height: 'auto',
@@ -65,6 +91,18 @@ export class DatasetListComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = editDialogRef.afterClosed().subscribe( () => {
+      this.searchDataset();
+    })
+  }
+
+  openDeleteDialog(id: number): void {
+    const deleteDialogRef = this.dialog.open(DatasetDeleteComponent, {
+      height: 'auto',
+      width: '50%',
+      data: {id: id}
+    });
+
+    this.subscription = deleteDialogRef.afterClosed().subscribe(() => {
       this.searchDataset();
     })
   }

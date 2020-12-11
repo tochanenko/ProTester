@@ -20,7 +20,7 @@ public class RunController {
 
     @PostMapping
     @SendTo("/result")
-    @SendToUser("")
+//    @SendToUser("")
     public void run(@RequestBody List<TestCaseRequest> testCase)  {
         startService.execute(testCase);
     }

@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import org.apache.velocity.runtime.Runtime;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -20,7 +21,8 @@ public class InputTextIntoFieldWithIdAction extends AbstractAction {
     protected void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) {
         try {
             System.out.println("RESULT  id: " + params.get("id") + " text: " + params.get("text"));
-            driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
+            throw new RuntimeException("RUNTIME EX");
+            //driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());
         }

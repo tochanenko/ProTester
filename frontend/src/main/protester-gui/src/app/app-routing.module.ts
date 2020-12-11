@@ -58,11 +58,11 @@ const routes: Routes = [
   },
   {
     path: 'projectMenu',
-    component: ProjectMenuComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    component: ProjectMenuComponent
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
 
   {
@@ -76,11 +76,11 @@ const routes: Routes = [
 
   {
     path: 'projectList',
-    component: ProjectListComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    component: ProjectListComponent
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
 
   {
@@ -93,11 +93,11 @@ const routes: Routes = [
   },
   {
     path: 'test-case-list/:id',
-    component: TestCaseListComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    }
+    component: TestCaseListComponent
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];

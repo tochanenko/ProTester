@@ -1,0 +1,36 @@
+<div *ngIf="isError; else noerror">
+  <div class="error-info">
+    <p> Connection failed... </p>
+    <button mat-stroked-button (click)="onCliCkReconnect()">Reconnect</button>
+  </div>
+</div>
+
+<ng-template #noerror >
+  <div *ngIf="isLoading; else content" class="loading">
+    <p class="loading-info">Loading...</p>
+    <mat-spinner></mat-spinner>
+
+  </div>
+  <ng-template #content>
+
+    <div fxLayout="row" class="test-case-analyze">
+
+      <mat-card class="test-case-info-card" >
+        <mat-card-content>
+          <app-test-case-info #child
+                              *ngFor="let result of resultList"
+                              [testCaseResult]="result"
+          ></app-test-case-info>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="result-list-card" >
+        <app-result-list
+          *ngFor="let result of resultList"
+          [testCaseResult]="result"
+        ></app-result-list>
+      </div>
+    </div>
+
+  </ng-template>
+</ng-template>

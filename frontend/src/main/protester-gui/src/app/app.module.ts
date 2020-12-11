@@ -30,6 +30,20 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
+import { LibraryNewComponent } from './components/library-new/library-new.component';
+import { LibrarySearchComponent } from './components/library-search/library-search.component';
+import {ScrollingModule} from "@angular/cdk/scrolling";
+import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.component';
+import {
+  MAT_BOTTOM_SHEET_DEFAULT_OPTIONS
+} from "@angular/material/bottom-sheet";
+import {MatTabsModule} from "@angular/material/tabs";
+import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
+import { LibraryEditComponent } from './components/library-edit/library-edit.component';
+import { LibraryViewComponent } from './components/library-view/library-view.component';
+import { CompoundNewComponent } from './components/compound-new/compound-new.component';
+
 
 @NgModule({
   declarations: [
@@ -51,7 +65,15 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     UsersListComponent,
     TestCaseListComponent,
     TestCaseUpdateComponent,
-    TestCaseCreateComponent
+    TestCaseCreateComponent,
+    LibraryMenuComponent,
+    LibraryNewComponent,
+    LibrarySearchComponent,
+    BottomSheetComponent,
+    CompoundSearchComponent,
+    LibraryEditComponent,
+    LibraryViewComponent,
+    CompoundNewComponent
   ],
   imports: [
     BrowserModule,
@@ -62,9 +84,11 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    ScrollingModule,
+    MatTabsModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]
 })
 export class AppModule {

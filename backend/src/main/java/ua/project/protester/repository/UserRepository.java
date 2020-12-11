@@ -76,7 +76,6 @@ public class UserRepository implements CrudRepository<User> {
         namedParams.addValue("role_id", entity.getRole().getId());
         namedParams.addValue("user_username", entity.getUsername());
         namedParams.addValue("user_email", entity.getEmail());
-        namedParams.addValue("user_password", entity.getPassword());
         namedParams.addValue("user_active", entity.isActive());
         namedParams.addValue("user_first_name", entity.getFirstName());
         namedParams.addValue("user_last_name", entity.getLastName());
@@ -97,7 +96,12 @@ public class UserRepository implements CrudRepository<User> {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("user_id", id);
         namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("deactivateUser")), namedParams);
+    }
 
+    public void activate(Long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("activateUser")), namedParams);
     }
 
 

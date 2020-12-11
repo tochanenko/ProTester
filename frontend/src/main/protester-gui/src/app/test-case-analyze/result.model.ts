@@ -6,7 +6,7 @@ export class TestCaseResult {
   status: Status;
   startDate = '';
   endDate = '';
-  innerResults: ActionResult[];
+  innerResults?: ActionResult[];
 }
 
 export class ActionResult {
@@ -16,8 +16,8 @@ export class ActionResult {
   endDate = '';
   extra?: { [name: string]: string };
   message?: string;
-  type: ExecutableComponentType;
-  status: Status;
+  type: ExecutableComponentType = ExecutableComponentType.REST;
+  status: Status = Status.PASSED;
 }
 
 export enum Status {

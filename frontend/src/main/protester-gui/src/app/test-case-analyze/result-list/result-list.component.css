@@ -55,7 +55,6 @@ mat-expansion-panel-header {
 .action-header {
   display: flex;
   justify-content: space-between;
-  font-family: Roboto;
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -96,4 +95,16 @@ mat-expansion-panel-header {
 .in_progress {
   color: #2196F3;
   margin-right: 7px;
+}
+
+table, th , td {
+  padding-right: 80px;
+  padding-bottom: 5px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+
+  color: rgba(0, 0, 0, 0.87);
 }

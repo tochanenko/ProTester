@@ -1,5 +1,4 @@
-<mat-accordion class="expansion-body">
-
+<mat-accordion class="expansion-body" *ngIf="testCaseResult">
   <mat-expansion-panel (opened)="panelOpenState = true"
                        (closed)="panelOpenState = false" [expanded]="true" class="expansion-body">
     <mat-expansion-panel-header>
@@ -10,9 +9,25 @@
 
     <mat-card class="test-case-info">
       <mat-card-content>
-        <div>
-          info about test case
-        </div>
+
+        <table class="table-info">
+          <tr>
+            <td> User id </td>
+            <td>{{testCaseResult.userId}}</td>
+          </tr>
+          <tr>
+            <td> TestCase Id </td>
+            <td>{{testCaseResult.testCaseId}}</td>
+          </tr>
+          <tr>
+            <td> Start Date </td>
+            <td>{{testCaseResult.startDate}}</td>
+          </tr>
+          <tr>
+            <td> End Date </td>
+            <td>{{testCaseResult.endDate}}</td>
+          </tr>
+        </table>
       </mat-card-content>
     </mat-card>
 
@@ -44,10 +59,26 @@
         </mat-card-title>
 
         <mat-card-content>
-          <p>{{item.startDate}}</p>
-          <p>{{item.endDate}}</p>
-          <p>result</p>
-          <p>result</p>
+
+          <table class="table-info">
+            <tr>
+              <td> Start date </td>
+              <td>{{item.startDate}}</td>
+            </tr>
+            <tr>
+              <td> End date </td>
+              <td>{{item.endDate}}</td>
+            </tr>
+            <tr *ngFor="let i of item.extra | keyvalue">
+              <td>{{ i.key }}</td>
+              <td>{{ i.value }}</td>
+            </tr>
+            <tr *ngIf="item.message">
+              <td> Message </td>
+              <td>{{item.message}}</td>
+            </tr>
+          </table>
+
         </mat-card-content>
 
       </mat-card>
@@ -58,6 +89,3 @@
   <br>
 
 </mat-accordion>
-
-<br>
-<br>

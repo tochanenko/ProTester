@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {TestCaseResult} from '../result.model';
 
 @Component({
@@ -6,7 +6,7 @@ import {TestCaseResult} from '../result.model';
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit {
+export class ResultListComponent implements OnInit, OnChanges {
 
   @Input() testCaseResult: TestCaseResult;
 
@@ -16,6 +16,15 @@ export class ResultListComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.testCaseResult);
+  }
+
+  updateTestCaseResult(result): void {
+    console.log('ResultListComponent:  ' + result);
+    this.testCaseResult = result;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('onchange');
   }
 
 }

@@ -19,13 +19,16 @@ export class TestCaseInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.testCaseResult);
     this.treeControl = new NestedTreeControl<any>(node => node.innerResults);
     this.dataSource = new MatTreeNestedDataSource<TestCaseResult>();
     this.dataSource.data = [this.testCaseResult];
   }
 
+  refreshTree(): void{
+    const dataToRefresh = this.dataSource.data;
+    this.dataSource.data = null;
+    this.dataSource.data = dataToRefresh;
+  }
 
   hasChild = (_: number, node: any) => (!!node.innerResults && node.innerResults.length > 0);
-
 }

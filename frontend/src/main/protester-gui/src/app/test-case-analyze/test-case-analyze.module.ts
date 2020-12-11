@@ -8,6 +8,8 @@ import {FlexLayoutModule } from '@angular/flex-layout';
 import {MaterialModule} from '../services/material.module';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatChipsModule} from '@angular/material/chips';
+import {FormsModule} from '@angular/forms';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [TestCaseAnalyzeComponent, TestCaseInfoComponent, ResultListComponent],
@@ -25,7 +27,9 @@ import {MatChipsModule} from '@angular/material/chips';
       }
     ]),
     MatExpansionModule,
-    MatChipsModule
+    MatChipsModule,
+    FormsModule,
+    MatProgressSpinnerModule
   ],
   exports: [RouterModule]
 })

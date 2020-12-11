@@ -69,7 +69,7 @@ public class AdminController {
         }
         userDto.setId(id);
         userService.modifyUser(userDto);
-        return new ResponseEntity<>("User was successfully modified", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"msg\": \"User was modified\" }", HttpStatus.OK);
     }
 
     @PatchMapping("/profiles/deactivate/{id}")

@@ -55,7 +55,6 @@ public class UserService {
     @Transactional
     public void updateUser(UserModificationDto userDto) {
         User user = userMapper.toUserFromUserModificationDto(userDto);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(roleService.findRoleByName(user.getRole().getName())
                 .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
         logger.info("Updating user {}", user);

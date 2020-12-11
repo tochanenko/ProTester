@@ -31,6 +31,8 @@ import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-up
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import {ViewUserComponent} from "./components/view-user/view-user.component";
+import { EditUserComponent } from './components/edit-user/edit-user.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -53,19 +55,21 @@ import {ViewUserComponent} from "./components/view-user/view-user.component";
     TestCaseListComponent,
     TestCaseUpdateComponent,
     TestCaseCreateComponent,
-    ViewUserComponent
+    ViewUserComponent,
+    EditUserComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    CommonModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    NgxMatSelectSearchModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        CommonModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        NgxMatSelectSearchModule,
+        MatCheckboxModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]
 })

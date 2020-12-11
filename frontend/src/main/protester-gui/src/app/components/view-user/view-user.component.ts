@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../services/user/user.service";
-import {StorageService} from "../../services/auth/storage.service";
 import {User} from "../../models/user.model";
 
 @Component({
@@ -16,8 +15,7 @@ export class ViewUserComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private userService: UserService,
-              private storageService: StorageService
+              private userService: UserService
   ) {
   }
 

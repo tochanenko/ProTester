@@ -1,0 +1,46 @@
+<div class="login-form-flex">
+  <mat-card class="content">
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="editUserForm">
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput type="text" id="username" class="form-control" name="email" formControlName="username" [value]="username">
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="text" id="email" class="form-control" name="email" formControlName="email" [value]="email">
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput type="text" id="firstName" class="form-control" name="email" formControlName="firstName" [value]="firstName">
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput type="text" id="lastName" class="form-control" name="email" formControlName="lastName" [value]="lastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="selectedValue" name="role">
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{role.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <section class="example-section">
+          <mat-checkbox class="example-margin" formControlName="active" [(ngModel)]="isActive"><span *ngIf="isActive">Active</span><span *ngIf="!isActive">Deactivated</span></mat-checkbox>
+        </section>
+        <button mat-raised-button class="button-flex-container" type="submit">
+          <p class="button-text">
+            SAVE
+          </p>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

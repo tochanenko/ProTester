@@ -25,8 +25,8 @@
 
         <mat-form-field appearance="fill">
           <mat-label>Role</mat-label>
-          <mat-select [(ngModel)]="selectedValue" name="role">
-            <mat-option *ngFor="let role of roles" [value]="role">
+          <mat-select [value]="role" name="role">
+            <mat-option *ngFor="let role of roles" [value]="role.value">
               {{role.viewValue}}
             </mat-option>
           </mat-select>

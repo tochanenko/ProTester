@@ -58,10 +58,21 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+        for (Step step: steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    context,
+                    driver,
+                    callback);
+        }
+    }
+
     public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
         for (Step step: steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
+                    new HashMap<>(),
                     driver,
                     callback);
         }

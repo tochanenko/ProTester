@@ -1,7 +1,11 @@
-export class DataSet {
+export interface DataSet {
   id?: number;
   name: string;
   description: string;
-  parameters: Map<string, string>;
+  parameters: object;
 }
 
+export interface DataSetParameter {
+  name: string;
+  value: string;
+}

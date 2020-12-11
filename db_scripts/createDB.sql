@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS step_params CASCADE;
 DROP TABLE IF EXISTS tests_scenarios_actions_compounds CASCADE;
 DROP TABLE IF EXISTS data_sets CASCADE;
 DROP TABLE IF EXISTS data_set_parameters CASCADE;
-DROP TABLE IF EXISTS statutes CASCADE;
+DROP TABLE IF EXISTS statuses CASCADE;
 DROP TABLE IF EXISTS projects CASCADE;
 DROP TABLE IF EXISTS test_cases CASCADE;
 DROP TABLE IF EXISTS test_cases_watchers CASCADE;
@@ -29,7 +29,7 @@ CREATE TABLE users (
     user_id			SERIAL PRIMARY KEY,
     role_id			INTEGER			   NOT NULL,
     user_username	VARCHAR(32) UNIQUE NOT NULL,
-    user_password	CHAR(64) 		   NOT NULL,
+    user_password	CHAR(60) 		   NOT NULL,
     user_email 		VARCHAR(32) UNIQUE NOT NULL,
     user_active		BOOLEAN			   NOT NULL,
     user_first_name	VARCHAR(32) 	   NOT NULL,

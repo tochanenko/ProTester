@@ -11,16 +11,12 @@
       <input class="input-search" matInput type="text" id="searchDataset" [(ngModel)]="datasetFilter.name"
              (keyup)="onFilterChange($event)">
     </mat-form-field>
-
-  </div>
-
-  <div class="create-dataset">
-    <button mat-icon-button class="create-button"> Create Dataset </button>
+    <button (click)="openCreateDialog()" class="create-button" mat-icon-button> Create Dataset</button>
   </div>
 
   <mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="NAME">
-      <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef class="header">Name</mat-header-cell>
       <mat-cell *matCellDef="let element"><a>{{element.name}}</a></mat-cell>
     </ng-container>
 
@@ -31,23 +27,21 @@
 
     <ng-container matColumnDef="CONF">
 
-      <mat-header-cell *matHeaderCellDef class="header">
-        <span class="material-icons more-options">more_vert</span>
-      </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
 
       <mat-cell *matCellDef="let row">
-        <button mat-icon-button [matMenuTriggerFor]="menuTable">
+        <button [matMenuTriggerFor]="menuTable" mat-icon-button>
           <span class="material-icons more-options">more_vert</span>
         </button>
 
         <mat-menu #menuTable="matMenu">
-          <button mat-menu-item (click)="openViewDialog(row.id)">
+          <button (click)="openViewDialog(row.id)" mat-menu-item>
             <span>View</span>
           </button>
-          <button mat-menu-item (click)="openEditDialog(row.id)">
+          <button (click)="openEditDialog(row.id)" mat-menu-item>
             <span>Edit</span>
           </button>
-          <button mat-menu-item (click)="openDeleteDialog(row.id)">
+          <button (click)="openDeleteDialog(row.id)" mat-menu-item>
             <span>Delete</span>
           </button>
         </mat-menu>
@@ -58,11 +52,11 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
   </mat-table>
-  <mat-paginator class="header"
-                 [pageSizeOptions]="pageSizeOptions"
+  <mat-paginator (page)="pageEvent = $event; onPaginateChange($event)"
                  [length]="datasetsCount"
+                 [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="datasetFilter.pageSize"
-                 (page)="pageEvent = $event; onPaginateChange($event)">
+                 class="header">
 
   </mat-paginator>
 </mat-card>

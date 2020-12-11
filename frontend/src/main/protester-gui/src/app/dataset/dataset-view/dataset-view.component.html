@@ -1,1 +1,16 @@
-<p>dataset-view works!</p>
+<div class="view-form">
+  <mat-dialog-content class="mat-view">
+      <mat-table [dataSource]="datasetParameters">
+        <ng-container matColumnDef="NAME">
+          <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
+          <mat-cell *matCellDef="let element"><a>{{element.name}}</a></mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="VALUE">
+          <mat-header-cell *matHeaderCellDef class="header">VALUE</mat-header-cell>
+          <mat-cell *matCellDef="let element"><a>{{element.value}}</a></mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+  </mat-dialog-content>
+</div>

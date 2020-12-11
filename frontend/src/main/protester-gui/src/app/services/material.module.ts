@@ -15,6 +15,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatTreeModule} from '@angular/material/tree';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   imports: [
@@ -35,7 +37,8 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatDialogModule,
     MatDialogModule,
     MatRadioModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTreeModule
   ],
   exports: [
     MatCardModule,
@@ -54,7 +57,8 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatDialogModule,
     MatDialogModule,
     MatRadioModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTreeModule
   ]
 })
 export class MaterialModule {

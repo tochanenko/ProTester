@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.AbstractAction;
+import ua.project.protester.model.executable.result.ActionResult;
 
 import java.util.Map;
 
@@ -15,10 +16,11 @@ import java.util.Map;
 )
 public class GoToUrlAction extends AbstractAction {
     @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
+    protected void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) {
 
         try {
-            driver.get(params.get("url"));
+            System.out.println("RESULT  " + params.get("url"));
+            driver.navigate().to(params.get("url"));
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());
         }

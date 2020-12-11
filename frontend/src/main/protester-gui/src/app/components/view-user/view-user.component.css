@@ -1,0 +1,30 @@
+.login-form-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 500px;
+  margin: 50px auto;
+}
+
+.username {
+  text-align: center;
+}
+
+table {
+  border-spacing: 0;
+  margin: 0;
+}
+
+tr td:first-child {
+  text-align: right;
+}
+
+tr:nth-child(2n) {
+  background-color: #eaeaea;
+}
+
+td {
+  padding: 8px 16px;
+  margin: 0;
+}

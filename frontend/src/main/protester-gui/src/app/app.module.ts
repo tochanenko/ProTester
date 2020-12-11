@@ -30,6 +30,10 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
+import {EditUserComponent} from './components/edit-user/edit-user.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
 import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
 import { LibraryNewComponent } from './components/library-new/library-new.component';
 import { LibrarySearchComponent } from './components/library-search/library-search.component';
@@ -66,6 +70,9 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     TestCaseListComponent,
     TestCaseUpdateComponent,
     TestCaseCreateComponent,
+    ViewUserComponent,
+    EditUserComponent,
+    TestCaseCreateComponent,
     LibraryMenuComponent,
     LibraryNewComponent,
     LibrarySearchComponent,
@@ -84,6 +91,9 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
+    NgxMatSelectSearchModule,
+    MatCheckboxModule,
+    TestCaseAnalyzeModule,
     NgxMatSelectSearchModule,
     ScrollingModule,
     MatTabsModule

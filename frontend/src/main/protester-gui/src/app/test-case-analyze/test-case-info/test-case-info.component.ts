@@ -30,5 +30,5 @@ export class TestCaseInfoComponent implements OnInit {
     this.dataSource.data = dataToRefresh;
   }
 
-  hasChild = (_: number, node: any) => (!!node.innerResults && node.innerResults.length > 0);
+  hasChild = (_: number, node: any) => (!!node.innerResults && node.innerResults.length >= 0);
 }

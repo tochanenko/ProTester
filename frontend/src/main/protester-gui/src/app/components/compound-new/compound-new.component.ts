@@ -2,12 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {BottomSheetComponent} from "../bottom-sheet/bottom-sheet.component";
-import {LibraryManageService} from "../../services/library/library-manage.service";
 import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {Subscription} from "rxjs";
 import {Step} from "../../models/step.model";
 import {Router} from "@angular/router";
-import {ExecutableComponent} from "../../models/executable.model";
 import {CompoundManageService} from "../../services/compound-manage.service";
 import {StepRepresentation} from "../../models/StepRepresentation";
 
@@ -93,7 +91,7 @@ export class CompoundNewComponent implements OnInit {
     this.compoundCreateRequest['steps'] = this.components.map(item => {
       const step: StepRepresentation = {
         id: item.component.id,
-        isAction: item.isAction,
+        action: item.isAction,
         parameters: item.parameters
       }
       return step;

@@ -1,5 +1,5 @@
 export interface StepRepresentation {
   id: number;
-  isAction: boolean;
+  action: boolean;
   parameters: Map<String, String>;
 }

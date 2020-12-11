@@ -1,6 +1,7 @@
 import {ExecutableComponentType} from "./executable-type.model";
 
 export class ExecutableComponent {
+  id: number;
   name: string;
   description: string;
   type: ExecutableComponentType;

@@ -15,5 +15,5 @@ public class TestCaseResult {
     private Integer statusId;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
-    private List<AbstractActionResult> innerResults;
+    private List<ActionResult> innerResults;
 }

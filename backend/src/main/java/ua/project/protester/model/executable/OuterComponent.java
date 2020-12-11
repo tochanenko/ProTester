@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
-import ua.project.protester.model.executable.result.AbstractActionResult;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.model.executable.result.ActionResult;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -57,26 +58,12 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
-        for (Step comp: steps
-             ) {
-            System.out.println("PARAMETERS" + comp.getParameters());
-            System.out.println("NAME " + comp.getId());
-            System.out.println("IS ACTION " + comp.getParameters());
-            System.out.println("\n");
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+        for (Step step: steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    driver,
+                    callback);
         }
-        steps.forEach(step -> step.getComponent().execute(
-                fitInputParameters(params, step.getParameters()),
-                driver,
-                callback));
-    }
-
-    public List<AbstractActionResult> executeForResult(Map<String, String> params, WebDriver driver, Consumer<AbstractActionResult> callback) {
-        final List<AbstractActionResult> results = new LinkedList<>();
-        execute(
-                params,
-                driver,
-                callback.andThen(results::add));
-        return results;
     }
 }

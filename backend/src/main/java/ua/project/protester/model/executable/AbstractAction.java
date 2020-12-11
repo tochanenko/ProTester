@@ -27,13 +27,13 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
         ActionResult result = new ActionResult();
         result.setActionName(name);
         result.setType(type);
         result.setStartDate(OffsetDateTime.now());
         try {
-            logic(params, driver, result);
+            logic(params, context, driver, result);
             result.setEndDate(OffsetDateTime.now());
             result.setStatus(ResultStatus.PASSED);
         } catch (Exception e) {
@@ -46,5 +46,5 @@ public abstract class AbstractAction extends ExecutableComponent {
         }
     }
 
-    protected abstract void logic(Map<String, String> params, WebDriver driver, ActionResult result) throws Exception;
+    protected abstract void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) throws Exception;
 }

@@ -18,5 +18,5 @@ public abstract class ExecutableComponent {
     protected ExecutableComponentType type;
     protected String[] parameterNames;
 
-    public abstract void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException;
+    public abstract void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException;
 }

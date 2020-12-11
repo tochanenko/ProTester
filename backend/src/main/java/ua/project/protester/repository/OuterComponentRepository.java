@@ -1,9 +1,7 @@
 package ua.project.protester.repository;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -23,7 +21,6 @@ import ua.project.protester.model.executable.Step;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.utils.PropertyExtractor;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @PropertySource("classpath:queries/outer-component.properties")
@@ -36,6 +33,7 @@ public class OuterComponentRepository {
     private final Environment env;
     private final ActionRepository actionRepository;
     private final StepParameterRepository stepParameterRepository;
+
     public Optional<OuterComponent> saveOuterComponent(OuterComponent outerComponent, boolean isCompound) {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "saveCompound")

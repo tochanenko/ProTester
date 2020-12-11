@@ -61,6 +61,14 @@ public class TestCaseResultRepository {
                         .addValue("endDate", endDate));
     }
 
+    public void updateTestCaseResultStartDate(Integer id, OffsetDateTime startDate) {
+        namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "updateTestCaseResultStartDate"),
+                new MapSqlParameterSource()
+                        .addValue("id", id)
+                        .addValue("startDate", startDate));
+    }
+
     public Optional<TestCaseResult> findTestCaseResultById(Integer id) {
         TestCaseResult result;
         try {

@@ -76,8 +76,8 @@ public class DataSetRepository {
                 PropertyExtractor.extract(env, "findParamsById"),
                 new MapSqlParameterSource().addValue("data_set_id", id),
                 (rs, rowNum) -> parameters.put(
-                        rs.getString("key"),
-                        rs.getString("value")));
+                        rs.getString("data_set_key"),
+                        rs.getString("data_set_value")));
         return parameters;
     }
 
@@ -92,8 +92,8 @@ public class DataSetRepository {
                 PropertyExtractor.extract(env, "saveDataSetParameter"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", id)
-                        .addValue("key", key)
-                        .addValue("value", value));
+                        .addValue("data_set_key", key)
+                        .addValue("data_set_value", value));
         }
 
     public Optional<DataSet> findDataSetById(Long id) {

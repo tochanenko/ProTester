@@ -69,15 +69,24 @@ public class AdminController {
         }
         userDto.setId(id);
         userService.modifyUser(userDto);
-        return new ResponseEntity<>("User was successfully modified", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"msg\": \"User was modified\" }", HttpStatus.OK);
     }
 
-    @PostMapping("/profiles/{id}")
+    @PatchMapping("/profiles/deactivate/{id}")
     public ResponseEntity<String> deactivate(@PathVariable Long id) {
         if (userService.findUserById(id).isEmpty()) {
             return new ResponseEntity<>("User does`nt exist", HttpStatus.NOT_FOUND);
         }
         userService.deactivateUser(id);
-        return new ResponseEntity<>("User was deactivated!", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"msg\": \"User was deactivated\" }", HttpStatus.OK);
+    }
+
+    @PatchMapping("/profiles/activate/{id}")
+    public ResponseEntity<String> activate(@PathVariable Long id) {
+        if (userService.findUserById(id).isEmpty()) {
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
+        }
+        userService.activateUser(id);
+        return new ResponseEntity<>("{ \"msg\": \"User was activated\" }", HttpStatus.OK);
     }
 }

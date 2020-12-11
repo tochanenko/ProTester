@@ -21,11 +21,14 @@ export class UsersListComponent implements OnInit {
   pageSize = 10;
   length: number;
 
+  currentUser: any;
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private storageService: StorageService,
               private userService: UserService
   ) {
+    this.currentUser = window.sessionStorage.getItem('user');
     this.getUsersList();
   }
 

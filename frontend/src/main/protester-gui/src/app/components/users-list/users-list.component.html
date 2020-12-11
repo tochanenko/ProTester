@@ -41,7 +41,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="element.role != 'ADMIN'" routerLink="/user/edit?id={{element.id}}">
+            <button mat-menu-item *ngIf="element.role != 'ADMIN' || element.id == currentUser.id" routerLink="/user/edit?id={{element.id}}">
               <mat-icon>create</mat-icon>
               <span>Edit</span>
             </button>

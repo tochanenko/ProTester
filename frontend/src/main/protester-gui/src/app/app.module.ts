@@ -14,10 +14,22 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
+
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
+import {ProjectUpdateComponent} from './components/project/project-update/project-update.component';
+import { UsersListComponent } from './components/users-list/users-list.component';
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {ActionUpdateComponent} from "./actions/action-update/action-update.component";
+import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
+import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
+import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import { LibraryMenuComponent } from './components/library-menu/library-menu.component';
 import { LibraryNewComponent } from './components/library-new/library-new.component';
 import { LibrarySearchComponent } from './components/library-search/library-search.component';
@@ -44,6 +56,16 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     PendingPasswordComponent,
     ChangePasswordComponent,
     TokenExpiredComponent,
+    ProjectMenuComponent,
+    ProjectCreateComponent,
+    ProjectListComponent,
+    ProjectUpdateComponent,
+    ActionsListComponent,
+    ActionUpdateComponent,
+    UsersListComponent,
+    TestCaseListComponent,
+    TestCaseUpdateComponent,
+    TestCaseCreateComponent,
     LibraryMenuComponent,
     LibraryNewComponent,
     LibrarySearchComponent,
@@ -62,6 +84,7 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
+    NgxMatSelectSearchModule,
     ScrollingModule,
     MatTabsModule
   ],

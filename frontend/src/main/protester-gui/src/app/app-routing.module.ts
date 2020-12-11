@@ -8,6 +8,12 @@ import {ForgotPasswordComponent} from "./components/forgot-password/forgot-passw
 import {PendingPasswordComponent} from "./components/pending-password/pending-password.component";
 import {ChangePasswordComponent} from "./components/change-password/change-password.component";
 import {TokenExpiredComponent} from "./components/token-expired/token-expired.component";
+import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component'
+import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
+import {ProjectListComponent} from './components/project/project-list/project-list.component';
+import {UsersListComponent} from "./components/users-list/users-list.component";
+import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
+import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
 import {LibraryMenuComponent} from './components/library-menu/library-menu.component';
 import {LibraryNewComponent} from './components/library-new/library-new.component';
 import {LibrarySearchComponent} from "./components/library-search/library-search.component";
@@ -15,7 +21,6 @@ import {CompoundSearchComponent} from "./components/compound-search/compound-sea
 import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
 import {LibraryViewComponent} from "./components/library-view/library-view.component";
 import {CompoundNewComponent} from "./components/compound-new/compound-new.component";
-
 
 const routes: Routes = [
   {
@@ -55,6 +60,53 @@ const routes: Routes = [
     component: TokenExpiredComponent
   },
   {
+    path: 'actions',
+    component: ActionsListComponent
+  },
+  {
+    path: 'projectMenu',
+    component: ProjectMenuComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'projectCreate',
+    component: ProjectCreateComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'projectList',
+    component: ProjectListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
+  {
+    path: 'users_list',
+    component: UsersListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+  {
+    path: 'test-case-list/:id',
+    component: TestCaseListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+  {
     path: 'library',
     component: LibraryMenuComponent
   },
@@ -85,8 +137,10 @@ const routes: Routes = [
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

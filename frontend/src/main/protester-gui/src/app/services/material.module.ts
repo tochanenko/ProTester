@@ -8,13 +8,17 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatTableModule} from "@angular/material/table";
 import {MatMenuModule} from "@angular/material/menu";
-import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   imports: [
+    MatMenuModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -27,7 +31,11 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatPaginatorModule,
     MatGridListModule,
     MatBottomSheetModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDialogModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatTabsModule
   ],
   exports: [
     MatCardModule,
@@ -42,7 +50,11 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatPaginatorModule,
     MatGridListModule,
     MatBottomSheetModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDialogModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatTabsModule
   ]
 })
 export class MaterialModule {

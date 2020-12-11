@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
+import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.TestScenarioService;
-
-import java.util.List;
+import ua.project.protester.utils.Page;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,18 +16,22 @@ public class TestScenarioController {
     private final TestScenarioService testScenarioService;
 
     @PostMapping
-    public void createTestScenario(@RequestBody OuterComponentRepresentation request) {
-        testScenarioService.saveTestScenario(request);
+    public OuterComponent createTestScenario(@RequestBody OuterComponentRepresentation request) {
+        return testScenarioService.saveTestScenario(request);
     }
 
     @PutMapping("/{id}")
-    public void updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws TestScenarioNotFoundException {
-        testScenarioService.updateTestScenario(id, request);
+    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) {
+        return testScenarioService.updateTestScenario(id, request);
     }
 
     @GetMapping
-    public List<OuterComponent> getAllTestScenarios() {
-        return testScenarioService.getAllTestScenarios();
+    public Page<OuterComponent> getAllTestScenarios(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                    @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                                    @RequestParam(value = "scenarioName", defaultValue = "") String scenarioName,
+                                                    @RequestParam(value = "loadSteps", defaultValue = "true") boolean loadSteps) {
+        OuterComponentFilter filter = new OuterComponentFilter(pageSize, pageNumber, scenarioName);
+        return testScenarioService.getAllTestScenarios(filter, loadSteps);
     }
 
     @GetMapping("/{id}")
@@ -36,7 +40,7 @@ public class TestScenarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTestScenario(@PathVariable int id) {
-        testScenarioService.deleteTestScenarioById(id);
+    public OuterComponent deleteTestScenario(@PathVariable int id) {
+        return testScenarioService.deleteTestScenarioById(id);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.ProjectDto;
-import ua.project.protester.service.ProjectService;
+import ua.project.protester.service.project.ProjectService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
@@ -51,9 +51,9 @@ public class ProjectController {
                                                    @RequestParam(value = "projectActive") Boolean projectActive,
                                                    @RequestParam(value = "projectName", defaultValue = "") String projectName) {
 
-        Pagination pagination = new Pagination(pageSize, pageNumber, projectActive, projectName);
+        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
-        return projectService.findAllProjectsByStatus(pagination);
+        return projectService.findAllProjectsByStatus(pagination, projectActive);
     }
 
     @GetMapping("/{id}")

@@ -35,7 +35,6 @@ export class ChangePasswordComponent implements OnInit {
 
       this.passwordService.confirmReset(this.token).subscribe(
         email => {
-          console.log('Before IF');
           if (email == null || email.length == 0) {
             this.router.navigateByUrl('/token-expired').then();
           } else {
@@ -77,10 +76,6 @@ export class ChangePasswordComponent implements OnInit {
       email: this.email,
       password: this.f.password.value
     }
-
-    console.log('Changing Password...')
-    console.log(recoveryResponse.email)
-    console.log(recoveryResponse.password)
 
     this.passwordService.resetPassword(recoveryResponse).subscribe(
       data => {

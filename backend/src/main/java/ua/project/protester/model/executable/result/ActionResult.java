@@ -13,6 +13,7 @@ import java.util.Map;
 @ToString
 public class ActionResult {
     private Integer id;
+    private Integer testCaseResultId;
     private String actionName;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
@@ -20,4 +21,5 @@ public class ActionResult {
     private String message;
     private ExecutableComponentType type;
     private ResultStatus status;
+    private Integer statusId;
 }

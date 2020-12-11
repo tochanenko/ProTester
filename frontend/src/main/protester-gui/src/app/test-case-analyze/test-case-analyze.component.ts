@@ -1,10 +1,8 @@
-import {Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {ActionResult, ExecutableComponentType, Status, TestCaseResult} from './result.model';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {ExecutableComponentType, Status, TestCaseResult} from './result.model';
 import * as Stomp from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import {ResultListComponent} from './result-list/result-list.component';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
-import {element} from 'protractor';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
 
@@ -15,114 +13,113 @@ import {TestCaseService} from '../services/test-case/test-case-service';
 })
 export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
-  // resultList: TestCaseResult[] = [
-  //   {
-  //     id: 1,
-  //     userId: 2,
-  //     name: 'Test case 1',
-  //     testCaseId: 3,
-  //     status: Status.PASSED,
-  //     startDate: '02/03/101',
-  //     endDate: '04/02/303',
-  //     innerResults: [
-  //       {
-  //         id: 4,
-  //         actionName: 'action1',
-  //         startDate: '06/04/2020',
-  //         endDate: '06/05/2020',
-  //         extra: {url: 'url1', sssd: 'sssssssss', ryu: 'sks', ska: 'skskss'},
-  //         message: 'message1',
-  //         type: ExecutableComponentType.REST,
-  //         status: Status.PASSED,
-  //       },
-  //       {
-  //         id: 4,
-  //         actionName: 'action2',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.UI,
-  //         status: Status.IN_PROGRESS,
-  //       },
-  //       {
-  //         id: 4,
-  //         actionName: 'action3',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.SQL,
-  //         status: Status.FAILED,
-  //       },
-  //       {
-  //         id: 4,
-  //         actionName: 'action4',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.REST,
-  //         status: Status.FAILED,
-  //       },
-  //     ]
-  //   },
-  //
-  //   {
-  //     id: 4,
-  //     userId: 2,
-  //     name: 'Test case 2',
-  //     testCaseId: 3,
-  //     status: Status.FAILED,
-  //     startDate: '03/04/2020',
-  //     endDate: '03/05/2020',
-  //     innerResults: [
-  //       {
-  //         id: 4,
-  //         actionName: 'action5',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.REST,
-  //         status: Status.FAILED,
-  //       },
-  //       {
-  //         id: 6,
-  //         actionName: 'action6',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.TECHNICAL,
-  //         status: Status.IN_PROGRESS,
-  //       },
-  //       {
-  //         id: 4,
-  //         actionName: 'action7',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.REST,
-  //         status: Status.FAILED,
-  //       },
-  //       {
-  //         id: 4,
-  //         actionName: 'action8',
-  //         startDate: '03/04/2020',
-  //         endDate: '03/05/2020',
-  //         extra: {url: 'url1', sssd: 'sss'},
-  //         message: 'message',
-  //         type: ExecutableComponentType.REST,
-  //         status: Status.NOT_STARTED,
-  //       },
-  //     ]
-  //   },
-  // ];
-  //
+  resultList: TestCaseResult[] = [
+    {
+      id: 1,
+      userId: 2,
+      name: 'Test case 1',
+      testCaseId: 3,
+      status: Status.PASSED,
+      startDate: '02/03/101',
+      endDate: '04/02/303',
+      innerResults: [
+        {
+          id: 4,
+          actionName: 'action1',
+          startDate: '06/04/2020',
+          endDate: '06/05/2020',
+          extra: {url: 'url1', sssd: 'sssssssss', ryu: 'sks', ska: 'skskss'},
+          message: 'message1',
+          type: ExecutableComponentType.REST,
+          status: Status.PASSED,
+        },
+        {
+          id: 4,
+          actionName: 'action2',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.UI,
+          status: Status.IN_PROGRESS,
+        },
+        {
+          id: 4,
+          actionName: 'action3',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.SQL,
+          status: Status.FAILED,
+        },
+        {
+          id: 4,
+          actionName: 'action4',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
+        },
+      ]
+    },
 
-  resultList: TestCaseResult[] = [];
+    {
+      id: 4,
+      userId: 2,
+      name: 'Test case 2',
+      testCaseId: 3,
+      status: Status.FAILED,
+      startDate: '03/04/2020',
+      endDate: '03/05/2020',
+      innerResults: [
+        {
+          id: 4,
+          actionName: 'action5',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
+        },
+        {
+          id: 6,
+          actionName: 'action6',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.TECHNICAL,
+          status: Status.IN_PROGRESS,
+        },
+        {
+          id: 4,
+          actionName: 'action7',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.FAILED,
+        },
+        {
+          id: 4,
+          actionName: 'action8',
+          startDate: '03/04/2020',
+          endDate: '03/05/2020',
+          extra: {url: 'url1', sssd: 'sss'},
+          message: 'message',
+          type: ExecutableComponentType.REST,
+          status: Status.NOT_STARTED,
+        },
+      ]
+    },
+  ];
+
+  // resultList: TestCaseResult[] = [];
   idList: number[] = [1, 4];
   isError = false;
   isLoading = true;
@@ -137,8 +134,9 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadTestCasesResults();
+    // this.loadTestCasesResults();
     // this.openWebSocketWithActionResults();
+    this.isLoading = false;
   }
 
   loadTestCasesResults(): void {
@@ -224,7 +222,6 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
     const _this = this;
     setTimeout(function() {
-      console.log('---------------' + _this.numberOfReconnects);
       _this.connect();
     }, 3000);
   }

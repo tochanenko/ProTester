@@ -26,7 +26,11 @@ export class UserService {
   }
 
   deactivateUser(id: any): Observable<any> {
-    return this.http.post('/api/admin/profiles/' + id, httpOptions);
+    return this.http.post('/api/admin/profiles/activate/' + id, httpOptions);
+  }
+
+  activateUser(id: any): Observable<any> {
+    return this.http.post('/api/admin/profiles/deactivate/' + id, httpOptions);
   }
 
 }

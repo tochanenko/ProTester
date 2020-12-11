@@ -97,7 +97,12 @@ public class UserRepository implements CrudRepository<User> {
         Map<String, Object> namedParams = new HashMap<>();
         namedParams.put("user_id", id);
         namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("deactivateUser")), namedParams);
+    }
 
+    public void activate(Long id) {
+        Map<String, Object> namedParams = new HashMap<>();
+        namedParams.put("user_id", id);
+        namedJdbcTemplate.update(Objects.requireNonNull(environment.getProperty("activateUser")), namedParams);
     }
 
 

@@ -22,7 +22,7 @@ export class ViewUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.userId = params['id'];
 
       this.userService.getUserById(this.userId).subscribe(

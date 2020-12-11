@@ -204,4 +204,9 @@ public class UserService {
     public void deactivateUser(Long id) {
         userRepository.deactivate(id);
     }
+
+    @Transactional
+    public void activateUser(Long id) {
+        userRepository.activate(id);
+    }
 }

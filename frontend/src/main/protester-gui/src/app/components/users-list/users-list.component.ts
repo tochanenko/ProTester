@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {StorageService} from "../../services/auth/storage.service";
 import {UserService} from "../../services/user/user.service";
 import {MatTableDataSource} from "@angular/material/table";
@@ -17,11 +17,12 @@ export class UsersListComponent implements OnInit {
   usersList = null;
 
   pageEvent: PageEvent;
-  pageIndex = 1;
+  pageIndex = 0;
   pageSize = 10;
   length: number;
 
   constructor(private router: Router,
+              private route: ActivatedRoute,
               private storageService: StorageService,
               private userService: UserService
   ) {
@@ -36,12 +37,26 @@ export class UsersListComponent implements OnInit {
   }
 
   updateList(event?:PageEvent): PageEvent {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.dataSource = this.usersList.slice(event.pageIndex * event.pageSize, (event.pageIndex + 1) * event.pageSize);
     return event;
   }
 
   activate(id: any) {
-    // TODO. No API for user activation implemented
+    this.userService.activateUser(id).subscribe(
+      res => {
+        this.userService.getAll().subscribe(
+          users => {
+            this.length = users.length;
+            this.usersList = users;
+            this.dataSource = this.usersList.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+          },
+          err => console.log(err)
+        );
+      },
+      err => console.log(err)
+    );
   }
 
   deactivate(id: any) {
@@ -51,13 +66,17 @@ export class UsersListComponent implements OnInit {
           users => {
             this.length = users.length;
             this.usersList = users;
-            this.dataSource = users;
+            this.dataSource = this.usersList.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
           },
           err => console.log(err)
         );
       },
       err => console.log(err)
     );
+  }
+
+  goToUser(id: any) {
+    this.router.navigate(['/user', id]).then();
   }
 
   ngOnInit(): void {

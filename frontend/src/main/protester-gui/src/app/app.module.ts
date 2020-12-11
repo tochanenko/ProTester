@@ -30,6 +30,7 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {TestCaseUpdateComponent} from "./test-case/test-case-update/test-case-update.component";
 import {TestCaseCreateComponent} from "./test-case/test-case-create/test-case-create.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     UsersListComponent,
     TestCaseListComponent,
     TestCaseUpdateComponent,
-    TestCaseCreateComponent
+    TestCaseCreateComponent,
+    ViewUserComponent
   ],
   imports: [
     BrowserModule,

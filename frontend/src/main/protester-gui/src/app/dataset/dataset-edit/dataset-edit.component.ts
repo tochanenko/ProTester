@@ -6,7 +6,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {DatasetListComponent} from "../dataset-list/dataset-list.component";
 import {Unsubscribe} from "../unsubscribe";
 import {takeUntil} from "rxjs/operators";
-import {DataSetParameter} from "../dataset.model";
+import {DataSet, DataSetParameter} from "../dataset.model";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-dataset-edit',
@@ -16,10 +17,9 @@ import {DataSetParameter} from "../dataset.model";
 export class DatasetEditComponent extends Unsubscribe implements OnInit {
 
   public datasetUpdateForm: FormGroup;
-  public errorMessage: '';
+  public errorMessage: string;
   public submitted = false;
   public isSuccessful = false;
-  public isFailed = false;
   public datasetId: number;
   public displayedColumns: string[] = ['NAME', 'VALUE'];
   public editDatasetParameters: DataSetParameter[] = [];
@@ -29,23 +29,21 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
               private datasetService: DatasetService,
               private dialogRef: MatDialogRef<DatasetListComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
-    super()
+    super();
     this.datasetId = data.id;
   }
 
   public ngOnInit(): void {
-    this.updateDatasetForm();
+    this.initDatasetUpdateForm();
 
     this.datasetService.getDataSetById(this.datasetId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        data => {
-          this.datasetUpdateForm.setValue(data);
+        (dataset: DataSet) => {
+          this.datasetUpdateForm.patchValue(dataset);
+          this.editDatasetParameters = this.convertMapToDatasetParameters(dataset.parameters);
         },
-        error => {
-          this.isFailed = true;
-          this.errorMessage = error
-        }
+        (error: HttpErrorResponse) => this.errorMessage = error.message,
       )
   }
 
@@ -61,7 +59,6 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
     }
 
     const datasetUpdateResponse = {
-      id: this.controls.id.value,
       name: this.controls.name.value,
       description: this.controls.description.value,
       parameters: this.convertToMap(this.editDatasetParameters),
@@ -74,20 +71,12 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
           this.isSuccessful = true;
           this.dialogRef.close();
         },
-        err => {
-          this.errorMessage = err.error.message;
-          this.isFailed = true;
-        }
+        (error: HttpErrorResponse) => this.errorMessage = error.message,
       );
   }
 
-  public onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  private updateDatasetForm(): void {
+  private initDatasetUpdateForm(): void {
     this.datasetUpdateForm = this.formBuilder.group({
-      id: [''],
       name: ['', Validators.compose([
         Validators.minLength(4),
         Validators.maxLength(50)])],

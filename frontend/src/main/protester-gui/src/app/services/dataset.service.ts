@@ -22,7 +22,7 @@ export class DatasetService {
   }
 
   public update(dataset: DataSet): Observable<any> {
-    return this.http.put('/api/dataset/update', dataset, httpOptions);
+    return this.http.put('/api/dataset', dataset, httpOptions);
   }
 
   public delete(id: number): Observable<DataSet> {

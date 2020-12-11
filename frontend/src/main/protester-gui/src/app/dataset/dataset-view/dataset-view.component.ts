@@ -7,7 +7,6 @@ import {DataSet, DataSetParameter} from "../dataset.model";
 import {takeUntil} from "rxjs/operators";
 import {Unsubscribe} from "../unsubscribe";
 import {HttpErrorResponse} from "@angular/common/http";
-import {log} from "util";
 
 @Component({
   selector: 'app-dataset-view',

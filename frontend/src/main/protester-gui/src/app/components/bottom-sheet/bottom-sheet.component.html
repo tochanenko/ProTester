@@ -1,5 +1,5 @@
-<mat-accordion>
-  <mat-expansion-panel hideToggle>
+<ng-container *ngIf="data.components.actions">
+<mat-expansion-panel hideToggle>
     <mat-expansion-panel-header>
       <mat-panel-title>
         ACTIONS
@@ -19,6 +19,9 @@
       <p>{{component.description}}</p>
     </mat-expansion-panel>
   </mat-expansion-panel>
+</ng-container>
+
+<ng-container *ngIf="data.components.compounds">
 
   <mat-expansion-panel hideToggle>
     <mat-expansion-panel-header>
@@ -41,5 +44,4 @@
 
     </mat-expansion-panel>
   </mat-expansion-panel>
-</mat-accordion>
-
+</ng-container>

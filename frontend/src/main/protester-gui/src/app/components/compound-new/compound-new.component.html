@@ -2,13 +2,14 @@
   <mat-card class="card">
     <mat-card-title>
       <span class="material-icons chrome_reader_mode">chrome_reader_mode</span>
+      <span class="header-title"> create new compound </span>
     </mat-card-title>
     <form (ngSubmit)="onSubmit()" [formGroup]="compoundCreateForm">
       <div class="lib-title-container">
         <mat-label class="lib-name">Name:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
           <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
-                 placeholder="Library name...">
+                 placeholder="Compound name...">
           <mat-error *ngIf="formControls.name.errors" class="invalid-input">
             <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
               - {{validatorsConfig.name.maxLength}} symbols
@@ -24,7 +25,7 @@
         <mat-label class="lib-description">Description:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
               <textarea matInput type="text" id="description" name="description" formControlName="description"
-                        class="create-input" placeholder="Library description..."></textarea>
+                        class="create-input" placeholder="Compound description..."></textarea>
           <mat-error *ngIf="formControls.description.errors" class="invalid-input">
             <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length
               - {{validatorsConfig.description.maxLength}} symbols
@@ -96,17 +97,18 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <p>{{component.component.description}}</p>
-      <ng-container *ngFor="let param of component.component.parameterNames">
+      <ng-container *ngFor="let param of component.parameters">
+        {{param}}
 <!--        <mat-form-field class="full-width-input" appearance="outline">-->
-          <ng-container *ngIf="checkIfParamInterpolated(component.parameters[param])" >
-            <input matInput type="text" id="url1" name="url" [placeholder]="param"
-                   [formControlName]="parent.id + '-' + cleanParam(component.parameters[param])" [(ngModel)]="parent.parameters[param]">
-          </ng-container>
+<!--          <ng-container *ngIf="checkIfParamInterpolated(component.parameters[param])" >-->
+<!--            <input matInput type="text" id="url1" name="url" [placeholder]="param"-->
+<!--                   [formControlName]="parent.id + '-' + cleanParam(component.parameters[param])" [(ngModel)]="parent.parameters[param]">-->
+<!--          </ng-container>-->
 <!--        </mat-form-field>-->
       </ng-container>
-      <ng-container *ngIf="component['steps']">
+      <ng-container *ngIf="component.component['steps']">
         <ng-container
-          *ngTemplateOutlet="expansionListInner; context: getComponentsOfSteps(component['steps'])"></ng-container>
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps']}"></ng-container>
       </ng-container>
     </mat-expansion-panel>
   </mat-accordion>

@@ -15,7 +15,15 @@
 .mat-card-title {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
+.header-title {
+  font-size: 35px;
+  text-transform: uppercase;
+  margin: 30px;
+  color: #5C6BC0;
 }
 
 .mat-card-content {

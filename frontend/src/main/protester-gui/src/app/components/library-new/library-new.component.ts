@@ -102,7 +102,6 @@ export class LibraryNewComponent implements OnInit {
         libraryCreateRequest['components'].push(compound_step);
       })
     }
-    console.log(libraryCreateRequest);
 
     this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/library/search').then();
@@ -137,11 +136,9 @@ export class LibraryNewComponent implements OnInit {
   }
 
   openBottomSheetWithActions(): void {
-
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['actions'],
-        isAction: true
+        components: {actions: this.bottomSheetData['actions']}
       }
     });
   }
@@ -157,12 +154,13 @@ export class LibraryNewComponent implements OnInit {
 
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
-      this.bottomSheetData['actions'] = data;
+      this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
+      console.log(data)
       this.bottomSheetData['compounds'] = data['list'];
     });
   }

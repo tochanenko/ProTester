@@ -6,6 +6,14 @@ const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
 
+const plainTextHttpOptions = {
+  headers: new HttpHeaders({
+    Accept: 'text/plain',
+    'Content-Type': 'text/plain'
+  }),
+  'responseType': 'text' as 'json'
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,11 +34,11 @@ export class UserService {
   }
 
   deactivateUser(id: any): Observable<any> {
-    return this.http.post('/api/admin/profiles/activate/' + id, httpOptions);
+    return this.http.patch('/api/admin/profiles/activate/' + id, plainTextHttpOptions);
   }
 
   activateUser(id: any): Observable<any> {
-    return this.http.post('/api/admin/profiles/deactivate/' + id, httpOptions);
+    return this.http.patch('/api/admin/profiles/deactivate/' + id, plainTextHttpOptions);
   }
 
 }

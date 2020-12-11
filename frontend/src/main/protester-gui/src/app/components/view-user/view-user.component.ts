@@ -34,6 +34,7 @@ export class ViewUserComponent implements OnInit {
           this.user.lastName = user['lastName'];
           this.user.isActive = user['active'];
           this.user.role = user['role'];
+          this.user.username = user['username'];
         },
         err => console.log(err)
       )

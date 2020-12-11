@@ -94,7 +94,7 @@ CREATE TABLE steps (
     step_order             INTEGER NOT NULL,
     CONSTRAINT step_outer_test_scenario_id_fk FOREIGN KEY (outer_test_scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE,
     CONSTRAINT step_outer_compound_id_fk FOREIGN KEY (outer_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE,
-    CONSTRAINT step_inner_compound_id_fk FOREIGN KEY (inner_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE,
+    CONSTRAINT step_inner_compound_id_fk FOREIGN KEY (inner_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT step_inner_action_id_fk FOREIGN KEY (inner_action_id) REFERENCES actions (action_id) ON DELETE CASCADE
 );
 

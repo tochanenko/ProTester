@@ -49,7 +49,7 @@
     <mat-paginator class="header"
                    [pageSizeOptions]="pageSizeOptions"
                    [length]="librariesCount"
-                   [pageSize]="libraryFilter.pageSize"
+                   [pageSize]="compoundFilter.pageSize"
                    (page)="pageEvent = $event; onPaginateChange($event)">
 
     </mat-paginator>

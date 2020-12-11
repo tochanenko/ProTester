@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {PageEvent} from "@angular/material/paginator";
-import {LibraryFilter} from "../library-search/library-filter.model";
+import {CompoundFilter} from "./compound-filter.model";
 import {Subscription} from "rxjs";
 import {CompoundManageService} from "../../services/compound-manage.service";
 import {OuterComponent} from "../../models/outer.model";
@@ -19,7 +19,7 @@ export class CompoundSearchComponent implements OnInit {
   columnsToDisplay: string[] = ['NAME', 'DESCRIPTION', 'CONF'];
   pageSizeOptions: number[] = [5, 10, 25, 50];
   librariesCount = 10;
-  libraryFilter: LibraryFilter = new LibraryFilter();
+  compoundFilter: CompoundFilter = new CompoundFilter();
 
   private subscription: Subscription;
 
@@ -30,25 +30,26 @@ export class CompoundSearchComponent implements OnInit {
       search: ['', []]
     })
     this.searchByFilter();
-    this.getLibrariesCount();
   }
 
   searchByFilter(): void {
-    this.subscription = this.compoundService.getAllCompounds(this.libraryFilter).subscribe(data =>
-    { console.log(this.libraryFilter);
+    this.subscription = this.compoundService.getAllCompoundsWithFilter(this.compoundFilter).subscribe(data =>
+    {
+      this.librariesCount = data["totalItems"];
       this.dataSource = data["list"];
     });
   }
 
   getLibrariesCount(): void {
-    this.subscription = this.compoundService.getAllCompounds(this.libraryFilter).subscribe( data => {
+    this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
+      console.log(data)
       this.librariesCount = data["totalItems"];
     });
   }
 
   onPaginateChange(event): void {
-    this.libraryFilter.pageNumber = event.pageIndex + 1;
-    this.libraryFilter.pageSize = event.pageSize;
+    this.compoundFilter.pageNumber = event.pageIndex + 1;
+    this.compoundFilter.pageSize = event.pageSize;
 
     this.searchByFilter();
   }
@@ -59,7 +60,7 @@ export class CompoundSearchComponent implements OnInit {
   }
 
   onFormBlurs(): void {
-    this.libraryFilter.libraryName = this.f.search.value;
+    this.compoundFilter.compoundName = this.f.search.value;
     this.searchByFilter();
   }
 

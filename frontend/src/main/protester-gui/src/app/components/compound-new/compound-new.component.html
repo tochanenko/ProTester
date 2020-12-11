@@ -76,7 +76,7 @@
       </ng-container>
       <ng-container *ngIf="component.component['steps']">
         <ng-container
-          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps']}"></ng-container>
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: component}"></ng-container>
       </ng-container>
       <button mat-icon-button (click)="deleteComponentFromArray(components, component.id)">
         <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
@@ -85,9 +85,9 @@
   </mat-accordion>
 </ng-template>
 
-<ng-template #expansionListInner let-array="array">
+<ng-template #expansionListInner let-array="array" let-parent="parent">
   <mat-accordion *ngIf="array.length > 0">
-    <mat-expansion-panel hideToggle *ngFor="let component of array">
+    <mat-expansion-panel hideToggle *ngFor="let component of array" [formGroup]="compoundCreateForm">
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           {{component.component.name}}
@@ -98,8 +98,10 @@
       <p>{{component.component.description}}</p>
       <ng-container *ngFor="let param of component.component.parameterNames">
 <!--        <mat-form-field class="full-width-input" appearance="outline">-->
-<!--          <input *ngIf="param" matInput type="text" id="url1" name="url" [placeholder]="param"-->
-<!--                 [formControlName]="component.id + '-' + param" [(ngModel)]="component.parameters[param]">-->
+          <ng-container *ngIf="checkIfParamInterpolated(component.parameters[param])" >
+            <input matInput type="text" id="url1" name="url" [placeholder]="param"
+                   [formControlName]="parent.id + '-' + cleanParam(component.parameters[param])" [(ngModel)]="parent.parameters[param]">
+          </ng-container>
 <!--        </mat-form-field>-->
       </ng-container>
       <ng-container *ngIf="component['steps']">

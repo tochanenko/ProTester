@@ -5,4 +5,7 @@ export class Step {
   isAction: boolean;
   component: ExecutableComponent;
   parameters: Map<String, String>;
+
+
+
 }

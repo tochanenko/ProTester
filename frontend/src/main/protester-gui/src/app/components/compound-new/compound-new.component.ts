@@ -73,6 +73,22 @@ export class CompoundNewComponent implements OnInit {
     return step.component.name + '-' + step.id;
   }
 
+  checkIfParamInterpolated(param: string) {
+    const regex = '${';
+    if (param.includes(regex)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  cleanParam(param: string) {
+    let new_param = param.slice(2, param.length - 1);
+    console.log(new_param);
+    return new_param;
+  }
+
   onSubmit(): void {
     const f = this.formControls;
 
@@ -142,6 +158,7 @@ export class CompoundNewComponent implements OnInit {
         this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
       })
       this.components.push(step);
+      console.log(this.components)
     });
   }
 

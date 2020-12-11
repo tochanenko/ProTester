@@ -15,7 +15,7 @@ import {OuterComponent} from "../../models/outer.model";
 })
 export class BottomSheetComponent implements OnInit{
 
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: { components: ExecutableComponent[], isAction: boolean },
+  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: { components: { actions?: Action[], compounds?: OuterComponent[] }},
               private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
               private interactionService: LibraryBottomsheetInteractionService) {}
 
@@ -32,8 +32,8 @@ export class BottomSheetComponent implements OnInit{
     this.interactionService.updateCompoundsArray(compound);
   }
 
-  onClick(component) {
-    if (this.data.isAction) {
+  onClick(component, isAction) {
+    if (isAction) {
       this.updateActionsArray(component);
     }
     else {

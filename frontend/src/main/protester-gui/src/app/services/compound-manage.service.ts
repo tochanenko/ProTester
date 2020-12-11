@@ -20,11 +20,15 @@ export class CompoundManageService {
     return this.http.get<Action[]>("api/actions", httpOptions);
   }
 
-  getAllCompounds(filter: LibraryFilter): Observable<OuterComponent[]> {
-    let params = new HttpParams();
-    params = params.append('pageSize', String(filter.pageSize));
-    params = params.append('pageNumber', String(filter.pageNumber));
-    params = params.append('projectName', filter.libraryName);
-    return this.http.get<OuterComponent[]>("api/compounds", {params});
+  getAllCompounds(filter?: LibraryFilter): Observable<OuterComponent[]> {
+    // let params = new HttpParams();
+    // params = params.append('pageSize', String(filter.pageSize));
+    // params = params.append('pageNumber', String(filter.pageNumber));
+    // params = params.append('projectName', filter.libraryName);
+    return this.http.get<OuterComponent[]>("api/compounds", httpOptions);
+  }
+
+  createCompound(compound): Observable<any> {
+    return this.http.post('api/compounds', compound, httpOptions);
   }
 }

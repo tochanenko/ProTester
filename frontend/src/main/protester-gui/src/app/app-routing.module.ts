@@ -14,6 +14,7 @@ import {LibrarySearchComponent} from "./components/library-search/library-search
 import {CompoundSearchComponent} from "./components/compound-search/compound-search.component";
 import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
 import {LibraryViewComponent} from "./components/library-view/library-view.component";
+import {CompoundNewComponent} from "./components/compound-new/compound-new.component";
 
 
 const routes: Routes = [
@@ -76,6 +77,10 @@ const routes: Routes = [
   {
     path: 'compound',
     component: CompoundSearchComponent
+  },
+  {
+    path: 'compound/new',
+    component: CompoundNewComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

@@ -14,6 +14,8 @@ import {ProjectListComponent} from './components/project/project-list/project-li
 import {UsersListComponent} from "./components/users-list/users-list.component";
 import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
 import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
+import {EditUserComponent} from "./components/edit-user/edit-user.component";
 
 const routes: Routes = [
   {
@@ -94,6 +96,22 @@ const routes: Routes = [
   {
     path: 'test-case-list/:id',
     component: TestCaseListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+  {
+    path: 'user/:id',
+    component: ViewUserComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+  {
+    path: 'user/edit/:id',
+    component: EditUserComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']

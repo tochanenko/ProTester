@@ -35,6 +35,9 @@ import  {DatasetCreateComponent} from "./dataset/dataset-create/dataset-create.c
 import {DatasetEditComponent} from "./dataset/dataset-edit/dataset-edit.component";
 import { DatasetDeleteComponent } from './dataset/dataset-delete/dataset-delete.component';
 import { DatasetViewComponent } from './dataset/dataset-view/dataset-view.component';
+import {ViewUserComponent} from "./components/view-user/view-user.component";
+import { EditUserComponent } from './components/edit-user/edit-user.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -62,18 +65,22 @@ import { DatasetViewComponent } from './dataset/dataset-view/dataset-view.compon
     DatasetEditComponent,
     DatasetDeleteComponent,
     DatasetViewComponent
+    TestCaseCreateComponent,
+    ViewUserComponent,
+    EditUserComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    CommonModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    NgxMatSelectSearchModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        CommonModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        NgxMatSelectSearchModule,
+        MatCheckboxModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
   bootstrap: [AppComponent]
 })

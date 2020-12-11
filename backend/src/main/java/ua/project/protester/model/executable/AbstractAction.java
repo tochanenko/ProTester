@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.result.ActionResult;
+import ua.project.protester.model.executable.result.ResultStatus;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -26,21 +27,24 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) {
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
         ActionResult result = new ActionResult();
+        result.setActionName(name);
+        result.setType(type);
         result.setStartDate(OffsetDateTime.now());
-
         try {
-            logic(params, driver, result);
+            logic(params, context, driver, result);
             result.setEndDate(OffsetDateTime.now());
-            result.setResult(true);
-        } catch (ActionExecutionException e) {
+            result.setStatus(ResultStatus.PASSED);
+        } catch (Exception e) {
             result.setEndDate(OffsetDateTime.now());
-            result.setResult(false);
+            result.setStatus(ResultStatus.FAILED);
+            result.setMessage(e.getMessage());
+            throw new ActionExecutionException(e.getMessage(), e);
+        } finally {
+            callback.accept(result);
         }
-
-        callback.accept(result);
     }
 
-    protected abstract void logic(Map<String, String> params, WebDriver driver, ActionResult result) throws ActionExecutionException;
+    protected abstract void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) throws Exception;
 }

@@ -23,19 +23,14 @@ public class CompoundService {
 
     @Transactional
     public OuterComponent saveCompound(OuterComponentRepresentation compoundRequest) {
-        OuterComponent newOuterComponent = new OuterComponent();
-        newOuterComponent.setName(compoundRequest.getName());
-        newOuterComponent.setDescription(compoundRequest.getDescription());
-        newOuterComponent.setSteps(
-                compoundRequest.getSteps()
-                        .stream()
-                        .map(stepRepresentation -> new Step(
-                                stepRepresentation.getId(),
-                                stepRepresentation.isAction(),
-                                null,
-                                stepRepresentation.getParameters()))
-                        .collect(Collectors.toList()));
+        OuterComponent newOuterComponent = compoundRequest.getOuterComponent();
         return outerComponentRepository.saveOuterComponent(newOuterComponent, true).orElse(null);
+    }
+
+    @Transactional
+    public OuterComponent updateCompound(int id, OuterComponentRepresentation testScenarioRepresentation) {
+        OuterComponent updatedCompound = testScenarioRepresentation.getOuterComponent();
+        return outerComponentRepository.updateOuterComponent(id, updatedCompound, true).orElse(null);
     }
 
     public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter, boolean loadSteps) {

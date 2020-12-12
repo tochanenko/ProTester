@@ -21,13 +21,13 @@ public class TestScenarioService {
 
     @Transactional
     public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
-        OuterComponent newOuterComponent = constructOuterComponentFromRepresentation(outerComponentRepresentation);
+        OuterComponent newOuterComponent = outerComponentRepresentation.getOuterComponent();
         return outerComponentRepository.saveOuterComponent(newOuterComponent, false).orElse(null);
     }
 
     @Transactional
     public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) {
-        OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
+        OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
         return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
@@ -49,21 +49,5 @@ public class TestScenarioService {
     @Transactional
     public OuterComponent deleteTestScenarioById(int id) {
         return outerComponentRepository.deleteOuterComponentById(id, false).orElse(null);
-    }
-
-    private OuterComponent constructOuterComponentFromRepresentation(OuterComponentRepresentation representation) {
-        OuterComponent newOuterComponent = new OuterComponent();
-        newOuterComponent.setName(representation.getName());
-        newOuterComponent.setDescription(representation.getDescription());
-        newOuterComponent.setSteps(
-                representation.getSteps()
-                        .stream()
-                        .map(stepRepresentation -> new Step(
-                                stepRepresentation.getId(),
-                                stepRepresentation.isAction(),
-                                null,
-                                stepRepresentation.getParameters()))
-                        .collect(Collectors.toList()));
-        return newOuterComponent;
     }
 }

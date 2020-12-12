@@ -142,17 +142,20 @@ public class OuterComponentRepository {
         return deletedOuterComponent;
     }
 
-    public Optional<OuterComponent> updateTestScenario(int id, OuterComponent updatedOuterComponent) {
+    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) {
+        String sql = isCompound
+                ? PropertyExtractor.extract(env, "updateCompound")
+                : PropertyExtractor.extract(env, "updateTestScenario");
         namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "updateTestScenario"),
+                sql,
                 new MapSqlParameterSource()
                         .addValue("id", id)
                         .addValue("name", updatedOuterComponent.getName())
                         .addValue("description", updatedOuterComponent.getDescription()));
-        deleteTestScenarioSteps(id);
-        saveOuterComponentSteps(updatedOuterComponent, id, false);
+        deleteOuterComponentSteps(id, isCompound);
+        saveOuterComponentSteps(updatedOuterComponent, id, isCompound);
         try {
-            return findOuterComponentById(id, false);
+            return findOuterComponentById(id, isCompound);
         } catch (OuterComponentNotFoundException e) {
             return Optional.empty();
         }
@@ -169,9 +172,12 @@ public class OuterComponentRepository {
         }
     }
 
-    private void deleteTestScenarioSteps(Integer id) {
+    private void deleteOuterComponentSteps(Integer id, boolean isCompound) {
+        String sql = isCompound
+                ? PropertyExtractor.extract(env, "deleteStepsByCompoundId")
+                : PropertyExtractor.extract(env, "deleteStepsByTestScenarioId");
         namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "deleteStepsByTestScenarioId"),
+                sql,
                 new MapSqlParameterSource().addValue("id", id));
     }
 

@@ -28,7 +28,7 @@ public class TestScenarioService {
     @Transactional
     public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) {
         OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
-        return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
+        return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
     public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter, boolean loadSteps) {

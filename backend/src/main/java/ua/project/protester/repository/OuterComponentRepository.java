@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
@@ -34,7 +35,7 @@ public class OuterComponentRepository {
     private final ActionRepository actionRepository;
     private final StepParameterRepository stepParameterRepository;
 
-    public Optional<OuterComponent> saveOuterComponent(OuterComponent outerComponent, boolean isCompound) {
+    public Optional<OuterComponent> saveOuterComponent(OuterComponent outerComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "saveCompound")
                 : PropertyExtractor.extract(env, "saveTestScenario");
@@ -142,16 +143,21 @@ public class OuterComponentRepository {
         return deletedOuterComponent;
     }
 
-    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) {
+    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "updateCompound")
                 : PropertyExtractor.extract(env, "updateTestScenario");
-        namedParameterJdbcTemplate.update(
+        int updatedRows = namedParameterJdbcTemplate.update(
                 sql,
                 new MapSqlParameterSource()
                         .addValue("id", id)
                         .addValue("name", updatedOuterComponent.getName())
                         .addValue("description", updatedOuterComponent.getDescription()));
+
+        if (updatedRows == 0) {
+            return Optional.empty();
+        }
+
         deleteOuterComponentSteps(id, isCompound);
         saveOuterComponentSteps(updatedOuterComponent, id, isCompound);
         try {
@@ -181,13 +187,17 @@ public class OuterComponentRepository {
                 new MapSqlParameterSource().addValue("id", id));
     }
 
-    private void saveOuterComponentSteps(OuterComponent outerComponent, Integer outerComponentId, boolean isCompound) {
+    private void saveOuterComponentSteps(OuterComponent outerComponent, Integer outerComponentId, boolean isCompound) throws OuterComponentStepSaveException {
         ListIterator<Step> outerComponentStepsIterator = outerComponent.getSteps().listIterator();
         Step outerComponentStep;
         while (outerComponentStepsIterator.hasNext()) {
             int outerComponentStepOrder = outerComponentStepsIterator.nextIndex();
             outerComponentStep = outerComponentStepsIterator.next();
-            saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
+            try {
+                saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
+            } catch (DataAccessException e) {
+                throw new OuterComponentStepSaveException();
+            }
         }
     }
 

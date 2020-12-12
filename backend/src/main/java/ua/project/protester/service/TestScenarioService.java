@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.utils.Page;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +18,13 @@ public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
 
     @Transactional
-    public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
+    public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) throws OuterComponentStepSaveException {
         OuterComponent newOuterComponent = outerComponentRepresentation.getOuterComponent();
         return outerComponentRepository.saveOuterComponent(newOuterComponent, false).orElse(null);
     }
 
     @Transactional
-    public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) {
+    public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
         OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
         return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }

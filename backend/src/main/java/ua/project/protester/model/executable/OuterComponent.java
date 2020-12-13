@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.executable.result.ActionResult;
+import ua.project.protester.model.executable.result.ActionResultDto;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -58,7 +60,7 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step: steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
@@ -68,7 +70,7 @@ public class OuterComponent extends ExecutableComponent {
         }
     }
 
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step: steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),

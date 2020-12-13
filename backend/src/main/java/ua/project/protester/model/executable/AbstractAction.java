@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
-import ua.project.protester.model.executable.result.ActionResult;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
 
 import java.time.OffsetDateTime;
@@ -27,24 +28,28 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResult> callback) throws ActionExecutionException {
-        ActionResult result = new ActionResult();
-        result.setActionName(name);
-        result.setType(type);
-        result.setStartDate(OffsetDateTime.now());
-        try {
-            logic(params, context, driver, result);
-            result.setEndDate(OffsetDateTime.now());
-            result.setStatus(ResultStatus.PASSED);
-        } catch (Exception e) {
-            result.setEndDate(OffsetDateTime.now());
-            result.setStatus(ResultStatus.FAILED);
-            result.setMessage(e.getMessage());
-            throw new ActionExecutionException(e.getMessage(), e);
-        } finally {
-            callback.accept(result);
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        OffsetDateTime startDate = OffsetDateTime.now();
+
+        ActionResultDto actionResult = logic(params, context, driver);
+
+        actionResult.setEndDate(OffsetDateTime.now());
+        actionResult.setStartDate(startDate);
+        actionResult.setAction(this);
+
+        callback.accept(actionResult);
+
+        if (actionResult.getStatus() == null)
+            throw new IllegalActionLogicImplementation("Action result status is null for action with name '" + name + "'. Please, specify status in logic implementation!");
+
+        if (actionResult.getStatus() == ResultStatus.FAILED) {
+            if (actionResult.getException() == null) {
+                throw new IllegalActionLogicImplementation("Action result status is " + ResultStatus.FAILED + ", but no exception is provided. Please, specify exception in logic implementation!");
+            } else {
+                throw actionResult.getException();
+            }
         }
     }
 
-    protected abstract void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) throws Exception;
+    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver);
 }

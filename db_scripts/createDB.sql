@@ -160,7 +160,7 @@ CREATE TABLE test_case_result (
     status_id               INTEGER,
     start_date              TIMESTAMPTZ NOT NULL,
     end_date                TIMESTAMPTZ,
-    CONSTRAINT test_case_id_fk  FOREIGN KEY (test_case_id)  REFERENCES test_cases (test_case_id),
+    CONSTRAINT test_case_id_fk  FOREIGN KEY (test_case_id)  REFERENCES test_cases (test_case_id) ON DELETE SET NULL,
     CONSTRAINT user_id_fk 	    FOREIGN KEY (user_id)       REFERENCES users (user_id),
     CONSTRAINT status_id_fk     FOREIGN KEY (status_id) 	REFERENCES statuses (status_id)
 );

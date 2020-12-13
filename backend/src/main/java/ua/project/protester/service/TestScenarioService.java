@@ -29,12 +29,14 @@ public class TestScenarioService {
         return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
+    @Transactional
     public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
                 outerComponentRepository.findAllOuterComponents(false, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(false, filter));
     }
 
+    @Transactional
     public OuterComponent getTestScenarioById(int id) throws TestScenarioNotFoundException {
         try {
             return outerComponentRepository.findOuterComponentById(id, false);

@@ -31,12 +31,14 @@ public class CompoundService {
         return outerComponentRepository.updateOuterComponent(id, updatedCompound, true).orElse(null);
     }
 
+    @Transactional
     public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
                 outerComponentRepository.findAllOuterComponents(true, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(true, filter));
     }
 
+    @Transactional
     public OuterComponent getCompoundById(int id) throws CompoundNotFoundException {
         try {
             return outerComponentRepository.findOuterComponentById(id, true);

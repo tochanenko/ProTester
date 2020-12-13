@@ -37,8 +37,7 @@ public class TestScenarioService {
 
     public OuterComponent getTestScenarioById(int id) throws TestScenarioNotFoundException {
         try {
-            return outerComponentRepository.findOuterComponentById(id, false)
-                    .orElseThrow(OuterComponentNotFoundException::new);
+            return outerComponentRepository.findOuterComponentById(id, false);
         } catch (OuterComponentNotFoundException e) {
             throw new TestScenarioNotFoundException(e);
         }

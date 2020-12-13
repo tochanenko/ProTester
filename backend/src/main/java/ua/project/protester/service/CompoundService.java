@@ -39,8 +39,7 @@ public class CompoundService {
 
     public OuterComponent getCompoundById(int id) throws CompoundNotFoundException {
         try {
-            return outerComponentRepository.findOuterComponentById(id, true)
-                    .orElseThrow(OuterComponentNotFoundException::new);
+            return outerComponentRepository.findOuterComponentById(id, true);
         } catch (OuterComponentNotFoundException e) {
             throw new CompoundNotFoundException(e);
         }

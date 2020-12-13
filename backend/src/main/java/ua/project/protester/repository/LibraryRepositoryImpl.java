@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.Step;
@@ -84,10 +85,8 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         );
 
         allLibraries
-                .forEach(library -> {
-                    library.setComponents(
-                            findAllLibraryStorageById(library.getId()));
-                });
+                .forEach(library -> library.setComponents(
+                        findAllLibraryStorageById(library.getId())));
 
         return allLibraries;
     }
@@ -175,14 +174,14 @@ public class LibraryRepositoryImpl implements LibraryRepository {
             ExecutableComponent component =
                     isAction
                             ?
-                            actionRepository.findActionById(actionId).orElseThrow(ExecutableComponentNotFoundException::new)
+                            actionRepository.findActionById(actionId)
                             :
-                            outerComponentRepository.findOuterComponentById(compoundId, true).orElseThrow(ExecutableComponentNotFoundException::new);
+                            outerComponentRepository.findOuterComponentById(compoundId, true);
 
             Map<String, String> parameters = stepParameterRepository.findAllDataSetParamsId(id);
             return new Step(id, isAction, component, parameters);
-        } catch (OuterComponentNotFoundException e) {
-            throw new ExecutableComponentNotFoundException();
+        } catch (OuterComponentNotFoundException | ActionNotFoundException e) {
+            throw new ExecutableComponentNotFoundException(e);
         }
     }
 

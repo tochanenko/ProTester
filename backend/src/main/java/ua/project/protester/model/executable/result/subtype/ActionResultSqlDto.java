@@ -24,4 +24,12 @@ public class ActionResultSqlDto extends ActionResultDto {
         this.query = query;
         this.columns = columns;
     }
+
+    public ActionResultSqlDto(ActionResultDto that, String connectionUrl, String username, String query, List<SqlColumnDto> columns) {
+        super(that);
+        this.connectionUrl = connectionUrl;
+        this.username = username;
+        this.query = query;
+        this.columns = columns;
+    }
 }

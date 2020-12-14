@@ -24,4 +24,9 @@ public class ActionResultTechnicalDto extends ActionResultDto {
         super(e);
         this.extra = extra;
     }
+
+    public ActionResultTechnicalDto(ActionResultDto that, Map<String, String> extra) {
+        super(that);
+        this.extra = extra;
+    }
 }

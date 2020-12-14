@@ -20,4 +20,11 @@ public class ActionResultRestDto extends ActionResultDto {
         this.response = response;
         this.statusCode = statusCode;
     }
+
+    public ActionResultRestDto(ActionResultDto that, String request, String response, Integer statusCode) {
+        super(that);
+        this.request = request;
+        this.response = response;
+        this.statusCode = statusCode;
+    }
 }

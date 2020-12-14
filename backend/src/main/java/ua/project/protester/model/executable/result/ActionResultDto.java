@@ -19,7 +19,7 @@ public class ActionResultDto {
     protected OffsetDateTime endDate;
     protected ResultStatus status;
     protected Map<String, String> inputParameters;
-    protected ActionExecutionException exception;
+    protected String message;
 
     public ActionResultDto() {
         status = ResultStatus.PASSED;
@@ -27,15 +27,16 @@ public class ActionResultDto {
 
     public ActionResultDto(ActionExecutionException e) {
         status = ResultStatus.FAILED;
-        exception = e;
+        message = e.getMessage();
     }
 
-    public void init(ActionResultDto that) {
+    public ActionResultDto(ActionResultDto that) {
         this.id = that.id;
         this.action = that.action;
         this.startDate = that.startDate;
         this.endDate = that.endDate;
         this.status = that.status;
-        this.exception = that.exception;
+        this.inputParameters = that.inputParameters;
+        this.message = that.message;
     }
 }

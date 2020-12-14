@@ -16,4 +16,9 @@ public class ActionResultUiDto extends ActionResultDto {
         super(e);
         this.path = path;
     }
+
+    public ActionResultUiDto(ActionResultDto that, String path) {
+        super(that);
+        this.path = path;
+    }
 }

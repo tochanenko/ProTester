@@ -45,17 +45,14 @@ public class DataSetRepository {
     }
 
     public DataSet updateDataSet(DataSet dataSet) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "updateDataSet"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", dataSet.getId())
                         .addValue("data_set_name", dataSet.getName())
-                        .addValue("data_set_description", dataSet.getDescription()),
-                keyHolder,
-                new String[]{"data_set_id"});
-        log.info("updating {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
+                        .addValue("data_set_description", dataSet.getDescription()));
+        log.info("updating {} dataset with description {} and id {}", dataSet.getName(), dataSet.getDescription(),dataSet.getId());
 
         deleteParamsById(dataSet.getId());
         dataSet.getDataset().forEach((key, value) -> saveParams(dataSet.getId(), key, value));

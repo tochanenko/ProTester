@@ -13,7 +13,16 @@ import org.springframework.stereotype.Repository;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.executable.result.ActionResult;
 import ua.project.protester.model.executable.result.ActionResultDto;
-import ua.project.protester.model.executable.result.subtype.*;
+import ua.project.protester.model.executable.result.subtype.ActionResultRest;
+import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultSql;
+import ua.project.protester.model.executable.result.subtype.ActionResultSqlDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalExtra;
+import ua.project.protester.model.executable.result.subtype.ActionResultUi;
+import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
+import ua.project.protester.model.executable.result.subtype.SqlColumn;
+import ua.project.protester.model.executable.result.subtype.SqlColumnDto;
 import ua.project.protester.repository.StatusRepository;
 import ua.project.protester.utils.PropertyExtractor;
 

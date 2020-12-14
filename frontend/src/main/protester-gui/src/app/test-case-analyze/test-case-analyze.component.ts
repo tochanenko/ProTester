@@ -1,10 +1,9 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ExecutableComponentType, Status, TestCaseResult} from './result.model';
-import * as Stomp from '@stomp/stompjs';
-import * as SockJS from 'sockjs-client';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
+import {WebsocketsService} from './websockets.service';
 
 @Component({
   selector: 'app-test-case-run',
@@ -121,22 +120,20 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
   // resultList: TestCaseResult[] = [];
   idList: number[] = [1, 4];
-  isError = false;
   isLoading = true;
-  numberOfReconnects = 0;
-  maxNumberOfReconnects = 2;
-
-  public stompClient = null;
+  isError = false;
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
-  constructor(private analyzeService: TestCaseAnalyzeService, private testCaseService: TestCaseService) {
+  constructor(private analyzeService: TestCaseAnalyzeService,
+              private testCaseService: TestCaseService,
+              private websocketsService: WebsocketsService) {
   }
 
   ngOnInit(): void {
     // this.loadTestCasesResults();
-    // this.openWebSocketWithActionResults();
     this.isLoading = false;
+    this.openWebSocketWithActionResults();
   }
 
   loadTestCasesResults(): void {
@@ -152,40 +149,23 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
                 this.resultList.push(data);
               }, error => console.log(error));
           },
-          error => this.isError = true
+          error => console.log('error')
         );
     }
   }
 
   openWebSocketWithActionResults(): void {
-    this.connect();
-  }
-
-  connect(): void {
-    const socket = new SockJS('http://localhost:8080/onlyfullstack-stomp-endpoint');
-    this.stompClient = Stomp.over(socket);
-    const _this = this;
-    this.stompClient.connect({}, function(frame) {
-      _this.isLoading = false;
-      _this.numberOfReconnects = 0;
-      for (let index = 0; index < _this.idList.length; index++) {
-        let id = _this.idList[index];
-        _this.stompClient.subscribe('/topic/hi/' + id, function(hello) {
-
-          _this.onMessageReceive(hello, id);
-
+    this.websocketsService.connect(() => {
+      for (let index = 0; index < this.idList.length; index++) {
+        const id = this.idList[index];
+        this.websocketsService.getStompClient().subscribe('/topic/hi/' + id, (hello) => {
+          this.onMessageReceive(hello, id);
         });
       }
-      _this.stompClient.reconnect_delay = 2000;
-
-    }, function(errorCallback) {
-      _this.numberOfReconnects++;
-      _this.reconnect();
     });
   }
 
   onMessageReceive(hello, id: number): void {
-    const _this = this;
 
     const actionToAdd = {
       id: 4,
@@ -197,49 +177,23 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
       type: ExecutableComponentType.REST,
       status: Status.PASSED,
     };
-    const indexOfTestCase: number = _this.resultList
+    const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === id);
 
     console.log('index = ' + indexOfTestCase);
 
     if (indexOfTestCase === undefined) {
-      _this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
+      this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
     } else {
-      const actionIndex = _this.resultList[indexOfTestCase].innerResults.findIndex(e => e.id === actionToAdd.id);
-      _this.resultList[indexOfTestCase].innerResults[actionIndex] = (actionToAdd);
+      const actionIndex = this.resultList[indexOfTestCase].innerResults.findIndex(e => e.id === actionToAdd.id);
+      this.resultList[indexOfTestCase].innerResults[actionIndex] = (actionToAdd);
     }
 
-    _this.testCaseInfoComponents
+    this.testCaseInfoComponents
       .forEach((child) => child.refreshTree());
   }
 
-  reconnect(): void {
-    if (this.numberOfReconnects > this.maxNumberOfReconnects) {
-      console.log('The number of reconnections to reach the upper limit failed');
-      this.isError = true;
-      return;
-    }
-
-    const _this = this;
-    setTimeout(function() {
-      _this.connect();
-    }, 3000);
-  }
-
-  disconnectStompClient(): void {
-    if (this.stompClient != null) {
-      this.stompClient.disconnect();
-    }
-  }
-
-  onCliCkReconnect(): void {
-    this.numberOfReconnects = 0;
-    this.isError = false;
-    this.isLoading = true;
-    this.reconnect();
-  }
-
   ngOnDestroy(): void {
-    this.disconnectStompClient();
+    this.websocketsService.disconnectClient();
   }
 }

@@ -22,4 +22,11 @@ public class TestCaseResultDto {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private List<ActionResultDto> innerResults;
+
+    public TestCaseResultDto(User user, TestCase testCase) {
+        this.user = user;
+        this.testCase = testCase;
+        this.status = ResultStatus.IN_PROGRESS;
+        this.startDate = OffsetDateTime.now();
+    }
 }

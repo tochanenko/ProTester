@@ -10,22 +10,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.executable.result.ActionResult;
 import ua.project.protester.model.executable.result.ActionResultDto;
-import ua.project.protester.model.executable.result.subtype.ActionResultRest;
-import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
-import ua.project.protester.model.executable.result.subtype.ActionResultSql;
-import ua.project.protester.model.executable.result.subtype.ActionResultSqlDto;
-import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalDto;
-import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalExtra;
-import ua.project.protester.model.executable.result.subtype.ActionResultUi;
-import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
-import ua.project.protester.model.executable.result.subtype.SqlColumn;
-import ua.project.protester.model.executable.result.subtype.SqlColumnDto;
+import ua.project.protester.model.executable.result.subtype.*;
 import ua.project.protester.repository.StatusRepository;
 import ua.project.protester.utils.PropertyExtractor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -44,6 +38,7 @@ public class ActionResultRepository {
     private final StatusRepository statusRepository;
     // private final ActionRepository actionRepository;
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public ActionResultDto save(Integer testCaseResultId, ActionResultDto actionResult) throws IllegalActionLogicImplementation {
         switch (actionResult.getAction().getType()) {
             case REST:
@@ -76,6 +71,7 @@ public class ActionResultRepository {
                         + ", but actual result type is not instance of appropriate result subtype");
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<ActionResultDto> findByTestCaseResultId(Integer id) {
         // TODO: implement
         log.warn(id.toString());
@@ -132,11 +128,17 @@ public class ActionResultRepository {
 
     private ActionResultSqlDto saveSql(Integer testCaseResultId, ActionResultSqlDto actionResultSqlDto) {
         saveBase(testCaseResultId, actionResultSqlDto);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveActionResultSql"),
-                new BeanPropertySqlParameterSource(getSqlModelFromDto(actionResultSqlDto)));
-        actionResultSqlDto.getColumns()
-                .forEach(sqlColumnDto -> saveSqlColumn(actionResultSqlDto.getId(), sqlColumnDto));
+                new BeanPropertySqlParameterSource(getSqlModelFromDto(actionResultSqlDto)),
+                keyHolder,
+                new String[]{"action_result_sql_id"});
+        Integer actionResultSqlId = (Integer) keyHolder.getKey();
+        if (actionResultSqlDto.getColumns() != null) {
+            actionResultSqlDto.getColumns()
+                    .forEach(sqlColumnDto -> saveSqlColumn(actionResultSqlId, sqlColumnDto));
+        }
         return actionResultSqlDto;
     }
 
@@ -205,7 +207,7 @@ public class ActionResultRepository {
                 dto.getStartDate(),
                 dto.getEndDate(),
                 statusRepository.getIdByLabel(dto.getStatus()),
-                dto.getException().getMessage());
+                dto.getException() != null ? dto.getException().getMessage() : null);
     }
 
     private ActionResultRest getRestModelFromDto(ActionResultRestDto dto) {
@@ -217,6 +219,9 @@ public class ActionResultRepository {
     }
 
     private List<ActionResultTechnicalExtra> getTechnicalModelFromDto(ActionResultTechnicalDto dto) {
+        if (dto.getExtra() == null) {
+            return Collections.emptyList();
+        }
         return dto.getExtra().entrySet()
                 .stream()
                 .map(entry -> new ActionResultTechnicalExtra(

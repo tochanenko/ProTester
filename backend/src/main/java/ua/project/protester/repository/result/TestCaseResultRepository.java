@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.result.TestCaseResultNotFoundException;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.model.executable.result.TestCaseResult;
@@ -57,6 +59,7 @@ public class TestCaseResultRepository {
                         .addValue("endDate", endDate));
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public TestCaseResultDto findById(Integer id) throws TestCaseResultNotFoundException {
         try {
             TestCaseResult result = namedParameterJdbcTemplate.queryForObject(
@@ -73,6 +76,7 @@ public class TestCaseResultRepository {
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<TestCaseResultDto> findAll() {
         // TODO: implement
         return null;
@@ -81,8 +85,8 @@ public class TestCaseResultRepository {
     private TestCaseResult getModelFromDto(TestCaseResultDto dto) {
         return new TestCaseResult(
                 null,
-                dto.getUser().getId(),
-                dto.getTestCase().getId(),
+                dto.getUser() != null ? dto.getUser().getId() : null,
+                dto.getTestCase() != null ? dto.getTestCase().getId() : null,
                 statusRepository.getIdByLabel(dto.getStatus()),
                 dto.getStartDate(),
                 dto.getEndDate());

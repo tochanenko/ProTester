@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS test_cases_watchers CASCADE;
 DROP TABLE IF EXISTS result_tests CASCADE;
 DROP TABLE IF EXISTS test_case_result CASCADE;
 DROP TABLE IF EXISTS action_result CASCADE;
+DROP TABLE IF EXISTS action_result_extra CASCADE;
 DROP TABLE IF EXISTS action_result_input_param CASCADE;
 DROP TABLE IF EXISTS action_result_ui CASCADE;
 DROP TABLE IF EXISTS action_result_technical_extra CASCADE;

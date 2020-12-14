@@ -72,6 +72,7 @@ public class TestCaseResultRepository {
             }
             return getDtoFromModel(result);
         } catch (DataAccessException e) {
+            log.warn(e.getMessage(), e);
             throw new TestCaseResultNotFoundException(id, e);
         }
     }

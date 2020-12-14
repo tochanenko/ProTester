@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,31 +14,40 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.exception.result.ResultSubtypeNotFoundException;
+import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.result.ActionResult;
 import ua.project.protester.model.executable.result.ActionResultDto;
-import ua.project.protester.model.executable.result.subtype.*;
+import ua.project.protester.model.executable.result.subtype.ActionResultRest;
+import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultSql;
+import ua.project.protester.model.executable.result.subtype.ActionResultSqlDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalExtra;
+import ua.project.protester.model.executable.result.subtype.ActionResultUi;
+import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
+import ua.project.protester.model.executable.result.subtype.SqlColumn;
+import ua.project.protester.model.executable.result.subtype.SqlColumnDto;
+import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.repository.StatusRepository;
 import ua.project.protester.utils.PropertyExtractor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
-// TODO: write sql queries
 @PropertySource("classpath:queries/action-result.properties")
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-@SuppressWarnings("PMD")
 public class ActionResultRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
     private final StatusRepository statusRepository;
-    // private final ActionRepository actionRepository;
+    private final ActionRepository actionRepository;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public ActionResultDto save(Integer testCaseResultId, ActionResultDto actionResult) throws IllegalActionLogicImplementation {
@@ -73,16 +84,21 @@ public class ActionResultRepository {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public List<ActionResultDto> findByTestCaseResultId(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
+        return namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findAllActionResultsByTestCaseResultId"),
+                new MapSqlParameterSource().addValue("id", id),
+                new BeanPropertyRowMapper<>(ActionResult.class))
+                .stream()
+                .map(this::getBaseDto)
+                .map(this::loadSubtypeData)
+                .collect(Collectors.toList());
     }
 
     private void saveBase(Integer testCaseResultId, ActionResultDto actionResultDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveBaseActionResult"),
-                new BeanPropertySqlParameterSource(getBaseModelFromDto(testCaseResultId, actionResultDto)),
+                new BeanPropertySqlParameterSource(getBaseModel(testCaseResultId, actionResultDto)),
                 keyHolder,
                 new String[]{"action_result_id"});
         actionResultDto.setId((Integer) keyHolder.getKey());
@@ -104,13 +120,13 @@ public class ActionResultRepository {
         saveBase(testCaseResultId, actionResultRestDto);
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveActionResultRest"),
-                new BeanPropertySqlParameterSource(getRestModelFromDto(actionResultRestDto)));
+                new BeanPropertySqlParameterSource(getRestModel(actionResultRestDto)));
         return actionResultRestDto;
     }
 
     private ActionResultTechnicalDto saveTechnical(Integer testCaseResultId, ActionResultTechnicalDto actionResultTechnicalDto) {
         saveBase(testCaseResultId, actionResultTechnicalDto);
-        getTechnicalModelFromDto(actionResultTechnicalDto)
+        getTechnicalModel(actionResultTechnicalDto)
                 .forEach(actionResultTechnicalExtra ->
                         namedParameterJdbcTemplate.update(
                                 PropertyExtractor.extract(env, "saveActionResultTechnicalExtra"),
@@ -122,7 +138,7 @@ public class ActionResultRepository {
         saveBase(testCaseResultId, actionResultUiDto);
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveActionResultUi"),
-                new BeanPropertySqlParameterSource(getUiModelFromDto(actionResultUiDto)));
+                new BeanPropertySqlParameterSource(getUiModel(actionResultUiDto)));
         return actionResultUiDto;
     }
 
@@ -131,7 +147,7 @@ public class ActionResultRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveActionResultSql"),
-                new BeanPropertySqlParameterSource(getSqlModelFromDto(actionResultSqlDto)),
+                new BeanPropertySqlParameterSource(getSqlModel(actionResultSqlDto)),
                 keyHolder,
                 new String[]{"action_result_sql_id"});
         Integer actionResultSqlId = (Integer) keyHolder.getKey();
@@ -146,7 +162,7 @@ public class ActionResultRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "saveSqlColumn"),
-                new BeanPropertySqlParameterSource(getSqlColumnFromDto(actionResultSqlId, sqlColumnDto)),
+                new BeanPropertySqlParameterSource(getSqlColumn(actionResultSqlId, sqlColumnDto)),
                 keyHolder,
                 new String[]{"sql_column_id"});
         sqlColumnDto.setId((Integer) keyHolder.getKey());
@@ -167,39 +183,123 @@ public class ActionResultRepository {
         }
     }
 
-    /*
+    private ActionResultDto loadSubtypeData(ActionResultDto resultDto) {
+        if (resultDto.getAction() == null) {
+            return resultDto;
+        }
+        try {
+            switch (resultDto.getAction().getType()) {
+                case REST:
+                    return findRest(resultDto);
+                case TECHNICAL:
+                    return findTechnical(resultDto);
+                case UI:
+                    return findUi(resultDto);
+                case SQL:
+                    return findSql(resultDto);
+                default:
+                    log.warn("Action " + resultDto.getAction().getName() + " has incorrect type: " + resultDto.getAction().getType());
+                    return resultDto;
+            }
+        } catch (ResultSubtypeNotFoundException e) {
+            log.warn(e.getMessage(), e);
+            return resultDto;
+        }
+    }
+
     private Map<String, String> findInputParametersByActionResultId(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
+        Map<String, String> parameters = new HashMap<>();
+        namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findAllInputParametersByActionResultId"),
+                new MapSqlParameterSource().addValue("id", id),
+                (rs, rowNum) -> parameters.put(
+                        rs.getString("key"),
+                        rs.getString("value")));
+        return parameters;
     }
 
-    private ActionResultRestDto findRestById(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
+    private ActionResultRestDto findRest(ActionResultDto baseDto) throws ResultSubtypeNotFoundException {
+        try {
+            ActionResultRest restModel = namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findRestByActionResultId"),
+                    new MapSqlParameterSource().addValue("id", baseDto.getId()),
+                    new BeanPropertyRowMapper<>(ActionResultRest.class));
+
+            if (restModel == null) {
+                throw new ResultSubtypeNotFoundException(baseDto.getId());
+            }
+
+            return getRestDto(baseDto, restModel);
+        } catch (DataAccessException e) {
+            throw new ResultSubtypeNotFoundException(baseDto.getId(), e);
+        }
     }
 
-    private ActionResultTechnicalDto findTechnicalById(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
+    private ActionResultTechnicalDto findTechnical(ActionResultDto baseDto) throws ResultSubtypeNotFoundException {
+        try {
+            List<ActionResultTechnicalExtra> technicalModel = namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findTechnicalExtraByActionResultId"),
+                    new MapSqlParameterSource().addValue("id", baseDto.getId()),
+                    new BeanPropertyRowMapper<>(ActionResultTechnicalExtra.class));
+
+            return getTechnicalDto(baseDto, technicalModel);
+        } catch (DataAccessException e) {
+            throw new ResultSubtypeNotFoundException(baseDto.getId(), e);
+        }
     }
 
-    private ActionResultUiDto findUiById(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
+    private ActionResultUiDto findUi(ActionResultDto baseDto) throws ResultSubtypeNotFoundException {
+        try {
+            ActionResultUi uiModel = namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findUiByActionResultId"),
+                    new MapSqlParameterSource().addValue("id", baseDto.getId()),
+                    new BeanPropertyRowMapper<>(ActionResultUi.class));
+
+            if (uiModel == null) {
+                throw new ResultSubtypeNotFoundException(baseDto.getId());
+            }
+
+            return getUiDto(baseDto, uiModel);
+        } catch (DataAccessException e) {
+            throw new ResultSubtypeNotFoundException(baseDto.getId(), e);
+        }
     }
 
-    private ActionResultSqlDto findSqlById(Integer id) {
-        // TODO: implement
-        log.warn(id.toString());
-        return null;
-    }
-    */
+    private ActionResultSqlDto findSql(ActionResultDto baseDto) throws ResultSubtypeNotFoundException {
+        try {
+            ActionResultSql sqlModel = namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findSqlByActionResultId"),
+                    new MapSqlParameterSource().addValue("id", baseDto.getId()),
+                    new BeanPropertyRowMapper<>(ActionResultSql.class));
 
-    private ActionResult getBaseModelFromDto(Integer testCaseResultId, ActionResultDto dto) {
+            if (sqlModel == null) {
+                throw new ResultSubtypeNotFoundException(baseDto.getId());
+            }
+
+            return getSqlDto(baseDto, sqlModel);
+        } catch (DataAccessException e) {
+            throw new ResultSubtypeNotFoundException(baseDto.getId(), e);
+        }
+    }
+
+    private List<SqlColumnDto> findSqlColumns(Integer actionResultSqlId) {
+        return namedParameterJdbcTemplate.query(
+                PropertyExtractor.extract(env, "findSqlColumnsByActionResultSqlId"),
+                new MapSqlParameterSource().addValue("id", actionResultSqlId),
+                new BeanPropertyRowMapper<>(SqlColumn.class))
+                .stream()
+                .map(this::getSqlColumnDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> findSqlColumnCells(Integer sqlColumnId) {
+        return namedParameterJdbcTemplate.queryForList(
+                PropertyExtractor.extract(env, "findSqlColumnCellsValueBySqlColumnId"),
+                new MapSqlParameterSource().addValue("id", sqlColumnId),
+                String.class);
+    }
+
+    private ActionResult getBaseModel(Integer testCaseResultId, ActionResultDto dto) {
         return new ActionResult(
                 null,
                 testCaseResultId,
@@ -207,10 +307,10 @@ public class ActionResultRepository {
                 dto.getStartDate(),
                 dto.getEndDate(),
                 statusRepository.getIdByLabel(dto.getStatus()),
-                dto.getException() != null ? dto.getException().getMessage() : null);
+                dto.getMessage());
     }
 
-    private ActionResultRest getRestModelFromDto(ActionResultRestDto dto) {
+    private ActionResultRest getRestModel(ActionResultRestDto dto) {
         return new ActionResultRest(
                 dto.getId(),
                 dto.getRequest(),
@@ -218,7 +318,7 @@ public class ActionResultRepository {
                 dto.getStatusCode());
     }
 
-    private List<ActionResultTechnicalExtra> getTechnicalModelFromDto(ActionResultTechnicalDto dto) {
+    private List<ActionResultTechnicalExtra> getTechnicalModel(ActionResultTechnicalDto dto) {
         if (dto.getExtra() == null) {
             return Collections.emptyList();
         }
@@ -231,13 +331,13 @@ public class ActionResultRepository {
                 .collect(Collectors.toList());
     }
 
-    private ActionResultUi getUiModelFromDto(ActionResultUiDto dto) {
+    private ActionResultUi getUiModel(ActionResultUiDto dto) {
         return new ActionResultUi(
                 dto.getId(),
                 dto.getPath());
     }
 
-    private ActionResultSql getSqlModelFromDto(ActionResultSqlDto dto) {
+    private ActionResultSql getSqlModel(ActionResultSqlDto dto) {
         return new ActionResultSql(
                 dto.getId(),
                 dto.getConnectionUrl(),
@@ -245,16 +345,14 @@ public class ActionResultRepository {
                 dto.getQuery());
     }
 
-    private SqlColumn getSqlColumnFromDto(Integer actionResultSqlId, SqlColumnDto dto) {
+    private SqlColumn getSqlColumn(Integer actionResultSqlId, SqlColumnDto dto) {
         return new SqlColumn(
                 null,
                 actionResultSqlId,
                 dto.getName());
     }
 
-    // TODO: uncomment
-    /*
-    private ActionResultDto getBaseDtoFromModel(ActionResult result) {
+    private ActionResultDto getBaseDto(ActionResult result) {
         AbstractAction action;
         try {
             action = actionRepository.findActionById(result.getActionId());
@@ -269,7 +367,43 @@ public class ActionResultRepository {
                 result.getEndDate(),
                 statusRepository.getLabelById(result.getStatusId()),
                 findInputParametersByActionResultId(result.getId()),
-                new ActionExecutionException(result.getMessage()));
+                result.getMessage());
     }
-    */
+
+    private ActionResultRestDto getRestDto(ActionResultDto baseDto, ActionResultRest restModel) {
+        return new ActionResultRestDto(
+                baseDto,
+                restModel.getRequest(),
+                restModel.getResponse(),
+                restModel.getStatusCode());
+    }
+
+    private ActionResultUiDto getUiDto(ActionResultDto baseDto, ActionResultUi uiModel) {
+        return new ActionResultUiDto(
+                baseDto,
+                uiModel.getPath());
+    }
+
+    private ActionResultTechnicalDto getTechnicalDto(ActionResultDto baseDto, List<ActionResultTechnicalExtra> technicalModel) {
+        Map<String, String> extra = new HashMap<>();
+        technicalModel.forEach(entry -> extra.put(entry.getKey(), entry.getValue()));
+        return new ActionResultTechnicalDto(
+                baseDto,
+                extra);
+    }
+
+    private ActionResultSqlDto getSqlDto(ActionResultDto baseDto, ActionResultSql sqlModel) {
+        return new ActionResultSqlDto(
+                baseDto,
+                sqlModel.getConnectionUrl(),
+                sqlModel.getUsername(),
+                sqlModel.getQuery(),
+                findSqlColumns(sqlModel.getId()));
+    }
+
+    private SqlColumnDto getSqlColumnDto(SqlColumn sqlColumnModel) {
+        return new SqlColumnDto(
+                sqlColumnModel.getName(),
+                findSqlColumnCells(sqlColumnModel.getId()));
+    }
 }

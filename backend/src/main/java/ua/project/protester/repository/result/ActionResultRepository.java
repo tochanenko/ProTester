@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public class ActionResultRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

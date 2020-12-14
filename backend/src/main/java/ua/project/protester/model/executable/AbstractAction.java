@@ -35,13 +35,14 @@ public abstract class AbstractAction extends ExecutableComponent {
 
         actionResult.setEndDate(OffsetDateTime.now());
         actionResult.setStartDate(startDate);
+        actionResult.setInputParameters(params);
         actionResult.setAction(this);
 
         callback.accept(actionResult);
 
-        if (actionResult.getStatus() == null)
+        if (actionResult.getStatus() == null) {
             throw new IllegalActionLogicImplementation("Action result status is null for action with name '" + name + "'. Please, specify status in logic implementation!");
-
+        }
         if (actionResult.getStatus() == ResultStatus.FAILED) {
             if (actionResult.getException() == null) {
                 throw new IllegalActionLogicImplementation("Action result status is " + ResultStatus.FAILED + ", but no exception is provided. Please, specify exception in logic implementation!");

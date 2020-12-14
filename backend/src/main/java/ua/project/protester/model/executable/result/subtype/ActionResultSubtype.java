@@ -8,4 +8,8 @@ import lombok.Setter;
 public class ActionResultSubtype {
     protected Integer id;
     protected Integer actionResultId;
+
+    public ActionResultSubtype(Integer actionResultId) {
+        this.actionResultId = actionResultId;
+    }
 }

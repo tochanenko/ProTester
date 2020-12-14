@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class SqlColumnDto {
+    private Integer id;
     private String name;
     private List<String> rows;
 }

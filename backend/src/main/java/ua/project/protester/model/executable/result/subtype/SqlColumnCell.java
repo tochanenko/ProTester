@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SqlColumnCell {
-    Integer id;
-    Integer sqlColumnId;
-    Integer orderNumber;
-    String value;
+    private Integer id;
+    private Integer sqlColumnId;
+    private Integer orderNumber;
+    private String value;
 }

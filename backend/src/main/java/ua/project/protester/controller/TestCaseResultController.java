@@ -23,7 +23,7 @@ public class TestCaseResultController {
     @GetMapping
     public Page<TestCaseResultDto> getAllResults(
             @RequestBody TestCaseResultFilter filter,
-            @RequestParam(value = "loadSteps", defaultValue = "true") boolean loadSteps) {
-        return testCaseResultService.getAllTestCaseResults(filter, loadSteps);
+            @RequestParam(value = "loadActionResults", defaultValue = "true") boolean loadActionResults) {
+        return testCaseResultService.getAllTestCaseResults(filter, loadActionResults);
     }
 }

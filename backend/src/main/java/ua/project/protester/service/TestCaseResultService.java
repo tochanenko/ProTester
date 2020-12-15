@@ -21,9 +21,9 @@ public class TestCaseResultService {
     }
 
     @Transactional
-    public Page<TestCaseResultDto> getAllTestCaseResults(TestCaseResultFilter filter, boolean loadSteps) {
+    public Page<TestCaseResultDto> getAllTestCaseResults(TestCaseResultFilter filter, boolean loadActionResults) {
         return new Page<>(
-                testCaseResultRepository.findAll(filter, loadSteps),
+                testCaseResultRepository.findAll(filter, loadActionResults),
                 testCaseResultRepository.countAll(filter)
         );
     }

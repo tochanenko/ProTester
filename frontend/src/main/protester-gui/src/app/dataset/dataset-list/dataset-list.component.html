@@ -28,12 +28,10 @@
     <ng-container matColumnDef="CONF">
 
       <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
-
       <mat-cell *matCellDef="let row">
         <button [matMenuTriggerFor]="menuTable" mat-icon-button>
           <span class="material-icons more-options">more_vert</span>
         </button>
-
         <mat-menu #menuTable="matMenu">
           <button (click)="openViewDialog(row.id)" mat-menu-item>
             <span>View</span>

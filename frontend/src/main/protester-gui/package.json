@@ -24,7 +24,9 @@
     "zone.js": "~0.10.2",
     "@angular/material": "^11.0.0",
     "@angular/cdk": "^11.0.0",
-    "ngx-mat-select-search": "~3.1.4"
+    "ngx-mat-select-search": "~3.1.4",
+    "@angular/flex-layout": "^11.0.0-beta.33",
+    "@stomp/stompjs": "^4.0.7"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1001.2",

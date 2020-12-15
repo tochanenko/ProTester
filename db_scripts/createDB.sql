@@ -22,6 +22,13 @@ DROP TABLE IF EXISTS result_tests CASCADE;
 DROP TABLE IF EXISTS test_case_result CASCADE;
 DROP TABLE IF EXISTS action_result CASCADE;
 DROP TABLE IF EXISTS action_result_extra CASCADE;
+DROP TABLE IF EXISTS action_result_input_param CASCADE;
+DROP TABLE IF EXISTS action_result_ui CASCADE;
+DROP TABLE IF EXISTS action_result_technical_extra CASCADE;
+DROP TABLE IF EXISTS action_result_rest CASCADE;
+DROP TABLE IF EXISTS action_result_sql CASCADE;
+DROP TABLE IF EXISTS sql_column CASCADE;
+DROP TABLE IF EXISTS sql_column_cell CASCADE;
 
 CREATE TABLE roles (
     role_id		SERIAL PRIMARY KEY,
@@ -32,7 +39,7 @@ CREATE TABLE users (
     user_id			SERIAL PRIMARY KEY,
     role_id			INTEGER			   NOT NULL,
     user_username	VARCHAR(32) UNIQUE NOT NULL,
-    user_password	CHAR(64) 		   NOT NULL,
+    user_password	VARCHAR(64) 		   NOT NULL,
     user_email 		VARCHAR(32) UNIQUE NOT NULL,
     user_active		BOOLEAN			   NOT NULL,
     user_first_name	VARCHAR(32) 	   NOT NULL,
@@ -154,33 +161,82 @@ CREATE TABLE test_cases_watchers(
 );
 
 CREATE TABLE test_case_result (
-    test_case_result_id     SERIAL PRIMARY KEY,
-    user_id                 INTEGER,
-    test_case_id            INTEGER,
-    status_id               INTEGER,
-    start_date              TIMESTAMPTZ NOT NULL,
-    end_date                TIMESTAMPTZ,
-    CONSTRAINT test_case_id_fk  FOREIGN KEY (test_case_id)  REFERENCES test_cases (test_case_id),
-    CONSTRAINT user_id_fk 	    FOREIGN KEY (user_id)       REFERENCES users (user_id),
-    CONSTRAINT status_id_fk     FOREIGN KEY (status_id) 	REFERENCES statuses (status_id)
+    test_case_result_id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    test_case_id INTEGER,
+    status_id INTEGER NOT NULL,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ,
+    CONSTRAINT test_case_result_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE SET NULL,
+    CONSTRAINT test_case_result_test_case_id_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id) ON DELETE SET NULL,
+    CONSTRAINT test_case_result_status_id_fk FOREIGN KEY (status_id) REFERENCES statuses (status_id)
 );
 
-CREATE TABLE IF NOT EXISTS action_result (
+CREATE TABLE action_result (
     action_result_id SERIAL PRIMARY KEY,
     test_case_result_id INTEGER NOT NULL,
-    action_name VARCHAR(128) NOT NULL,
+    action_id INTEGER,
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ NOT NULL,
     status_id INTEGER NOT NULL,
-    message TEXT,
-    type VARCHAR(64) NOT NULL,
-    CONSTRAINT test_case_result_id_fk  FOREIGN KEY (test_case_result_id)  REFERENCES test_case_result (test_case_result_id)    ON DELETE CASCADE
+    message VARCHAR(512),
+    CONSTRAINT action_result_test_case_result_id_fk FOREIGN KEY (test_case_result_id) REFERENCES test_case_result (test_case_result_id) ON DELETE CASCADE,
+    CONSTRAINT action_result_action_id_fk FOREIGN KEY (action_id) REFERENCES actions (action_id) ON DELETE SET NULL,
+    CONSTRAINT action_result_status_id_fk FOREIGN KEY (status_id) REFERENCES statuses (status_id)
 );
 
-CREATE TABLE IF NOT EXISTS action_result_extra (
-    action_result_extra_id SERIAL PRIMARY KEY,
+CREATE TABLE action_result_input_param (
+    action_result_input_param_id SERIAL PRIMARY KEY,
     action_result_id INTEGER NOT NULL,
-    key VARCHAR(256) NOT NULL,
-    value VARCHAR(256) NOT NULL,
-    CONSTRAINT action_result_id_fk  FOREIGN KEY (action_result_id)  REFERENCES action_result (action_result_id)    ON DELETE CASCADE
+    key VARCHAR(128) NOT NULL,
+    value VARCHAR(512) NOT NULL,
+    CONSTRAINT action_result_input_param_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
+);
+
+CREATE TABLE action_result_ui (
+    action_result_ui_id SERIAL PRIMARY KEY,
+    action_result_id INTEGER,
+    path VARCHAR(512) NOT NULL,
+    CONSTRAINT action_result_ui_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
+);
+
+CREATE TABLE action_result_technical_extra (
+    action_result_technical_id SERIAL PRIMARY KEY,
+    action_result_id INTEGER NOT NULL,
+    key VARCHAR(128) NOT NULL,
+    value VARCHAR(512) NOT NULL,
+    CONSTRAINT action_result_technical_extra_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
+);
+
+CREATE TABLE action_result_rest (
+    action_result_rest_id SERIAL PRIMARY KEY,
+    action_result_id INTEGER NOT NULL,
+    request VARCHAR(512) NOT NULL,
+    response VARCHAR(512) NOT NULL,
+    status_code INTEGER NOT NULL,
+    CONSTRAINT action_result_rest_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
+);
+
+CREATE TABLE action_result_sql (
+    action_result_sql_id SERIAL PRIMARY KEY,
+    action_result_id INTEGER NOT NULL,
+    connection_url VARCHAR(512) NOT NULL,
+    username VARCHAR(128) NOT NULL,
+    query VARCHAR(512) NOT NULL,
+    CONSTRAINT action_result_sql_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
+);
+
+CREATE TABLE sql_column (
+    sql_column_id SERIAL PRIMARY KEY,
+    action_result_sql_id INTEGER NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    CONSTRAINT sql_column_action_result_sql_id_fk FOREIGN KEY (action_result_sql_id) REFERENCES action_result_sql (action_result_sql_id) ON DELETE CASCADE
+);
+
+CREATE TABLE sql_column_cell (
+    sql_cell_id SERIAL PRIMARY KEY,
+    sql_column_id INTEGER NOT NULL,
+    order_number INTEGER NOT NULL,
+    value VARCHAR(128),
+    CONSTRAINT sql_column_cell_sql_column_id_fk FOREIGN KEY (sql_column_id) REFERENCES sql_column (sql_column_id) ON DELETE CASCADE
 );

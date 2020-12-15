@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ActionRepresentation;
 import ua.project.protester.request.ActionFilter;
@@ -107,19 +108,22 @@ public class ActionRepository {
                         .addValue("className", newActionClass));
     }
 
-    private Optional<AbstractAction> findAction(String propertyName, String parameterKey, Object parameterValue) {
+    private AbstractAction findAction(String propertyName, String parameterKey, Object parameterValue) throws ActionNotFoundException {
         try {
-            return Optional.ofNullable(
-                    namedParameterJdbcTemplate.queryForObject(
-                            PropertyExtractor.extract(env, propertyName),
-                            new MapSqlParameterSource().addValue(parameterKey, parameterValue),
-                            (rs, rowNum) -> constructAction(
-                                    rs.getInt("id"),
-                                    rs.getString("className"),
-                                    rs.getString("description"))));
+            AbstractAction action = namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, propertyName),
+                    new MapSqlParameterSource().addValue(parameterKey, parameterValue),
+                    (rs, rowNum) -> constructAction(
+                            rs.getInt("id"),
+                            rs.getString("className"),
+                            rs.getString("description")));
+            if (action == null) {
+                throw new ActionNotFoundException(parameterKey, parameterValue);
+            }
+            return action;
         } catch (DataAccessException e) {
             log.warn(e.toString());
-            return Optional.empty();
+            throw new ActionNotFoundException(e);
         }
     }
 
@@ -179,14 +183,14 @@ public class ActionRepository {
                 0L);
     }
 
-    public Optional<AbstractAction> findActionById(Integer id) {
+    public AbstractAction findActionById(Integer id) throws ActionNotFoundException {
         return findAction(
                 "findActionById",
                 "id",
                 id);
     }
 
-    public Optional<AbstractAction> findActionByClassName(String className) {
+    public AbstractAction findActionByClassName(String className) throws ActionNotFoundException {
         return findAction(
                 "findActionByClassName",
                 "className",
@@ -199,6 +203,11 @@ public class ActionRepository {
                 new MapSqlParameterSource()
                         .addValue("id", id)
                         .addValue("description", newDescription));
-        return findActionById(id);
+        try {
+            return Optional.of(findActionById(id));
+        } catch (ActionNotFoundException e) {
+            log.warn(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

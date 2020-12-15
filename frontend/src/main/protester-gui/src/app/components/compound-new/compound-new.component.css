@@ -154,12 +154,23 @@ mat-error {
 }
 
 .component-container {
+  width: 100%;
   display: flex;
   margin-top: 10px;
 }
 
-.actions-tile {
+.description-container {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  font-size: 24px;
 }
+
+.description-input {
+  pointer-events: all;
+  width: auto;
+}
+
 
 .mat-accordion {
   width: 100%;
@@ -203,12 +214,3 @@ mat-error {
   color: #FFFFFF;
 }
 
-
-.example-dt {
-  height: 30px;
-  font-weight: bold;
-}
-
-.example-dd {
-  height: 30px;
-}

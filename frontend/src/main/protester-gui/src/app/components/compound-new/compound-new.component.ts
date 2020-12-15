@@ -89,6 +89,25 @@ export class CompoundNewComponent implements OnInit {
     return new_param;
   }
 
+  parseDescription (description: string) {
+    const regexp = new RegExp('(\\${\\w*})');
+    let splitted = description.split(regexp);
+    return splitted.map(sub_string => {
+      if (sub_string.includes("${")) {
+        return {
+          text: sub_string.replace('${', '').replace('}', ''),
+          input: true
+        }
+      }
+      else {
+        return {
+          text: sub_string,
+          input: false
+        }
+      }
+    })
+  }
+
   onSubmit(): void {
     const f = this.formControls;
 
@@ -129,6 +148,7 @@ export class CompoundNewComponent implements OnInit {
   updateActionsArray(): void {
     this.actionSubscription = this.interactionService.actionsArrayObserver.subscribe(action => {
       let step = new Step();
+
       step.id = this.step_id++;
       step.isAction = true;
       step.component = action;
@@ -158,7 +178,6 @@ export class CompoundNewComponent implements OnInit {
         this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
       })
       this.components.push(step);
-      console.log(this.components)
     });
   }
 

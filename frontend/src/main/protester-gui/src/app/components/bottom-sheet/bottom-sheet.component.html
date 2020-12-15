@@ -8,7 +8,7 @@
     <mat-expansion-panel hideToggle *ngFor="let component of data.components.actions">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{component.name}}
+          {{component.description}}
         </mat-panel-title>
         <button mat-icon-button (click)="onClick(component, true)">
           <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
@@ -32,9 +32,10 @@
     <mat-expansion-panel hideToggle *ngFor="let component of data.components.compounds">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{component.name}}
+          {{component.description}}
         </mat-panel-title>
-        <button mat-icon-button (click)="onClick(component, false)">
+
+        <button mat-icon-button (click)="onClick(component, true)">
           <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
         </button>
         <mat-panel-description>

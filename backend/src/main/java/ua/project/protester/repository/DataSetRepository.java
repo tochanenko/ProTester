@@ -45,16 +45,12 @@ public class DataSetRepository {
     }
 
     public DataSet updateDataSet(DataSet dataSet) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "updateDataSet"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", dataSet.getId())
                         .addValue("data_set_name", dataSet.getName())
-                        .addValue("data_set_description", dataSet.getDescription()),
-                keyHolder,
-                new String[]{"data_set_id"});
+                        .addValue("data_set_description", dataSet.getDescription()));
         log.info("updating {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
 
         deleteParamsById(dataSet.getId());
@@ -92,8 +88,8 @@ public class DataSetRepository {
                 PropertyExtractor.extract(env, "saveDataSetParameter"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", id)
-                        .addValue("key", key)
-                        .addValue("value", value));
+                        .addValue("data_set_key", key)
+                        .addValue("data_set_value", value));
         }
 
     public Optional<DataSet> findDataSetById(Long id) {

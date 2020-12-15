@@ -22,6 +22,7 @@ export class DatasetService {
   }
 
   public update(dataset: DataSet): Observable<any> {
+    console.log(dataset);
     return this.http.put('/api/dataset', dataset, httpOptions);
   }
 

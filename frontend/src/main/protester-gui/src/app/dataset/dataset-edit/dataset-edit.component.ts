@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DatasetService} from "../../services/dataset.service";
@@ -8,6 +8,7 @@ import {Unsubscribe} from "../unsubscribe";
 import {takeUntil} from "rxjs/operators";
 import {DataSet, DataSetParameter} from "../dataset.model";
 import {HttpErrorResponse} from "@angular/common/http";
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'app-dataset-edit',
@@ -20,8 +21,10 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
   public errorMessage: string;
   public submitted = false;
   public isSuccessful = false;
+  public isFailed = false;
   public datasetId: number;
-  public displayedColumns: string[] = ['NAME', 'VALUE'];
+  public displayedColumns: string[] = ['NAME', 'VALUE', 'CONF'];
+  @ViewChild(MatTable) table: MatTable<any>;
   public editDatasetParameters: DataSetParameter[] = [];
 
   constructor(private router: Router,
@@ -59,6 +62,7 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
     }
 
     const datasetUpdateResponse = {
+      id: this.datasetId,
       name: this.controls.name.value,
       description: this.controls.description.value,
       parameters: this.convertToMap(this.editDatasetParameters),
@@ -68,11 +72,36 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         data => {
+          console.log(datasetUpdateResponse);
           this.isSuccessful = true;
           this.dialogRef.close();
         },
-        (error: HttpErrorResponse) => this.errorMessage = error.message,
+        (error: HttpErrorResponse) =>  {
+          this.errorMessage = error.message;
+          this.isFailed = true;
+        },
       );
+  }
+
+  public createParameter(): DataSetParameter{
+    return {
+      name: 'nameExample',
+      value: 'valueExample'
+    };
+  }
+
+  public addRowTable() {
+    this.editDatasetParameters.push(this.createParameter());
+    console.log(this.editDatasetParameters);
+    this.table.renderRows();
+  }
+
+  public deleteRow(row: any): void{
+    const index = this.editDatasetParameters.indexOf(row, 0);
+    if (index > -1) {
+      this.editDatasetParameters.splice(index, 1);
+    }
+    this.table.renderRows();
   }
 
   private initDatasetUpdateForm(): void {
@@ -82,6 +111,20 @@ export class DatasetEditComponent extends Unsubscribe implements OnInit {
         Validators.maxLength(50)])],
       description: ['', Validators.compose([Validators.required])]
     });
+  }
+
+  public _editParameterNameChanged(inputNameElement: HTMLInputElement, index: number): void {
+    this.editDatasetParameters[index] = {
+      ...this.editDatasetParameters[index],
+      name: inputNameElement.value,
+    };
+  }
+
+  public _editParameterValueChanged(inputValueElement: HTMLInputElement, index: number): void {
+    this.editDatasetParameters[index] = {
+      ...this.editDatasetParameters[index],
+      value: inputValueElement.value,
+    };
   }
 
   private convertToMap(array: DataSetParameter[]): object {

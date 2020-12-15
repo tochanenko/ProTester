@@ -41,17 +41,6 @@ export class DatasetListComponent extends Unsubscribe implements OnInit {
     this.searchDataset();
   }
 
-  private searchDataset(): void {
-    console.log(this.datasetFilter);
-    this.subscription = this.datasetService.getAll(this.datasetFilter).subscribe(
-      data => {
-        this.dataSource = data.list;
-        this.datasetsCount = data.totalItems;
-      },
-      error => console.log('error in initDataSource')
-    );
-  }
-
   public onPaginateChange(event: PageEvent): void {
     this.datasetFilter.pageNumber = event.pageIndex;
     this.datasetFilter.pageSize = event.pageSize;
@@ -89,7 +78,7 @@ export class DatasetListComponent extends Unsubscribe implements OnInit {
 
   public openEditDialog(id: number): void {
     const editDialogRef = this.dialog.open(DatasetEditComponent, {
-      height: '75%',
+      height: '65%',
       width: '50%',
       data: {id: id}
     });
@@ -109,5 +98,16 @@ export class DatasetListComponent extends Unsubscribe implements OnInit {
     deleteDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.searchDataset();
     })
+  }
+
+  private searchDataset(): void {
+    this.subscription = this.datasetService.getAll(this.datasetFilter).subscribe(
+      data => {
+        console.log(data.list);
+        this.dataSource = data.list;
+        this.datasetsCount = data.totalItems;
+      },
+      error => console.log('error in initDataSource')
+    );
   }
 }

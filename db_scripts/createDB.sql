@@ -40,7 +40,7 @@ CREATE TABLE users (
     user_id			SERIAL PRIMARY KEY,
     role_id			INTEGER			   NOT NULL,
     user_username	VARCHAR(32) UNIQUE NOT NULL,
-    user_password	VARCHAR(64) 		   NOT NULL,
+    user_password	VARCHAR(60) 		   NOT NULL,
     user_email 		VARCHAR(32) UNIQUE NOT NULL,
     user_active		BOOLEAN			   NOT NULL,
     user_first_name	VARCHAR(32) 	   NOT NULL,

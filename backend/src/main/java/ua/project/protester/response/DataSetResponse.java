@@ -18,7 +18,7 @@ public class DataSetResponse {
 
     private String description;
 
-    private Map<String, String> dataset;
+    private Map<String, String> parameters;
 
     private List<Long> testScenarios;
 }

@@ -8,8 +8,6 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class DataSet {
 
     private Long id;
@@ -18,7 +16,7 @@ public class DataSet {
 
     private String description;
 
-    private Map<String, String> dataset;
+    private Map<String, String> parameters;
 
     private List<Long> testScenarios;
 

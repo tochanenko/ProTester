@@ -117,7 +117,7 @@ public class StartService {
             for (Step s : stepsParams
             ) {
                 for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (dataSet.getDataset().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
+                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
                         entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
                     }
                 }

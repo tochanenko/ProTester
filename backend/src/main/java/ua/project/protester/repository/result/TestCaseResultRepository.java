@@ -21,10 +21,13 @@ import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.repository.StatusRepository;
 import ua.project.protester.repository.UserRepository;
 import ua.project.protester.repository.testCase.TestCaseRepository;
+import ua.project.protester.request.TestCaseResultFilter;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.time.OffsetDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource("classpath:queries/test-case-result.properties")
 @Repository
@@ -78,7 +81,29 @@ public class TestCaseResultRepository {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public List<TestCaseResultDto> findAll() {
+    public List<TestCaseResultDto> findAll(TestCaseResultFilter filter, boolean loadSteps) {
+        String sql = setupFindAllSqlQuery(filter);
+        log.info(sql);
+        // TODO: implement
+        return namedParameterJdbcTemplate.query(
+                sql,
+                new MapSqlParameterSource()
+                        .addValue("pageSize", filter.getPageSize())
+                        .addValue("pageNumber", filter.getPageNumber())
+                        .addValue("userId", filter.getUserId())
+                        .addValue("testCaseId", filter.getTestCaseId())
+                        .addValue("statusId", filter.getStatus() != null
+                                ? statusRepository.getIdByStringRepresentation(filter.getStatus())
+                                : null)
+                        .addValue("dateTimeFrom", filter.getDateTimeFrom())
+                        .addValue("dateTimeTo", filter.getDateTimeTo()),
+                new BeanPropertyRowMapper<>(TestCaseResult.class))
+                .stream()
+                .map(this::getDtoFromModel)
+                .collect(Collectors.toList());
+    }
+
+    public Long countAll(TestCaseResultFilter filter) {
         // TODO: implement
         return null;
     }
@@ -102,5 +127,37 @@ public class TestCaseResultRepository {
                 result.getStartDate(),
                 result.getEndDate(),
                 actionResultRepository.findByTestCaseResultId(result.getId()));
+    }
+
+    private String setupFindAllSqlQuery(TestCaseResultFilter filter) {
+        List<String> sqlFilterParts = getFilterParts(
+                new Object[]{
+                        filter.getUserId(),
+                        filter.getTestCaseId(),
+                        filter.getStatus(),
+                        filter.getDateTimeFrom(),
+                        filter.getDateTimeTo()},
+                new String[]{
+                        "sqlUserFilter",
+                        "sqlTestCaseFilter",
+                        "sqlStatusFilter",
+                        "sqlDateFromFilter",
+                        "sqlDateToFilter"});
+
+        String filterCondition = String.join("AND", sqlFilterParts);
+
+        return String.format(
+                PropertyExtractor.extract(env, "findAllTestCaseResults"),
+                filterCondition.isEmpty() ? "" : "WHERE " + filterCondition);
+    }
+
+    private List<String> getFilterParts(Object[] values, String[] propertyNames) {
+        List<String> sqlFilterParts = new LinkedList<>();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] != null) {
+                sqlFilterParts.add(PropertyExtractor.extract(env, propertyNames[i]));
+            }
+        }
+        return sqlFilterParts;
     }
 }

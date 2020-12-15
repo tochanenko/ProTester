@@ -20,10 +20,14 @@ public class StatusRepository {
     private final Environment env;
 
     public Integer getIdByLabel(ResultStatus label) {
+        return getIdByStringRepresentation(label.toString());
+    }
+
+    public Integer getIdByStringRepresentation(String label) {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "getId"),
                 new MapSqlParameterSource()
-                        .addValue("label", label.toString()),
+                        .addValue("label", label),
                 Integer.class);
     }
 

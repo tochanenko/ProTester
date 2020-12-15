@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,11 +25,16 @@ public class StatusRepository {
     }
 
     public Integer getIdByStringRepresentation(String label) {
-        return namedParameterJdbcTemplate.queryForObject(
-                PropertyExtractor.extract(env, "getId"),
-                new MapSqlParameterSource()
-                        .addValue("label", label),
-                Integer.class);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "getId"),
+                    new MapSqlParameterSource()
+                            .addValue("label", label),
+                    Integer.class);
+        } catch (DataAccessException e) {
+            log.warn(e.getMessage());
+            return null;
+        }
     }
 
     public ResultStatus getLabelById(Integer id) {

@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.project.protester.exception.result.TestCaseResultNotFoundException;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
-import ua.project.protester.service.AnalyzeTestCaseResultService;
+import ua.project.protester.service.TestCaseResultService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/analyze")
-public class AnalyzeTestCaseResultController {
+@RequestMapping("api/test-case-results")
+public class TestCaseResultController {
 
-    private final AnalyzeTestCaseResultService analyzeTestCaseResultService;
+    private final TestCaseResultService testCaseResultService;
 
     @GetMapping("/{id}")
     public TestCaseResultDto getResultById(@PathVariable int id) throws TestCaseResultNotFoundException {
-        return analyzeTestCaseResultService.getTestCaseResultById(id);
+        return testCaseResultService.getTestCaseResultById(id);
     }
 }

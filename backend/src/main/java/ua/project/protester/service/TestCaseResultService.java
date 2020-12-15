@@ -9,7 +9,7 @@ import ua.project.protester.repository.result.TestCaseResultRepository;
 
 @Service
 @RequiredArgsConstructor
-public class AnalyzeTestCaseResultService {
+public class TestCaseResultService {
 
     private final TestCaseResultRepository testCaseResultRepository;
 

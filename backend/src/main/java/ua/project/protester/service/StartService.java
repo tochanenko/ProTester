@@ -1,49 +1,43 @@
 package ua.project.protester.service;
 
-import org.modelmapper.ModelMapper;
-import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
-import ua.project.protester.exception.executable.action.ActionExecutionException;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.model.executable.Step;
-import ua.project.protester.model.executable.result.ActionResult;
-import ua.project.protester.model.executable.result.ResultStatus;
-import ua.project.protester.model.executable.result.TestCaseResult;
-import ua.project.protester.repository.DataSetRepository;
-import ua.project.protester.repository.result.ActionResultRepository;
-import ua.project.protester.repository.result.TestCaseResultRepository;
 import ua.project.protester.request.TestCaseRequest;
 
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
+@Slf4j
 public class StartService {
 
-    private WebDriver webDriver;
-    private DataSetRepository dataSetRepository;
-    private TestScenarioService testScenarioService;
-    private ModelMapper modelMapper;
-    private ActionResultRepository actionResultRepository;
-    private TestCaseResultRepository resultRepository;
+    // TODO: uncomment
+    // private WebDriver webDriver;
+    // private DataSetRepository dataSetRepository;
+    // private TestScenarioService testScenarioService;
+    // private ModelMapper modelMapper;
+    // private ActionResultRepository actionResultRepository;
+    // private TestCaseResultRepository resultRepository;
 
 
+    // TODO uncomment
+    /*
     @Autowired
     public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository) {
-        this.webDriver = webDriver;
-        this.dataSetRepository = dataSetRepository;
-        this.testScenarioService = testScenarioService;
-        this.modelMapper = modelMapper;
-        this.actionResultRepository = actionResultRepository;
-        this.resultRepository = resultRepository;
+        // TODO: delete all logs, uncomment lines
+        // this.webDriver = webDriver;
+        log.warn(webDriver.toString());
+        // this.dataSetRepository = dataSetRepository;
+        log.warn(dataSetRepository.toString());
+        // this.testScenarioService = testScenarioService;
+        log.warn(testScenarioService.toString());
+        // this.modelMapper = modelMapper;
+        log.warn(modelMapper.toString());
+        // this.actionResultRepository = actionResultRepository;
+        log.warn(actionResultRepository.toString());
+        // this.resultRepository = resultRepository;
+        log.warn(resultRepository.toString());
     }
+    */
 
     public void execute(List<TestCaseRequest> testCaseRequests) {
         List<Integer> testCaseResults = getTestCaseExecutionResult(testCaseRequests);
@@ -53,7 +47,8 @@ public class StartService {
     }
 
     private void runTestCase(TestCaseRequest testCaseRequest, int testCaseResultId) {
-        TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
+        // TODO: implement
+        /* TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
         List<DataSet> dataSets = new ArrayList<>();
 
         testCaseRequest.getDataSetId()
@@ -72,27 +67,29 @@ public class StartService {
                 .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
                 .filter(Objects::nonNull)
                 .forEach(outerComponent -> {
-                    resultRepository.updateTestCaseResultStartDate(testCaseResultId, OffsetDateTime.now());
-                    try {
-                        Consumer<ActionResult> resultCallback = (action) -> {
-                            action.setTestCaseResultId(testCaseResultId);
-                            actionResultRepository.save(action);
-                            testCaseResult.getInnerResults().add(action);
-                        };
-                        outerComponent.get().execute(initMap, webDriver, resultCallback);
-                        resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.PASSED);
-                        resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                    } catch (ActionExecutionException e) {
-                        resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.FAILED);
-                        resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                    }
-                }
-                    );
-
+                            resultRepository.updateTestCaseResultStartDate(testCaseResultId, OffsetDateTime.now());
+                            try {
+                                Consumer<ActionResult> resultCallback = (action) -> {
+                                    action.setTestCaseResultId(testCaseResultId);
+                                    actionResultRepository.save(action);
+                                    testCaseResult.getInnerResults().add(action);
+                                };
+                                outerComponent.get().execute(initMap, webDriver, resultCallback);
+                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.PASSED);
+                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
+                            } catch (ActionExecutionException e) {
+                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.FAILED);
+                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
+                            }
+                        }
+                );*/
+        // TODO: delete log
+        log.warn(testCaseRequest.toString() + " " + testCaseResultId);
     }
 
     private List<Integer> getTestCaseExecutionResult(List<TestCaseRequest> testCaseRequests) {
-      return  testCaseRequests.stream()
+        // TODO: implement
+        /*return testCaseRequests.stream()
                 .map(testCaseRequest -> {
                     TestCaseResult testCaseResult = new TestCaseResult();
                     List<ActionResult> actionResult = new ArrayList<>();
@@ -104,26 +101,32 @@ public class StartService {
                     testCaseResult.setInnerResults(actionResult);
                     return resultRepository.saveTestCaseResult(testCaseResult).getId();
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        // TODO: delete log
+        log.warn(testCaseRequests.toString());
+        return null;
     }
 
+    // TODO: uncomment
+    /*
     private Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
-            try {
-                OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
-                DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).get();
-                List<Step> stepsParams = testScenario.getSteps();
-                for (Step s : stepsParams
-                ) {
-                    for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                        if (dataSet.getDataset().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
-                            entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
-                        }
+        try {
+            OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
+            DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).get();
+            List<Step> stepsParams = testScenario.getSteps();
+            for (Step s : stepsParams
+            ) {
+                for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
+                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
+                        entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
                     }
                 }
-                return Optional.of(testScenario);
-            } catch (TestScenarioNotFoundException e) {
-                e.printStackTrace();
             }
-            return Optional.empty();
+            return Optional.of(testScenario);
+        } catch (TestScenarioNotFoundException e) {
+            e.printStackTrace();
         }
+        return Optional.empty();
     }
+    */
+}

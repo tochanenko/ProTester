@@ -1,6 +1,7 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import ua.project.protester.service.DataSetService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/dataset")
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class DataSetController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDataSet(@PathVariable Long id) {
         if (dataSetService.findDataSetById(id) == null) {
-            return new ResponseEntity<>("DataSet was`nt found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("DataSet wasn't found", HttpStatus.NOT_FOUND);
         }
         dataSetService.deleteDataSetById(id);
         return new ResponseEntity<>("DataSet was deleted", HttpStatus.OK);

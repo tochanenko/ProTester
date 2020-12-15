@@ -10,7 +10,7 @@ import ua.project.protester.service.AuthorizationService;
 @RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localshot:4200")
+@CrossOrigin("http://localhost:4200")
 public class LoginController {
 
 
@@ -19,6 +19,7 @@ public class LoginController {
     @PostMapping("/signin")
     public ResponseEntity<UserLoginResponse> login(@RequestBody UserDto userDto) {
 
+        System.out.println(userDto);
         return ResponseEntity.ok(authorizationService.authenticate(userDto));
     }
 }

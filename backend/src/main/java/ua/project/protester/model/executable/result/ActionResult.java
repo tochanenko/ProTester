@@ -1,25 +1,22 @@
 package ua.project.protester.model.executable.result;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import ua.project.protester.model.executable.ExecutableComponentType;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 
 @Getter
 @Setter
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActionResult {
     private Integer id;
     private Integer testCaseResultId;
-    private String actionName;
+    private Integer actionId;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
-    private Map<String, String> extra;
-    private String message;
-    private ExecutableComponentType type;
-    private ResultStatus status;
     private Integer statusId;
+    private String message;
 }

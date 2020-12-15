@@ -17,15 +17,17 @@ DROP TABLE IF EXISTS data_set_parameters CASCADE;
 DROP TABLE IF EXISTS statuses CASCADE;
 DROP TABLE IF EXISTS projects CASCADE;
 DROP TABLE IF EXISTS test_cases CASCADE;
+DROP TABLE IF EXISTS test_case_data_sets CASCADE;
 DROP TABLE IF EXISTS test_cases_watchers CASCADE;
 DROP TABLE IF EXISTS result_tests CASCADE;
 DROP TABLE IF EXISTS test_case_result CASCADE;
 DROP TABLE IF EXISTS action_result CASCADE;
 DROP TABLE IF EXISTS action_result_extra CASCADE;
 
-CREATE TABLE roles (
-    role_id		SERIAL PRIMARY KEY,
-    role_name	VARCHAR(16) UNIQUE NOT NULL
+CREATE TABLE roles
+(
+    role_id   SERIAL PRIMARY KEY,
+    role_name VARCHAR(16) UNIQUE NOT NULL
 );
 
 CREATE TABLE users (
@@ -94,7 +96,7 @@ CREATE TABLE steps (
     step_order             INTEGER NOT NULL,
     CONSTRAINT step_outer_test_scenario_id_fk FOREIGN KEY (outer_test_scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE,
     CONSTRAINT step_outer_compound_id_fk FOREIGN KEY (outer_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE,
-    CONSTRAINT step_inner_compound_id_fk FOREIGN KEY (inner_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE,
+    CONSTRAINT step_inner_compound_id_fk FOREIGN KEY (inner_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT step_inner_action_id_fk FOREIGN KEY (inner_action_id) REFERENCES actions (action_id) ON DELETE CASCADE
 );
 
@@ -134,33 +136,44 @@ CREATE TABLE statuses (
     status_name	VARCHAR(32)	UNIQUE NOT NULL
 );
 
-CREATE TABLE test_cases (
-    test_case_id 	 SERIAL PRIMARY KEY,
-    project_id 		 INTEGER NOT NULL,
-    author_id 		 INTEGER NOT NULL,
-    scenario_id 	 INTEGER NOT NULL,
-    data_set_id 	 INTEGER NOT NULL,
-    CONSTRAINT tc_project_fk FOREIGN KEY (project_id)       REFERENCES projects (project_id)         ON DELETE CASCADE,
-    CONSTRAINT tc_author_fk  FOREIGN KEY (author_id)        REFERENCES users (user_id)               ON DELETE CASCADE,
-    CONSTRAINT tc_ts_fk 	 FOREIGN KEY (scenario_id) 		REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE,
-    CONSTRAINT tc_ds_fk 	 FOREIGN KEY (data_set_id)      REFERENCES data_sets (data_set_id)       ON DELETE CASCADE
+CREATE TABLE test_cases
+(
+    test_case_id          SERIAL PRIMARY KEY,
+    test_case_name        VARCHAR(64)  NOT NULL,
+    test_case_description VARCHAR(256) NOT NULL,
+    project_id            INTEGER      NOT NULL,
+    author_id             INTEGER      NOT NULL,
+    scenario_id           INTEGER      NOT NULL,
+    CONSTRAINT tc_project_fk FOREIGN KEY (project_id) REFERENCES projects (project_id) ON DELETE CASCADE,
+    CONSTRAINT tc_author_fk FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT tc_ts_fk FOREIGN KEY (scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE
 );
 
-CREATE TABLE test_cases_watchers(
-    test_case_id	INTEGER NOT NULL,
-    user_id			INTEGER NOT NULL,
-    CONSTRAINT tcw_testcase_fk	FOREIGN KEY (test_case_id)	REFERENCES test_cases (test_case_id),
-    CONSTRAINT tcw_watcher_fk   FOREIGN KEY (user_id) 		REFERENCES users (user_id)
+CREATE TABLE test_case_data_sets
+(
+    test_case_id INTEGER NOT NULL,
+    data_set_id  INTEGER NOT NULL,
+    CONSTRAINT tcw_testcase_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id),
+    CONSTRAINT tcw_dataset_fk FOREIGN KEY (data_set_id) REFERENCES data_sets (data_set_id)
 );
 
-CREATE TABLE test_case_result (
+CREATE TABLE test_cases_watchers
+(
+    test_case_id INTEGER NOT NULL,
+    user_id      INTEGER NOT NULL,
+    CONSTRAINT tcw_testcase_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id),
+    CONSTRAINT tcw_watcher_fk FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE test_case_result
+(
     test_case_result_id     SERIAL PRIMARY KEY,
     user_id                 INTEGER,
     test_case_id            INTEGER,
     status_id               INTEGER,
     start_date              TIMESTAMPTZ NOT NULL,
     end_date                TIMESTAMPTZ,
-    CONSTRAINT test_case_id_fk  FOREIGN KEY (test_case_id)  REFERENCES test_cases (test_case_id),
+    CONSTRAINT test_case_id_fk  FOREIGN KEY (test_case_id)  REFERENCES test_cases (test_case_id) ON DELETE SET NULL,
     CONSTRAINT user_id_fk 	    FOREIGN KEY (user_id)       REFERENCES users (user_id),
     CONSTRAINT status_id_fk     FOREIGN KEY (status_id) 	REFERENCES statuses (status_id)
 );

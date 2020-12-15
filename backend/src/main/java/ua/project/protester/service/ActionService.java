@@ -37,15 +37,13 @@ public class ActionService {
     }
 
     @Transactional
-    public AbstractAction findActionByActionId(Integer id) {
-        return actionRepository.findActionById(id)
-                .orElseThrow(ActionNotFoundException::new);
+    public AbstractAction findActionByActionId(Integer id) throws ActionNotFoundException {
+        return actionRepository.findActionById(id);
     }
 
     @Transactional
-    public AbstractAction findActionByClassName(String className) {
-        return actionRepository.findActionByClassName(className)
-                .orElseThrow(ActionNotFoundException::new);
+    public AbstractAction findActionByClassName(String className) throws ActionNotFoundException {
+        return actionRepository.findActionByClassName(className);
     }
 
     @Transactional

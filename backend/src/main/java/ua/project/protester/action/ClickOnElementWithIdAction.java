@@ -19,6 +19,7 @@ public class ClickOnElementWithIdAction extends AbstractAction {
     @Override
     protected void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) {
         try {
+
             driver.findElement(By.id(params.get("id"))).click();
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());

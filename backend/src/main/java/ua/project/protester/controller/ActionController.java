@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.request.ActionRequestModel;
@@ -42,7 +43,7 @@ public class ActionController {
     }
 
     @GetMapping("/{id}")
-    public AbstractAction findActionById(@PathVariable Integer id) {
+    public AbstractAction findActionById(@PathVariable Integer id) throws ActionNotFoundException {
         return actionService.findActionByActionId(id);
     }
 

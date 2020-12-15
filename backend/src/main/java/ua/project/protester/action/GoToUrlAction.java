@@ -19,7 +19,8 @@ public class GoToUrlAction extends AbstractAction {
     protected void logic(Map<String, String> params, Map<String, String> context, WebDriver driver, ActionResult result) {
 
         try {
-            driver.get(params.get("url"));
+            System.out.println("RESULT  " + params.get("url"));
+            driver.navigate().to(params.get("url"));
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());
         }

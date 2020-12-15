@@ -7,10 +7,11 @@
 }
 
 .result-list-card {
-  width: 70%;
+  width: 69%;
   margin-top: 20px;
   min-height: 300px;
   margin-right: 1%;
+  margin-left: 1%;
   overflow-y: auto;
 }
 .test-case-analyze {

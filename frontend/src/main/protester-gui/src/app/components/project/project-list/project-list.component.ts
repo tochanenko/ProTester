@@ -22,7 +22,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   projectFilter: ProjectFilter = new ProjectFilter();
   projectsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
-  displayedColumns: string[] = ['NAME', 'LINK', 'CREATOR', 'STATUS', 'CONF'];
+  displayedColumns: string[] = ['id', 'nickName', 'role'];
   private subscription: Subscription;
 
   constructor(private projectService: ProjectService,

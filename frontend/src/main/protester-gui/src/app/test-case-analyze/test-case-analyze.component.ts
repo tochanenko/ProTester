@@ -15,111 +15,131 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   resultList: TestCaseResult[] = [
     {
       id: 1,
-      userId: 2,
-      name: 'Test case 1',
-      testCaseId: 3,
+      user: {
+        username: 'username1',
+        password: 'password',
+        email: 'email',
+        firstName: 'firstname',
+        lastName: 'lastname',
+        role: 'role',
+      },
+      testCase: {
+        name: 'testcase1',
+        scenarioId: 1
+      },
       status: Status.PASSED,
       startDate: '02/03/101',
       endDate: '04/02/303',
       innerResults: [
         {
           id: 4,
-          actionName: 'action1',
+          action: {
+            id: 3,
+            name: 'action1',
+            type: ExecutableComponentType.REST
+          },
           startDate: '06/04/2020',
           endDate: '06/05/2020',
-          extra: {url: 'url1', sssd: 'sssssssss', ryu: 'sks', ska: 'skskss'},
-          message: 'message1',
-          type: ExecutableComponentType.REST,
           status: Status.PASSED,
+          inputParameters: {urljjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjjj: 'urjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjl1', sssd: 'sssssssss'},
+          request: 'request',
+          response: 'response',
+          statusCode: 202
         },
         {
-          id: 4,
-          actionName: 'action2',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.UI,
-          status: Status.IN_PROGRESS,
-        },
-        {
-          id: 4,
-          actionName: 'action3',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.SQL,
-          status: Status.FAILED,
-        },
-        {
-          id: 4,
-          actionName: 'action4',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-      ]
-    },
+          id: 7,
+          action: {
+            id: 6,
+            name: 'action5',
+            type: ExecutableComponentType.SQL
+          },
+          startDate: '06/04/2220',
+          endDate: '06/05/2320',
+          status: Status.PASSED,
+          inputParameters: {url: 'url1', sssd: 'sssssssss'},
+          connectionUrl: 'url',
+          username: 'username',
+          query: 'select * from users',
+          columns: [
+            {
+              id: 1,
+              name: 'id',
+              rows: ['560', '561']
+            },
+            {
+              id: 2,
+              name: 'nickNamnnnnnnnnn',
+              rows: ['Vasya', 'Illya']
+            },
+            //
+            {
+              id: 2,
+              name: 'nickNamennnnnnn',
+              rows: ['Vasya', 'Illya']
+            },
+            //
 
-    {
-      id: 4,
-      userId: 2,
-      name: 'Test case 2',
-      testCaseId: 3,
-      status: Status.FAILED,
-      startDate: '03/04/2020',
-      endDate: '03/05/2020',
-      innerResults: [
-        {
-          id: 4,
-          actionName: 'action5',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-        {
-          id: 6,
-          actionName: 'action6',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.TECHNICAL,
-          status: Status.IN_PROGRESS,
-        },
-        {
-          id: 4,
-          actionName: 'action7',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-        {
-          id: 4,
-          actionName: 'action8',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.NOT_STARTED,
-        },
+            {
+              id: 2,
+              name: 'ddddddd',
+              rows: ['Vasya', 'Illya']
+            },
+
+            // {
+            //   id: 2,
+            //   name: 'ddddddd',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            //
+            // {
+            //   id: 2,
+            //   name: 'dddddd333d',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            // {
+            //   id: 2,
+            //   name: 'ddddddd',
+            //   rows: ['Vasya', 'Illya']
+            // },
+
+            // {
+            //   id: 2,
+            //   name: 'dddddd333d',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            //
+            // {
+            //   id: 2,
+            //   name: 'ddddddd',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            //
+            // {
+            //   id: 2,
+            //   name: 'dddddd333d',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            //
+            // {
+            //   id: 2,
+            //   name: 'ddddddd',
+            //   rows: ['Vasya', 'Illya']
+            // },
+            //
+            // {
+            //   id: 2,
+            //   name: 'dddddd333d',
+            //   rows: ['Vasya', 'Illya']
+            // },
+
+          ]
+        }
       ]
     },
   ];
 
   // resultList: TestCaseResult[] = [];
-  idList: number[] = [1, 4];
+  idList: number[] = [1];
   isLoading = true;
   isError = false;
 
@@ -142,12 +162,7 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.isLoading = false;
-
-            this.analyzeService.getTestCaseById(data.testCaseId)
-              .subscribe(d => {
-                data.name = d.name;
-                this.resultList.push(data);
-              }, error => console.log(error));
+            this.resultList.push(data);
           },
           error => console.log('error')
         );
@@ -168,15 +183,21 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   onMessageReceive(hello, id: number): void {
 
     const actionToAdd = {
-      id: 4,
-      actionName: JSON.parse(hello.body).message,
-      startDate: '06/04/2020',
-      endDate: '06/05/2020',
-      extra: {url: 'url1', sssd: 'sss', ryu: 'sks', ska: 'skskss'},
-      message: 'message1',
-      type: ExecutableComponentType.REST,
-      status: Status.PASSED,
-    };
+        id: 4,
+        action: {
+          id: 3,
+          name: JSON.parse(hello.body).message,
+          type: ExecutableComponentType.REST
+        },
+        startDate: '06/04/2020',
+        endDate: '06/05/2020',
+        status: Status.PASSED,
+        inputParameters: {url: 'url1', sssd: 'sssssssss'},
+        request: 'request',
+        response: 'response',
+        statusCode: 202
+      };
+    console.log(id + '--------');
     const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === id);
 

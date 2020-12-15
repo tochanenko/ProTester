@@ -14,10 +14,10 @@ export class TestCaseResult {
 export class AbstractAction {
   id: number;
   name: string;
-  description: string;
+  description?: string;
   type: ExecutableComponentType;
-  parameterNames: string[];
-  className: string;
+  parameterNames?: string[];
+  className?: string;
 }
 
 export class ActionResult {

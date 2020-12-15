@@ -18,8 +18,9 @@
 }
 
 .expansion-body {
-  background: #F2F2F2;
+  background: #eae8e8;
   box-shadow: none;
+  margin-right: 10px;
 }
 
 .test-case-title {
@@ -98,13 +99,58 @@ mat-expansion-panel-header {
 }
 
 table, th , td {
-  padding-right: 80px;
   padding-bottom: 5px;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.5px;
-
   color: rgba(0, 0, 0, 0.87);
+  margin-right: 10px;
+}
+
+.sql-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  display: block;
+  border: 1px solid #ddd;
+  width: 100%;
+  text-align: center;
+  overflow: auto;
+}
+
+.table-view {
+  display: flex;
+  width: 100%;
+}
+.sql-table-inner {
+  border-collapse: collapse;
+}
+.sql-tr-td {
+  padding: 8px;
+  text-align: left;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin-right: 20px;
+  width: 10%;
+}
+
+.sql-tr-td-inner {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+.table-info {
+  width: 100%;
+}
+
+.column-name {
+  width: 20%;
+  min-width: 200px;
+}
+
+.second-column {
+  width: 80%;
+  padding-right: 10px;
 }

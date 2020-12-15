@@ -3,7 +3,7 @@
                        (closed)="panelOpenState = false" [expanded]="true" class="expansion-body">
     <mat-expansion-panel-header>
       <mat-panel-title class="test-case-title">
-        {{testCaseResult.name}}
+        {{testCaseResult.testCase.name}}
       </mat-panel-title>
     </mat-expansion-panel-header>
 
@@ -12,19 +12,15 @@
 
         <table class="table-info">
           <tr>
-            <td> User id </td>
-            <td>{{testCaseResult.userId}}</td>
+            <td> User name</td>
+            <td>{{testCaseResult.user.username}}</td>
           </tr>
           <tr>
-            <td> TestCase Id </td>
-            <td>{{testCaseResult.testCaseId}}</td>
-          </tr>
-          <tr>
-            <td> Start Date </td>
+            <td> Start Date</td>
             <td>{{testCaseResult.startDate}}</td>
           </tr>
           <tr>
-            <td> End Date </td>
+            <td> End Date</td>
             <td>{{testCaseResult.endDate}}</td>
           </tr>
         </table>
@@ -44,15 +40,15 @@
               <span *ngIf="item.status === 'NOT STARTED'" class="material-icons-round not_started">schedule</span>
               <span *ngIf="item.status === 'IN PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
 
-              {{item.actionName}}
+              {{item.action.name}}
 
             </div>
 
             <mat-chip-list aria-label="Action Type">
-              <mat-chip color="warn" selected *ngIf="item.type === 'REST'">REST</mat-chip>
-              <mat-chip color="primary" selected *ngIf="item.type === 'SQL'">SQL</mat-chip>
-              <mat-chip color="warn" selected *ngIf="item.type === 'TECHNICAL'">TECHNICAL</mat-chip>
-              <mat-chip color="primary" selected *ngIf="item.type === 'UI'">UI</mat-chip>
+              <mat-chip color="warn" selected *ngIf="item.action.type === 'REST'">REST</mat-chip>
+              <mat-chip color="primary" selected *ngIf="item.action.type === 'SQL'">SQL</mat-chip>
+              <mat-chip color="warn" selected *ngIf="item.action.type === 'TECHNICAL'">TECHNICAL</mat-chip>
+              <mat-chip color="primary" selected *ngIf="item.action.type === 'UI'">UI</mat-chip>
             </mat-chip-list>
 
           </div>
@@ -62,22 +58,46 @@
 
           <table class="table-info">
             <tr>
-              <td> Start date </td>
-              <td>{{item.startDate}}</td>
+              <td class="column-name">Start date</td>
+              <td class="second-column">{{item.startDate}}</td>
             </tr>
             <tr>
-              <td> End date </td>
-              <td>{{item.endDate}}</td>
+              <td class="column-name">End date</td>
+              <td class="second-column">{{item.endDate}}</td>
             </tr>
-            <tr *ngFor="let i of item.extra | keyvalue">
-              <td>{{ i.key }}</td>
-              <td>{{ i.value }}</td>
+            <tr *ngFor="let i of item.inputParameters | keyvalue">
+              <td class="column-name">{{ i.key }}</td>
+              <td class="second-column">{{ i.value }}</td>
             </tr>
-            <tr *ngIf="item.message">
-              <td> Message </td>
-              <td>{{item.message}}</td>
+            <tr *ngIf="item.action.type === 'REST'">
+              <td class="column-name"> Request</td>
+              <td class="second-column">{{item.request}}</td>
+            </tr>
+            <tr *ngIf="item.action.type === 'REST'">
+              <td class="column-name"> Response</td>
+              <td class="second-column">{{item.response}}</td>
+            </tr>
+            <tr *ngIf="item.action.type === 'REST'">
+              <td class="column-name"> Code</td>
+              <td class="second-column">{{item.statusCode}}</td>
             </tr>
           </table>
+
+          <div class="table-view" *ngIf="item.action.type === 'SQL'">
+            <p class="column-name"> Output </p>
+            <table class="sql-table">
+              <tr>
+                <th class="sql-tr-td" *ngFor="let header of item.columns">{{ header.name }}</th>
+              </tr>
+              <tr>
+                <td *ngFor="let i of item.columns">
+                  <table>
+                    <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
 
         </mat-card-content>
 
@@ -86,6 +106,6 @@
 
   </mat-expansion-panel>
 
-  <br>
-
 </mat-accordion>
+
+<br>

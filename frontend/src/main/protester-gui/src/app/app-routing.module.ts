@@ -16,6 +16,7 @@ import {ActionsListComponent} from "./actions/actions-list/actions-list.componen
 import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
 import {ViewUserComponent} from "./components/view-user/view-user.component";
 import {EditUserComponent} from "./components/edit-user/edit-user.component";
+import {RunComponent} from './test-case/test-case-run/run/run.component';
 
 const routes: Routes = [
   {
@@ -100,6 +101,15 @@ const routes: Routes = [
     data: {
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
+  },
+
+  {
+    path: 'test-case-run/:id',
+    component: RunComponent,
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
   },
   {
     path: 'user/:id',

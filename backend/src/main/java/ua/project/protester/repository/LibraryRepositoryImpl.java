@@ -81,6 +81,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("count", paginationLibrary.getPageSize());
         namedParams.addValue("offset", paginationLibrary.getOffset());
+        namedParams.addValue("name", paginationLibrary.getName() + "%");
 
         List<Library> allLibraries = namedParameterJdbcTemplate.query(
                 sql,

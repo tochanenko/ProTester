@@ -1,0 +1,102 @@
+  [
+    {
+      "id": 1,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 2,
+      "name": "Library2",
+      "description": "Description new"
+    },
+    {
+      "id": 3,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 11,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 12,
+      "name": "Library22222",
+      "description": "Description new"
+    },
+    {
+      "id": 13,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 14,
+      "name": "Library1232134321",
+      "description": "Description blablabla"
+    },
+    {
+      "id": 22,
+      "name": "Library2",
+      "description": "Description new"
+    },
+    {
+      "id": 23,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 31,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 32,
+      "name": "Library2",
+      "description": "Description new"
+    },
+    {
+      "id": 33,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 41,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 42,
+      "name": "Library2",
+      "description": "Description new"
+    },
+    {
+      "id": 43,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 51,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 52,
+      "name": "Library2",
+      "description": "Description new"
+    },
+    {
+      "id": 53,
+      "name": "Library3",
+      "description": "New Library to test"
+    },
+    {
+      "id": 61,
+      "name": "Library1",
+      "description": "Description"
+    },
+    {
+      "id": 62,
+      "name": "Library2",
+      "description": "Description new"
+    }
+  ]

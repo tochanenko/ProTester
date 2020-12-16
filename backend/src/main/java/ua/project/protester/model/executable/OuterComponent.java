@@ -4,11 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.executable.result.ActionResultDto;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Setter
 @Getter
@@ -57,16 +60,24 @@ public class OuterComponent extends ExecutableComponent {
         return parameterNames;
     }
 
-    public void print() {
-        System.out.println("Compound " + id + " " + name);
-        System.out.println("| " + description);
-        System.out.println("| " + Arrays.toString(getParameterNames()));
+    @Override
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        for (Step step : steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    context,
+                    driver,
+                    callback);
+        }
     }
 
-    @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
-        steps.forEach(step -> step.getComponent().execute(
-                fitInputParameters(params, step.getParameters()),
-                driver));
+    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        for (Step step : steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    new HashMap<>(),
+                    driver,
+                    callback);
+        }
     }
 }

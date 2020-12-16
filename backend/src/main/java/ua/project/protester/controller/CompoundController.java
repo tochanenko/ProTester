@@ -2,6 +2,7 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
@@ -18,8 +19,13 @@ public class CompoundController {
     private final CompoundService compoundService;
 
     @PostMapping
-    public OuterComponent createCompound(@RequestBody OuterComponentRepresentation request) {
+    public OuterComponent createCompound(@RequestBody OuterComponentRepresentation request) throws OuterComponentStepSaveException {
         return compoundService.saveCompound(request);
+    }
+
+    @PutMapping("/{id}")
+    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws OuterComponentStepSaveException {
+        return compoundService.updateCompound(id, request);
     }
 
     @GetMapping

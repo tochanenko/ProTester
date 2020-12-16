@@ -40,25 +40,21 @@ public class DataSetRepository {
         log.info("saving {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
         Integer id = (Integer) keyHolder.getKey();
         dataSet.setId(id.longValue());
-        dataSet.getDataset().forEach((key, value) -> saveParams(id.longValue(), key, value));
+        dataSet.getParameters().forEach((key, value) -> saveParams(id.longValue(), key, value));
         return dataSet;
     }
 
     public DataSet updateDataSet(DataSet dataSet) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
         namedParameterJdbcTemplate.update(
                 PropertyExtractor.extract(env, "updateDataSet"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", dataSet.getId())
                         .addValue("data_set_name", dataSet.getName())
-                        .addValue("data_set_description", dataSet.getDescription()),
-                keyHolder,
-                new String[]{"data_set_id"});
+                        .addValue("data_set_description", dataSet.getDescription()));
         log.info("updating {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
 
         deleteParamsById(dataSet.getId());
-        dataSet.getDataset().forEach((key, value) -> saveParams(dataSet.getId(), key, value));
+        dataSet.getParameters().forEach((key, value) -> saveParams(dataSet.getId(), key, value));
 
         return dataSet;
     }
@@ -76,8 +72,8 @@ public class DataSetRepository {
                 PropertyExtractor.extract(env, "findParamsById"),
                 new MapSqlParameterSource().addValue("data_set_id", id),
                 (rs, rowNum) -> parameters.put(
-                        rs.getString("key"),
-                        rs.getString("value")));
+                        rs.getString("data_set_key"),
+                        rs.getString("data_set_value")));
         return parameters;
     }
 
@@ -92,8 +88,8 @@ public class DataSetRepository {
                 PropertyExtractor.extract(env, "saveDataSetParameter"),
                 new MapSqlParameterSource()
                         .addValue("data_set_id", id)
-                        .addValue("key", key)
-                        .addValue("value", value));
+                        .addValue("data_set_key", key)
+                        .addValue("data_set_value", value));
         }
 
     public Optional<DataSet> findDataSetById(Long id) {
@@ -109,7 +105,7 @@ public class DataSetRepository {
             if (dataSet == null) {
                 return Optional.empty();
             }
-            dataSet.setDataset(findParamsById(dataSet.getId()));
+            dataSet.setParameters(findParamsById(dataSet.getId()));
             dataSet.setTestScenarios(findTestScenariosByDataSetId(dataSet.getId()));
              return Optional.of(dataSet);
         } catch (DataAccessException e) {
@@ -134,7 +130,7 @@ public class DataSetRepository {
             if (dataSet == null) {
                 return Optional.empty();
             }
-            dataSet.setDataset(findParamsById(dataSet.getId()));
+            dataSet.setParameters(findParamsById(dataSet.getId()));
             return Optional.of(dataSet);
         } catch (EmptyResultDataAccessException e) {
             log.warn("dataset with name {} was`nt found", name);
@@ -154,7 +150,7 @@ public class DataSetRepository {
             if (dataSet.size() == 0) {
                 return Collections.emptyList();
             }
-            dataSet.forEach(dataSet1 -> dataSet1.setDataset(findParamsById(dataSet1.getId())));
+            dataSet.forEach(dataSet1 -> dataSet1.setParameters(findParamsById(dataSet1.getId())));
             return dataSet;
         } catch (EmptyResultDataAccessException e) {
             log.warn("datasets were`nt found");
@@ -181,7 +177,7 @@ public class DataSetRepository {
             if (dataSet.size() == 0) {
                 return Collections.emptyList();
             }
-            dataSet.forEach(dataSet1 -> dataSet1.setDataset(findParamsById(dataSet1.getId())));
+            dataSet.forEach(dataSet1 -> dataSet1.setParameters(findParamsById(dataSet1.getId())));
             dataSet.forEach(dataSet1 -> dataSet1.setTestScenarios(findTestScenariosByDataSetId(dataSet1.getId())));
             return dataSet;
         } catch (EmptyResultDataAccessException e) {
@@ -219,7 +215,7 @@ public class DataSetRepository {
                         rs.getLong("data_set_id"),
                         rs.getString("data_set_name"),
                         rs.getString("data_set_description")));
-        dataSetList.forEach(ds -> ds.setDataset(findParamsById(ds.getId())));
+        dataSetList.forEach(ds -> ds.setParameters(findParamsById(ds.getId())));
         dataSetList.forEach(ds -> ds.setTestScenarios(findTestScenariosByDataSetId(ds.getId())));
         return dataSetList;
     }

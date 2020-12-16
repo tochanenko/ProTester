@@ -2,6 +2,7 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.request.OuterComponentFilter;
@@ -16,12 +17,12 @@ public class TestScenarioController {
     private final TestScenarioService testScenarioService;
 
     @PostMapping
-    public OuterComponent createTestScenario(@RequestBody OuterComponentRepresentation request) {
+    public OuterComponent createTestScenario(@RequestBody OuterComponentRepresentation request) throws OuterComponentStepSaveException {
         return testScenarioService.saveTestScenario(request);
     }
 
     @PutMapping("/{id}")
-    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) {
+    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws OuterComponentStepSaveException {
         return testScenarioService.updateTestScenario(id, request);
     }
 

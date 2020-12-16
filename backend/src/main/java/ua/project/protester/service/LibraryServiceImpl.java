@@ -64,7 +64,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public Page<Library> findAll(PaginationLibrary paginationLibrary) {
-        log.info("pagination library:", paginationLibrary.getName(), paginationLibrary);
+        log.info("pagination {} library {}", paginationLibrary.getName(), paginationLibrary);
         return new Page<>(
                 libraryRepository.findAll(paginationLibrary),
                 libraryRepository.getCountLibraries(paginationLibrary)

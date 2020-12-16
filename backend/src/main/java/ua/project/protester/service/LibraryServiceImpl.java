@@ -1,6 +1,7 @@
 package ua.project.protester.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.LibraryNotFoundException;
@@ -13,6 +14,7 @@ import ua.project.protester.utils.PaginationLibrary;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LibraryServiceImpl implements LibraryService {
@@ -62,6 +64,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public Page<Library> findAll(PaginationLibrary paginationLibrary) {
+        log.info("pagination library:", paginationLibrary.getName(), paginationLibrary);
         return new Page<>(
                 libraryRepository.findAll(paginationLibrary),
                 libraryRepository.getCountLibraries(paginationLibrary)

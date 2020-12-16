@@ -55,6 +55,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 new String[]{idColumnName});
         Integer libraryId = (Integer) keyHolder.getKey();
 
+        log.info("create {} library", library.getName());
         saveLibraryStorages(library, libraryId);
     }
 
@@ -67,6 +68,8 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                         .addValue("library_name", library.getName())
                         .addValue("library_description", library.getDescription())
         );
+
+        log.info("update {} library", library.getName());
         deleteLibrariesStorage(id);
         saveLibraryStorages(library, id);
     }
@@ -87,7 +90,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         allLibraries
                 .forEach(library -> library.setComponents(
                         findAllLibraryStorageById(library.getId())));
-
+        log.info("All libraries:", allLibraries);
         return allLibraries;
     }
 
@@ -113,7 +116,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
             if (library == null) {
                 return Optional.empty();
             }
-
+            log.info("find by id {} library", library.getName());
             List<Step> steps = findAllLibraryStorageById(library.getId());
             library.setComponents(steps);
             return Optional.of(library);

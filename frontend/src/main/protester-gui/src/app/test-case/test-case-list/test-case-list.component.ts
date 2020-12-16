@@ -23,7 +23,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   dataSource: TestCaseModel[];
   pageEvent: PageEvent;
 
-  testScenario: TestScenario = new TestScenario();
+  testScenario: TestScenario[];
   testCaseFilter: TestCaseFilter = new TestCaseFilter();
   testCasesCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
@@ -45,6 +45,7 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   searchCases(): void {
     this.subscription = this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
       data => {
+      //  this.testScenario = this.testScenarioService.getById(data.list[5]).subscribe();
         this.dataSource = data.list;
         this.testCasesCount = data.totalItems;
       },

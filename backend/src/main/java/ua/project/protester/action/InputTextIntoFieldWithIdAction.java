@@ -25,7 +25,7 @@ public class InputTextIntoFieldWithIdAction extends AbstractAction {
             return new ActionResultTechnicalDto();
         } catch (WebDriverException ex) {
             System.out.println(ex.getClass().getName());
-            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getMessage()));
+            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getClass().getName()));
         }
     }
 }

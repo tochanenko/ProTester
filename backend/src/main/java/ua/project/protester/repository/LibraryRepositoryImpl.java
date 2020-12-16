@@ -77,7 +77,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
     @Override
     public List<Library> findAll(PaginationLibrary paginationLibrary) {
-        String sql = PropertyExtractor.extract(env, "findAll");
+        String sql = PropertyExtractor.extract(env, "findAllLibraries");
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("count", paginationLibrary.getPageSize());
         namedParams.addValue("offset", paginationLibrary.getOffset());
@@ -106,6 +106,8 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         namedParams.addValue("filterLibraryName", paginationLibrary.getName() + "%");
 
         log.info("sql query {}", sql);
+        log.info(String.valueOf(env.getActiveProfiles()));
+        log.info(String.valueOf(env.getDefaultProfiles()));
         log.info("params {}", namedParams);
         log.info("pagination {}", paginationLibrary);
         return namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);

@@ -78,7 +78,7 @@ export class LibrarySearchComponent implements OnInit {
   }
 
   onFormBlurs(): void {
-    this.libraryFilter.libraryName = this.f.search.value;
+    this.libraryFilter.name = this.f.search.value;
     this.searchByFilter();
   }
 

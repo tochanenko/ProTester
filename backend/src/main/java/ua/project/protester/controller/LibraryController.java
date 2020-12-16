@@ -42,7 +42,7 @@ public class LibraryController {
                                 @RequestParam(value = "libraryName", defaultValue = "") String libraryName) {
 
         PaginationLibrary pagination = new PaginationLibrary(pageSize, pageNumber, libraryName);
-        log.info("pagination:", pagination);
+        log.info("pagination {}", pagination);
         return libraryService.findAll(pagination);
     }
 

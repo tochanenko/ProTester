@@ -20,7 +20,7 @@ export class LibraryManageService {
     let params = new HttpParams();
     params = params.append('pageSize', String(filter.pageSize));
     params = params.append('pageNumber', String(filter.pageNumber));
-    params = params.append('projectName', String(filter.libraryName));
+    params = params.append('libraryName', String(filter.name));
 
       return this.http.get("api/library", {params});
   }

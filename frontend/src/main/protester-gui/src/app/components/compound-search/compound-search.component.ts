@@ -42,9 +42,17 @@ export class CompoundSearchComponent implements OnInit {
 
   getLibrariesCount(): void {
     this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
-      console.log(data)
       this.librariesCount = data["totalItems"];
     });
+  }
+
+  deleteCompound(id): void {
+    this.subscription = this.compoundService.deleteCompound(id).subscribe(data =>{
+      if (data) {
+        console.log("Successful delete!")
+        this.searchByFilter();
+      }
+    }, error => console.error(error.error.message));
   }
 
   onPaginateChange(event): void {

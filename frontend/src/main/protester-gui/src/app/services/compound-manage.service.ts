@@ -38,4 +38,8 @@ export class CompoundManageService {
   createCompound(compound): Observable<any> {
     return this.http.post('api/compounds', compound, httpOptions);
   }
+
+  deleteCompound(compound_id): Observable<any> {
+    return this.http.delete(`api/compounds/${compound_id}`, httpOptions);
+  }
 }

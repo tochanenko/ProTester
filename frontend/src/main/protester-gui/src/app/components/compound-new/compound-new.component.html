@@ -60,60 +60,87 @@
 </div>
 <ng-template #expansionListOuter let-components="components">
   <mat-accordion *ngIf="components.length > 0">
-    <mat-expansion-panel hideToggle *ngFor="let component of components" [formGroup]="compoundCreateForm">
+    <mat-expansion-panel [disabled]="component.component.type === 'COMPOUND' ? clickInput : true"
+                         (click)="clickInput=false" hideToggle *ngFor="let component of components"
+                         [formGroup]="compoundCreateForm">
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
-          <p>{{component.component.description}}</p>
-        </mat-panel-title>
-        <mat-panel-description>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="description-container">
-        <ng-container *ngFor="let sub_string of parseDescription(component.component.description)">
-          <mat-form-field class="description-input" appearance="outline" *ngIf="sub_string.input">
-            <input matInput type="text" [id]="component.id + '-' + sub_string.text" [name]="component.id + '-' + sub_string.text" [placeholder]="component.id + '-' + sub_string.text"
-                   [formControlName]="component.id + '-' + sub_string.text"
-                   [(ngModel)]="component.parameters[sub_string.text]">
-          </mat-form-field>
-          <div *ngIf="!sub_string.input" class="description-text">
-            <span>{{sub_string.text}}</span>
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.description">
+              <div *ngIf="sub_string.input">
+                <mat-form-field class="description-input">
+                  <mat-label> {{sub_string.text}} </mat-label>
+                  <input matInput (click)="clickInput=true" type="text" [id]="component.id + '-' + sub_string.text"
+                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}}"
+                         [formControlName]="component.id + '-' + sub_string.text"
+                         [(ngModel)]="component.parameters[sub_string.text]">
+                </mat-form-field>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
           </div>
-        </ng-container>
-      </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+              <p class="compound-label-text">Compound</p>
+            </div>
+            <button mat-icon-button (click)="deleteComponentFromArray(components, component.id)">
+              <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+            </button>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
       <ng-container *ngIf="component.component['steps']">
         <ng-container
           *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: component}"></ng-container>
       </ng-container>
-      <button mat-icon-button (click)="deleteComponentFromArray(components, component.id)">
-        <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
-      </button>
+
     </mat-expansion-panel>
   </mat-accordion>
 </ng-template>
 
 <ng-template #expansionListInner let-array="array" let-parent="parent">
   <mat-accordion *ngIf="array.length > 0">
-    <mat-expansion-panel hideToggle *ngFor="let component of array" [formGroup]="compoundCreateForm">
+    <mat-expansion-panel [disabled]="component.component.type === 'COMPOUND' ? clickInput : true"
+                         (click)="clickInput=false" hideToggle *ngFor="let component of array"
+                         [formGroup]="compoundCreateForm">
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
-          {{component.component.name}}
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.description">
+              <div *ngIf="sub_string.input">
+                <mat-form-field
+                  *ngIf="checkIfParamInterpolated(component.parameters[sub_string.text]) && formControls[parent.id + '-' + sub_string.text]; else printParams"
+                  class="description-input">
+                  <mat-label> {{sub_string.text}} </mat-label>
+                  <input matInput type="text" (click)="clickInput=true" [id]="component.id + '-' + sub_string.text"
+                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}"
+                         [formControlName]="parent.id + '-' + sub_string.text"
+                         [(ngModel)]="parent.parameters[sub_string.text]">
+                </mat-form-field>
+                <ng-template #printParams  let-paramFromComponent =searchParamByStepId(component.id) >
+                  <div class="description-input-disabled">
+                    <span>{{component.parameters[sub_string.text]}}</span>
+                  </div>
+                </ng-template>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+              <p class="compound-label-text">Compound</p>
+            </div>
+          </div>
         </mat-panel-title>
-        <mat-panel-description>
-        </mat-panel-description>
       </mat-expansion-panel-header>
-      <p>{{component.component.description}}</p>
-      <ng-container *ngFor="let param of component.parameters">
-        {{param}}
-        <!--        <mat-form-field class="full-width-input" appearance="outline">-->
-        <!--          <ng-container *ngIf="checkIfParamInterpolated(component.parameters[param])" >-->
-        <!--            <input matInput type="text" id="url1" name="url" [placeholder]="param"-->
-        <!--                   [formControlName]="parent.id + '-' + cleanParam(component.parameters[param])" [(ngModel)]="parent.parameters[param]">-->
-        <!--          </ng-container>-->
-        <!--        </mat-form-field>-->
-      </ng-container>
       <ng-container *ngIf="component.component['steps']">
         <ng-container
-          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps']}"></ng-container>
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: parent}"></ng-container>
       </ng-container>
     </mat-expansion-panel>
   </mat-accordion>

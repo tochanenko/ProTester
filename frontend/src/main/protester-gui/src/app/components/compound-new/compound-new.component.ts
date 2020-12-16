@@ -37,6 +37,8 @@ export class CompoundNewComponent implements OnInit {
     components: this.components
   }
   url = "";
+  clickInput = true;
+  parentParams = {};
 
   componentParamsForm: FormGroup;
   compoundCreateRequest = {};
@@ -75,21 +77,15 @@ export class CompoundNewComponent implements OnInit {
 
   checkIfParamInterpolated(param: string) {
     const regex = '${';
-    if (param.includes(regex)) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    return param.includes(regex);
   }
 
   cleanParam(param: string) {
     let new_param = param.slice(2, param.length - 1);
-    console.log(new_param);
     return new_param;
   }
 
-  parseDescription (description: string) {
+  parseDescription(description: string) {
     const regexp = new RegExp('(\\${\\w*})');
     let splitted = description.split(regexp);
     return splitted.map(sub_string => {
@@ -98,8 +94,7 @@ export class CompoundNewComponent implements OnInit {
           text: sub_string.replace('${', '').replace('}', ''),
           input: true
         }
-      }
-      else {
+      } else {
         return {
           text: sub_string,
           input: false
@@ -110,7 +105,7 @@ export class CompoundNewComponent implements OnInit {
 
   onSubmit(): void {
     const f = this.formControls;
-
+    console.log();
 
     if (this.compoundCreateForm.invalid) {
       return;
@@ -147,37 +142,50 @@ export class CompoundNewComponent implements OnInit {
 
   updateActionsArray(): void {
     this.actionSubscription = this.interactionService.actionsArrayObserver.subscribe(action => {
-      let step = new Step();
-
-      step.id = this.step_id++;
-      step.isAction = true;
-      step.component = action;
-      step.parameters = new Map<String, String>();
-      action.parameterNames.map(param => {
-        step.parameters[param] = "";
-      });
-      action.parameterNames.forEach(param => {
-        this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-      })
-      this.components.push(step);
+      this.componentPrepare(action);
     });
   }
 
   updateCompoundsArray(): void {
     this.compoundSubscription = this.interactionService.compoundArrayObserver.subscribe(compound => {
-      let step = new Step();
-      step.id = this.step_id++;
-      step.isAction = false;
-      step.component = compound;
-      step.parameters = new Map<String, String>();
-      compound.parameterNames.map(param => {
-        step.parameters[param] = "";
-      });
+      this.componentPrepare(compound);
+    });
+  }
 
-      compound.parameterNames.forEach(param => {
+  componentPrepare(component) {
+    console.log(component);
+    let step = new Step();
+    component.description = this.parseDescription(component.description);
+    step.id = this.step_id++;
+    step.isAction = component.type !== 'COMPOUND';
+    step.component = component;
+    step.parameters = new Map<String, String>();
+
+    component.parameterNames.map(param => {
+      step.parameters[param] = "";
+    });
+
+    if (component.parameterNames.length > 0) {
+      component.parameterNames.forEach(param => {
         this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-      })
-      this.components.push(step);
+      });
+    }
+
+    if (component.steps) {
+      this.recursiveStepParsing(component.steps);
+    }
+
+    this.components.push(step);
+    console.log(this.components)
+    console.log(this.formControls)
+  }
+
+  recursiveStepParsing(steps) {
+    steps.forEach(item => {
+      item.component.description = this.parseDescription(item.component.description);
+      if (item.component.steps) {
+        this.recursiveStepParsing(item.component.steps);
+      }
     });
   }
 

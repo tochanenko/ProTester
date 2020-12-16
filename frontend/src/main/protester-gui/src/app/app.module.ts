@@ -34,6 +34,8 @@ import {ViewUserComponent} from "./components/view-user/view-user.component";
 import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
+import { RunComponent } from './test-case/test-case-run/run/run.component';
+import { SelectEnvComponent } from './test-case/test-case-run/select-env/select-env.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.modul
     TestCaseUpdateComponent,
     TestCaseCreateComponent,
     ViewUserComponent,
-    EditUserComponent
+    EditUserComponent,
+    RunComponent,
+    SelectEnvComponent
   ],
   imports: [
     BrowserModule,

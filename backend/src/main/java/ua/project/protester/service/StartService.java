@@ -1,11 +1,13 @@
 package ua.project.protester.service;
 
+import com.google.gson.Gson;
+import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
@@ -13,7 +15,7 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.DataSet;
 import ua.project.protester.model.RunResult;
-import ua.project.protester.model.RunTestCase;
+import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
@@ -43,16 +45,12 @@ public class StartService {
      private TestCaseResultRepository resultRepository;
      private UserService userService;
      private RunResultRepository runResultRepository;
-
-
+     private SimpMessagingTemplate messagingTemplate;
 
      private List<TestCaseRequest> testCaseRequest = new ArrayList<>();
 
      @Autowired
-     private  SimpMessageSendingOperations messagingTemplate;
-
-     @Autowired
-    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository) {
+    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
         this.webDriver = webDriver;
         this.dataSetRepository = dataSetRepository;
         this.testScenarioService = testScenarioService;
@@ -61,6 +59,7 @@ public class StartService {
         this.resultRepository = resultRepository;
         this.userService = userService;
         this.runResultRepository = runResultRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public void execute(Long id) {
@@ -91,15 +90,7 @@ public class StartService {
                     .filter(Objects::nonNull)
                     .forEachOrdered(outerComponent -> {
                                 try {
-                                    Consumer<ActionResultDto> resultCallback = (action) -> {
-                                        try {
-                                            ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
-                                            messagingTemplate.convertAndSend("/topic/public/" + actionResultDto.getId(), actionResultDto);
-                                        } catch (IllegalActionLogicImplementation illegalActionLogicImplementation) {
-                                            illegalActionLogicImplementation.printStackTrace();
-                                        }
-                                    };
-                                    outerComponent.get().execute(initMap, webDriver, resultCallback);
+                                    outerComponent.get().execute(initMap, webDriver, getConsumer(testCaseResultId));
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
                                 } catch (IllegalActionLogicImplementation | ActionExecutionException a) {
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
@@ -108,7 +99,8 @@ public class StartService {
                     );
     }
 
-    public RunResult getTestCaseExecutionResult(RunTestCase testCaseRequest) {
+    @Transactional
+    public RunResult getTestCaseExecutionResult(RunTestCaseRequest testCaseRequest) {
 
         RunResult runResult = new RunResult();
         runResult.setUserId(testCaseRequest.getUserId());
@@ -126,7 +118,23 @@ public class StartService {
         return runResultRepository.saveUserRunResult(runResult);
     }
 
-    private Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
+    @Transactional
+    Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
+        return (action) -> {
+            try {
+                ActionResultDto actionResultDto = new ActionResultDto(action);
+                actionResultDto.setStatus(ResultStatus.IN_PROGRESS);
+                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+                actionResultDto = actionResultRepository.save(testCaseResultId, action);
+                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+            } catch (IllegalActionLogicImplementation illegalActionLogicImplementation) {
+                illegalActionLogicImplementation.printStackTrace();
+            }
+        };
+    }
+
+    @Transactional
+    Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
         try {
             OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
             DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).get();
@@ -146,7 +154,8 @@ public class StartService {
         return Optional.empty();
     }
 
-    private TestCase fromTestCaseRequestToModel(TestCaseRequest testCaseRequest) {
+    @Transactional
+    TestCase fromTestCaseRequestToModel(TestCaseRequest testCaseRequest) {
         TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
         List<DataSet> dataSets = new ArrayList<>();
 
@@ -154,5 +163,10 @@ public class StartService {
                 .forEach(id -> dataSets.add(dataSetRepository.findDataSetById(id).get()));
         testCase.setDataSetList(dataSets);
         return testCase;
+    }
+
+    @Transactional
+    public RunResult findById(Long id) {
+         return runResultRepository.findRunResultById(id).orElseThrow(RuntimeException::new);
     }
 }

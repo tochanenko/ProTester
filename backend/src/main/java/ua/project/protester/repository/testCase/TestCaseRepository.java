@@ -19,4 +19,6 @@ public interface TestCaseRepository {
     List<TestCase> findAllProjectTestCases(Pagination pagination, Long projectId);
 
     Long getCountTestCase(Pagination pagination, Long projectId);
+
+    Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId);
 }

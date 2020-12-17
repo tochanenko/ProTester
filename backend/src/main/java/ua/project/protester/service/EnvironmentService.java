@@ -13,7 +13,6 @@ public class EnvironmentService {
 
     private final EnvironmentRepository repository;
 
-
     public Optional<Environment> findById(Long id) {
         return repository.findEnvironmentById(id);
     }

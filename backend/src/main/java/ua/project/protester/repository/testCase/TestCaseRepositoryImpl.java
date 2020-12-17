@@ -16,6 +16,7 @@ import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 import ua.project.protester.utils.testcase.TestCaseRowMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,6 +132,33 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
 
         testCaseList.forEach(System.out::print);
         return testCaseList;
+    }
+
+    @Override
+    public Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId) {
+        log.info("IN TestCaseRepositoryImpl findAllProjectTestCases  projectId={} testCaseId={}", projectId, testCaseId);
+
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_id", projectId);
+        namedParams.addValue("test_case_id", testCaseId);
+
+        try {
+            TestCase testCase = namedJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findTestCaseByProjectIdAndTestCaseId"),
+                    namedParams,
+                    testCaseRowMapper);
+
+            if (testCase != null) {
+                testCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(testCaseId));
+                return Optional.of(testCase);
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("test cases were`nt found");
+            return Optional.empty();
+        }
+
+        return Optional.empty();
     }
 
     @Override

@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {AuthGuard} from "./services/auth/auth.guard";
 
 const routes: Routes = [
   {
@@ -12,15 +13,23 @@ const routes: Routes = [
       },
       {
         path: 'account',
-        loadChildren: 'src/app/shared/shared.module#SharedModule'
+        loadChildren: 'src/app/modules/shared/shared.module#SharedModule',
       },
       {
         path: 'projects-menu',
-        loadChildren: 'src/app/projects-menu/projects-menu.module#ProjectsMenuModule'
+        loadChildren: 'src/app/modules/projects-menu/projects-menu.module#ProjectsMenuModule',
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+        }
       },
       {
         path: 'libraries-menu',
-        loadChildren: 'src/app/libraries-menu/libraries-menu.module#LibrariesMenuModule'
+        loadChildren: 'src/app/modules/libraries-menu/libraries-menu.module#LibrariesMenuModule',
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+        }
       },
       {
         path: '**',

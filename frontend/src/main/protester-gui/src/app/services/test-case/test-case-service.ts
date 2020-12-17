@@ -2,9 +2,9 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {DataSetRequestResponse} from "../../models/data-set-request-response";
-import {TestCaseModel} from "../../projects-menu/projects/view/test-cases/test-case.model";
-import {TestCaseFilter} from "../../projects-menu/projects/view/test-cases/test-case-filter";
-import {TestCaseResponse} from "../../projects-menu/projects/view/test-cases/test-case-response";
+import {TestCaseModel} from "../../modules/projects-menu/projects/view/test-cases/test-case.model";
+import {TestCaseFilter} from "../../modules/projects-menu/projects/view/test-cases/test-case-filter";
+import {TestCaseResponse} from "../../modules/projects-menu/projects/view/test-cases/test-case-response";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {TestCaseResult} from './result.model';
-import {TestCaseModel} from "../projects-menu/projects/view/test-cases/test-case.model";
+import {TestCaseModel} from "../modules/projects-menu/projects/view/test-cases/test-case.model";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

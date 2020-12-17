@@ -28,9 +28,9 @@ import {
 import {MatTabsModule} from "@angular/material/tabs";
 import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
 import { CompoundNewComponent } from './components/compound-new/compound-new.component';
-import {SharedModule} from "./shared/shared.module";
-import {ProjectsMenuModule} from "./projects-menu/projects-menu.module";
-import {LibrariesMenuModule} from "./libraries-menu/libraries-menu.module";
+import {SharedModule} from "./modules/shared/shared.module";
+import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
+import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
 
 
 @NgModule({

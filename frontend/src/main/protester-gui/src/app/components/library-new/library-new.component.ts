@@ -146,23 +146,45 @@ export class LibraryNewComponent implements OnInit {
   openBottomSheetWithCompounds(): void {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['compounds'],
-        isAction: false
+        components: {compounds: this.bottomSheetData['compounds']}
       }
     });
   }
 
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
-      console.log(data)
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
+  }
+
+  parseDescription(description: string) {
+    const regexp = new RegExp('(\\${\\w*})');
+    let splitted = description.split(regexp);
+    return splitted.map(sub_string => {
+      if (sub_string.includes("${")) {
+        return {
+          text: sub_string.replace('${', '').replace('}', ''),
+          input: true
+        }
+      } else {
+        return {
+          text: sub_string,
+          input: false
+        }
+      }
+    })
   }
 
   ngOnDestroy(): void {

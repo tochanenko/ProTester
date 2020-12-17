@@ -163,7 +163,6 @@ export class CompoundNewComponent implements OnInit {
 
   componentPrepare(component) {
     let step = new Step();
-    component.description = this.parseDescription(component.description);
 
     step.id = this.step_id++;
     step.isAction = component.type !== 'COMPOUND';
@@ -237,12 +236,18 @@ export class CompoundNewComponent implements OnInit {
 
   getAllActionsForBottomSheet(): void {
     this.compoundService.getAllActions().subscribe(data => {
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.compoundService.getAllCompounds().subscribe(data => {
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
   }

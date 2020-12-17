@@ -3,6 +3,38 @@
   color: #5C6BC0;
 }
 
+.mat-expansion-panel * {
+  background: #F2F2F2;
+  color: #5C6BC0;
+  font-weight: 550;
+}
+
 .outer-expansion-panel {
   color: #5C6BC0;
+}
+
+mat-panel-title {
+  align-items: center;
+}
+
+.description-input-disabled {
+  display: flex;
+  align-self: center;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  background: #FFFFFF;
+
+  border-radius: 5px;
+}
+
+.description-input-disabled-span {
+  margin: 5px;
+}
+
+.description-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -5,16 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.TestCaseNotFoundException;
+import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.TestCase;
-import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.model.executable.ExecutableComponentType;
+import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
+import ua.project.protester.service.TestScenarioService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.testcase.TestCaseMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +28,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private final TestCaseRepository testCaseRepository;
     private final TestCaseMapper testCaseMapper;
-    private final DataSetRepository dataSetRepository;
+    private final TestScenarioService scenarioService;
 
     @Transactional
     @Override
@@ -62,6 +66,7 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
 
+
     @Override
     public Page<TestCaseResponse> findAllProjectTestCases(Pagination pagination, Long projectId) {
         log.info("IN findAllProjectTestCases, pagination={}, projectId={}", pagination, projectId);
@@ -79,5 +84,16 @@ public class TestCaseServiceImpl implements TestCaseService {
     private TestCase getTestCaseById(Long id) throws TestCaseNotFoundException {
         return testCaseRepository.findById(id)
                 .orElseThrow(TestCaseNotFoundException::new);
+    }
+
+
+    public boolean findSqlActionsInTestCaseByProjectIdAndTestCaseId(Long projectId, Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
+        return scenarioService.getTestScenarioById(testCaseRepository.findProjectTestCase(projectId, testCaseId)
+                .orElseThrow(TestCaseNotFoundException::new).getScenarioId().intValue())
+                .getSteps()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(Step::isAction)
+                .anyMatch(step -> step.getComponent().getType().equals(ExecutableComponentType.SQL));
     }
 }

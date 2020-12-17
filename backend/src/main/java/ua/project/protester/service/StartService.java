@@ -1,115 +1,139 @@
 package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCase;
+import ua.project.protester.model.executable.OuterComponent;
+import ua.project.protester.model.executable.Step;
+import ua.project.protester.model.executable.result.ActionResultDto;
+import ua.project.protester.model.executable.result.ResultStatus;
+import ua.project.protester.model.executable.result.TestCaseResultDto;
+import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.repository.result.ActionResultRepository;
+import ua.project.protester.repository.result.RunResultRepository;
+import ua.project.protester.repository.result.TestCaseResultRepository;
+import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.request.TestCaseRequest;
 
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class StartService {
 
-    // TODO: uncomment
-    // private WebDriver webDriver;
-    // private DataSetRepository dataSetRepository;
-    // private TestScenarioService testScenarioService;
-    // private ModelMapper modelMapper;
-    // private ActionResultRepository actionResultRepository;
-    // private TestCaseResultRepository resultRepository;
+     private WebDriver webDriver;
+     private DataSetRepository dataSetRepository;
+     private TestScenarioService testScenarioService;
+     private ModelMapper modelMapper;
+     private ActionResultRepository actionResultRepository;
+     private TestCaseResultRepository resultRepository;
+     private UserService userService;
+     private RunResultRepository runResultRepository;
+     private SimpMessagingTemplate messagingTemplate;
 
+     private static List<TestCaseRequest> testCaseRequest = new ArrayList<>();
 
-    // TODO uncomment
-    /*
-    @Autowired
-    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository) {
-        // TODO: delete all logs, uncomment lines
-        // this.webDriver = webDriver;
-        log.warn(webDriver.toString());
-        // this.dataSetRepository = dataSetRepository;
-        log.warn(dataSetRepository.toString());
-        // this.testScenarioService = testScenarioService;
-        log.warn(testScenarioService.toString());
-        // this.modelMapper = modelMapper;
-        log.warn(modelMapper.toString());
-        // this.actionResultRepository = actionResultRepository;
-        log.warn(actionResultRepository.toString());
-        // this.resultRepository = resultRepository;
-        log.warn(resultRepository.toString());
+     @Autowired
+    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
+        this.webDriver = webDriver;
+        this.dataSetRepository = dataSetRepository;
+        this.testScenarioService = testScenarioService;
+        this.modelMapper = modelMapper;
+        this.actionResultRepository = actionResultRepository;
+        this.resultRepository = resultRepository;
+        this.userService = userService;
+        this.runResultRepository = runResultRepository;
+        this.messagingTemplate = messagingTemplate;
     }
-    */
 
-    public void execute(List<TestCaseRequest> testCaseRequests) {
-        List<Integer> testCaseResults = getTestCaseExecutionResult(testCaseRequests);
-        for (int i = 0; i < testCaseRequests.size(); i++) {
-            runTestCase(testCaseRequests.get(i), testCaseResults.get(i));
+    public void execute(Long id) {
+
+         RunResult runResult = runResultRepository.findRunResultById(id).get();
+
+         List<Integer> testCaseResults = runResult.getTestCaseResult();
+        for (int i = 0; i < testCaseRequest.size(); i++) {
+            runTestCase(testCaseRequest.get(i), testCaseResults.get(i));
         }
+        log.info("testCaseRequest are {}", testCaseRequest);
+        testCaseRequest.clear();
     }
 
-    private void runTestCase(TestCaseRequest testCaseRequest, int testCaseResultId) {
-        // TODO: implement
-        /* TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
-        List<DataSet> dataSets = new ArrayList<>();
-
-        testCaseRequest.getDataSetId()
-                .forEach(id -> dataSets.add(dataSetRepository.findDataSetById(id).get()));
-        testCase.setDataSetList(dataSets);
+    @Transactional
+    void runTestCase(TestCaseRequest testCaseRequest, int testCaseResultId) {
 
         Map<String, String> initMap = new HashMap<>();
         initMap.put("username", "volodya");
         initMap.put("password", "tank85943221");
         initMap.put("url", "www.youtube.com");
+        initMap.put("rztk_id", "rztk_id from inout param");
 
-        TestCaseResult testCaseResult = resultRepository.findTestCaseResultById(testCaseResultId).get();
-
+        TestCase testCase = fromTestCaseRequestToModel(testCaseRequest);
         testCase.getDataSetList().stream()
-                .map(DataSet::getId)
-                .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
-                .filter(Objects::nonNull)
-                .forEach(outerComponent -> {
-                            resultRepository.updateTestCaseResultStartDate(testCaseResultId, OffsetDateTime.now());
-                            try {
-                                Consumer<ActionResult> resultCallback = (action) -> {
-                                    action.setTestCaseResultId(testCaseResultId);
-                                    actionResultRepository.save(action);
-                                    testCaseResult.getInnerResults().add(action);
-                                };
-                                outerComponent.get().execute(initMap, webDriver, resultCallback);
-                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.PASSED);
-                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                            } catch (ActionExecutionException e) {
-                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.FAILED);
-                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                            }
+                    .map(DataSet::getId)
+                    .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
+                    .filter(Objects::nonNull)
+                    .forEachOrdered(outerComponent -> {
+                                try {
+                                    outerComponent.get().execute(initMap, webDriver, getConsumer(testCaseResultId));
+                                    resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
+                                } catch (IllegalActionLogicImplementation | ActionExecutionException a) {
+                                    resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
+                                }
                         }
-                );*/
-        // TODO: delete log
-        log.warn(testCaseRequest.toString() + " " + testCaseResultId);
+                    );
     }
 
-    private List<Integer> getTestCaseExecutionResult(List<TestCaseRequest> testCaseRequests) {
-        // TODO: implement
-        /*return testCaseRequests.stream()
-                .map(testCaseRequest -> {
-                    TestCaseResult testCaseResult = new TestCaseResult();
-                    List<ActionResult> actionResult = new ArrayList<>();
-                    testCaseResult.setTestCaseId(testCaseRequest.getId().intValue());
-                    testCaseResult.setUserId(testCaseRequest.getAuthorId().intValue());
+    @Transactional
+    public RunResult getTestCaseExecutionResult(RunTestCaseRequest testCaseRequest) {
+
+        RunResult runResult = new RunResult();
+        runResult.setUserId(testCaseRequest.getUserId());
+        runResult.setTestCaseResult(testCaseRequest.getTestCaseRequestList().stream()
+                .map(request -> {
+                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(request.getAuthorId()).get(), fromTestCaseRequestToModel(request));
+                    List<ActionResultDto> actionResult = new ArrayList<>();
                     testCaseResult.setStatus(ResultStatus.IN_PROGRESS);
-                    testCaseResult.setStatusId(3);
                     testCaseResult.setStartDate(OffsetDateTime.now());
                     testCaseResult.setInnerResults(actionResult);
-                    return resultRepository.saveTestCaseResult(testCaseResult).getId();
+                    return resultRepository.save(testCaseResult).getId();
                 })
-                .collect(Collectors.toList());*/
-        // TODO: delete log
-        log.warn(testCaseRequests.toString());
-        return null;
+                .collect(Collectors.toList()));
+        StartService.testCaseRequest = testCaseRequest.getTestCaseRequestList();
+        return runResultRepository.saveUserRunResult(runResult);
     }
 
-    // TODO: uncomment
-    /*
-    private Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
+    @Transactional
+    Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
+        return (action) -> {
+            try {
+                ActionResultDto actionResultDto = new ActionResultDto(action);
+                actionResultDto.setStatus(ResultStatus.IN_PROGRESS);
+                System.out.println("ACTION FROM CALLBACK " + action);
+                //messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+                actionResultDto = actionResultRepository.save(testCaseResultId, action);
+                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+            } catch (IllegalActionLogicImplementation illegalActionLogicImplementation) {
+                illegalActionLogicImplementation.printStackTrace();
+            }
+        };
+    }
+
+    @Transactional
+    Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
         try {
             OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
             DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).get();
@@ -117,7 +141,7 @@ public class StartService {
             for (Step s : stepsParams
             ) {
                 for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
+                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsValue(entry.getValue())) {
                         entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
                     }
                 }
@@ -128,5 +152,20 @@ public class StartService {
         }
         return Optional.empty();
     }
-    */
+
+    @Transactional
+    TestCase fromTestCaseRequestToModel(TestCaseRequest testCaseRequest) {
+        TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
+        List<DataSet> dataSets = new ArrayList<>();
+
+        testCaseRequest.getDataSetId()
+                .forEach(id -> dataSets.add(dataSetRepository.findDataSetById(id).get()));
+        testCase.setDataSetList(dataSets);
+        return testCase;
+    }
+
+    @Transactional
+    public RunResult findById(Long id) {
+         return runResultRepository.findRunResultById(id).orElseThrow(RuntimeException::new);
+    }
 }

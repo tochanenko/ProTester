@@ -134,6 +134,33 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     }
 
     @Override
+    public Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId) {
+        log.info("IN TestCaseRepositoryImpl findAllProjectTestCases  projectId={} testCaseId={}", projectId, testCaseId);
+
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_id", projectId);
+        namedParams.addValue("test_case_id", testCaseId);
+
+        try {
+            TestCase testCase = namedJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findTestCaseByProjectIdAndTestCaseId"),
+                    namedParams,
+                    testCaseRowMapper);
+
+            if (testCase != null) {
+                testCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(testCaseId));
+                return Optional.of(testCase);
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("test cases were`nt found");
+            return Optional.empty();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public Long getCountTestCase(Pagination pagination, Long projectId) {
         log.info("IN TestCaseRepositoryImpl getCountTestCase pagination={}, projectId={}",
                 pagination, projectId);

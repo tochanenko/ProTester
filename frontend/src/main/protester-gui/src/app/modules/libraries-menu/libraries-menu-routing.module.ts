@@ -5,13 +5,22 @@ import {ViewComponent} from "./view/view.component";
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: 'Libraries menu'
+    },
     children: [
       {
         path: '',
+        data: {
+          breadcrumb: null
+        },
         component: ViewComponent
       },
       {
         path: 'libraries',
+        data: {
+          breadcrumb: null
+        },
         loadChildren: 'src/app/modules/libraries-menu/libraries/libraries.module#LibrariesModule'
       }
     ]

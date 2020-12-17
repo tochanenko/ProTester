@@ -4,6 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: 'Project'
+    },
     children: [
       {
         path: '',
@@ -12,6 +15,9 @@ const routes: Routes = [
       },
       {
         path: 'test-cases',
+        data: {
+          breadcrumb: null
+        },
         loadChildren: 'src/app/modules/projects-menu/projects/view/test-cases/test-cases.module#TestCasesModule'
       }
     ]

@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ProjectsMenuRoutingModule } from './projects-menu-routing.module';
 import { ViewComponent } from './view/view.component';
 import {MaterialModule} from "../services/material.module";
+import {DatasetsModule} from "./datasets/datasets.module";
+import {ProjectsModule} from "./projects/projects.module";
 
 
 @NgModule({
@@ -11,7 +13,9 @@ import {MaterialModule} from "../services/material.module";
   imports: [
     CommonModule,
     ProjectsMenuRoutingModule,
-    MaterialModule
+    MaterialModule,
+    DatasetsModule,
+    ProjectsModule
   ]
 })
 export class ProjectsMenuModule { }

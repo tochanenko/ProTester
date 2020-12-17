@@ -16,7 +16,14 @@ export class HeaderComponent implements OnInit {
   isWhiteTheme = true;
   user: User = new User();
   isAdmin: boolean = false;
-  links = [{'link': 'projectMenu', 'label': 'Projects'}, {'link': 'library', 'label': 'Library'}];
+  links = [
+    {
+      'link': 'projects-menu',
+      'label': 'Projects'},
+    {
+      'link': 'libraries-menu',
+      'label': 'Libraries'}
+    ];
   activeLink = this.links[0];
   subscription: Subscription;
 
@@ -39,7 +46,7 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigateByUrl('/login').then();
+    this.router.navigateByUrl('/account/login').then();
   }
 
   ngOnDestroy(): void {

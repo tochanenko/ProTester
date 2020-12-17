@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {Library} from "../../models/library.model";
 import {Action} from "../../models/action.model";
 import {OuterComponent} from "../../models/outer.model";
-import {LibraryFilter} from "../../components/library-search/library-filter.model";
+import {LibraryFilter} from "../../modules/libraries-menu/libraries/list/library-filter.model";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

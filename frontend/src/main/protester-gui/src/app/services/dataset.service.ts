@@ -1,10 +1,10 @@
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {DataSetFilterModel} from "../dataset/dataset-filter.model";
-import {DataSet} from "../dataset/dataset.model";
-import {DatasetResponseModel} from "../dataset/dataset-response.model";
 import {log} from "util";
+import {DataSet} from "../modules/projects-menu/datasets/dataset.model";
+import {DataSetFilterModel} from "../modules/projects-menu/datasets/dataset-filter.model";
+import {DatasetResponseModel} from "../modules/projects-menu/datasets/dataset-response.model";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

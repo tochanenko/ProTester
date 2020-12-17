@@ -1,0 +1,33 @@
+<div class="login-form-flex">
+  <mat-card class="content">
+    <div class="logo">
+      <img [src]="image" class="logo-img" alt="Logo">
+    </div>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="recoveryForm">
+        <div class="more-info">
+          Check you mail for the personalized link to the Password Recovery page. You can request email with new link by
+          entering a new email in the field below.
+        </div>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>email</mat-label>
+          <input matInput type="text" id="email" class="form-control" name="email" formControlName="email"
+                 [ngClass]="{ 'is-invalid': submitted && f.email.errors }" required>
+          <mat-error *ngIf="submitted && f.email.errors" class="invalid-input">
+            <mat-error *ngIf="f.email.errors.required">Field is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <button mat-raised-button class="button-flex-container">
+          <p class="button-text">
+            SEND
+          </p>
+        </button>
+        <div class="more-info">
+          Don’t have an account?<a class="btn btn-outline-primary" style="width: 50%" routerLink="/account/registration"> Contact
+          your administrator. </a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

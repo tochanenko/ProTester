@@ -1,0 +1,88 @@
+<a [routerLink]="'/projects-menu'" class="navigation">
+  <span class="material-icons navigation">navigate_before</span>
+</a>
+
+<mat-card class="project-list">
+
+  <div class="search-project">
+
+    <button mat-icon-button class="filter-button" [matMenuTriggerFor]="menu">
+      <span class="material-icons filter">filter_alt</span>
+      Filter
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button (click)="FilterIsActive('')" mat-menu-item>All</button>
+      <button (click)="FilterIsActive('true')" mat-menu-item>Active</button>
+      <button (click)="FilterIsActive('false')" mat-menu-item>Not active</button>
+    </mat-menu>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Search project</mat-label>
+      <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="projectFilter.projectName"
+             (keyup)="onFilterChange($event)">
+    </mat-form-field>
+
+  </div>
+
+  <mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="NAME">
+      <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <a [routerLink]="'/projects-menu/projects/' + element.projectId + '/test-cases'">{{element.projectName}}</a>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="LINK">
+      <mat-header-cell *matHeaderCellDef class="header">LINK</mat-header-cell>
+      <mat-cell *matCellDef="let element"><a> {{element.projectWebsiteLink}}</a></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="CREATOR">
+      <mat-header-cell *matHeaderCellDef class="header">CREATOR</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.creatorUsername}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="STATUS">
+      <mat-header-cell *matHeaderCellDef class="header">STATUS</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.projectActive == true ? 'isActive' : 'Disabled'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="CONF">
+
+      <mat-header-cell *matHeaderCellDef class="header">
+        <span class="material-icons more-options">more_vert</span>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let row">
+        <button mat-icon-button [matMenuTriggerFor]="menuTable">
+          <span class="material-icons more-options" *ngIf="canUpdateProject(row.creatorId)">more_vert</span>
+        </button>
+
+        <mat-menu #menuTable="matMenu">
+          <button mat-menu-item (click)="openUpdateDialog(row.projectId)">
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item (click)="changeStatus(row.projectId)" *ngIf="!row.projectActive">
+            <span>Activate</span>
+          </button>
+          <button mat-menu-item (click)="changeStatus(row.projectId)" *ngIf="row.projectActive">
+            <span>Deactivate</span>
+          </button>
+        </mat-menu>
+
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
+  <mat-paginator class="header"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [length]="projectsCount"
+                 [pageSize]="projectFilter.pageSize"
+                 (page)="pageEvent = $event; onPaginateChange($event)">
+
+  </mat-paginator>
+</mat-card>

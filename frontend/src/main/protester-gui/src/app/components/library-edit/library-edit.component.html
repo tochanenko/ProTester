@@ -10,8 +10,12 @@
           <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
                  placeholder="Library name...">
           <mat-error *ngIf="formControls.name.errors" class="invalid-input">
-            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length - {{validatorsConfig.name.maxLength}} symbols</mat-error>
-            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length - {{validatorsConfig.name.minLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
+              - {{validatorsConfig.name.maxLength}} symbols
+            </mat-error>
+            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length
+              - {{validatorsConfig.name.minLength}} symbols
+            </mat-error>
             <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
           </mat-error>
         </mat-form-field>
@@ -22,7 +26,9 @@
               <textarea matInput type="text" id="description" name="description" formControlName="description"
                         class="create-input" placeholder="Library description..."></textarea>
           <mat-error *ngIf="formControls.description.errors" class="invalid-input">
-            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length - {{validatorsConfig.description.maxLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length
+              - {{validatorsConfig.description.maxLength}} symbols
+            </mat-error>
             <mat-error *ngIf="formControls.description.errors.required">Description is required</mat-error>
           </mat-error>
         </mat-form-field>
@@ -99,7 +105,8 @@
                         <span>{{sub_string['text']}}</span>
                       </div>
                     </ng-container>
-                  </div>                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
+                  </div>
+                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>

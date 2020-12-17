@@ -65,6 +65,8 @@ export class LibraryViewComponent implements OnInit {
       this.library = library;
 
       library.components.forEach(component => {
+        component.component.description = this.parseDescription(component.component.description.toString());
+
         let inner;
         if (component['action']) {
           inner = <Action>component.component;
@@ -76,6 +78,24 @@ export class LibraryViewComponent implements OnInit {
         }
       })
     });
+  }
+
+  parseDescription(description: string) {
+    const regexp = new RegExp('(\\${\\w*})');
+    let splitted = description.split(regexp);
+    return splitted.map(sub_string => {
+      if (sub_string.includes("${")) {
+        return {
+          text: sub_string.replace('${', '').replace('}', ''),
+          input: true
+        }
+      } else {
+        return {
+          text: sub_string,
+          input: false
+        }
+      }
+    })
   }
 
 

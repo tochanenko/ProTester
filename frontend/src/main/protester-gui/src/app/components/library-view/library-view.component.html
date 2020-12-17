@@ -9,7 +9,7 @@
         <mat-label class="description-text"> {{library.name}} </mat-label>
       </div>
       <div class="lib-title-container">
-        <mat-label class="lib-description">Description:</mat-label>
+        <mat-label class="lib-name">Description:</mat-label>
         <mat-label class="description-text"> {{library.description}} </mat-label>
       </div>
       <div class="component-table">
@@ -36,7 +36,18 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
+                  <div class="panel-content">
+                    <ng-container *ngFor="let sub_string of component.description">
+                      <div *ngIf="sub_string['input']">
+                        <div class="description-input-disabled mat-elevation-z6">
+                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                        </div>
+                      </div>
+                      <div *ngIf="!sub_string['input']" class="description-text">
+                        <span>{{sub_string['text']}}</span>
+                      </div>
+                    </ng-container>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
@@ -56,7 +67,18 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
+                  <div class="panel-content">
+                    <ng-container *ngFor="let sub_string of component.description">
+                      <div *ngIf="sub_string['input']">
+                        <div class="description-input-disabled mat-elevation-z6">
+                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                        </div>
+                      </div>
+                      <div *ngIf="!sub_string['input']" class="description-text">
+                        <span>{{sub_string['text']}}</span>
+                      </div>
+                    </ng-container>
+                  </div>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>

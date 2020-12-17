@@ -1,9 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {LoginComponent} from "./components/login/login.component";
-import {RegistrationComponent} from "./components/registration/registration.component";
 import {AuthGuard} from "./services/auth/auth.guard";
-import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component'
 import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
 import {ProjectListComponent} from './components/project/project-list/project-list.component';
 import {UsersListComponent} from "./components/users-list/users-list.component";
@@ -12,12 +9,7 @@ import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.c
 import {DatasetListComponent} from "./dataset/dataset-list/dataset-list.component";
 import {ViewUserComponent} from "./components/view-user/view-user.component";
 import {EditUserComponent} from "./components/edit-user/edit-user.component";
-import {LibraryMenuComponent} from './components/library-menu/library-menu.component';
-import {LibraryNewComponent} from './components/library-new/library-new.component';
-import {LibrarySearchComponent} from "./components/library-search/library-search.component";
 import {CompoundSearchComponent} from "./components/compound-search/compound-search.component";
-import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
-import {LibraryViewComponent} from "./components/library-view/library-view.component";
 import {CompoundNewComponent} from "./components/compound-new/compound-new.component";
 
 const routes: Routes = [
@@ -26,32 +18,21 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'login',
+        redirectTo: 'account',
         pathMatch: 'full'
       },
       {
-        path: 'login',
-        component: LoginComponent
+        path: 'account',
+        loadChildren: 'src/app/shared/shared.module#SharedModule'
       },
       {
-        path: 'register',
-        component: RegistrationComponent
-        // canActivate: [AuthGuard],
-        // data: {
-        //   roles: ['ADMIN']
-        // }
+        path: 'projects-menu',
+        loadChildren: 'src/app/projects-menu/projects-menu.module#ProjectsMenuModule'
       },
       {
-        path: 'profile',
-        loadChildren: 'src/app/profile/profile.module#ProfileModule'
+        path: 'libraries-menu',
+        loadChildren: 'src/app/libraries-menu/libraries-menu.module#LibrariesMenuModule'
       },
-      {
-        path: 'forgot-password',
-        loadChildren: 'src/app/forgot-password/forgot-password.module#ForgotPasswordModule'
-      },
-
-
-
       // {
       //   path: 'profile',
       //   component: ProfileComponent,
@@ -64,14 +45,14 @@ const routes: Routes = [
         path: 'actions',
         component: ActionsListComponent
       },
-      {
-        path: 'projectMenu',
-        component: ProjectMenuComponent,
-        canActivate: [AuthGuard],
-        data: {
-          roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-        }
-      },
+      // {
+      //   path: 'projectMenu',
+      //   component: ProjectMenuComponent,
+      //   canActivate: [AuthGuard],
+      //   data: {
+      //     roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+      //   }
+      // },
 
       {
         path: 'projectCreate',
@@ -132,26 +113,6 @@ const routes: Routes = [
         data: {
           roles: ['ADMIN', 'MANAGER', 'ENGINEER']
         }
-      },
-      {
-        path: 'library',
-        component: LibraryMenuComponent
-      },
-      {
-        path: 'library/new',
-        component: LibraryNewComponent
-      },
-      {
-        path: 'library/search',
-        component: LibrarySearchComponent
-      },
-      {
-        path: 'library/edit',
-        component: LibraryEditComponent
-      },
-      {
-        path: 'library/view',
-        component: LibraryViewComponent
       },
       {
         path: 'compound',

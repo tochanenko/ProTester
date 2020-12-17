@@ -31,6 +31,8 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
 import {SharedModule} from "./modules/shared/shared.module";
 import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
 import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import {BreadcrumbModule} from "primeng/breadcrumb";
 
 
 @NgModule({
@@ -47,7 +49,8 @@ import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.modul
     EditUserComponent,
     BottomSheetComponent,
     CompoundSearchComponent,
-    CompoundNewComponent
+    CompoundNewComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +69,8 @@ import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.modul
     MatTabsModule,
     SharedModule,
     ProjectsMenuModule,
-    LibrariesMenuModule
+    LibrariesMenuModule,
+    BreadcrumbModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]

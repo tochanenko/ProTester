@@ -7,7 +7,7 @@ import { InvalidTokenComponent } from './invalid-token/invalid-token.component';
 import { RestoreRequestComponent } from './restore-request/restore-request.component';
 import { TokenSentComponent } from './token-sent/token-sent.component';
 import {MaterialModule} from "../../../services/material.module";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -21,7 +21,8 @@ import {ReactiveFormsModule} from "@angular/forms";
     CommonModule,
     ForgotPasswordRoutingModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class ForgotPasswordModule { }

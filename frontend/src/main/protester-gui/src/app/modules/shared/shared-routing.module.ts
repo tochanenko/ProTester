@@ -6,6 +6,9 @@ import {RegistrationComponent} from "./registration/registration.component";
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: 'Account'
+    },
     children: [
       {
         path: '',
@@ -14,14 +17,23 @@ const routes: Routes = [
       },
       {
         path: 'login',
+        data: {
+          breadcrumb: 'Login'
+        },
         component: LoginComponent
       },
       {
         path: 'registration',
+        data: {
+          breadcrumb: 'Registration'
+        },
         component: RegistrationComponent
       },
       {
         path: 'forgot-password',
+        data: {
+          breadcrumb: null
+        },
         loadChildren: 'src/app/modules/shared/forgot-password/forgot-password.module#ForgotPasswordModule'
       }
     ]

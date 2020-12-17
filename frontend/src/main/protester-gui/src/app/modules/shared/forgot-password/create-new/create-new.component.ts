@@ -31,16 +31,17 @@ export class CreateNewComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.token = params['t'];
-
+      console.log(this.token);
       this.passwordService.confirmReset(this.token).subscribe(
         email => {
+          console.log(email)
           if (email == null || email.length == 0) {
-            this.router.navigateByUrl('/token-expired').then();
+            this.router.navigateByUrl('/account/forgot-password/invalid-token').then();
           } else {
             this.email = email;
           }
         },
-        err => this.router.navigateByUrl('/token-expired').then()
+        err => this.router.navigateByUrl('/account/forgot-password/invalid-token').then()
       )
     });
 
@@ -78,7 +79,7 @@ export class CreateNewComponent implements OnInit {
 
     this.passwordService.resetPassword(recoveryResponse).subscribe(
       data => {
-        this.router.navigateByUrl('/login').then();
+        this.router.navigateByUrl('/account/login').then();
       }
     )
   }

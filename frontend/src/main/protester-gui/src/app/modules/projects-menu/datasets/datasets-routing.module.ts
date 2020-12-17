@@ -5,9 +5,15 @@ import {ListComponent} from "./list/list.component";
 const routes: Routes = [
   {
     path: '',
+    data: {
+      breadcrumb: 'Datasets'
+    },
     children: [
       {
         path: '',
+        data: {
+          breadcrumb: null
+        },
         component: ListComponent
       }
     ]

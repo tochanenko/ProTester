@@ -31,6 +31,9 @@ export class ActionResult {
   endDate = '';
   status: Status;
   inputParameters?: { [name: string]: string };
+
+  isLastAction: boolean;
+
   exception?: ActionExecutionException;
   message?: string;
 

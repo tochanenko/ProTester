@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as Stomp from '@stomp/stompjs';
 import {Client} from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
@@ -19,7 +19,6 @@ export class WebsocketsService {
         frame();
         console.log('in connect');
       },
-
 
       () => {
         this.reconnect(frame);

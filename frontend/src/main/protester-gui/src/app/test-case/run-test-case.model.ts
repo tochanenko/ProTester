@@ -4,6 +4,4 @@ export class RunTestCaseModel {
   id?: number;
   testCaseRequestList: TestCaseModel[];
   userId: number;
-
-  env?: string;
 }

@@ -21,7 +21,7 @@ import {TestCaseRunAnalyzeService} from '../../../services/test-case-run-analyze
   templateUrl: './run.component.html',
   styleUrls: ['./run.component.css']
 })
-export class RunComponent implements  OnInit, OnDestroy {
+export class RunComponent implements OnInit, OnDestroy {
 
   runTestCaseModel = new RunTestCaseModel();
   public projectId: number;
@@ -81,60 +81,20 @@ export class RunComponent implements  OnInit, OnDestroy {
       },
       error => console.log('error in initDataSource')
     );
-
-    // this.dataSource = [
-    //   {
-    //     name: 'testcase1',
-    //     description: 'd1',
-    //     scenarioId: 1,
-    //     dataSetResponseList: [
-    //       {
-    //         name: 'ds1'
-    //       },
-    //       {
-    //         name: 'ds2'
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     name: 'testcase2',
-    //     description: 'd2',
-    //     scenarioId: 1
-    //   },
-    //   {
-    //     name: 'testcase3',
-    //     description: 'd3',
-    //     scenarioId: 1
-    //   },
-    //   {
-    //     name: 'testcase4',
-    //     description: 'd4',
-    //     scenarioId: 1
-    //   }
-    // ];
-    //
-    // this.testCasesCount = 3;
   }
 
   loadEnvironments(): void {
-    this.environmentList = [
-      {
-        id: 1,
-        url: 'url1'
-      },
-      {
-        id: 2,
-        url: 'url2'
-      }
-    ];
-
-    console.log('environmentList init');
+    this.testCaseService.loadEnvironments()
+      .subscribe(
+        data => {
+          this.environmentList = data;
+          console.log('env list loaded');
+        },
+        error => console.log('env load error')
+      );
   }
 
   selectTestCase(testCase: TestCaseModel): void {
-    console.log(this.environmentList);
-
-    // todo to it when env is not set, add name of test case to dialog view
     if (testCase.name === 'testcase2' || testCase.name === 'testcase3') {
       const updateDialogRef = this.dialog.open(SelectEnvComponent, {
         height: 'auto',
@@ -148,7 +108,7 @@ export class RunComponent implements  OnInit, OnDestroy {
         if (result === undefined) {
           this.selection.deselect(testCase);
         }
-        this.runTestCaseModel.env = result;
+        testCase.environment = result;
       });
     }
 
@@ -174,17 +134,19 @@ export class RunComponent implements  OnInit, OnDestroy {
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
     this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
-   // this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
+    this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
 
-    console.log(this.runTestCaseModel.userId + '-------------------');
+    if (this.runTestCaseModel.testCaseRequestList.length === 0) {
+      return;
+    }
 
     this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
       result => {
-        console.log('-------------successful id='  + result.id + ', ' + result.testCaseResult + ', ' + result.userId);
-        this.runAnalyzeService.runResultModel = result;
-        this.router.navigateByUrl('/test-case-analyze').then();
+        console.log('-------------successful id=' + result.id);
+        // this.runAnalyzeService.runResultModel = result;
+        this.router.navigate(['/test-case-analyze', result.id]).then();
 
-      }, error => console.log('---------------error')
+      }, error => console.log('IN saveTestCaseResult - error')
     );
   }
 

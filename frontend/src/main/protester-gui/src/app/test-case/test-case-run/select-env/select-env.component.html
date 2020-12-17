@@ -11,7 +11,7 @@
       <mat-form-field class="full-width-input" appearance="outline">
         <mat-label>Environment</mat-label>
         <mat-select [(ngModel)]="selectedEnv"  [ngModelOptions]="{standalone:true}" required>
-          <mat-option *ngFor="let en of data.environments" [value]="en.url">
+          <mat-option *ngFor="let en of data.environments" [value]="en.id">
             {{en.url}}
           </mat-option>
         </mat-select>

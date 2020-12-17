@@ -25,11 +25,9 @@ export class TestCaseInfoComponent implements OnInit {
   }
 
   refreshTree(): void{
-    console.log('1/' + this.dataSource.data);
     const dataToRefresh = this.dataSource.data;
     this.dataSource.data = null;
     this.dataSource.data = dataToRefresh;
-    console.log('2/' + this.dataSource.data);
   }
 
   hasChild = (_: number, node: any) => (!!node.innerResults && node.innerResults.length >= 0);

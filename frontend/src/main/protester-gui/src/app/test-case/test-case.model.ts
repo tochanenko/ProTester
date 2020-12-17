@@ -9,4 +9,6 @@ export class TestCaseModel {
   scenarioId: number;
   dataSetResponseList?: Array<DataSetResponse>;
   dataSetId?: Array<number>;
+
+  environment?: number;
 }

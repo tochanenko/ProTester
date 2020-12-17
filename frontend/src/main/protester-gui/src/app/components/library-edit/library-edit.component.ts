@@ -45,7 +45,8 @@ export class LibraryEditComponent implements OnInit {
     private interactionService: LibraryBottomsheetInteractionService,
     private router: Router,
     private activateRoute: ActivatedRoute
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.getIdFromParams();
@@ -65,27 +66,26 @@ export class LibraryEditComponent implements OnInit {
   }
 
   getIdFromParams(): void {
-    this.componentSubscription = this.activateRoute.queryParams.subscribe(params=>this.library_id=params['id']);
+    this.componentSubscription = this.activateRoute.queryParams.subscribe(params => this.library_id = params['id']);
   }
 
   getLibraryById(id: number): void {
     this.libraryService.getLibraryById(id).subscribe(library => {
       this.library = library;
-      console.log(library);
 
       let f = this.formControls;
       f.name.setValue(library.name);
       f.description.setValue(library.description);
 
       library.components.forEach(component => {
+        component.component.description = this.parseDescription(component.component.description.toString());
         let inner;
         if (component['action']) {
-          inner = <Action> component.component;
+          inner = <Action>component.component;
           this.actions.push(new Action(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.className, inner.prepared, inner.preparedParams))
-        } else
-          {
-            inner = <OuterComponent> component.component;
-            this.compounds.push(new OuterComponent(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.steps))
+        } else {
+          inner = <OuterComponent>component.component;
+          this.compounds.push(new OuterComponent(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.steps))
         }
       })
     });
@@ -161,11 +161,9 @@ export class LibraryEditComponent implements OnInit {
   }
 
   openBottomSheetWithActions(): void {
-
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['actions'],
-        isAction: true
+        components: {actions: this.bottomSheetData['actions']}
       }
     });
   }
@@ -173,22 +171,45 @@ export class LibraryEditComponent implements OnInit {
   openBottomSheetWithCompounds(): void {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['compounds'],
-        isAction: false
+        components: {compounds: this.bottomSheetData['compounds']}
       }
     });
   }
 
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
-      this.bottomSheetData['actions'] = data;
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
+      this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
+  }
+
+  parseDescription(description: string) {
+    const regexp = new RegExp('(\\${\\w*})');
+    let splitted = description.split(regexp);
+    return splitted.map(sub_string => {
+      if (sub_string.includes("${")) {
+        return {
+          text: sub_string.replace('${', '').replace('}', ''),
+          input: true
+        }
+      } else {
+        return {
+          text: sub_string,
+          input: false
+        }
+      }
+    })
   }
 
   ngOnDestroy(): void {

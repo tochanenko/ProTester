@@ -51,7 +51,18 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
+                  <div class="panel-content">
+                    <ng-container *ngFor="let sub_string of component.description">
+                      <div *ngIf="sub_string['input']">
+                        <div class="description-input-disabled mat-elevation-z6">
+                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                        </div>
+                      </div>
+                      <div *ngIf="!sub_string['input']" class="description-text">
+                        <span>{{sub_string['text']}}</span>
+                      </div>
+                    </ng-container>
+                  </div>
                   <button mat-icon-button (click)="deleteComponentFromArray(actions, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
@@ -77,8 +88,18 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
-                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
+                  <div class="panel-content">
+                    <ng-container *ngFor="let sub_string of component.description">
+                      <div *ngIf="sub_string['input']">
+                        <div class="description-input-disabled mat-elevation-z6">
+                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                        </div>
+                      </div>
+                      <div *ngIf="!sub_string['input']" class="description-text">
+                        <span>{{sub_string['text']}}</span>
+                      </div>
+                    </ng-container>
+                  </div>                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>

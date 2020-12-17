@@ -9,7 +9,7 @@ import {delay, delayWhen, map, retry, retryWhen} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class WebsocketsService {
-  url = 'http://localhost:8080/stomp-endpoint';
+  url = '/test-case-list';
   client: Client;
 
   connect(frame: any): void {

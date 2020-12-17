@@ -18,7 +18,7 @@ export class TestCaseAnalyzeService {
   }
 
   loadTestCasesResults(id: number): Observable<TestCaseResult> {
-    return this.http.get<TestCaseResult>(`/api/analyze/${id}`, httpOptions);
+    return this.http.get<TestCaseResult>(`/api/test-case-results/${id}`, httpOptions);
   }
 
   getTestCaseById(id: number): Observable<TestCaseModel> {

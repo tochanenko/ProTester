@@ -6,6 +6,8 @@ import {TestCaseFilter} from '../../test-case/test-case-filter';
 import {Injectable} from '@angular/core';
 import {DataSetResponse} from "../../models/data-set-response";
 import {DataSetRequestResponse} from "../../models/data-set-request-response";
+import {RunTestCaseModel} from '../../test-case/run-test-case.model';
+import {RunResultModel} from '../../test-case/run-result.model';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -44,5 +46,14 @@ export class TestCaseService {
   }
   deleteTestCase(id: number): Observable<any> {
    return this.http.delete<string>(`/api/testCase/${id}`);
+  }
+
+  saveTestCaseResult(runTestCase: RunTestCaseModel): Observable<RunResultModel> {
+    return this.http.post<RunResultModel>('/api/test', runTestCase, httpOptions);
+  }
+
+  runTestCase(id: number): Observable<void> {
+    console.log('00000000000000000000000000000000');
+    return this.http.get<void>(`/api/test/${id}`, httpOptions);
   }
 }

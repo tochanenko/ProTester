@@ -12,12 +12,16 @@ export class TestCaseResult {
 }
 
 export class AbstractAction {
-  id: number;
+  id?: number;
   name: string;
   description?: string;
   type: ExecutableComponentType;
   parameterNames?: string[];
   className?: string;
+}
+
+export class Message {
+  hello: ActionResult;
 }
 
 export class ActionResult {
@@ -58,7 +62,7 @@ export class SqlColumnDto {
 
 export enum Status {
   PASSED = 'PASSED',
-  IN_PROGRESS = 'IN PROGRESS',
+  IN_PROGRESS = 'IN_PROGRESS',
   NOT_STARTED = 'NOT STARTED',
   FAILED = 'FAILED'
 }

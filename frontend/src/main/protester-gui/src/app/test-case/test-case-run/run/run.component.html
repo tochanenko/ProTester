@@ -2,7 +2,7 @@
 
   <div class="search-test-case">
 
-    <button mat-icon-button class="filter-button" >
+    <button mat-icon-button class="filter-button" (click)="runTestCases()" >
       <span class="material-icons run">play_circle_filled</span>
       RUN
     </button>
@@ -15,7 +15,7 @@
 
   </div>
 
-  <table mat-table [dataSource]="dataSource">
+  <mat-table [dataSource]="dataSource">
 
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -63,6 +63,12 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"
         (click)="selectTestCase(row)">
     </mat-row>
-  </table>
+  </mat-table>
+  <mat-paginator class="header"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [length]="testCasesCount"
+                 [pageSize]="testCaseFilter.pageSize"
+                 (page)="pageEvent = $event; onPaginateChange($event)">
+  </mat-paginator>
 </mat-card>
 

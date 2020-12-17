@@ -5,14 +5,15 @@
 .action-info {
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  width: 96%;
-  margin-left: 3%;
+  width: 93%;
+  margin-left: 4%;
   margin-top: 0.8%;
+  /*margin-right: 1%;*/
 }
 
 .action-failed-result {
   border: 2px solid #ff0000;
-  width: 96%;
+  width: 95%;
   margin-left: 2.8%;
   margin-top: 0.8%;
 }
@@ -24,14 +25,12 @@
 }
 
 .test-case-title {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  display: flex;
 
   font-family: Roboto;
   font-style: normal;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 31px;
   line-height: 35px;
 
   color: rgba(0, 0, 0, 0.87);
@@ -39,10 +38,10 @@
 
 .test-case-info {
   display: flex;
-  margin-top: -1%;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  width: 99%;
+  width: 97%;
+  /*margin-right: 1%;*/
 }
 
 mat-expansion-panel-header {

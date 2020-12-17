@@ -9,7 +9,6 @@ import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.Step;
-import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;

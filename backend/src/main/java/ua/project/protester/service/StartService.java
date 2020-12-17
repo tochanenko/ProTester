@@ -1,7 +1,5 @@
 package ua.project.protester.service;
 
-import com.google.gson.Gson;
-import jdk.jshell.Snippet;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +13,6 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.DataSet;
 import ua.project.protester.model.RunResult;
-import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
@@ -26,6 +23,7 @@ import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.repository.result.ActionResultRepository;
 import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
+import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.request.TestCaseRequest;
 
 import java.time.OffsetDateTime;
@@ -47,7 +45,7 @@ public class StartService {
      private RunResultRepository runResultRepository;
      private SimpMessagingTemplate messagingTemplate;
 
-     private List<TestCaseRequest> testCaseRequest = new ArrayList<>();
+     private static List<TestCaseRequest> testCaseRequest = new ArrayList<>();
 
      @Autowired
     public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
@@ -67,11 +65,11 @@ public class StartService {
          RunResult runResult = runResultRepository.findRunResultById(id).get();
 
          List<Integer> testCaseResults = runResult.getTestCaseResult();
-        for (int i = 0; i < this.testCaseRequest.size(); i++) {
+        for (int i = 0; i < testCaseRequest.size(); i++) {
             runTestCase(testCaseRequest.get(i), testCaseResults.get(i));
         }
-        log.info("testCaseRequest are {}", this.testCaseRequest);
-        this.testCaseRequest.clear();
+        log.info("testCaseRequest are {}", testCaseRequest);
+        testCaseRequest.clear();
     }
 
     @Transactional
@@ -114,7 +112,7 @@ public class StartService {
                     return resultRepository.save(testCaseResult).getId();
                 })
                 .collect(Collectors.toList()));
-        this.testCaseRequest = testCaseRequest.getTestCaseRequestList();
+        StartService.testCaseRequest = testCaseRequest.getTestCaseRequestList();
         return runResultRepository.saveUserRunResult(runResult);
     }
 
@@ -124,7 +122,8 @@ public class StartService {
             try {
                 ActionResultDto actionResultDto = new ActionResultDto(action);
                 actionResultDto.setStatus(ResultStatus.IN_PROGRESS);
-                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+                System.out.println("ACTION FROM CALLBACK " + action);
+                //messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
                 actionResultDto = actionResultRepository.save(testCaseResultId, action);
                 messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
             } catch (IllegalActionLogicImplementation illegalActionLogicImplementation) {
@@ -142,7 +141,7 @@ public class StartService {
             for (Step s : stepsParams
             ) {
                 for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (dataSet.getDataset().containsKey(entry.getValue()) && !initMap.containsValue(entry.getValue())) {
+                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsValue(entry.getValue())) {
                         entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
                     }
                 }

@@ -115,14 +115,6 @@ public class EnvironmentRepository {
         }
     }
 
-    public Long count(Pagination pagination) {
-        MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("environmentName", pagination.getSearchField() + "%");
-
-        return namedParameterJdbcTemplate.queryForObject(PropertyExtractor.extract(env, "countEnvironment"),
-                namedParams, Long.class);
-    }
-
     public List<ua.project.protester.model.Environment> findAll(Pagination pagination) {
         System.out.println("IN REPO  " + pagination.getSearchField());
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
@@ -151,4 +143,13 @@ public class EnvironmentRepository {
             return Collections.emptyList();
         }
     }
+
+    public Long count(Pagination pagination) {
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("environmentName", pagination.getSearchField() + "%");
+
+        return namedParameterJdbcTemplate.queryForObject(PropertyExtractor.extract(env, "countEnvironment"),
+                namedParams, Long.class);
+    }
+
 }

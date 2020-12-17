@@ -8,4 +8,5 @@ export class TestCaseModel {
   authorId?: number;
   scenarioId: number;
   dataSetResponseList?: Array<DataSetResponse>;
+  dataSetId?: Array<number>;
 }

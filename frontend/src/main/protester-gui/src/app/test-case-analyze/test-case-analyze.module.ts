@@ -10,6 +10,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatChipsModule} from '@angular/material/chips';
 import {FormsModule} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   declarations: [TestCaseAnalyzeComponent, TestCaseInfoComponent, ResultListComponent],
@@ -29,7 +30,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatExpansionModule,
     MatChipsModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSortModule
   ],
   exports: [RouterModule]
 })

@@ -55,6 +55,8 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 new String[]{idColumnName});
         Integer libraryId = (Integer) keyHolder.getKey();
 
+        log.info("sql {}", sql);
+        log.info("create {} library", library.getName());
         saveLibraryStorages(library, libraryId);
     }
 
@@ -67,16 +69,19 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                         .addValue("library_name", library.getName())
                         .addValue("library_description", library.getDescription())
         );
+
+        log.info("update {} library {}", library.getName(), library);
         deleteLibrariesStorage(id);
         saveLibraryStorages(library, id);
     }
 
     @Override
     public List<Library> findAll(PaginationLibrary paginationLibrary) {
-        String sql = PropertyExtractor.extract(env, "findAll");
+        String sql = PropertyExtractor.extract(env, "findAllLibraries");
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("count", paginationLibrary.getPageSize());
         namedParams.addValue("offset", paginationLibrary.getOffset());
+        namedParams.addValue("name", paginationLibrary.getName() + "%");
 
         List<Library> allLibraries = namedParameterJdbcTemplate.query(
                 sql,
@@ -88,6 +93,10 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 .forEach(library -> library.setComponents(
                         findAllLibraryStorageById(library.getId())));
 
+        log.info("sql query {}", sql);
+        log.info("params {}", namedParams);
+        log.info("All libraries {}", allLibraries);
+
         return allLibraries;
     }
 
@@ -97,6 +106,11 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("filterLibraryName", paginationLibrary.getName() + "%");
 
+        log.info("sql query {}", sql);
+        log.info(String.valueOf(env.getActiveProfiles()));
+        log.info(String.valueOf(env.getDefaultProfiles()));
+        log.info("params {}", namedParams);
+        log.info("pagination {}", paginationLibrary);
         return namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
     }
 
@@ -113,7 +127,8 @@ public class LibraryRepositoryImpl implements LibraryRepository {
             if (library == null) {
                 return Optional.empty();
             }
-
+            log.info("sql query {}", sql);
+            log.info("find by id {} library", library.getName());
             List<Step> steps = findAllLibraryStorageById(library.getId());
             library.setComponents(steps);
             return Optional.of(library);

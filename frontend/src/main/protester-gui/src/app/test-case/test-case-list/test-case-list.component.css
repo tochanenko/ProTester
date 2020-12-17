@@ -72,6 +72,17 @@ mat-card {
   margin-top: 0.5%;
 }
 
+.run-button {
+  background: #FFFFFF;
+  border: 1px solid rgba(92, 107, 192, 0.54);
+  box-sizing: border-box;
+  border-radius: 6px;
+  width: 12%;
+  height: 50px;
+  margin-top: 0.5%;
+  margin-left: 5%;
+}
+
 .mat-form-field {
   width: 50%;
   height: 4%;
@@ -113,4 +124,9 @@ button.mat-button .mat-icon {
   font-size: 160%;
   color: #5C6BC0;
   margin-left: 10px;
+}
+
+
+.run {
+  color: #5C6BC0;
 }

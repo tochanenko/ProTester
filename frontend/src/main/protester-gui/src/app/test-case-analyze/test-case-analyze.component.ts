@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ExecutableComponentType, Status, TestCaseResult} from './result.model';
-import * as Stomp from '@stomp/stompjs';
-import * as SockJS from 'sockjs-client';
+import {ActionResult, ExecutableComponentType, Message, Status, TestCaseResult} from './result.model';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
+import {WebsocketsService} from './websockets.service';
+import {TestCaseRunAnalyzeService} from '../services/test-case-run-analyze.service';
+import {RunResultModel} from '../test-case/run-result.model';
 
 @Component({
   selector: 'app-test-case-run',
@@ -13,129 +14,151 @@ import {TestCaseService} from '../services/test-case/test-case-service';
 })
 export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
-  resultList: TestCaseResult[] = [
-    {
-      id: 1,
-      userId: 2,
-      name: 'Test case 1',
-      testCaseId: 3,
-      status: Status.PASSED,
-      startDate: '02/03/101',
-      endDate: '04/02/303',
-      innerResults: [
-        {
-          id: 4,
-          actionName: 'action1',
-          startDate: '06/04/2020',
-          endDate: '06/05/2020',
-          extra: {url: 'url1', sssd: 'sssssssss', ryu: 'sks', ska: 'skskss'},
-          message: 'message1',
-          type: ExecutableComponentType.REST,
-          status: Status.PASSED,
-        },
-        {
-          id: 4,
-          actionName: 'action2',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.UI,
-          status: Status.IN_PROGRESS,
-        },
-        {
-          id: 4,
-          actionName: 'action3',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.SQL,
-          status: Status.FAILED,
-        },
-        {
-          id: 4,
-          actionName: 'action4',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-      ]
-    },
+ // // resultList: TestCaseResult[] = [
+ //    {
+ //      id: 1,
+ //      user: {
+ //        username: 'username1',
+ //        password: 'password',
+ //        email: 'email',
+ //        firstName: 'firstname',
+ //        lastName: 'lastname',
+ //        role: 'role',
+ //      },
+ //      testCase: {
+ //        name: 'testcase1',
+ //        scenarioId: 1
+ //      },
+ //      status: Status.PASSED,
+ //      startDate: '02/03/101',
+ //      endDate: '04/02/303',
+ //      innerResults: [
+ //        {
+ //          id: 4,
+ //          action: {
+ //            id: 3,
+ //            name: 'action1',
+ //            type: ExecutableComponentType.REST
+ //          },
+ //          startDate: '06/04/2020',
+ //          endDate: '06/05/2020',
+ //          status: Status.PASSED,
+ //          inputParameters: {urljjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjjj: 'urjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjl1', sssd: 'sssssssss'},
+ //          request: 'request',
+ //          response: 'response',
+ //          statusCode: 202
+ //        },
+ //        {
+ //          id: 7,
+ //          action: {
+ //            id: 6,
+ //            name: 'action5',
+ //            type: ExecutableComponentType.SQL
+ //          },
+ //          startDate: '06/04/2220',
+ //          endDate: '06/05/2320',
+ //          status: Status.PASSED,
+ //          inputParameters: {url: 'url1', sssd: 'sssssssss'},
+ //          connectionUrl: 'url',
+ //          username: 'username',
+ //          query: 'select * from users',
+ //          columns: [
+ //            {
+ //              id: 1,
+ //              name: 'id',
+ //              rows: ['560', '561']
+ //            },
+ //            {
+ //              id: 2,
+ //              name: 'nickNamnnnnnnnnn',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //            //
+ //            {
+ //              id: 2,
+ //              name: 'nickNamennnnnnn',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //            //
+ //
+ //            {
+ //              id: 2,
+ //              name: 'ddddddd',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //
+ //            {
+ //              id: 2,
+ //              name: 'ddddddd',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //
+ //            {
+ //              id: 2,
+ //              name: 'dddddd333d',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //            {
+ //              id: 2,
+ //              name: 'ddddddd',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //
+ //            {
+ //              id: 2,
+ //              name: 'dddddd333d',
+ //              rows: ['Vasya', 'Illya']
+ //            },
+ //            //
+ //            // {
+ //            //   id: 2,
+ //            //   name: 'ddddddd',
+ //            //   rows: ['Vasya', 'Illya']
+ //            // },
+ //            //
+ //            // {
+ //            //   id: 2,
+ //            //   name: 'dddddd333d',
+ //            //   rows: ['Vasya', 'Illya']
+ //            // },
+ //            //
+ //            // {
+ //            //   id: 2,
+ //            //   name: 'ddddddd',
+ //            //   rows: ['Vasya', 'Illya']
+ //            // },
+ //            //
+ //            // {
+ //            //   id: 2,
+ //            //   name: 'dddddd333d',
+ //            //   rows: ['Vasya', 'Illya']
+ //            // },
+ //
+ //          ]
+ //        }
+ //      ]
+ //    },
+ //  ];
 
-    {
-      id: 4,
-      userId: 2,
-      name: 'Test case 2',
-      testCaseId: 3,
-      status: Status.FAILED,
-      startDate: '03/04/2020',
-      endDate: '03/05/2020',
-      innerResults: [
-        {
-          id: 4,
-          actionName: 'action5',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-        {
-          id: 6,
-          actionName: 'action6',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.TECHNICAL,
-          status: Status.IN_PROGRESS,
-        },
-        {
-          id: 4,
-          actionName: 'action7',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.FAILED,
-        },
-        {
-          id: 4,
-          actionName: 'action8',
-          startDate: '03/04/2020',
-          endDate: '03/05/2020',
-          extra: {url: 'url1', sssd: 'sss'},
-          message: 'message',
-          type: ExecutableComponentType.REST,
-          status: Status.NOT_STARTED,
-        },
-      ]
-    },
-  ];
-
-  // resultList: TestCaseResult[] = [];
-  idList: number[] = [1, 4];
-  isError = false;
+  resultList: TestCaseResult[] = [];
+  idList: number[] = [];
   isLoading = true;
-  numberOfReconnects = 0;
-  maxNumberOfReconnects = 2;
-
-  public stompClient = null;
+  isError = false;
+  idToRun: number;
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
-  constructor(private analyzeService: TestCaseAnalyzeService, private testCaseService: TestCaseService) {
+  constructor(private analyzeService: TestCaseAnalyzeService,
+              private testCaseService: TestCaseService,
+              private websocketsService: WebsocketsService,
+              private runAnalyzeService: TestCaseRunAnalyzeService) {
   }
 
   ngOnInit(): void {
-    // this.loadTestCasesResults();
-    // this.openWebSocketWithActionResults();
+   // const result: RunResultModel = this.runAnalyzeService.runResultModel;
+   // console.log('------------' + result.id + ',  ids:' + result.testCaseResult);
+    this.idList = this.runAnalyzeService.runResultModel.testCaseResult;
+    this.loadTestCasesResults();
     this.isLoading = false;
   }
 
@@ -145,101 +168,87 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.isLoading = false;
-
-            this.analyzeService.getTestCaseById(data.testCaseId)
-              .subscribe(d => {
-                data.name = d.name;
-                this.resultList.push(data);
-              }, error => console.log(error));
+            this.resultList.push(data);
+            this.idToRun = this.runAnalyzeService.runResultModel.id;
+            this.openWebSocketWithActionResults();
           },
-          error => this.isError = true
+          error => console.log('error')
         );
     }
   }
 
   openWebSocketWithActionResults(): void {
-    this.connect();
-  }
-
-  connect(): void {
-    const socket = new SockJS('http://localhost:8080/onlyfullstack-stomp-endpoint');
-    this.stompClient = Stomp.over(socket);
-    const _this = this;
-    this.stompClient.connect({}, function(frame) {
-      _this.isLoading = false;
-      _this.numberOfReconnects = 0;
-      for (let index = 0; index < _this.idList.length; index++) {
-        let id = _this.idList[index];
-        _this.stompClient.subscribe('/topic/hi/' + id, function(hello) {
-
-          _this.onMessageReceive(hello, id);
-
+    this.websocketsService.connect(() => {
+      console.log(this.runAnalyzeService.runResultModel.id + '*********');
+      console.log('----------------------------------------');
+      for (let index = 0; index < this.idList.length; index++) {
+        const id = this.idList[index];
+        this.websocketsService.getStompClient().subscribe('/topic/public/' + id, (hello) => {
+          // console.log(JSON.stringify(hello.body));
+          // const res: ActionResult = JSON.parse(hello.body).hello;
+          // console.log(res + '++++++++++++++++++++++++');
+          console.log('------------------------hello');
+          this.onMessageReceive(hello, id);
         });
       }
-      _this.stompClient.reconnect_delay = 2000;
 
-    }, function(errorCallback) {
-      _this.numberOfReconnects++;
-      _this.reconnect();
+      this.testCaseService.runTestCase(this.runAnalyzeService.runResultModel.id)
+        .subscribe(result => {
+          console.log('running');
+        });
     });
   }
 
   onMessageReceive(hello, id: number): void {
-    const _this = this;
 
-    const actionToAdd = {
-      id: 4,
-      actionName: JSON.parse(hello.body).message,
-      startDate: '06/04/2020',
-      endDate: '06/05/2020',
-      extra: {url: 'url1', sssd: 'sss', ryu: 'sks', ska: 'skskss'},
-      message: 'message1',
-      type: ExecutableComponentType.REST,
-      status: Status.PASSED,
-    };
-    const indexOfTestCase: number = _this.resultList
+    // console.log(JSON.parse(hello.body));
+    // const actionToAdd = {
+    //     id: 4,
+    //     action: {
+    //       id: 3,
+    //       name: JSON.parse(hello.body).hello,
+    //       type: ExecutableComponentType.REST
+    //     },
+    //     startDate: '06/04/2020',
+    //     endDate: '06/05/2020',
+    //     status: Status.PASSED,
+    //     inputParameters: {url: 'url1', sssd: 'sssssssss'},
+    //     request: 'request',
+    //     response: 'response',
+    //     statusCode: 202
+    //   };
+
+    // const actionToAddjson: any = JSON.parse(hello.body);
+    // const message: Message = actionToAddjson as Message;
+
+    console.log('---');
+
+    const actionToAdd: ActionResult = JSON.parse(hello.body);
+    console.log('id-----' + actionToAdd.id);
+    console.log(id + '--------');
+    console.log('type' + typeof actionToAdd);
+    console.log('!!!!!!!!!!' + JSON.stringify(actionToAdd));
+    const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === id);
 
     console.log('index = ' + indexOfTestCase);
 
     if (indexOfTestCase === undefined) {
-      _this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
+      this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
     } else {
-      const actionIndex = _this.resultList[indexOfTestCase].innerResults.findIndex(e => e.id === actionToAdd.id);
-      _this.resultList[indexOfTestCase].innerResults[actionIndex] = (actionToAdd);
+      const actionIndex = this.resultList[indexOfTestCase].innerResults.findIndex(e => e.id === actionToAdd.id);
+      this.resultList[indexOfTestCase].innerResults[actionIndex] = (actionToAdd);
     }
 
-    _this.testCaseInfoComponents
+    this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
+    console.log('_______________' + typeof this.resultList[indexOfTestCase].innerResults[0]);
+    console.log('--------------------------' + this.resultList[indexOfTestCase].startDate);
+
+    this.testCaseInfoComponents
       .forEach((child) => child.refreshTree());
   }
 
-  reconnect(): void {
-    if (this.numberOfReconnects > this.maxNumberOfReconnects) {
-      console.log('The number of reconnections to reach the upper limit failed');
-      this.isError = true;
-      return;
-    }
-
-    const _this = this;
-    setTimeout(function() {
-      _this.connect();
-    }, 3000);
-  }
-
-  disconnectStompClient(): void {
-    if (this.stompClient != null) {
-      this.stompClient.disconnect();
-    }
-  }
-
-  onCliCkReconnect(): void {
-    this.numberOfReconnects = 0;
-    this.isError = false;
-    this.isLoading = true;
-    this.reconnect();
-  }
-
   ngOnDestroy(): void {
-    this.disconnectStompClient();
+    this.websocketsService.disconnectClient();
   }
 }

@@ -16,7 +16,6 @@ import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 import ua.project.protester.utils.testcase.TestCaseRowMapper;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

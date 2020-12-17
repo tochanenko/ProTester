@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {TestCaseResult} from '../result.model';
+import {SqlColumnDto, TestCaseResult} from '../result.model';
+import {Project} from '../../models/project/project.model';
 
 @Component({
   selector: 'app-result-list',
@@ -9,13 +10,12 @@ import {TestCaseResult} from '../result.model';
 export class ResultListComponent implements OnInit, OnChanges {
 
   @Input() testCaseResult: TestCaseResult;
-
   panelOpenState = true;
 
   constructor() { }
 
   ngOnInit(): void {
-    // console.log(this.testCaseResult);
+     console.log(this.testCaseResult);
   }
 
   updateTestCaseResult(result): void {

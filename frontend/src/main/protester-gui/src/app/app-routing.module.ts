@@ -14,6 +14,7 @@ import {ProjectListComponent} from './components/project/project-list/project-li
 import {UsersListComponent} from "./components/users-list/users-list.component";
 import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
 import {TestCaseListComponent} from "./test-case/test-case-list/test-case-list.component";
+import {DatasetListComponent} from "./dataset/dataset-list/dataset-list.component";
 import {ViewUserComponent} from "./components/view-user/view-user.component";
 import {EditUserComponent} from "./components/edit-user/edit-user.component";
 import {LibraryMenuComponent} from './components/library-menu/library-menu.component';
@@ -23,6 +24,7 @@ import {CompoundSearchComponent} from "./components/compound-search/compound-sea
 import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
 import {LibraryViewComponent} from "./components/library-view/library-view.component";
 import {CompoundNewComponent} from "./components/compound-new/compound-new.component";
+import {RunComponent} from './test-case/test-case-run/run/run.component';
 
 const routes: Routes = [
   {
@@ -67,11 +69,11 @@ const routes: Routes = [
   },
   {
     path: 'projectMenu',
-    component: ProjectMenuComponent
-    // canActivate: [AuthGuard],
-    // data: {
-    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    // }
+    component: ProjectMenuComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
 
   {
@@ -85,11 +87,11 @@ const routes: Routes = [
 
   {
     path: 'projectList',
-    component: ProjectListComponent
-    // canActivate: [AuthGuard],
-    // data: {
-    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
-    // }
+    component: ProjectListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
   },
 
   {
@@ -100,9 +102,28 @@ const routes: Routes = [
       roles: ['ADMIN', 'MANAGER', 'ENGINEER']
     }
   },
+
+  {
+    path: 'datasetList',
+    component: DatasetListComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    }
+  },
+
   {
     path: 'test-case-list/:id',
-    component: TestCaseListComponent
+    component: TestCaseListComponent,
+    // canActivate: [AuthGuard],
+    // data: {
+    //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+    // }
+  },
+
+  {
+    path: 'test-case-run/:id',
+    component: RunComponent,
     // canActivate: [AuthGuard],
     // data: {
     //   roles: ['ADMIN', 'MANAGER', 'ENGINEER']
@@ -153,7 +174,11 @@ const routes: Routes = [
     component: CompoundNewComponent
   },
 
-  {path: '', redirectTo: 'login', pathMatch: 'full'}
+  {path: '', redirectTo: 'login', pathMatch: 'full'},
+  {
+    path: '**',
+    redirectTo: '404'
+  }
 ];
 
 @NgModule({

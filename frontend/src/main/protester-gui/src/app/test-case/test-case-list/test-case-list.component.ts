@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PageEvent} from '@angular/material/paginator';
 import {Subscription} from 'rxjs';
 import {StorageService} from '../../services/auth/storage.service';
@@ -33,7 +33,8 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
               private route: ActivatedRoute,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private router: Router) {
     route.params.subscribe(params => this.projectId = params[`id`]);
     console.log(`Project id in test-case-list ${this.projectId}`);
   }
@@ -96,5 +97,9 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
     console.log(`deleted id ${id}`);
     this.testCaseService.deleteTestCase(id).subscribe();
     this.searchCases();
+  }
+
+  runTestCaseView(): void {
+    this.router.navigateByUrl('/test-case-run/' + this.projectId).then();
   }
 }

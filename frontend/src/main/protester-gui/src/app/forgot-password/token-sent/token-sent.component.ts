@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
 import {PasswordService} from "../../services/password.service.ts.service";
+import {Router} from "@angular/router";
 import {StorageService} from "../../services/auth/storage.service";
 
 @Component({
-  selector: 'app-pending-password',
-  templateUrl: './pending-password.component.html',
-  styleUrls: ['./pending-password.component.css']
+  selector: 'app-token-sent',
+  templateUrl: './token-sent.component.html',
+  styleUrls: ['./token-sent.component.css']
 })
-export class PendingPasswordComponent implements OnInit {
+export class TokenSentComponent implements OnInit {
 
   recoveryForm: FormGroup;
   submitted = false;
@@ -50,5 +50,4 @@ export class PendingPasswordComponent implements OnInit {
       }
     )
   }
-
 }

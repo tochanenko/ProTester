@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PasswordService} from "../../services/password.service.ts.service";
 import {Router} from "@angular/router";
 import {StorageService} from "../../services/auth/storage.service";
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.css']
+  selector: 'app-restore-request',
+  templateUrl: './restore-request.component.html',
+  styleUrls: ['./restore-request.component.css']
 })
-export class ForgotPasswordComponent implements OnInit {
+export class RestoreRequestComponent implements OnInit {
 
   recoveryForm: FormGroup;
   submitted = false;
@@ -19,8 +19,7 @@ export class ForgotPasswordComponent implements OnInit {
               private router: Router,
               private storageService: StorageService,
               private formBuilder: FormBuilder
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.recoveryForm = this.formBuilder.group({
@@ -46,7 +45,7 @@ export class ForgotPasswordComponent implements OnInit {
 
     this.passwordService.forgotPassword(recoveryResponse).subscribe(
       email => {
-        this.router.navigateByUrl('/pending-password').then();
+        this.router.navigateByUrl('forgot-password/token-sent').then();
       }
     )
   }

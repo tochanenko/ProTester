@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PendingPasswordComponent } from './pending-password.component';
+import { InvalidTokenComponent } from './invalid-token.component';
 
-describe('PendingPasswordComponent', () => {
-  let component: PendingPasswordComponent;
-  let fixture: ComponentFixture<PendingPasswordComponent>;
+describe('InvalidTokenComponent', () => {
+  let component: InvalidTokenComponent;
+  let fixture: ComponentFixture<InvalidTokenComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PendingPasswordComponent ]
+      declarations: [ InvalidTokenComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PendingPasswordComponent);
+    fixture = TestBed.createComponent(InvalidTokenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

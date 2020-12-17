@@ -15,10 +15,6 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
 
-import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
-import {PendingPasswordComponent} from './components/pending-password/pending-password.component';
-import {ChangePasswordComponent} from './components/change-password/change-password.component';
-import {TokenExpiredComponent} from './components/token-expired/token-expired.component';
 import {ProjectMenuComponent} from './components/project/project-menu/project-menu.component';
 import {ProjectCreateComponent} from './components/project/project-create/project-create.component';
 import {ProjectListComponent} from './components/project/project-list/project-list.component';
@@ -52,6 +48,7 @@ import { CompoundSearchComponent } from './components/compound-search/compound-s
 import { LibraryEditComponent } from './components/library-edit/library-edit.component';
 import { LibraryViewComponent } from './components/library-view/library-view.component';
 import { CompoundNewComponent } from './components/compound-new/compound-new.component';
+import {ForgotPasswordModule} from "./forgot-password/forgot-password.module";
 
 
 @NgModule({
@@ -61,10 +58,6 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     LoginComponent,
     HeaderComponent,
     ProfileComponent,
-    ForgotPasswordComponent,
-    PendingPasswordComponent,
-    ChangePasswordComponent,
-    TokenExpiredComponent,
     ProjectMenuComponent,
     ProjectCreateComponent,
     ProjectListComponent,
@@ -107,10 +100,11 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     MaterialModule,
     NgxMatSelectSearchModule,
     MatCheckboxModule,
-  TestCaseAnalyzeModule,
+    TestCaseAnalyzeModule,
     NgxMatSelectSearchModule,
     ScrollingModule,
-    MatTabsModule
+    MatTabsModule,
+    ForgotPasswordModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]

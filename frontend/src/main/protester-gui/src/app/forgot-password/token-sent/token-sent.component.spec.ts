@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TokenExpiredComponent } from './token-expired.component';
+import { TokenSentComponent } from './token-sent.component';
 
-describe('TokenExpiredComponent', () => {
-  let component: TokenExpiredComponent;
-  let fixture: ComponentFixture<TokenExpiredComponent>;
+describe('TokenSentComponent', () => {
+  let component: TokenSentComponent;
+  let fixture: ComponentFixture<TokenSentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TokenExpiredComponent ]
+      declarations: [ TokenSentComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TokenExpiredComponent);
+    fixture = TestBed.createComponent(TokenSentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

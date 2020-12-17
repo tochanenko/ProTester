@@ -1,17 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {PasswordService} from "../../services/password.service.ts.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {PasswordService} from "../../services/password.service.ts.service";
 import {StorageService} from "../../services/auth/storage.service";
 import {CustomValidator} from "../../services/customVaidator.service";
 
 @Component({
-  selector: 'app-change-password',
-  templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.css']
+  selector: 'app-create-new',
+  templateUrl: './create-new.component.html',
+  styleUrls: ['./create-new.component.css']
 })
-export class ChangePasswordComponent implements OnInit {
-
+export class CreateNewComponent implements OnInit {
   recoveryForm: FormGroup;
   submitted = false;
   hideNewPasswordField = true;
@@ -83,5 +82,4 @@ export class ChangePasswordComponent implements OnInit {
       }
     )
   }
-
 }

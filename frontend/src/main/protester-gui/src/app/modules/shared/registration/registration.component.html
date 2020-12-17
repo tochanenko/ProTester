@@ -1,0 +1,106 @@
+<div class="registration-form-flex">
+  <mat-card class="content">
+    <div class="logo">
+      <img [src]="image" class="logo-img" alt="Logo">
+    </div>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="registrationForm">
+
+        <mat-error *ngIf="isSignUpFailed">
+          Username or email already exists
+        </mat-error>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>username</mat-label>
+          <input matInput type="text" id="username" class="form-control" name="username" formControlName="username"
+                 [ngClass]="{ 'is-invalid': submitted && f.username.errors }" required>
+          <mat-error *ngIf="submitted && f.username.errors" class="invalid-input">
+            <mat-error *ngIf="f.username.errors.minLength">Min length is</mat-error>
+            <mat-error *ngIf="f.username.errors.maxLength">Max length is</mat-error>
+            <mat-error *ngIf="f.username.errors.pattern">Pattern</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>email</mat-label>
+          <input matInput type="text" id="email" class="form-control" name="email"
+                 formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" required>
+          <mat-error *ngIf="submitted && f.email.errors" class="invalid-input" required>
+            <mat-error *ngIf="f.email.errors.email">Not an email</mat-error>
+            <mat-error *ngIf="f.email.errors.maxLength">Max length</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>first name</mat-label>
+          <input matInput type="text" id="firstName" class="form-control" name="firstName"
+                 formControlName="firstName" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" required>
+          <mat-error *ngIf="submitted && f.firstName.errors" class="invalid-input">
+            <mat-error *ngIf="f.firstName.errors.minLength">min length</mat-error>
+            <mat-error *ngIf="f.firstName.errors.maxLength">max length</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>last name</mat-label>
+          <input matInput type="text" id="lastName" class="form-control" name="lastName"
+                 formControlName="lastName" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" required>
+          <mat-error *ngIf="submitted && f.lastName.errors" class="invalid-input">
+            <mat-error *ngIf="f.lastName.errors.minLength">min length</mat-error>
+            <mat-error *ngIf="f.lastName.errors.maxLength">max length</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>password</mat-label>
+          <input matInput [type]="hidePasswordField ? 'password' : 'text'" id="password" class="form-control"
+                 name="password"
+                 formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required>
+
+          <mat-icon matSuffix (click)="hidePasswordField = !hidePasswordField">
+            {{hidePasswordField ? 'visibility_off' : 'visibility'}}
+          </mat-icon>
+          <mat-error *ngIf="submitted && f.password.errors" class="invalid-input">
+            <mat-error *ngIf="f.password.errors.minLength">Min length</mat-error>
+            <mat-error *ngIf="f.password.errors.maxLength">Max length</mat-error>
+            <mat-error *ngIf="f.password.errors.pattern">Pattern</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>confirm password</mat-label>
+          <input matInput [type]="hideConfirmPasswordField ? 'password' : 'text'" id="passwordConfirm"
+                 class="form-control" name="passwordConfirm"
+                 formControlName="passwordConfirm" [ngClass]="{ 'is-invalid': submitted && f.passwordConfirm.errors }"
+                 required>
+          <mat-icon matSuffix (click)="hideConfirmPasswordField = !hideConfirmPasswordField">
+            {{hideConfirmPasswordField ? 'visibility_off' : 'visibility'}}
+          </mat-icon>
+          <mat-error *ngIf="submitted && f.passwordConfirm.errors" class="invalid-input">
+            <mat-error *ngIf="f.passwordConfirm.errors.mustMatch">Do not match</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field name="role" appearance="outline">
+          <mat-label>role</mat-label>
+          <mat-select [ngClass]="{ 'is-invalid': submitted && f.role.errors }" formControlName="role" required>
+            <mat-option *ngFor="let item of roles" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button class="button-flex-container">
+          <p class="button-text">
+            REGISTER
+          </p>
+        </button>
+
+        <div class="more-info">
+          <a class="btn btn-outline-primary" style="width: 50%" routerLink="/account/login"> Cancel </a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

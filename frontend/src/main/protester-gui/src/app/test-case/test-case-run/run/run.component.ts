@@ -174,6 +174,7 @@ export class RunComponent implements  OnInit, OnDestroy {
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
     this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
+   // this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
 
     console.log(this.runTestCaseModel.userId + '-------------------');
 

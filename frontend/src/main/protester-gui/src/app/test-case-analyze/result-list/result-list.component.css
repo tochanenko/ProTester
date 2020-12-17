@@ -108,7 +108,7 @@ table, th , td {
   margin-right: 10px;
 }
 
-.sql-table {
+.sql-table, .parameters-table {
   border-collapse: collapse;
   table-layout: fixed;
   display: block;
@@ -132,6 +132,15 @@ table, th , td {
   border-bottom: 1px solid #ddd;
   margin-right: 20px;
   width: 10%;
+}
+
+.parameters-tr-td {
+  padding: 8px;
+  text-align: left;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin-right: 20px;
+  width: 20%;
 }
 
 .sql-tr-td-inner {

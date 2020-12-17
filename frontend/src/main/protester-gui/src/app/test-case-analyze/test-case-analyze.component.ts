@@ -6,6 +6,8 @@ import {TestCaseService} from '../services/test-case/test-case-service';
 import {WebsocketsService} from './websockets.service';
 import {TestCaseRunAnalyzeService} from '../services/test-case-run-analyze.service';
 import {RunResultModel} from '../test-case/run-result.model';
+import {Observable, of, Subscription} from 'rxjs';
+import {StompSubscription} from '@stomp/stompjs';
 
 @Component({
   selector: 'app-test-case-run',
@@ -14,137 +16,138 @@ import {RunResultModel} from '../test-case/run-result.model';
 })
 export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
- // // resultList: TestCaseResult[] = [
- //    {
- //      id: 1,
- //      user: {
- //        username: 'username1',
- //        password: 'password',
- //        email: 'email',
- //        firstName: 'firstname',
- //        lastName: 'lastname',
- //        role: 'role',
- //      },
- //      testCase: {
- //        name: 'testcase1',
- //        scenarioId: 1
- //      },
- //      status: Status.PASSED,
- //      startDate: '02/03/101',
- //      endDate: '04/02/303',
- //      innerResults: [
- //        {
- //          id: 4,
- //          action: {
- //            id: 3,
- //            name: 'action1',
- //            type: ExecutableComponentType.REST
- //          },
- //          startDate: '06/04/2020',
- //          endDate: '06/05/2020',
- //          status: Status.PASSED,
- //          inputParameters: {urljjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjjj: 'urjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjl1', sssd: 'sssssssss'},
- //          request: 'request',
- //          response: 'response',
- //          statusCode: 202
- //        },
- //        {
- //          id: 7,
- //          action: {
- //            id: 6,
- //            name: 'action5',
- //            type: ExecutableComponentType.SQL
- //          },
- //          startDate: '06/04/2220',
- //          endDate: '06/05/2320',
- //          status: Status.PASSED,
- //          inputParameters: {url: 'url1', sssd: 'sssssssss'},
- //          connectionUrl: 'url',
- //          username: 'username',
- //          query: 'select * from users',
- //          columns: [
- //            {
- //              id: 1,
- //              name: 'id',
- //              rows: ['560', '561']
- //            },
- //            {
- //              id: 2,
- //              name: 'nickNamnnnnnnnnn',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //            {
- //              id: 2,
- //              name: 'nickNamennnnnnn',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'dddddd333d',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'dddddd333d',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'ddddddd',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'dddddd333d',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'ddddddd',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'dddddd333d',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //
- //          ]
- //        }
- //      ]
- //    },
- //  ];
+  // // resultList: TestCaseResult[] = [
+  //    {
+  //      id: 1,
+  //      user: {
+  //        username: 'username1',
+  //        password: 'password',
+  //        email: 'email',
+  //        firstName: 'firstname',
+  //        lastName: 'lastname',
+  //        role: 'role',
+  //      },
+  //      testCase: {
+  //        name: 'testcase1',
+  //        scenarioId: 1
+  //      },
+  //      status: Status.PASSED,
+  //      startDate: '02/03/101',
+  //      endDate: '04/02/303',
+  //      innerResults: [
+  //        {
+  //          id: 4,
+  //          action: {
+  //            id: 3,
+  //            name: 'action1',
+  //            type: ExecutableComponentType.REST
+  //          },
+  //          startDate: '06/04/2020',
+  //          endDate: '06/05/2020',
+  //          status: Status.PASSED,
+  //          inputParameters: {urljjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjjj: 'urjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjl1', sssd: 'sssssssss'},
+  //          request: 'request',
+  //          response: 'response',
+  //          statusCode: 202
+  //        },
+  //        {
+  //          id: 7,
+  //          action: {
+  //            id: 6,
+  //            name: 'action5',
+  //            type: ExecutableComponentType.SQL
+  //          },
+  //          startDate: '06/04/2220',
+  //          endDate: '06/05/2320',
+  //          status: Status.PASSED,
+  //          inputParameters: {url: 'url1', sssd: 'sssssssss'},
+  //          connectionUrl: 'url',
+  //          username: 'username',
+  //          query: 'select * from users',
+  //          columns: [
+  //            {
+  //              id: 1,
+  //              name: 'id',
+  //              rows: ['560', '561']
+  //            },
+  //            {
+  //              id: 2,
+  //              name: 'nickNamnnnnnnnnn',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //            //
+  //            {
+  //              id: 2,
+  //              name: 'nickNamennnnnnn',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //            //
+  //
+  //            {
+  //              id: 2,
+  //              name: 'ddddddd',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //
+  //            {
+  //              id: 2,
+  //              name: 'ddddddd',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //
+  //            {
+  //              id: 2,
+  //              name: 'dddddd333d',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //            {
+  //              id: 2,
+  //              name: 'ddddddd',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //
+  //            {
+  //              id: 2,
+  //              name: 'dddddd333d',
+  //              rows: ['Vasya', 'Illya']
+  //            },
+  //            //
+  //            // {
+  //            //   id: 2,
+  //            //   name: 'ddddddd',
+  //            //   rows: ['Vasya', 'Illya']
+  //            // },
+  //            //
+  //            // {
+  //            //   id: 2,
+  //            //   name: 'dddddd333d',
+  //            //   rows: ['Vasya', 'Illya']
+  //            // },
+  //            //
+  //            // {
+  //            //   id: 2,
+  //            //   name: 'ddddddd',
+  //            //   rows: ['Vasya', 'Illya']
+  //            // },
+  //            //
+  //            // {
+  //            //   id: 2,
+  //            //   name: 'dddddd333d',
+  //            //   rows: ['Vasya', 'Illya']
+  //            // },
+  //
+  //          ]
+  //        }
+  //      ]
+  //    },
+  //  ];
 
   resultList: TestCaseResult[] = [];
   idList: number[] = [];
   isLoading = true;
   isError = false;
   idToRun: number;
+  subsc: StompSubscription;
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
@@ -155,38 +158,55 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-   // const result: RunResultModel = this.runAnalyzeService.runResultModel;
-   // console.log('------------' + result.id + ',  ids:' + result.testCaseResult);
+    // const result: RunResultModel = this.runAnalyzeService.runResultModel;
+    // console.log('------------' + result.id + ',  ids:' + result.testCaseResult);
     this.idList = this.runAnalyzeService.runResultModel.testCaseResult;
-    this.loadTestCasesResults();
+    of(this.loadTestCasesResults()).subscribe(() => {
+      this.openWebSocketWithActionResults();
+    });
+
+    // //of(this.openWebSocketWithActionResults())
+    //   .subscribe(() => {
+    //     console.log(3);
+    //     this.testCaseService.runTestCase(this.runAnalyzeService.runResultModel.id)
+    //       .subscribe(result => console.log('running'));
+    //  console.log(4);
+
+    //  });
+    //console.log(5);
+    // of(this.loadTestCasesResults()).subscribe(() => this.openWebSocketWithActionResults());
+    // this.openWebSocketWithActionResults();
     this.isLoading = false;
+
+
   }
+
 
   loadTestCasesResults(): void {
     for (let i = 0; i < this.idList.length; i++) {
       this.analyzeService.loadTestCasesResults(this.idList[i])
         .subscribe(
           data => {
+            console.log('in loadTestCasesResults');
             this.isLoading = false;
             this.resultList.push(data);
             this.idToRun = this.runAnalyzeService.runResultModel.id;
-            this.openWebSocketWithActionResults();
           },
           error => console.log('error')
         );
     }
+
   }
 
   openWebSocketWithActionResults(): void {
+    // this.websocketsService.disconnectClient();
+    console.log(5);
     this.websocketsService.connect(() => {
       console.log(this.runAnalyzeService.runResultModel.id + '*********');
       console.log('----------------------------------------');
       for (let index = 0; index < this.idList.length; index++) {
         const id = this.idList[index];
         this.websocketsService.getStompClient().subscribe('/topic/public/' + id, (hello) => {
-          // console.log(JSON.stringify(hello.body));
-          // const res: ActionResult = JSON.parse(hello.body).hello;
-          // console.log(res + '++++++++++++++++++++++++');
           console.log('------------------------hello');
           this.onMessageReceive(hello, id);
         });
@@ -251,4 +271,5 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.websocketsService.disconnectClient();
   }
+
 }

@@ -2,8 +2,6 @@ import {Injectable, OnInit} from '@angular/core';
 import * as Stomp from '@stomp/stompjs';
 import {Client} from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import {Observable, of, Subscription, throwError, timer} from 'rxjs';
-import {delay, delayWhen, map, retry, retryWhen} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +19,7 @@ export class WebsocketsService {
         frame();
         console.log('in connect');
       },
+
 
       () => {
         this.reconnect(frame);

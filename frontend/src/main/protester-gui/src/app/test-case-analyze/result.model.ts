@@ -32,6 +32,7 @@ export class ActionResult {
   status: Status;
   inputParameters?: { [name: string]: string };
   exception?: ActionExecutionException;
+  message?: string;
 
   // rest
   request?: string;

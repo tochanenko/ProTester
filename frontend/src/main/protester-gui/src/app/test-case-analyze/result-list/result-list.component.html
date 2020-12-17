@@ -12,15 +12,15 @@
 
         <table class="table-info">
           <tr>
-            <td> </td>
-            <td>{{testCaseResult.user.username}}</td>
+            <td> Description</td>
+            <td>{{testCaseResult.testCase.description}}</td>
           </tr>
           <tr>
-            <td> Start Date</td>
+            <td> Start Date </td>
             <td>{{testCaseResult.startDate}}</td>
           </tr>
           <tr>
-            <td> End Date</td>
+            <td> End Date </td>
             <td>{{testCaseResult.endDate}}</td>
           </tr>
         </table>
@@ -58,16 +58,16 @@
 
           <table class="table-info">
             <tr>
+              <td class="column-name">Description</td>
+              <td class="second-column">{{item.action.description}}</td>
+            </tr>
+            <tr>
               <td class="column-name">Start date</td>
               <td class="second-column">{{item.startDate}}</td>
             </tr>
             <tr>
               <td class="column-name">End date</td>
               <td class="second-column">{{item.endDate}}</td>
-            </tr>
-            <tr *ngFor="let i of item.inputParameters | keyvalue">
-              <td class="column-name">{{ i.key }}</td>
-              <td class="second-column">{{ i.value }}</td>
             </tr>
             <tr *ngIf="item.action.type === 'REST'">
               <td class="column-name"> Request</td>
@@ -82,6 +82,20 @@
               <td class="second-column">{{item.statusCode}}</td>
             </tr>
           </table>
+
+          <div class="table-view" *ngIf="item.inputParameters">
+            <p class="column-name"> Parameters </p>
+            <table class="parameters-table">
+              <tr>
+                <th class="parameters-tr-td">name</th>
+                <th class="parameters-tr-td">value</th>
+              </tr>
+              <tr class="parameters-tr-td" *ngFor="let i of item.inputParameters | keyvalue">
+                <td class="parameters-tr-td">{{ i.key }}</td>
+                <td class="parameters-tr-td">{{ i.value }}</td>
+              </tr>
+            </table>
+          </div>
 
           <div class="table-view" *ngIf="item.action.type === 'SQL'">
             <p class="column-name"> Output </p>
@@ -98,6 +112,11 @@
               </tr>
             </table>
           </div>
+
+          <tr>
+            <td class="column-name" *ngIf="item.message">Message</td>
+            <td class="second-column">{{item.message}}</td>
+          </tr>
 
         </mat-card-content>
 

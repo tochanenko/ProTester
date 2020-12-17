@@ -12,6 +12,34 @@
   align-items: flex-start;
 }
 
+.search-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  align-items: flex-start;
+}
+
+.button-flex-container {
+  margin-top: 3px;
+  margin-left: 100px;
+  height: 60px;
+  background: #5C6BC0;
+}
+
+.button-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+
+  text-align: center;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+
+  color: #FFFFFF;
+}
+
 .mat-header-cell {
   display: flex;
   flex-direction: column;

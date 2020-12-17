@@ -47,6 +47,7 @@ import { CompoundSearchComponent } from './components/compound-search/compound-s
 import { LibraryEditComponent } from './components/library-edit/library-edit.component';
 import { LibraryViewComponent } from './components/library-view/library-view.component';
 import { CompoundNewComponent } from './components/compound-new/compound-new.component';
+import { CompoundViewComponent } from './components/compound-view/compound-view.component';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { CompoundNewComponent } from './components/compound-new/compound-new.com
     CompoundSearchComponent,
     LibraryEditComponent,
     LibraryViewComponent,
-    CompoundNewComponent
+    CompoundNewComponent,
+    CompoundViewComponent
   ],
   imports: [
     BrowserModule,

@@ -35,6 +35,11 @@ export class CompoundManageService {
     return this.http.get<OuterComponent[]>("api/compounds", httpOptions);
   }
 
+  getCompoundById(id: number): Observable<OuterComponent>{
+    return this.http.get<OuterComponent>(`api/compounds/${id}`, httpOptions);
+
+  }
+
   createCompound(compound): Observable<any> {
     return this.http.post('api/compounds', compound, httpOptions);
   }

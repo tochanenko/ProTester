@@ -9,6 +9,9 @@
                  (blur)="onFormBlurs()">
         </mat-form-field>
       </form>
+      <button mat-raised-button [routerLink]="['new']" class="button-flex-container">
+        <p class="button-text">NEW COMPOUND</p>
+      </button>
     </div>
 
     <mat-table [dataSource]="dataSource">
@@ -29,7 +32,7 @@
             <span class="material-icons more-options">more_vert</span>
           </button>
           <mat-menu #menuTable="matMenu">
-            <button mat-menu-item>
+            <button (click)="goToView(row.id)" mat-menu-item>
               <span>View</span>
             </button>
             <button mat-menu-item (click)="deleteCompound(row.id)" class="mat-menu-delete-button">

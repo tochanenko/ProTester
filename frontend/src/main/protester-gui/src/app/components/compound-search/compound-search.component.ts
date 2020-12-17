@@ -5,6 +5,7 @@ import {CompoundFilter} from "./compound-filter.model";
 import {Subscription} from "rxjs";
 import {CompoundManageService} from "../../services/compound-manage.service";
 import {OuterComponent} from "../../models/outer.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-compound-search',
@@ -23,7 +24,10 @@ export class CompoundSearchComponent implements OnInit {
 
   private subscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder, private compoundService: CompoundManageService) { }
+  constructor(private formBuilder: FormBuilder,
+              private compoundService: CompoundManageService,
+              private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
@@ -38,6 +42,12 @@ export class CompoundSearchComponent implements OnInit {
       this.librariesCount = data["totalItems"];
       this.dataSource = data["list"];
     });
+  }
+
+  goToView(id): void {
+    if (id) {
+      this.router.navigate(['compound/view'], {queryParams: {id: id}}).then();
+    }
   }
 
   getLibrariesCount(): void {

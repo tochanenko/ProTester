@@ -23,6 +23,7 @@ import {CompoundSearchComponent} from "./components/compound-search/compound-sea
 import {LibraryEditComponent} from "./components/library-edit/library-edit.component";
 import {LibraryViewComponent} from "./components/library-view/library-view.component";
 import {CompoundNewComponent} from "./components/compound-new/compound-new.component";
+import {CompoundViewComponent} from "./components/compound-view/compound-view.component";
 
 const routes: Routes = [
   {
@@ -151,6 +152,10 @@ const routes: Routes = [
   {
     path: 'compound/new',
     component: CompoundNewComponent
+  },
+  {
+    path: 'compound/view',
+    component: CompoundViewComponent
   },
 
   {path: '', redirectTo: 'login', pathMatch: 'full'}

@@ -4,7 +4,6 @@ import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {LibraryManageService} from "../../services/library/library-manage.service";
 import {Action} from "../../models/action.model";
 import {OuterComponent} from "../../models/outer.model";
-import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {Subscription} from "rxjs";
 import {Library} from "../../models/library.model";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -40,7 +39,6 @@ export class LibraryViewComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _bottomSheet: MatBottomSheet,
     private libraryService: LibraryManageService,
-    private interactionService: LibraryBottomsheetInteractionService,
     private router: Router,
     private activateRoute: ActivatedRoute
   ) {

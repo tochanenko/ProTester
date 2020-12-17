@@ -38,7 +38,7 @@ export class CompoundNewComponent implements OnInit {
   }
   url = "";
   clickInput = true;
-  parentParams = {};
+  temporaryParams = {};
 
   componentParamsForm: FormGroup;
   compoundCreateRequest = {};
@@ -75,9 +75,20 @@ export class CompoundNewComponent implements OnInit {
     return step.component.name + '-' + step.id;
   }
 
+  onFilterKeyboard(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+  }
+
   checkIfParamInterpolated(param: string) {
+    if (typeof param !== "undefined" || param !== null) {
     const regex = '${';
     return param.includes(regex);
+    }
+    else {
+      return;
+    }
   }
 
   cleanParam(param: string) {
@@ -105,7 +116,6 @@ export class CompoundNewComponent implements OnInit {
 
   onSubmit(): void {
     const f = this.formControls;
-    console.log();
 
     if (this.compoundCreateForm.invalid) {
       return;
@@ -126,7 +136,6 @@ export class CompoundNewComponent implements OnInit {
       }
       return step;
     });
-    console.log(this.compoundCreateRequest);
 
     this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/compound').then();
@@ -153,9 +162,9 @@ export class CompoundNewComponent implements OnInit {
   }
 
   componentPrepare(component) {
-    console.log(component);
     let step = new Step();
     component.description = this.parseDescription(component.description);
+
     step.id = this.step_id++;
     step.isAction = component.type !== 'COMPOUND';
     step.component = component;
@@ -165,28 +174,43 @@ export class CompoundNewComponent implements OnInit {
       step.parameters[param] = "";
     });
 
-    if (component.parameterNames.length > 0) {
-      component.parameterNames.forEach(param => {
-        this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-      });
-    }
+    component.parameterNames.forEach(param => {
+      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
+    });
 
     if (component.steps) {
       this.recursiveStepParsing(component.steps);
     }
 
+    console.log(component);
+
     this.components.push(step);
-    console.log(this.components)
-    console.log(this.formControls)
+
   }
 
+
+  // "id": "link_id"
   recursiveStepParsing(steps) {
     steps.forEach(item => {
       item.component.description = this.parseDescription(item.component.description);
+      if (Object.keys(item.parameters).length > 0) {
+        for (let [key, value] of Object.entries(item.parameters)) {
+          if (!this.checkIfParamInterpolated(value.toString())) {
+            this.temporaryParams[key] = value;
+          }
+          else {
+            let param = this.cleanParam(value.toString());
+            if (this.temporaryParams[param]) {
+              item.parameters[key] = this.temporaryParams[param]
+            }
+          }
+        }
+      }
+
       if (item.component.steps) {
         this.recursiveStepParsing(item.component.steps);
       }
-    });
+    })
   }
 
   deleteComponentFromArray(components, id): void {

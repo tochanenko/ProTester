@@ -71,7 +71,7 @@
                 <mat-form-field class="description-input">
                   <mat-label> {{sub_string.text}} </mat-label>
                   <input matInput (click)="clickInput=true" type="text" [id]="component.id + '-' + sub_string.text"
-                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}}"
+                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}"
                          [formControlName]="component.id + '-' + sub_string.text"
                          [(ngModel)]="component.parameters[sub_string.text]">
                 </mat-form-field>
@@ -120,9 +120,10 @@
                          [formControlName]="parent.id + '-' + sub_string.text"
                          [(ngModel)]="parent.parameters[sub_string.text]">
                 </mat-form-field>
-                <ng-template #printParams  let-paramFromComponent =searchParamByStepId(component.id) >
-                  <div class="description-input-disabled">
-                    <span>{{component.parameters[sub_string.text]}}</span>
+                <ng-template #printParams>
+                  <div class="description-input-disabled mat-elevation-z6">
+                    <span class="description-input-disabled-span"> {{sub_string.text}}
+                      : {{component.parameters[sub_string.text]}} </span>
                   </div>
                 </ng-template>
               </div>
@@ -132,7 +133,7 @@
             </ng-container>
           </div>
           <div class="panel-buttons-block">
-            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z4">
               <p class="compound-label-text">Compound</p>
             </div>
           </div>

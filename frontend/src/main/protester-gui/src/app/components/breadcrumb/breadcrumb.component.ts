@@ -1,21 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs/operators";
 import {MenuItem} from "primeng/api";
+import {Subscription} from "rxjs";
+import {User} from "../../models/user.model";
+import {StorageService} from "../../services/auth/storage.service";
 
 @Component({
   selector: 'app-breadcrumb',
   templateUrl: './breadcrumb.component.html',
   styleUrls: ['./breadcrumb.component.css']
 })
-export class BreadcrumbComponent implements OnInit {
+export class BreadcrumbComponent implements OnInit, OnDestroy {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   readonly home = {icon: 'pi pi-home', url: '#/projects-menu'};
   menuItems: MenuItem[];
+  subscription: Subscription;
+  user: User = new User();
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private storageService: StorageService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
+    this.subscription = this.storageService.currentUser.subscribe(user => this.user = user);
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.menuItems = this.createBreadcrumbs(this.activatedRoute.root));
@@ -41,5 +50,9 @@ export class BreadcrumbComponent implements OnInit {
 
       return this.createBreadcrumbs(child, url, breadcrumbs);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

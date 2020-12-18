@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {UserService} from "../../../../services/user/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../services/user/user.service";
 
 interface RoleView {
   value: string,
@@ -9,12 +9,11 @@ interface RoleView {
 }
 
 @Component({
-  selector: 'app-edit-user',
-  templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.css']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.css']
 })
-export class EditUserComponent implements OnInit {
-
+export class EditComponent implements OnInit {
   editUserForm: FormGroup;
   selectedValue = 'ADMIN';
   isActive = true;
@@ -99,9 +98,8 @@ export class EditUserComponent implements OnInit {
     console.log(editUserResponse);
 
     this.userService.updateUser(this.id, editUserResponse).subscribe(
-      res => this.router.navigate(['/users_list']),
+      res => this.router.navigate([`/account/users/${this.id}`]),
       err => console.log(err)
     );
   }
-
 }

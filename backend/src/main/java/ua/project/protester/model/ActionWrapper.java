@@ -3,6 +3,7 @@ package ua.project.protester.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.ResultStatus;
 
 import java.time.OffsetDateTime;
@@ -27,6 +28,8 @@ public class ActionWrapper {
     protected OffsetDateTime endDate;
 
     protected String message;
+
+    private ExecutableComponentType type;
 
     private Map<String, String> parameters = new HashMap<>();
 

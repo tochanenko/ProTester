@@ -152,6 +152,8 @@ public class StartService {
                         actionWrapper.setDescription(step.getComponent().getName());
                         actionWrapper.setResultStatus(ResultStatus.IN_PROGRESS);
                         actionWrapper.setId(step.getComponent().getId());
+                        actionWrapper.setType(step.getComponent().getType());
+                        actionWrapper.setName(step.getComponent().getName());
                         return actionWrapper;
                     })
                     .collect(Collectors.toList());

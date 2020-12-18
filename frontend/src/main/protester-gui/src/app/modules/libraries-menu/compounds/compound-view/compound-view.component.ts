@@ -56,7 +56,17 @@ export class ViewComponent implements OnInit {
 
   getCompoundById(id: number): void {
     this.compoundService.getCompoundById(id).subscribe(compound => {
-      this.recursiveStepParsing(compound.steps);
+
+      let parentParams = {};
+      compound.parameterNames.forEach(param => {
+        parentParams[param] = "${" + param + "}";
+      });
+
+      if (compound.steps) {
+        let mappingParams = {};
+        this.recursiveStepParsing(compound.steps, mappingParams, parentParams);
+      }
+
       compound.description = this.parseDescription(compound.description.toString());
       this.compound = compound;
       this.componentCtx.components = compound.steps;
@@ -105,55 +115,32 @@ export class ViewComponent implements OnInit {
     return this.compoundCreateForm.controls;
   }
 
-
-  componentPrepare(component) {
-    let step = new Step();
-    component.description = this.parseDescription(component.description);
-
-    step.id = this.step_id++;
-    step.isAction = component.type !== 'COMPOUND';
-    step.component = component;
-    step.parameters = new Map<String, String>();
-
-    component.parameterNames.map(param => {
-      step.parameters[param] = "";
-    });
-
-    component.parameterNames.forEach(param => {
-      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-    });
-
-    if (component.steps) {
-      this.recursiveStepParsing(component.steps);
-    }
-
-    console.log(component);
-
-    this.components.push(step);
-
-  }
-
-
   // "id": "link_id"
-  recursiveStepParsing(steps) {
+  recursiveStepParsing(steps, mappingParams, parentParams) {
     steps.forEach(item => {
+      let clonedMappingParams = Object.assign({}, mappingParams);
       item.component.description = this.parseDescription(item.component.description);
       if (Object.keys(item.parameters).length > 0) {
         for (let [key, value] of Object.entries(item.parameters)) {
-          if (!this.checkIfParamInterpolated(value.toString())) {
-            this.temporaryParams[key] = value;
+          let cleanedParam = this.cleanParam(value.toString());
+          if (parentParams[cleanedParam]) {
+            item.parameters[key] = parentParams[cleanedParam];
+            parentParams[key] = parentParams[cleanedParam];
           }
-          else {
+          if (!this.checkIfParamInterpolated(value.toString())) {
+            clonedMappingParams[key] = value;
+          } else {
             let param = this.cleanParam(value.toString());
-            if (this.temporaryParams[param]) {
-              item.parameters[key] = this.temporaryParams[param]
+            if (clonedMappingParams[param]) {
+              item.parameters[key] = clonedMappingParams[param]
+              clonedMappingParams[key] = clonedMappingParams[param];
             }
           }
         }
       }
-
+      console.log(clonedMappingParams);
       if (item.component.steps) {
-        this.recursiveStepParsing(item.component.steps);
+        this.recursiveStepParsing(item.component.steps, clonedMappingParams, parentParams);
       }
     })
   }

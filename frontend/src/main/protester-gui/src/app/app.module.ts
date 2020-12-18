@@ -26,9 +26,6 @@ import {
   MAT_BOTTOM_SHEET_DEFAULT_OPTIONS
 } from "@angular/material/bottom-sheet";
 import {MatTabsModule} from "@angular/material/tabs";
-import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
-import { CompoundNewComponent } from './components/compound-new/compound-new.component';
-import { CompoundViewComponent } from './components/compound-view/compound-view.component';
 import {SharedModule} from "./modules/shared/shared.module";
 import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
 import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
@@ -49,9 +46,6 @@ import {BreadcrumbModule} from "primeng/breadcrumb";
     ViewUserComponent,
     EditUserComponent,
     BottomSheetComponent,
-    CompoundSearchComponent,
-    CompoundNewComponent,
-    CompoundViewComponent,
     BreadcrumbComponent
   ],
   imports: [

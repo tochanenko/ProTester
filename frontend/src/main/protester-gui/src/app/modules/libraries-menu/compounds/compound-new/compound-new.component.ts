@@ -186,9 +186,6 @@ export class CreateComponent implements OnInit {
       this.recursiveStepParsing(component.steps, mappingParams, parentParams);
     }
 
-    console.log(component);
-    console.log(this.formControls);
-
     this.components.push(step);
 
   }

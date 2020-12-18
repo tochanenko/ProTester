@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Action} from "../models/action.model";
 import {OuterComponent} from "../models/outer.model";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CompoundFilter} from "../components/compound-search/compound-filter.model";
+import {CompoundFilter} from "../modules/libraries-menu/compounds/compound-search/compound-filter.model";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})

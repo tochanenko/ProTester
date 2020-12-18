@@ -18,7 +18,7 @@ export class BottomSheetComponent implements OnInit{
               private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
               private interactionService: LibraryBottomsheetInteractionService) {}
 
-  openLink(event: MouseEvent): void {
+  close(event: MouseEvent): void {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
   }

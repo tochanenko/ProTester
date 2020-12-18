@@ -8,12 +8,14 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "../../services/material.module";
 import {ForgotPasswordModule} from "./forgot-password/forgot-password.module";
 import {UsersModule} from "./users/users.module";
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,

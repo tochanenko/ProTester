@@ -16,6 +16,14 @@ export class ViewComponent implements OnInit {
               private router: Router,
               private userService: UserService
   ) {
+    this.user = new User();
+    this.user.id = 0;
+    this.user.email = 'example@gmail.com';
+    this.user.firstName = 'First';
+    this.user.lastName = 'Last';
+    this.user.isActive = true;
+    this.user.role = 'NOBODY';
+    this.user.username = 'user';
   }
 
   ngOnInit(): void {
@@ -24,7 +32,6 @@ export class ViewComponent implements OnInit {
 
       this.userService.getUserById(this.userId).subscribe(
         user => {
-          this.user = new User();
           this.user.id = user['id'];
           this.user.email = user['email'];
           this.user.firstName = user['firstName'];

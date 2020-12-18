@@ -23,9 +23,7 @@
         </div>
         <div class="content">
           <div class="compound-tile-inner actions-tile">
-            <div *ngIf="actions.length == 0" class="tile-label-wrapper">
-              <mat-label class="tile-label"> Add actions</mat-label>
-            </div>
+
             <div class="component-container">
               <mat-accordion *ngIf="actions.length > 0">
                 <mat-expansion-panel hideToggle *ngFor="let component of actions">
@@ -36,27 +34,14 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <div class="panel-content">
-                    <ng-container *ngFor="let sub_string of component.description">
-                      <div *ngIf="sub_string['input']">
-                        <div class="description-input-disabled mat-elevation-z6">
-                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-                        </div>
-                      </div>
-                      <div *ngIf="!sub_string['input']" class="description-text">
-                        <span>{{sub_string['text']}}</span>
-                      </div>
-                    </ng-container>
-                  </div>
+
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
           </div>
 
           <div class="compound-tile-inner">
-            <div *ngIf="compounds.length == 0" class="tile-label-wrapper">
-              <mat-label class="tile-label"> Add compounds</mat-label>
-            </div>
+
             <div class="component-container">
               <mat-accordion *ngIf="compounds.length > 0">
                 <mat-expansion-panel hideToggle *ngFor="let component of compounds">
@@ -67,18 +52,7 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <div class="panel-content">
-                    <ng-container *ngFor="let sub_string of component.description">
-                      <div *ngIf="sub_string['input']">
-                        <div class="description-input-disabled mat-elevation-z6">
-                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-                        </div>
-                      </div>
-                      <div *ngIf="!sub_string['input']" class="description-text">
-                        <span>{{sub_string['text']}}</span>
-                      </div>
-                    </ng-container>
-                  </div>
+
                 </mat-expansion-panel>
               </mat-accordion>
             </div>

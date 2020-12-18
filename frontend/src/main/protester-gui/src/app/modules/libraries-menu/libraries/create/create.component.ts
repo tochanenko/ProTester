@@ -80,8 +80,6 @@ export class CreateComponent implements OnInit {
       return;
     }
     let libraryCreateRequest = {};
-    let action_step = new Step();
-    let compound_step = new Step();
 
     libraryCreateRequest['description'] = f.description.value;
     libraryCreateRequest['name'] = f.name.value;
@@ -89,6 +87,8 @@ export class CreateComponent implements OnInit {
     libraryCreateRequest['components'] = [];
     if (this.actions.length > 0) {
       this.actions.map(action => {
+        let action_step = new Step();
+
         action_step.isAction = true;
         action_step.id = action.id;
         libraryCreateRequest['components'].push(action_step);
@@ -97,11 +97,15 @@ export class CreateComponent implements OnInit {
 
     if (this.compounds.length > 0) {
       this.compounds.map(compound => {
+        let compound_step = new Step();
+
         compound_step.id = compound.id;
         compound_step.isAction = false;
         libraryCreateRequest['components'].push(compound_step);
       })
     }
+
+    console.log(libraryCreateRequest)
 
     this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/libraries').then();

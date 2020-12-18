@@ -89,9 +89,11 @@ public class StartService {
                     .filter(Objects::nonNull)
                     .forEachOrdered(outerComponent -> {
                                 try {
-                                    outerComponent.get().execute(initMap, webDriver, getConsumer(testCaseResultId));
+                                    // TODO: Pass Environment instead of null
+                                    outerComponent.get().execute(initMap, null, webDriver, getConsumer(testCaseResultId));
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
-                                } catch (IllegalActionLogicImplementation | ActionExecutionException a) {
+                                    // TODO: No more IllegalActionImplementation here)
+                                } catch (ActionExecutionException a) {
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
                                 }
                         }

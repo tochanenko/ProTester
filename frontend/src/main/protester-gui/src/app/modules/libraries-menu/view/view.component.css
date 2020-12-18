@@ -1,13 +1,18 @@
+.library-menu-background {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
 .menu-grid {
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 11.4vw 18.4vw;
+  grid-gap: 3vw 1vw;
   position: relative;
-  margin-top: 10%;
-  margin-bottom: 30.5%;
-  left: 23.8%;
-  width: 53%;
+  margin: 90px auto;
+
+  width: 40%;
   height: 44%;
 
 }

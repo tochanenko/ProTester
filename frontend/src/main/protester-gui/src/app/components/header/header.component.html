@@ -18,7 +18,7 @@
   </button>
 
   <mat-menu #menu="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item routerLink="/account/users/{{user.id}}">
       <span>Profile</span>
     </button>
     <button mat-menu-item *ngIf="isAdmin" routerLink="account/users">

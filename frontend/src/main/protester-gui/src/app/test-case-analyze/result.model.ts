@@ -53,6 +53,11 @@ export class ActionResult {
 
   // ui
   path?: string;
+
+
+  constructor(wrapper: Wrapper) {
+    this.id = id;
+  }
 }
 
 export class ActionExecutionException {
@@ -76,4 +81,36 @@ export enum ExecutableComponentType {
   SQL = 'SQL',
   TECHNICAL = 'TECHNICAL',
   UI = 'UI'
+}
+
+export class Wrapper {
+  id?: number;
+  action?: AbstractAction;
+  startDate = '';
+  endDate = '';
+  status?: Status;
+  inputParameters?: { [name: string]: string };
+
+  isLastAction?: boolean;
+
+  exception?: ActionExecutionException;
+  message?: string;
+
+  // rest
+  request?: string;
+  response?: string;
+  statusCode?: number;
+
+  // sql
+  connectionUrl?: string;
+  username?: string;
+  query?: string;
+  columns?: SqlColumnDto[];
+
+  // technical
+  extra?: { [name: string]: string };
+
+  // ui
+  path?: string;
+
 }

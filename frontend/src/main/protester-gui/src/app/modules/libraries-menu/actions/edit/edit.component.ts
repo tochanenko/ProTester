@@ -1,18 +1,17 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {ActionService} from '../../services/action/action.service';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from '@angular/router';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
-import {ActionsListComponent} from '../actions-list/actions-list.component';
+import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
+import {ActionService} from "../../../../services/action/action.service";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {ListComponent} from "../list/list.component";
 
 @Component({
-  selector: 'app-action-update',
-  templateUrl: './action-update.component.html',
-  styleUrls: ['./action-update.component.css']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.css']
 })
-export class ActionUpdateComponent implements OnInit, OnDestroy {
-
+export class EditComponent implements OnInit, OnDestroy {
   actionUpdateForm: FormGroup;
   actionId: number;
   errorMessage = '';
@@ -24,7 +23,7 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private formBuilder: FormBuilder,
               private actionService: ActionService,
-              private dialogRef: MatDialogRef<ActionsListComponent>,
+              private dialogRef: MatDialogRef<ListComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.actionId = data.id;
   }
@@ -98,5 +97,4 @@ export class ActionUpdateComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
     }
   }
-
 }

@@ -29,6 +29,13 @@ const routes: Routes = [
           breadcrumb: null
         },
         loadChildren: 'src/app/modules/projects-menu/datasets/datasets.module#DatasetsModule'
+      },
+      {
+        path: 'scenarios',
+        data: {
+          breadcrumb: null
+        },
+        loadChildren: 'src/app/modules/projects-menu/test-scenario/test-scenario.module#TestScenarioModule'
       }
     ]
   }

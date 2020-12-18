@@ -9,7 +9,7 @@
         <mat-label class="description-text"> {{library.name}} </mat-label>
       </div>
       <div class="lib-title-container">
-        <mat-label class="lib-description">Description:</mat-label>
+        <mat-label class="lib-name">Description:</mat-label>
         <mat-label class="description-text"> {{library.description}} </mat-label>
       </div>
       <div class="component-table">
@@ -23,9 +23,7 @@
         </div>
         <div class="content">
           <div class="compound-tile-inner actions-tile">
-            <div *ngIf="actions.length == 0" class="tile-label-wrapper">
-              <mat-label class="tile-label"> Add actions</mat-label>
-            </div>
+
             <div class="component-container">
               <mat-accordion *ngIf="actions.length > 0">
                 <mat-expansion-panel hideToggle *ngFor="let component of actions">
@@ -36,16 +34,14 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
+
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
           </div>
 
           <div class="compound-tile-inner">
-            <div *ngIf="compounds.length == 0" class="tile-label-wrapper">
-              <mat-label class="tile-label"> Add compounds</mat-label>
-            </div>
+
             <div class="component-container">
               <mat-accordion *ngIf="compounds.length > 0">
                 <mat-expansion-panel hideToggle *ngFor="let component of compounds">
@@ -56,7 +52,7 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
+
                 </mat-expansion-panel>
               </mat-accordion>
             </div>

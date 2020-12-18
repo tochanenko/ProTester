@@ -1,4 +1,4 @@
-<a [routerLink]="'/projectMenu'" class="navigation">
+<a [routerLink]="'/libraries-menu'" class="navigation">
   <span class="material-icons navigation">navigate_before</span>
 </a>
 
@@ -21,7 +21,7 @@
     </mat-menu>
 
     <mat-form-field appearance="outline">
-      <mat-label>Search project</mat-label>
+      <mat-label>Search action</mat-label>
       <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="actionFilter.actionName"
              (keyup)="onFilterChange($event)">
     </mat-form-field>

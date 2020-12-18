@@ -13,8 +13,6 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
 import {UsersListComponent} from './components/users-list/users-list.component';
-import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
-import {ActionUpdateComponent} from "./actions/action-update/action-update.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import {ViewUserComponent} from "./components/view-user/view-user.component";
 import {EditUserComponent} from './components/edit-user/edit-user.component';
@@ -26,13 +24,12 @@ import {
   MAT_BOTTOM_SHEET_DEFAULT_OPTIONS
 } from "@angular/material/bottom-sheet";
 import {MatTabsModule} from "@angular/material/tabs";
-import { CompoundSearchComponent } from './components/compound-search/compound-search.component';
-import { CompoundNewComponent } from './components/compound-new/compound-new.component';
 import {SharedModule} from "./modules/shared/shared.module";
 import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
 import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
+import { TestScenarioModule } from "./modules/projects-menu/test-scenario/test-scenario.module";
 
 
 @NgModule({
@@ -40,16 +37,12 @@ import {BreadcrumbModule} from "primeng/breadcrumb";
     AppComponent,
     HeaderComponent,
     ProfileComponent,
-    ActionsListComponent,
-    ActionUpdateComponent,
     UsersListComponent,
     ViewUserComponent,
     EditUserComponent,
     ViewUserComponent,
     EditUserComponent,
     BottomSheetComponent,
-    CompoundSearchComponent,
-    CompoundNewComponent,
     BreadcrumbComponent
   ],
   imports: [
@@ -70,7 +63,8 @@ import {BreadcrumbModule} from "primeng/breadcrumb";
     SharedModule,
     ProjectsMenuModule,
     LibrariesMenuModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    TestScenarioModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]

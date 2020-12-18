@@ -56,7 +56,10 @@ export class ListComponent implements OnInit {
 
   searchByFilter(): void {
     this.subscription = this.libraryService.getAllLibraries(this.libraryFilter).subscribe(data => {
+      console.log(data)
       this.dataSource = data["list"];
+      this.librariesCount = data["totalItems"];
+
     });
   }
 

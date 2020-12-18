@@ -161,24 +161,22 @@ export class EditComponent implements OnInit {
   }
 
   openBottomSheetWithActions(): void {
-
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['actions'],
-        isAction: true
-      }
+        components: {actions: this.bottomSheetData['actions']}
+      },
+      closeOnNavigation: true
     });
   }
 
   openBottomSheetWithCompounds(): void {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['compounds'],
-        isAction: false
-      }
+        components: {compounds: this.bottomSheetData['compounds']}
+      },
+      closeOnNavigation: true
     });
   }
-
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
       this.bottomSheetData['actions'] = data;

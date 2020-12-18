@@ -52,14 +52,13 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
                   <button mat-icon-button (click)="deleteComponentFromArray(actions, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <button mat-icon-button (click)="openBottomSheetWithActions()">
+            <button type="button" mat-icon-button (click)="openBottomSheetWithActions()">
               <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
             </button>
           </div>
@@ -78,14 +77,13 @@
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <p>{{component.description}}</p>
                   <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <button mat-icon-button (click)="openBottomSheetWithCompounds()">
+            <button mat-icon-button type='button' (click)="openBottomSheetWithCompounds()">
               <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
             </button>
           </div>

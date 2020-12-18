@@ -25,14 +25,14 @@ export class Message {
 }
 
 export class ActionResult {
-  id: number;
-  action: AbstractAction;
+  id?: number;
+  action?: AbstractAction;
   startDate = '';
   endDate = '';
-  status: Status;
+  status?: Status;
   inputParameters?: { [name: string]: string };
 
-  isLastAction: boolean;
+  isLastAction?: boolean;
 
   exception?: ActionExecutionException;
   message?: string;

@@ -95,25 +95,32 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   selectTestCase(testCase: TestCaseModel): void {
-    if (testCase.name === 'testcase2' || testCase.name === 'testcase3') {
-      const updateDialogRef = this.dialog.open(SelectEnvComponent, {
-        height: 'auto',
-        width: '40%',
-        data: {environments: this.environmentList, testCaseName: testCase.name}
-      });
+    console.log(this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar + '000000000');
 
-      this.subscription = updateDialogRef.afterClosed().subscribe(result => {
-        console.log('after closed idenv =' + result);
+    if (this.selection.isSelected(testCase)) {
+      this.selection.deselect(testCase);
+    } else {
+      if (testCase.name === 'shhshs' || testCase.name === 'testcase3') {
+        // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+        const updateDialogRef = this.dialog.open(SelectEnvComponent, {
+          height: 'auto',
+          width: '40%',
+          data: {environments: this.environmentList, testCaseName: testCase.name}
+        });
 
-        if (result === undefined) {
-          this.selection.deselect(testCase);
-        }
-        testCase.environment = result;
-      });
+        this.subscription = updateDialogRef.afterClosed().subscribe(result => {
+          console.log('after closed idenv =' + result);
+
+          if (result === undefined) {
+            this.selection.deselect(testCase);
+          }
+          testCase.environment = result;
+        });
+      }
+
+      this.selection.toggle(testCase);
+      console.log(this.selection.selected.length + '------------------------------');
     }
-
-    this.selection.toggle(testCase);
-    console.log(this.selection.selected.length + '------------------------------');
   }
 
   searchTestCases($event: KeyboardEvent): void {
@@ -134,7 +141,7 @@ export class RunComponent implements OnInit, OnDestroy {
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
     this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
-    this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
+    // this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
 
     if (this.runTestCaseModel.testCaseRequestList.length === 0) {
       return;

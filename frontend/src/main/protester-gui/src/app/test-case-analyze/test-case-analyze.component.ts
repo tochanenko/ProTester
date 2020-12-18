@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActionResult, TestCaseResult} from './result.model';
+import {ActionResult, ExecutableComponentType, Status, TestCaseResult} from './result.model';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
@@ -47,7 +47,7 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
       })
     ).subscribe(
       () => console.log('successfully'),
-      () => 'error'
+      () => console.log('error')
     );
   }
 
@@ -63,6 +63,72 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
           error => console.log('error')
         );
     }
+
+    this.resultList.push({
+      id: 6,
+      user: {
+        id: 8,
+        username: 'u',
+        password: 'p',
+        email: 'e',
+        firstName: 'f',
+        lastName: 'l',
+        role: 'ADMIN'
+      },
+      testCase: {
+        name: 'testCase',
+        scenarioId: 5
+      },
+      status: Status.FAILED,
+      startDate: '',
+      endDate: '',
+      innerResults: [
+        {
+          action: {
+            name: 'action',
+            type: ExecutableComponentType.SQL
+          },
+          message: 'message',
+          startDate: '',
+          endDate: '',
+          status: Status.FAILED,
+          columns: [
+            {
+              id: 1,
+              name: 'first',
+              rows: ['aaa', 'bbb', 'ccc']
+            },
+
+            {
+              id: 2,
+              name: 'first2',
+              rows: ['aaa2', 'bbb2', 'ccc2']
+            },
+            {
+              id: 3,
+              name: 'first3',
+              rows: ['aaa3', 'bbb3', 'ccc3']
+            },
+            {
+              id: 4,
+              name: 'first4',
+              rows: ['aaa4', 'bbb4', 'ccc4']
+            },
+            {
+              id: 3,
+              name: 'first3',
+              rows: ['aaa3', 'bbb3', 'ccc3']
+            },
+            {
+              id: 4,
+              name: 'first4',
+              rows: ['aaa4', 'bbb4', 'ccc4']
+            }
+          ]
+        }
+      ]
+
+    });
   }
 
   openWebSocketWithActionResults(): void {

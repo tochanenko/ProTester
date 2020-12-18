@@ -12,16 +12,16 @@
 
         <table class="table-info">
           <tr>
-            <td> Description</td>
-            <td>{{testCaseResult.testCase.description}}</td>
+            <td class="desc-column"> Description</td>
+            <td class="desc-second">{{testCaseResult.testCase.description}}</td>
           </tr>
           <tr>
-            <td> Start Date </td>
-            <td>{{testCaseResult.startDate}}</td>
+            <td class="desc-column"> Start Date</td>
+            <td class="desc-second">{{testCaseResult.startDate | date:'medium' }}</td>
           </tr>
           <tr>
-            <td> End Date </td>
-            <td>{{testCaseResult.endDate}}</td>
+            <td class="desc-column" *ngIf="testCaseResult.endDate"> End Date</td>
+            <td class="desc-second">{{testCaseResult.endDate | date:'medium'}}</td>
           </tr>
         </table>
       </mat-card-content>

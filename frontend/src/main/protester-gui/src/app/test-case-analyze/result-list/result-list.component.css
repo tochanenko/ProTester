@@ -13,7 +13,7 @@
 
 .action-failed-result {
   border: 2px solid #ff0000;
-  width: 95%;
+  width: 94%;
   margin-left: 2.8%;
   margin-top: 0.8%;
 }
@@ -41,7 +41,6 @@
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   width: 97%;
-  /*margin-right: 1%;*/
 }
 
 mat-expansion-panel-header {
@@ -58,7 +57,6 @@ mat-expansion-panel-header {
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
-  line-height: 26px;
   letter-spacing: 0.5px;
   color: rgba(0, 0, 0, 0.87)
 }
@@ -97,12 +95,9 @@ mat-expansion-panel-header {
   margin-right: 7px;
 }
 
-table, th , td {
+table, th, td {
   padding-bottom: 5px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
   letter-spacing: 0.5px;
   color: rgba(0, 0, 0, 0.87);
   margin-right: 10px;
@@ -120,45 +115,51 @@ table, th , td {
 
 .table-view {
   display: flex;
-  width: 100%;
+  width: 95%;
 }
+
 .sql-table-inner {
   border-collapse: collapse;
 }
-.sql-tr-td {
-  padding: 8px;
-  text-align: left;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  margin-right: 20px;
-  width: 10%;
-}
 
-.parameters-tr-td {
+.sql-tr-td, .parameters-tr-td {
   padding: 8px;
   text-align: left;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  margin-right: 20px;
-  width: 20%;
+  left: 5px;
+  width: 0.1%;
 }
 
 .sql-tr-td-inner {
+  display: flex;
   text-align: left;
-  margin-left: 0;
-  margin-right: 20px;
+  margin-left: 5px;
 }
 
 .table-info {
-  width: 100%;
+  width: 90%;
 }
 
 .column-name {
   width: 20%;
-  min-width: 200px;
+  min-width: 150px;
 }
 
 .second-column {
+  color: rgba(0, 0, 0, 0.6);
   width: 80%;
   padding-right: 10px;
+  padding-left: 0;
+}
+
+.desc-column {
+  display: flex;
+  width: 150px;
+}
+
+.desc-second {
+  width: 60%;
+  min-width: 200px;
+  color: rgba(0, 0, 0, 0.6);
 }

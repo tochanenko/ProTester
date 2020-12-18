@@ -139,7 +139,8 @@ export class CreateComponent implements OnInit {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
         components: {actions: this.bottomSheetData['actions']}
-      }
+      },
+      closeOnNavigation: true
     });
   }
 
@@ -147,7 +148,8 @@ export class CreateComponent implements OnInit {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
         components: {compounds: this.bottomSheetData['compounds']}
-      }
+      },
+      closeOnNavigation: true
     });
   }
 

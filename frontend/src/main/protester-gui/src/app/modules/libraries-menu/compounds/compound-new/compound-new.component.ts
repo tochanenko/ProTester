@@ -237,7 +237,8 @@ export class CreateComponent implements OnInit {
 
   openBottomSheet(): void {
     this._bottomSheet.open(BottomSheetComponent, {
-      data: {components: this.bottomSheetData}
+      data: {components: this.bottomSheetData},
+      closeOnNavigation: true
     });
   }
 

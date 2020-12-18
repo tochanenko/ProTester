@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {StorageService} from "../../services/auth/storage.service";
-import {UserService} from "../../services/user/user.service";
+import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {PageEvent} from "@angular/material/paginator";
+import {ActivatedRoute, Router} from "@angular/router";
+import {StorageService} from "../../../../services/auth/storage.service";
+import {UserService} from "../../../../services/user/user.service";
 
 @Component({
-  selector: 'app-users-list',
-  templateUrl: './users-list.component.html',
-  styleUrls: ['./users-list.component.css']
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css']
 })
-export class UsersListComponent implements OnInit {
+export class ListComponent implements OnInit {
 
   displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'role', 'status', 'actions'];
   dataSource = new MatTableDataSource();
@@ -75,5 +75,4 @@ export class UsersListComponent implements OnInit {
       err => console.log(err)
     );
   }
-
 }

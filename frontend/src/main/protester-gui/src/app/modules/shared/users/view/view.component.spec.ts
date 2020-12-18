@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionUpdateComponent } from './action-update.component';
+import { ViewComponent } from './view.component';
 
-describe('ActionUpdateComponent', () => {
-  let component: ActionUpdateComponent;
-  let fixture: ComponentFixture<ActionUpdateComponent>;
+describe('ViewComponent', () => {
+  let component: ViewComponent;
+  let fixture: ComponentFixture<ViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ActionUpdateComponent ]
+      declarations: [ ViewComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ActionUpdateComponent);
+    fixture = TestBed.createComponent(ViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

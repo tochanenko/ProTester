@@ -1,15 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {User} from "../../../../models/user.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../services/user/user.service";
-import {User} from "../../models/user.model";
+import {UserService} from "../../../../services/user/user.service";
 
 @Component({
-  selector: 'app-view-user',
-  templateUrl: './view-user.component.html',
-  styleUrls: ['./view-user.component.css']
+  selector: 'app-view',
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.css']
 })
-export class ViewUserComponent implements OnInit {
-
+export class ViewComponent implements OnInit {
   userId: number = -1;
   user: User = null;
 
@@ -38,5 +37,4 @@ export class ViewUserComponent implements OnInit {
       )
     });
   }
-
 }

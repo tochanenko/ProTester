@@ -12,12 +12,7 @@ import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {ProfileComponent} from './components/profile/profile.component';
-import {UsersListComponent} from './components/users-list/users-list.component';
-import {ActionsListComponent} from "./actions/actions-list/actions-list.component";
-import {ActionUpdateComponent} from "./actions/action-update/action-update.component";
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
-import {ViewUserComponent} from "./components/view-user/view-user.component";
-import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
 import {ScrollingModule} from "@angular/cdk/scrolling";
@@ -39,13 +34,6 @@ import { TestScenarioModule } from "./modules/projects-menu/test-scenario/test-s
     AppComponent,
     HeaderComponent,
     ProfileComponent,
-    ActionsListComponent,
-    ActionUpdateComponent,
-    UsersListComponent,
-    ViewUserComponent,
-    EditUserComponent,
-    ViewUserComponent,
-    EditUserComponent,
     BottomSheetComponent,
     BreadcrumbComponent
   ],

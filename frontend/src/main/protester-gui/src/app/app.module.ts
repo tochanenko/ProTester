@@ -31,6 +31,7 @@ import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
 import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
+import { TestScenarioModule } from "./modules/projects-menu/test-scenario/test-scenario.module";
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import {BreadcrumbModule} from "primeng/breadcrumb";
     SharedModule,
     ProjectsMenuModule,
     LibrariesMenuModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    TestScenarioModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
   bootstrap: [AppComponent]

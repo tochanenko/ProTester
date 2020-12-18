@@ -16,7 +16,6 @@ const httpOptions = {
 
 export class ActionService {
 
-  private actionsUrl = 'api/actions';
 
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -30,6 +29,7 @@ export class ActionService {
     params = params.append('newDescription', String(actionUpdateResponse.description));
     return this.http.put<any>(`/api/actions/${actionUpdateResponse.id}`, httpOptions, {params});
   }
+
   getAll(filter: ActionFilter): Observable<ActionResponse> {
     let params = new HttpParams();
     params = params.append('pageSize', String(filter.pageSize));

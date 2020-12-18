@@ -8,11 +8,12 @@ import {Step} from "../../../../models/step.model";
 import {Router} from "@angular/router";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {StepRepresentation} from "../../../../models/StepRepresentation";
+import {TestScenarioService} from "../../../../services/test-scenario/test-scenario-service";
 
 @Component({
-  selector: 'app-library-new',
-  templateUrl: './compound-new.component.html',
-  styleUrls: ['./compound-new.component.css']
+  selector: 'app-scenarion-new',
+  templateUrl: './create.component.html',
+  styleUrls: ['./create.component.css']
 })
 
 export class CreateComponent implements OnInit {
@@ -28,7 +29,7 @@ export class CreateComponent implements OnInit {
 
   private actionSubscription: Subscription;
   private compoundSubscription: Subscription;
-  compoundCreateForm: FormGroup;
+  scenarioCreateForm: FormGroup;
 
   components: Step[] = [];
   step_id: number = 1;
@@ -40,11 +41,12 @@ export class CreateComponent implements OnInit {
   clickInput = false;
 
   componentParamsForm: FormGroup;
-  compoundCreateRequest = {};
+  scenarioCreateRequest = {};
 
   constructor(
     private formBuilder: FormBuilder,
     private _bottomSheet: MatBottomSheet,
+    private scenarioService: TestScenarioService,
     private compoundService: CompoundManageService,
     private interactionService: LibraryBottomsheetInteractionService,
     private router: Router
@@ -60,7 +62,7 @@ export class CreateComponent implements OnInit {
   }
 
   createForm(): void {
-    this.compoundCreateForm = this.formBuilder.group({
+    this.scenarioCreateForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), Validators.maxLength(this.validatorsConfig.name.maxLength)]],
       description: ['', [Validators.required, Validators.maxLength(this.validatorsConfig.description.maxLength)]]
     })
@@ -119,7 +121,7 @@ export class CreateComponent implements OnInit {
   onSubmit(): void {
     const f = this.formControls;
 
-    if (this.compoundCreateForm.invalid) {
+    if (this.scenarioCreateForm.invalid) {
       return;
     }
 
@@ -128,9 +130,9 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    this.compoundCreateRequest['description'] = f.description.value;
-    this.compoundCreateRequest['name'] = f.name.value;
-    this.compoundCreateRequest['steps'] = this.components.map(item => {
+    this.scenarioCreateRequest['description'] = f.description.value;
+    this.scenarioCreateRequest['name'] = f.name.value;
+    this.scenarioCreateRequest['steps'] = this.components.map(item => {
       const step: StepRepresentation = {
         id: item.component.id,
         action: item.isAction,
@@ -139,8 +141,8 @@ export class CreateComponent implements OnInit {
       return step;
     });
 
-    this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
-        this.router.navigateByUrl('/libraries-menu/compounds').then();
+    this.scenarioService.create(this.scenarioCreateRequest).subscribe(() => {
+        this.router.navigateByUrl('/projects-menu/scenarios').then();
       },
       () => {
         console.error("Error of creation");
@@ -148,7 +150,7 @@ export class CreateComponent implements OnInit {
   }
 
   get formControls() {
-    return this.compoundCreateForm.controls;
+    return this.scenarioCreateForm.controls;
   }
 
   updateActionsArray(): void {
@@ -178,7 +180,7 @@ export class CreateComponent implements OnInit {
     let parentParams = {};
     component.parameterNames.forEach(param => {
       parentParams[param] = "${" + param + "}";
-      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
+      this.scenarioCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
     });
     if (component.steps) {
       let mappingParams = {};

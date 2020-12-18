@@ -1,15 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {Subscription} from "rxjs";
-import {Step} from "../../../../models/step.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CompoundManageService} from "../../../../services/compound-manage.service";
-import {OuterComponent} from "../../../../models/outer.model";
+import {TestScenarioService} from "../../../../services/test-scenario/test-scenario-service";
+import {TestScenario} from "../../../../models/test-scenario";
 
 @Component({
-  selector: 'app-compound-view',
-  templateUrl: './compound-view.component.html',
-  styleUrls: ['./compound-view.component.css']
+  selector: 'app-scenario-view',
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.css']
 })
 
 export class ViewComponent implements OnInit {
@@ -24,11 +23,10 @@ export class ViewComponent implements OnInit {
   }
 
   private subscription: Subscription;
-  compoundCreateForm: FormGroup;
-  compound_id: number;
-  compound: OuterComponent;
+  scenario_id: number;
+  scenario: TestScenario;
 
-  components: Step[] = [];
+  components: TestScenario[] = [];
   step_id: number = 1;
   componentCtx = {
     components: this.components
@@ -38,7 +36,7 @@ export class ViewComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private compoundService: CompoundManageService,
+    private scenarioService: TestScenarioService,
     private router: Router,
     private activateRoute: ActivatedRoute
   ) {
@@ -46,30 +44,30 @@ export class ViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.getIdFromParams();
-    this.getCompoundById(this.compound_id);
+    this.getScenarioById(this.scenario_id);
   }
 
 
   getIdFromParams(): void {
-    this.subscription = this.activateRoute.queryParams.subscribe(params=>this.compound_id=params['id']);
+    this.subscription = this.activateRoute.queryParams.subscribe(params=>this.scenario_id=params['id']);
   }
 
-  getCompoundById(id: number): void {
-    this.compoundService.getCompoundById(id).subscribe(compound => {
+  getScenarioById(id: number): void {
+    this.scenarioService.getById(id).subscribe(scenario => {
 
       let parentParams = {};
-      compound.parameterNames.forEach(param => {
+      scenario.parameterNames.forEach(param => {
         parentParams[param] = "${" + param + "}";
       });
 
-      if (compound.steps) {
+      if (scenario.steps) {
         let mappingParams = {};
-        this.recursiveStepParsing(compound.steps, mappingParams, parentParams);
+        this.recursiveStepParsing(scenario.steps, mappingParams, parentParams);
       }
 
-      compound.description = this.parseDescription(compound.description.toString());
-      this.compound = compound;
-      this.componentCtx.components = compound.steps;
+      scenario.description = this.parseDescription(scenario.description.toString());
+      this.scenario = scenario;
+      this.componentCtx.components = scenario.steps;
     })
   }
 
@@ -110,10 +108,6 @@ export class ViewComponent implements OnInit {
     })
   }
 
-  get formControls() {
-    return this.compoundCreateForm.controls;
-  }
-
   // "id": "link_id"
   recursiveStepParsing(steps, mappingParams, parentParams) {
     steps.forEach(item => {
@@ -143,13 +137,6 @@ export class ViewComponent implements OnInit {
     })
   }
 
-  getParamFieldFromComponent(param, id) {
-    return this.components.find((step) => {
-      if (step.id === id) {
-        return step.parameters[param];
-      }
-    })
-  }
 
   ngOnDestroy(): void {
     if (this.subscription) {

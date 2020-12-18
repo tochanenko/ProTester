@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { LibrariesMenuRoutingModule } from './libraries-menu-routing.module';
 import { ViewComponent } from './view/view.component';
 import {LibrariesModule} from "./libraries/libraries.module";
+import { CompoundsModule } from "./compounds/compounds.module";
+import {ActionsModule} from "./actions/actions.module";
 
 
 @NgModule({
@@ -11,7 +13,9 @@ import {LibrariesModule} from "./libraries/libraries.module";
   imports: [
     CommonModule,
     LibrariesMenuRoutingModule,
-    LibrariesModule
+    LibrariesModule,
+    CompoundsModule,
+    ActionsModule
   ]
 })
 export class LibrariesMenuModule { }

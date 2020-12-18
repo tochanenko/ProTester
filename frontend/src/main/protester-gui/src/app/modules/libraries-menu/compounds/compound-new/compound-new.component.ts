@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
-import {BottomSheetComponent} from "../bottom-sheet/bottom-sheet.component";
-import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
+import {BottomSheetComponent} from "../../../../components/bottom-sheet/bottom-sheet.component";
+import {LibraryBottomsheetInteractionService} from "../../../../services/library/library-bottomsheet-interaction.service";
 import {Subscription} from "rxjs";
-import {Step} from "../../models/step.model";
+import {Step} from "../../../../models/step.model";
 import {Router} from "@angular/router";
-import {CompoundManageService} from "../../services/compound-manage.service";
-import {StepRepresentation} from "../../models/StepRepresentation";
+import {CompoundManageService} from "../../../../services/compound-manage.service";
+import {StepRepresentation} from "../../../../models/StepRepresentation";
 
 @Component({
   selector: 'app-library-new',
@@ -15,7 +15,7 @@ import {StepRepresentation} from "../../models/StepRepresentation";
   styleUrls: ['./compound-new.component.css']
 })
 
-export class CompoundNewComponent implements OnInit {
+export class CreateComponent implements OnInit {
   validatorsConfig = {
     name: {
       minLength: 5,
@@ -37,6 +37,7 @@ export class CompoundNewComponent implements OnInit {
     components: this.components
   }
   url = "";
+  clickInput = false;
 
   componentParamsForm: FormGroup;
   compoundCreateRequest = {};
@@ -73,25 +74,50 @@ export class CompoundNewComponent implements OnInit {
     return step.component.name + '-' + step.id;
   }
 
+  onFilterKeyboard(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+  }
+
   checkIfParamInterpolated(param: string) {
-    const regex = '${';
-    if (param.includes(regex)) {
-      return true;
-    }
-    else {
-      return false;
+    if (typeof param !== "undefined" || param !== null) {
+      const regex = '${';
+      return param.includes(regex);
+    } else {
+      return;
     }
   }
 
   cleanParam(param: string) {
     let new_param = param.slice(2, param.length - 1);
-    console.log(new_param);
     return new_param;
+  }
+
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\${\\w*})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
   }
 
   onSubmit(): void {
     const f = this.formControls;
-
 
     if (this.compoundCreateForm.invalid) {
       return;
@@ -112,10 +138,9 @@ export class CompoundNewComponent implements OnInit {
       }
       return step;
     });
-    console.log(this.compoundCreateRequest);
 
     this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
-        this.router.navigateByUrl('/compound').then();
+        this.router.navigateByUrl('/libraries-menu/compounds').then();
       },
       () => {
         console.error("Error of creation");
@@ -128,38 +153,70 @@ export class CompoundNewComponent implements OnInit {
 
   updateActionsArray(): void {
     this.actionSubscription = this.interactionService.actionsArrayObserver.subscribe(action => {
-      let step = new Step();
-      step.id = this.step_id++;
-      step.isAction = true;
-      step.component = action;
-      step.parameters = new Map<String, String>();
-      action.parameterNames.map(param => {
-        step.parameters[param] = "";
-      });
-      action.parameterNames.forEach(param => {
-        this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-      })
-      this.components.push(step);
+      this.componentPrepare(action);
     });
   }
 
   updateCompoundsArray(): void {
     this.compoundSubscription = this.interactionService.compoundArrayObserver.subscribe(compound => {
-      let step = new Step();
-      step.id = this.step_id++;
-      step.isAction = false;
-      step.component = compound;
-      step.parameters = new Map<String, String>();
-      compound.parameterNames.map(param => {
-        step.parameters[param] = "";
-      });
-
-      compound.parameterNames.forEach(param => {
-        this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
-      })
-      this.components.push(step);
-      console.log(this.components)
+      this.componentPrepare(compound);
     });
+  }
+
+  componentPrepare(component) {
+    let step = new Step();
+
+    step.id = this.step_id++;
+    step.isAction = component.type !== 'COMPOUND';
+    step.component = component;
+    step.parameters = new Map<String, String>();
+
+    component.parameterNames.map(param => {
+      step.parameters[param] = '';
+    });
+
+    let parentParams = {};
+    component.parameterNames.forEach(param => {
+      parentParams[param] = "${" + param + "}";
+      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
+    });
+    if (component.steps) {
+      let mappingParams = {};
+      this.recursiveStepParsing(component.steps, mappingParams, parentParams);
+    }
+
+    this.components.push(step);
+
+  }
+
+
+  // "id": "link_id"
+  recursiveStepParsing(steps, mappingParams, parentParams) {
+    steps.forEach(item => {
+      let clonedMappingParams = Object.assign({}, mappingParams);
+      item.component.description = this.parseDescription(item.component.description);
+      if (Object.keys(item.parameters).length > 0) {
+        for (let [key, value] of Object.entries(item.parameters)) {
+          let cleanedParam = this.cleanParam(value.toString());
+          if (parentParams[cleanedParam]) {
+            item.parameters[key] = parentParams[cleanedParam];
+            parentParams[key] = parentParams[cleanedParam];
+          }
+          if (!this.checkIfParamInterpolated(value.toString())) {
+            clonedMappingParams[key] = value;
+          } else {
+            let param = this.cleanParam(value.toString());
+            if (clonedMappingParams[param]) {
+              item.parameters[key] = clonedMappingParams[param]
+              clonedMappingParams[key] = clonedMappingParams[param];
+            }
+          }
+        }
+      }
+      if (item.component.steps) {
+        this.recursiveStepParsing(item.component.steps, clonedMappingParams, parentParams);
+      }
+    })
   }
 
   deleteComponentFromArray(components, id): void {
@@ -180,18 +237,29 @@ export class CompoundNewComponent implements OnInit {
 
   openBottomSheet(): void {
     this._bottomSheet.open(BottomSheetComponent, {
-      data: {components: this.bottomSheetData}
+      data: {components: this.bottomSheetData},
+      closeOnNavigation: true
     });
   }
 
   getAllActionsForBottomSheet(): void {
     this.compoundService.getAllActions().subscribe(data => {
+      data['list'].forEach(item => {
+        if (typeof item.description !== "object") {
+          item.description = this.parseDescription(item.description);
+        }
+      })
       this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.compoundService.getAllCompounds().subscribe(data => {
+      data['list'].forEach(item => {
+        if (typeof item.description !== "object") {
+          item.description = this.parseDescription(item.description);
+        }
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
   }

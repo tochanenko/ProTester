@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionsListComponent } from './actions-list.component';
+import { CompoundViewComponent } from './compound-view.component';
 
-describe('ActionsListComponent', () => {
-  let component: ActionsListComponent;
-  let fixture: ComponentFixture<ActionsListComponent>;
+describe('CompoundViewComponent', () => {
+  let component: CompoundViewComponent;
+  let fixture: ComponentFixture<CompoundViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ActionsListComponent ]
+      declarations: [ CompoundViewComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ActionsListComponent);
+    fixture = TestBed.createComponent(CompoundViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,15 +3,16 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {PageEvent} from "@angular/material/paginator";
 import {CompoundFilter} from "./compound-filter.model";
 import {Subscription} from "rxjs";
-import {CompoundManageService} from "../../services/compound-manage.service";
-import {OuterComponent} from "../../models/outer.model";
+import {CompoundManageService} from "../../../../services/compound-manage.service";
+import {OuterComponent} from "../../../../models/outer.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-compound-search',
   templateUrl: './compound-search.component.html',
   styleUrls: ['./compound-search.component.css']
 })
-export class CompoundSearchComponent implements OnInit {
+export class SearchComponent implements OnInit {
   searchForm: FormGroup;
   dataSource: OuterComponent[];
   pageEvent: PageEvent;
@@ -23,7 +24,10 @@ export class CompoundSearchComponent implements OnInit {
 
   private subscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder, private compoundService: CompoundManageService) { }
+  constructor(private formBuilder: FormBuilder,
+              private compoundService: CompoundManageService,
+              private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
@@ -40,11 +44,25 @@ export class CompoundSearchComponent implements OnInit {
     });
   }
 
+  goToView(id): void {
+    if (id) {
+      this.router.navigate(['libraries-menu/compounds/view'], {queryParams: {id: id}}).then();
+    }
+  }
+
   getLibrariesCount(): void {
     this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
-      console.log(data)
       this.librariesCount = data["totalItems"];
     });
+  }
+
+  deleteCompound(id): void {
+    this.subscription = this.compoundService.deleteCompound(id).subscribe(data =>{
+      if (data) {
+        console.log("Successful delete!")
+        this.searchByFilter();
+      }
+    }, error => console.error(error.error.message));
   }
 
   onPaginateChange(event): void {

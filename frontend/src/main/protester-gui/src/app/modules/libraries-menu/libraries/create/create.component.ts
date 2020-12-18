@@ -80,8 +80,6 @@ export class CreateComponent implements OnInit {
       return;
     }
     let libraryCreateRequest = {};
-    let action_step = new Step();
-    let compound_step = new Step();
 
     libraryCreateRequest['description'] = f.description.value;
     libraryCreateRequest['name'] = f.name.value;
@@ -89,6 +87,8 @@ export class CreateComponent implements OnInit {
     libraryCreateRequest['components'] = [];
     if (this.actions.length > 0) {
       this.actions.map(action => {
+        let action_step = new Step();
+
         action_step.isAction = true;
         action_step.id = action.id;
         libraryCreateRequest['components'].push(action_step);
@@ -97,11 +97,15 @@ export class CreateComponent implements OnInit {
 
     if (this.compounds.length > 0) {
       this.compounds.map(compound => {
+        let compound_step = new Step();
+
         compound_step.id = compound.id;
         compound_step.isAction = false;
         libraryCreateRequest['components'].push(compound_step);
       })
     }
+
+    console.log(libraryCreateRequest)
 
     this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/libraries').then();
@@ -139,30 +143,58 @@ export class CreateComponent implements OnInit {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
         components: {actions: this.bottomSheetData['actions']}
-      }
+      },
+      closeOnNavigation: true
     });
   }
 
   openBottomSheetWithCompounds(): void {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {
-        components: this.bottomSheetData['compounds'],
-        isAction: false
-      }
+        components: {compounds: this.bottomSheetData['compounds']}
+      },
+      closeOnNavigation: true
     });
   }
 
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
-      console.log(data)
+      data['list'].forEach(item => {
+        item.description = this.parseDescription(item.description);
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
+  }
+
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\${\\w*})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
   }
 
   ngOnDestroy(): void {

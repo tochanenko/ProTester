@@ -1,10 +1,15 @@
+.mat-bottom-sheet-container {
+  width: 80%;
+}
+
 .outer-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .mat-expansion-panel {
+  width: 95%;
   background: #F2F2F2;
   color: #5C6BC0;
 }

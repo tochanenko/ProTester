@@ -139,6 +139,17 @@ export class CreateComponent implements OnInit {
     })
   }
 
+  checkIfParamInterpolated(param: string) {
+    if (typeof param !== "undefined" || param !== null) {
+      const regex = '${';
+      return param.includes(regex);
+    } else {
+      return;
+    }
+  }
+
+
+
   openBottomSheetWithActions(): void {
     this._bottomSheet.open(BottomSheetComponent, {
       data: {

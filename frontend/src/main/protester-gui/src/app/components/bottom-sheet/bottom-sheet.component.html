@@ -1,3 +1,7 @@
+<div class="outer-wrapper">
+  <button mat-icon-button (click)="close($event);">
+    <mat-icon class="material-icons close-icon">keyboard_arrow_down</mat-icon>
+  </button>
 <ng-container *ngIf="data.components.actions">
   <mat-expansion-panel hideToggle>
     <mat-expansion-panel-header>
@@ -56,3 +60,4 @@
     </mat-expansion-panel>
   </mat-expansion-panel>
 </ng-container>
+</div>

@@ -30,6 +30,13 @@ const routes: Routes = [
         component: RegistrationComponent
       },
       {
+        path: 'users',
+        data: {
+          breadcrumb: null
+        },
+        loadChildren: 'src/app/modules/shared/users/users.module#UsersModule'
+      },
+      {
         path: 'forgot-password',
         data: {
           breadcrumb: null

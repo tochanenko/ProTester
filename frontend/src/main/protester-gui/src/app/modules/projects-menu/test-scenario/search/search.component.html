@@ -9,9 +9,11 @@
                  (blur)="onFormBlurs()">
         </mat-form-field>
       </form>
+      <div class="button_wrapper">
       <button mat-raised-button [routerLink]="['new']" class="button-flex-container">
         <p class="button-text">NEW SCENARIO</p>
       </button>
+      </div>
     </div>
 
     <mat-table [dataSource]="dataSource">

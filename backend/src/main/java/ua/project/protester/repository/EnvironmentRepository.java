@@ -2,7 +2,6 @@ package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -31,10 +30,9 @@ public class EnvironmentRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         log.info("saving {} environment with description {}", environment.getName(), environment.getDescription());
 
-        String saveEnvironment = "INSERT INTO environment(name, description, password, username, url)" +
-                "VALUES (:name, :description, :password, :username, :url)";
+        String saveEnvironment = "INSERT INTO environment(name, description, password, username, url)"
+                + "VALUES (:name, :description, :password, :username, :url)";
         namedParameterJdbcTemplate.update(
-                //PropertyExtractor.extract(env, "saveEnvironment"),
                 saveEnvironment,
                 new MapSqlParameterSource()
                         .addValue("name", environment.getName())
@@ -52,11 +50,10 @@ public class EnvironmentRepository {
 
     public ua.project.protester.model.Environment updateEnvironment(ua.project.protester.model.Environment environment) {
 
-        String updateEnvironment = "UPDATE environment" +
-                "  SET name = :name,description = :description,password = :password," +
-                "username = :username, url = :url WHERE id = :id";
+        String updateEnvironment = "UPDATE environment"
+                + "  SET name = :name,description = :description,password = :password,"
+                + "username = :username, url = :url WHERE id = :id";
         namedParameterJdbcTemplate.update(
-               // PropertyExtractor.extract(env, "updateEnvironment"),
                 updateEnvironment,
                 new MapSqlParameterSource()
                         .addValue("id", environment.getId())
@@ -81,8 +78,8 @@ public class EnvironmentRepository {
 
     public Optional<ua.project.protester.model.Environment> findEnvironmentById(Long id) {
         try {
-            String findById = " SELECT e.id, e.name, e.description, e.password, e.username, e.url " +
-                    "FROM environment e WHERE id = :id";
+            String findById = " SELECT e.id, e.name, e.description, e.password, e.username, e.url "
+                    + "FROM environment e WHERE id = :id";
             ua.project.protester.model.Environment environment = namedParameterJdbcTemplate.queryForObject(
                     //PropertyExtractor.extract(env, "findEnvironmentById"),
                     findById,
@@ -111,7 +108,6 @@ public class EnvironmentRepository {
 
             String findAll = "SELECT * FROM ENVIRONMENT";
             List<ua.project.protester.model.Environment> environment = namedParameterJdbcTemplate.query(
-                   // PropertyExtractor.extract(env, "findAll"),
                     findAll,
                     (rs, rowNum) -> new ua.project.protester.model.Environment(
                             rs.getLong("id"),

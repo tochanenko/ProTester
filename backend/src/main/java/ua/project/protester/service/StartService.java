@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.ActionWrapper;
 import ua.project.protester.model.DataSet;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.model.TestCase;
@@ -24,7 +25,7 @@ import ua.project.protester.repository.result.ActionResultRepository;
 import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
 import ua.project.protester.request.RunTestCaseRequest;
-import ua.project.protester.request.TestCaseRequest;
+import ua.project.protester.response.TestCaseResponse;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -45,7 +46,7 @@ public class StartService {
      private RunResultRepository runResultRepository;
      private SimpMessagingTemplate messagingTemplate;
 
-     private static List<TestCaseRequest> testCaseRequest = new ArrayList<>();
+     private static List<TestCaseResponse> testCaseResponses = new ArrayList<>();
 
      @Autowired
     public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
@@ -65,23 +66,23 @@ public class StartService {
          RunResult runResult = runResultRepository.findRunResultById(id).get();
 
          List<Integer> testCaseResults = runResult.getTestCaseResult();
-        for (int i = 0; i < testCaseRequest.size(); i++) {
-            runTestCase(testCaseRequest.get(i), testCaseResults.get(i));
+        for (int i = 0; i < testCaseResponses.size(); i++) {
+            runTestCase(testCaseResponses.get(i), testCaseResults.get(i));
         }
-        log.info("testCaseRequest are {}", testCaseRequest);
-        testCaseRequest.clear();
+        log.info("testCaseResponses are {}", testCaseResponses);
+        testCaseResponses.clear();
     }
 
     @Transactional
-    void runTestCase(TestCaseRequest testCaseRequest, int testCaseResultId) {
+    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) {
 
         Map<String, String> initMap = new HashMap<>();
         initMap.put("username", "volodya");
         initMap.put("password", "tank85943221");
         initMap.put("url", "www.youtube.com");
-        initMap.put("rztk_id", "rztk_id from inout param");
+        initMap.put("rztk_id", "rztk_id from input param");
 
-        TestCase testCase = fromTestCaseRequestToModel(testCaseRequest);
+        TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         testCase.getDataSetList().stream()
                     .map(DataSet::getId)
                     .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
@@ -98,13 +99,14 @@ public class StartService {
     }
 
     @Transactional
-    public RunResult getTestCaseExecutionResult(RunTestCaseRequest testCaseRequest) {
+    public RunResult getTestCaseExecutionResult(RunTestCaseRequest runTestCaseRequest) {
 
         RunResult runResult = new RunResult();
-        runResult.setUserId(testCaseRequest.getUserId());
-        runResult.setTestCaseResult(testCaseRequest.getTestCaseRequestList().stream()
+        runResult.setUserId(runTestCaseRequest.getUserId());
+        Map<Integer, List<ActionWrapper>> steps = new HashMap<>();
+        runResult.setTestCaseResult(runTestCaseRequest.getTestCaseResponseList().stream()
                 .map(request -> {
-                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(request.getAuthorId()).get(), fromTestCaseRequestToModel(request));
+                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(request.getAuthorId()).get(), fromTestCaseResponseToModel(request));
                     List<ActionResultDto> actionResult = new ArrayList<>();
                     testCaseResult.setStatus(ResultStatus.IN_PROGRESS);
                     testCaseResult.setStartDate(OffsetDateTime.now());
@@ -112,9 +114,14 @@ public class StartService {
                     return resultRepository.save(testCaseResult).getId();
                 })
                 .collect(Collectors.toList()));
-        StartService.testCaseRequest = testCaseRequest.getTestCaseRequestList();
-        return runResultRepository.saveUserRunResult(runResult);
-    }
+        StartService.testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
+        for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
+            steps.put(runResult.getTestCaseResult().get(i), findSteps(runTestCaseRequest.getTestCaseResponseList().get(i).getScenarioId().intValue()));
+        }
+        RunResult resultFromDb = runResultRepository.saveUserRunResult(runResult);
+        resultFromDb.setActionWrapper(steps);
+        return resultFromDb;
+     }
 
     @Transactional
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
@@ -122,14 +129,36 @@ public class StartService {
             try {
                 ActionResultDto actionResultDto = new ActionResultDto(action);
                 actionResultDto.setStatus(ResultStatus.IN_PROGRESS);
-                System.out.println("ACTION FROM CALLBACK " + action);
+                System.out.println("ACTION FROM CALLBACK " + action.getStatus());
                 //messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+                //IF ACTION WAS NOT GET VIA SOCKET WE REWRITE
                 actionResultDto = actionResultRepository.save(testCaseResultId, action);
-                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId, actionResultDto);
+                messagingTemplate.convertAndSend("/topic/public/" + testCaseResultId + "/" + action.getAction().getId(), actionResultDto);
             } catch (IllegalActionLogicImplementation illegalActionLogicImplementation) {
                 illegalActionLogicImplementation.printStackTrace();
             }
         };
+    }
+
+    private List<ActionWrapper> findSteps(Integer testScenarioId) {
+        try {
+            return Optional.of(testScenarioService.getTestScenarioById(testScenarioId)).get().getSteps()
+                    .stream()
+                    .filter(Step::isAction)
+                    .map(step -> {
+                        ActionWrapper actionWrapper = new ActionWrapper();
+                        actionWrapper.setClassName(step.getComponent().getDescription());
+                        actionWrapper.setParameters(step.getParameters());
+                        actionWrapper.setDescription(step.getComponent().getName());
+                        actionWrapper.setResultStatus(ResultStatus.IN_PROGRESS);
+                        actionWrapper.setId(step.getComponent().getId());
+                        return actionWrapper;
+                    })
+                    .collect(Collectors.toList());
+        } catch (TestScenarioNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     @Transactional
@@ -141,7 +170,10 @@ public class StartService {
             for (Step s : stepsParams
             ) {
                 for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsValue(entry.getValue())) {
+                    if (initMap.containsKey(entry.getValue())) {
+                        entry.setValue(initMap.get(entry.getValue()));
+                    }
+                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
                         entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
                     }
                 }
@@ -154,12 +186,12 @@ public class StartService {
     }
 
     @Transactional
-    TestCase fromTestCaseRequestToModel(TestCaseRequest testCaseRequest) {
-        TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
+    TestCase fromTestCaseResponseToModel(TestCaseResponse testCaseResponse) {
+        TestCase testCase = modelMapper.map(testCaseResponse, TestCase.class);
         List<DataSet> dataSets = new ArrayList<>();
 
-        testCaseRequest.getDataSetId()
-                .forEach(id -> dataSets.add(dataSetRepository.findDataSetById(id).get()));
+        testCaseResponse.getDataSetResponseList()
+                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).get()));
         testCase.setDataSetList(dataSets);
         return testCase;
     }
@@ -168,4 +200,5 @@ public class StartService {
     public RunResult findById(Long id) {
          return runResultRepository.findRunResultById(id).orElseThrow(RuntimeException::new);
     }
+
 }

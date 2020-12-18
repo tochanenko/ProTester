@@ -2,6 +2,7 @@ package ua.project.protester.model.executable.result.subtype;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ActionResultSqlDto extends ActionResultDto {
     private String connectionUrl;
     private String username;

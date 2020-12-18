@@ -1,0 +1,57 @@
+<div class="library-search-form-flex">
+  <mat-card class="card">
+    <div class="search-wrapper">
+      <form id="searchForm" [formGroup]="searchForm">
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-icon matPrefix>search</mat-icon>
+          <mat-label>Search compound</mat-label>
+          <input matInput type="text" id="search" name="search" formControlName="search" class="search-input"
+                 (blur)="onFormBlurs()">
+        </mat-form-field>
+      </form>
+      <button mat-raised-button [routerLink]="['new']" class="button-flex-container">
+        <p class="button-text">NEW COMPOUND</p>
+      </button>
+    </div>
+
+    <mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="NAME">
+        <mat-header-cell *matHeaderCellDef class="header"> NAME</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="DESCRIPTION">
+        <mat-header-cell *matHeaderCellDef class="header th-left"> DESCRIPTION</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="description-column"> <div>{{element.description}}</div>  </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="CONF">
+        <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button mat-icon-button [matMenuTriggerFor]="menuTable">
+            <span class="material-icons more-options">more_vert</span>
+          </button>
+          <mat-menu #menuTable="matMenu">
+            <button (click)="goToView(row.id)" mat-menu-item>
+              <span>View</span>
+            </button>
+            <button mat-menu-item (click)="deleteCompound(row.id)" class="mat-menu-delete-button">
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
+    </mat-table>
+    <mat-paginator class="header"
+                   [pageSizeOptions]="pageSizeOptions"
+                   [length]="librariesCount"
+                   [pageSize]="compoundFilter.pageSize"
+                   (page)="pageEvent = $event; onPaginateChange($event)">
+
+    </mat-paginator>
+  </mat-card>
+</div>

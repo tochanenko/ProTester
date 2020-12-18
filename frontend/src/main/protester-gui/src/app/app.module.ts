@@ -3,8 +3,6 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {RegistrationComponent} from "./components/registration/registration.component";
-import {LoginComponent} from "./components/login/login.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -53,8 +51,7 @@ import {BreadcrumbModule} from "primeng/breadcrumb";
     BottomSheetComponent,
     CompoundSearchComponent,
     CompoundNewComponent,
-    CompoundViewComponent
-    CompoundNewComponent,
+    CompoundViewComponent,
     BreadcrumbComponent
   ],
   imports: [

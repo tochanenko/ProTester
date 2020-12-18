@@ -22,6 +22,13 @@ const routes: Routes = [
           breadcrumb: null
         },
         loadChildren: 'src/app/modules/libraries-menu/libraries/libraries.module#LibrariesModule'
+      },
+      {
+        path: 'compounds',
+        data: {
+          breadcrumb: null
+        },
+        loadChildren: 'src/app/modules/libraries-menu/compounds/compounds.module#CompoundsModule'
       }
     ]
   }

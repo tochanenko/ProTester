@@ -25,4 +25,9 @@ public class RunController {
         startService.execute(id);
     }
 
+    @GetMapping("/result/{id}")
+    public RunResult findResultById(@PathVariable Long id) {
+        return startService.findById(id);
+    }
+
 }

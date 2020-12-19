@@ -52,6 +52,7 @@ public class RunResultRepository {
                 new String[]{"case_wrapper_id"});
         Integer id = (Integer) keyHolder.getKey();
 
+        wrapperResult.setTestResultId(testCaseResultId);
         wrapperResult.setId(id);
         return wrapperResult;
     }
@@ -107,7 +108,7 @@ public class RunResultRepository {
             List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
                     extract(env, "findActionWrapperResultsByTestCaseWrapperId"),
                     new MapSqlParameterSource()
-                            .addValue("test_case_result", testCaseWrapperId),
+                            .addValue("case_wrapper_id", testCaseWrapperId),
                     (rs, rowNum) -> new ActionWrapper(
                             rs.getInt("action_wrapper_id"),
                             rs.getInt("step_id"))

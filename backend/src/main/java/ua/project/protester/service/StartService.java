@@ -204,6 +204,7 @@ public class StartService {
 
     @Transactional
     public RunResult findById(Long id) {
-         return runResultRepository.findRunResultById(id).orElseThrow(RuntimeException::new);
+         return runResultRepository.findRunResultById(id)
+                 .orElseThrow(RuntimeException::new);
     }
 }

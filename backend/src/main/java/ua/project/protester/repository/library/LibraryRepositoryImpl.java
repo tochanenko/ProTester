@@ -1,4 +1,4 @@
-package ua.project.protester.repository;
+package ua.project.protester.repository.library;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,9 @@ import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.Step;
+import ua.project.protester.repository.ActionRepository;
+import ua.project.protester.repository.OuterComponentRepository;
+import ua.project.protester.repository.StepParameterRepository;
 import ua.project.protester.utils.LibraryRowMapper;
 import ua.project.protester.utils.PaginationLibrary;
 import ua.project.protester.utils.PropertyExtractor;
@@ -37,7 +40,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
-    private final LibraryRowMapper rowMapper;
     private final ActionRepository actionRepository;
     private final OuterComponentRepository outerComponentRepository;
     private final StepParameterRepository stepParameterRepository;
@@ -133,20 +135,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
         } catch (DataAccessException e) {
             throw new LibraryNotFoundException();
-        }
-    }
-
-    @Override
-    public Optional<Library> findByName(String name) {
-        try {
-            String sql = PropertyExtractor.extract(env, "findLibraryByName");
-            MapSqlParameterSource namedParams = new MapSqlParameterSource();
-
-            namedParams.addValue("library_name", name);
-
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, namedParams, rowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
         }
     }
 

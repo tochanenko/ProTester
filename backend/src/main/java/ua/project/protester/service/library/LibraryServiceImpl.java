@@ -1,4 +1,4 @@
-package ua.project.protester.service;
+package ua.project.protester.service.library;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.Step;
-import ua.project.protester.repository.LibraryRepository;
+import ua.project.protester.repository.library.LibraryRepository;
 import ua.project.protester.request.LibraryRequestModel;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.PaginationLibrary;
@@ -64,17 +64,10 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public Page<Library> findAll(PaginationLibrary paginationLibrary) {
-        log.info("pagination {} library {}", paginationLibrary.getName(), paginationLibrary);
         return new Page<>(
                 libraryRepository.findAll(paginationLibrary),
                 libraryRepository.getCountLibraries(paginationLibrary)
         );
-    }
-
-    @Override
-    @Transactional
-    public Library findLibraryByName(String name) throws LibraryNotFoundException {
-        return libraryRepository.findByName(name).orElseThrow(LibraryNotFoundException::new);
     }
 
     @Override

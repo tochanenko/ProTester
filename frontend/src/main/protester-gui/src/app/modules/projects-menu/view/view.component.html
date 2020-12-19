@@ -1,46 +1,41 @@
 <div class="project-menu">
-  <div class="menu-grid-high">
-    <a routerLink="/projects-menu/projects/create" class="rectangle-85 new-project">
-      <span class="material-icons content_paste">
-        content_paste
-      </span>
-      <label class="rectangle-description">
-        new project
-      </label>
+  <mat-grid-list cols="2" rowHeight="3:2" gutterSize="40px">
+
+    <a [routerLink]="'/projects-menu/projects'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons">content_paste</span>
+          <div class="text-inside-grid">project</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="/projects-menu/projects" class="rectangle-85 search-project">
-      <span class="material-icons-outlined search">
-        search
-      </span>
-      <label class="rectangle-description">
-        search project
-      </label>
+
+    <a [routerLink]="">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">assignment_turned_in</span>
+          <div class="text-inside-grid">results</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="" class="rectangle-85 results">
-      <span class="material-icons-outlined assignment_turned_in">
-        assignment_turned_in
-      </span>
-      <label class="rectangle-description">
-        results
-      </label>
+
+    <a [routerLink]="'/projects-menu/scenarios'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">assignment</span>
+          <div class="text-inside-grid">test scenario</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-  </div>
-  <div class="menu-grid-low">
-    <a routerLink="/projects-menu/scenarios" class="rectangle-85 test-scenario">
-      <span class="material-icons-outlined assignment">
-        assignment
-      </span>
-      <label class="rectangle-description">
-        test scenario
-      </label>
+
+    <a [routerLink]="'/projects-menu/datasets'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">book</span>
+          <div class="text-inside-grid">data set</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="/projects-menu/datasets" class="rectangle-85 dataset">
-      <span class="material-icons-outlined book">
-        book
-      </span>
-      <label class="rectangle-description">
-        data set
-      </label>
-    </a>
-  </div>
+
+  </mat-grid-list>
 </div>

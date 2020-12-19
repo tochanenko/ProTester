@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -23,7 +22,6 @@ import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.repository.StepParameterRepository;
-import ua.project.protester.utils.LibraryRowMapper;
 import ua.project.protester.utils.PaginationLibrary;
 import ua.project.protester.utils.PropertyExtractor;
 

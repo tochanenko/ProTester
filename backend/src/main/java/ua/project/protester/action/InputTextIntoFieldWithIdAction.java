@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -18,7 +19,7 @@ import java.util.Map;
 )
 public class InputTextIntoFieldWithIdAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
             System.out.println("RESULT  id: " + params.get("id") + " text: " + params.get("text"));
             driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));

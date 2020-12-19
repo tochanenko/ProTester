@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -18,7 +19,7 @@ import java.util.Map;
 )
 public class ClickOnLinkWithTextAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
             System.out.println("RESULT text: " + params.get("text"));
             driver.findElement(By.linkText(params.get("text"))).click();

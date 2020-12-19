@@ -16,13 +16,11 @@ import java.util.Map;
         description = "Send ${method} request to url ${url} with body ${body}",
         parameterNames = {"method", "url", "body"}
 )
-public class RestAction extends AbstractAction {
+public class CustomRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
-            OkHttpClient client = new OkHttpClient();
-
             String requestBody = params.get("body");
 
             Request request = new Request.Builder()
@@ -35,7 +33,7 @@ public class RestAction extends AbstractAction {
                     .build();
 
             try {
-                Response response = client.newCall(request).execute();
+                Response response = okHttpClient.newCall(request).execute();
                 ResponseBody body = response.body();
                 return new ActionResultRestDto(
                         requestBody,

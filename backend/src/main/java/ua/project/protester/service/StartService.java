@@ -142,7 +142,7 @@ public class StartService {
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
-                List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseWrapperResult(testCaseResultId,
+                List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
                 actionWrappers.get(counter).setActionResultDtoId(actionResultDto.getId());

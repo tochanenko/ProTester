@@ -101,6 +101,33 @@ public class RunResultRepository {
         return runResult;
     }
 
+    public List<ActionWrapper> findActionWrapperByTestCaseResult(Integer testCaseResultId, Integer scenarioId) throws TestScenarioNotFoundException {
+        List<Step> steps = testScenarioService.getTestScenarioById(scenarioId).getSteps();
+
+        try {
+            List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
+                    extract(env, "findActionWrapperResultsByTestCaseResultId"),
+                    new MapSqlParameterSource()
+                            .addValue("test_case_result", testCaseResultId),
+                    (rs, rowNum) -> new ActionWrapper(
+                            rs.getInt("action_wrapper_id"),
+                            rs.getInt("step_id"))
+            );
+            if (actionWrapperList.size() == 0) {
+                return Collections.emptyList();
+            }
+            return actionWrapperList.stream()
+                    .map(actionWrapper -> connectActionWrapperWithStep(actionWrapper.getId(), steps.stream()
+                            .filter(step -> step.getId().equals(actionWrapper.getStepId()))
+                            .findFirst().get())
+                            .get())
+                    .collect(Collectors.toList());
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("action wrappers were not found");
+            return Collections.emptyList();
+        }
+    }
+
     public List<ActionWrapper> findActionWrapperByTestCaseWrapperResult(Integer testCaseWrapperId, Integer scenarioId) throws TestScenarioNotFoundException {
         List<Step> steps = testScenarioService.getTestScenarioById(scenarioId).getSteps();
 
@@ -108,7 +135,7 @@ public class RunResultRepository {
             List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
                     extract(env, "findActionWrapperResultsByTestCaseWrapperId"),
                     new MapSqlParameterSource()
-                            .addValue("case_wrapper_id", testCaseWrapperId),
+                            .addValue("test_case_wrapper_id", testCaseWrapperId),
                     (rs, rowNum) -> new ActionWrapper(
                             rs.getInt("action_wrapper_id"),
                             rs.getInt("step_id"))

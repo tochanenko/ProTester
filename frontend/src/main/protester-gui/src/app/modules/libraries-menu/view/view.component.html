@@ -1,60 +1,40 @@
-<div class="library-menu-background">
-  <div class="menu-grid">
-    <a routerLink="/libraries-menu/libraries/create" class="rectangle-85 new-library">
-      <span class="material-icons-outlined chrome_reader_mode">chrome_reader_mode</span>
-      <label class="rectangle-description">new library</label>
+<div class="libraries-menu">
+  <mat-grid-list cols="2" rowHeight="3:2" gutterSize="40px">
+
+    <a [routerLink]="'/libraries-menu/libraries/create'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">chrome_reader_mode</span>
+          <div class="text-inside-grid">new library</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="/libraries-menu/libraries" class="rectangle-85 search-library">
-      <span class="material-icons-outlined search">search</span>
-      <label class="rectangle-description">search library</label>
+
+    <a [routerLink]="'/libraries-menu/libraries'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">search</span>
+          <div class="text-inside-grid">search library</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="/libraries-menu/actions" class="rectangle-85 actions">
-      <span class="material-icons-outlined featured_play_list">featured_play_list</span>
-      <label class="rectangle-description">actions</label>
+
+    <a [routerLink]="'/libraries-menu/actions'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">featured_play_list</span>
+          <div class="text-inside-grid">actions</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-    <a routerLink="/libraries-menu/compounds" class="rectangle-85 compounds">
-      <span class="material-icons-outlined description">description</span>
-      <label class="rectangle-description">compounds</label>
+
+    <a [routerLink]="'/libraries-menu/compounds'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">description</span>
+          <div class="text-inside-grid">compounds</div>
+        </mat-card>
+      </mat-grid-tile>
     </a>
-  </div>
-
-<!--  <mat-grid-list cols="3" rowHeight="3:2" gutterSize="40px">-->
-
-<!--    <a [routerLink]="'/projects-menu/projects/create'">-->
-<!--      <mat-grid-tile>-->
-<!--        <mat-card class="inside-grid">-->
-<!--          <span class="material-icons">content_paste</span>-->
-<!--          <div class="text-inside-grid">new project</div>-->
-<!--        </mat-card>-->
-<!--      </mat-grid-tile>-->
-<!--    </a>-->
-
-<!--    <a [routerLink]="'/projects-menu/projects'">-->
-<!--      <mat-grid-tile>-->
-<!--        <mat-card class="inside-grid">-->
-<!--          <span class="material-icons">search</span>-->
-<!--          <div class="text-inside-grid">search project</div>-->
-<!--        </mat-card>-->
-<!--      </mat-grid-tile>-->
-<!--    </a>-->
-
-<!--    <a [routerLink]="'/projects-menu/scenarios'">-->
-<!--      <mat-grid-tile>-->
-<!--        <mat-card class="inside-grid">-->
-<!--          <span class="material-icons-outlined">assignment</span>-->
-<!--          <div class="text-inside-grid">test scenario</div>-->
-<!--        </mat-card>-->
-<!--      </mat-grid-tile>-->
-<!--    </a>-->
-
-<!--    <a [routerLink]="">-->
-<!--      <mat-grid-tile>-->
-<!--        <mat-card class="inside-grid">-->
-<!--          <span class="material-icons">card_travel</span>-->
-<!--          <div class="text-inside-grid">test case</div>-->
-<!--        </mat-card>-->
-<!--      </mat-grid-tile>-->
-<!--    </a>-->
-
-<!--  </mat-grid-list>-->
+  </mat-grid-list>
 </div>

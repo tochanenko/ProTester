@@ -82,6 +82,7 @@ public class StartService {
         initMap.put("url", "www.youtube.com");
         initMap.put("rztk_id", "rztk_id from input param");
 
+        Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         testCase.getDataSetList().stream()
                     .map(DataSet::getId)
@@ -89,10 +90,10 @@ public class StartService {
                     .filter(Objects::nonNull)
                     .forEachOrdered(outerComponent -> {
                                 try {
-                                    outerComponent.get().execute(initMap, webDriver, getConsumer(testCaseResultId));
+                                    outerComponent.get().execute(initMap, environment, webDriver, getConsumer(testCaseResultId));
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
                                     counter = 0;
-                                } catch (IllegalActionLogicImplementation | ActionExecutionException a) {
+                                } catch (ActionExecutionException a) {
                                     resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
                                     counter = 0;
                                 }
@@ -154,7 +155,7 @@ public class StartService {
                         break;
                     default: throw new RuntimeException();
                 }
-            } catch (IllegalActionLogicImplementation | TestScenarioNotFoundException illegalActionLogicImplementation) {
+            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation illegalActionLogicImplementation) {
                 illegalActionLogicImplementation.printStackTrace();
             }
         };

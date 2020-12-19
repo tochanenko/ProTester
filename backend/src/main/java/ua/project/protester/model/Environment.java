@@ -1,13 +1,14 @@
 package ua.project.protester.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Setter
-@Getter
+@Data
+@NoArgsConstructor
 public class Environment {
     private Long id;
 
@@ -31,12 +32,13 @@ public class Environment {
         this.url = url;
     }
 
-    public DataSource getDataSource(Environment environment) {
-        return DataSourceBuilder
+    public NamedParameterJdbcTemplate getTemplate(Environment environment) {
+        DataSource dataSource = DataSourceBuilder
                 .create()
                 .url(environment.getUrl())
                 .username(environment.getUsername())
                 .password(environment.getPassword())
                 .build();
+        return new NamedParameterJdbcTemplate(dataSource);
     }
 }

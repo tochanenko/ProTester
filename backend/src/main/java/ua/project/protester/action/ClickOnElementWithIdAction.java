@@ -23,7 +23,6 @@ public class ClickOnElementWithIdAction extends AbstractAction {
             driver.findElement(By.id(params.get("id"))).click();
             return new ActionResultTechnicalDto();
         } catch (WebDriverException ex) {
-            System.out.println(ex.getClass().getName());
             return new ActionResultTechnicalDto(new ActionExecutionException(ex.getClass().getName()));
         }
     }

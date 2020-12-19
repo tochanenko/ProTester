@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -17,16 +15,20 @@ public class RunResult {
 
     private Long id;
 
-    private List<Integer> testCaseResult;
+    private List<TestCaseWrapperResult> testCaseResults;
 
-    private Long userId;
+    public RunResult(Long id) {
+        this.id = id;
+    }
 
     //first - testCaseResultId, second - wrapper
-    private Map<Integer, List<ActionWrapper>> actionWrapper = new HashMap<>();
+    //private Map<Integer, List<ActionWrapper>> actionWrapper = new HashMap<>();
 
-    public RunResult(Long id, Long userId) {
-        this.id = id;
-        this.userId = userId;
-    }
+//    public RunResult(Long id, Long userId) {
+//        this.id = id;
+//        this.userId = userId;
+//    }
+
+
 
 }

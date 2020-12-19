@@ -3,6 +3,7 @@ package ua.project.protester.model.executable.result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.AbstractAction;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class ActionResultDto {
     protected Integer id;
     protected AbstractAction action;

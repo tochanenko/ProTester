@@ -3,6 +3,7 @@ package ua.project.protester.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.service.StartService;
@@ -14,7 +15,7 @@ public class RunController {
     private final StartService startService;
 
     @PostMapping
-    public RunResult save(@RequestBody RunTestCaseRequest testCase)  {
+    public RunResult save(@RequestBody RunTestCaseRequest testCase) throws TestScenarioNotFoundException {
        return startService.getTestCaseExecutionResult(testCase);
     }
 

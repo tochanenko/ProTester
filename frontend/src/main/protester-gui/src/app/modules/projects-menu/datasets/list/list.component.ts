@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {PageEvent} from "@angular/material/paginator";
 import {Subscription} from "rxjs";
 import {DatasetService} from "../../../../services/dataset.service";
-import {Router} from "@angular/router";
-import {StorageService} from "../../../../services/auth/storage.service";
 import {MatDialog} from "@angular/material/dialog";
 import {takeUntil} from "rxjs/operators";
 import {CreateComponent} from "../create/create.component";
@@ -30,8 +28,6 @@ export class ListComponent extends Unsubscribe implements OnInit {
   private subscription: Subscription;
 
   constructor(private datasetService: DatasetService,
-              private router: Router,
-              private storageService: StorageService,
               public dialog: MatDialog) {
     super();
   }
@@ -54,8 +50,8 @@ export class ListComponent extends Unsubscribe implements OnInit {
 
   public openCreateDialog(): void {
     const createDialogRef = this.dialog.open(CreateComponent, {
-      height: '85%',
-      width: '50%'
+      height: 'auto',
+      width: 'auto'
     });
 
     createDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -77,8 +73,8 @@ export class ListComponent extends Unsubscribe implements OnInit {
 
   public openEditDialog(id: number): void {
     const editDialogRef = this.dialog.open(EditComponent, {
-      height: '65%',
-      width: '50%',
+      height: 'auto',
+      width: 'auto',
       data: {id: id}
     });
 
@@ -89,8 +85,8 @@ export class ListComponent extends Unsubscribe implements OnInit {
 
   public openDeleteDialog(id: number): void {
     const deleteDialogRef = this.dialog.open(DeleteComponent, {
-      height: '25%',
-      width: '30%',
+      height: 'auto',
+      width: 'auto',
       data: {id: id}
     });
 
@@ -105,8 +101,7 @@ export class ListComponent extends Unsubscribe implements OnInit {
         console.log(data.list);
         this.dataSource = data.list;
         this.datasetsCount = data.totalItems;
-      },
-      error => console.log('error in initDataSource')
+      }
     );
   }
 }

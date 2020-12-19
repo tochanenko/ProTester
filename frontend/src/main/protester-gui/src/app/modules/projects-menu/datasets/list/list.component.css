@@ -5,7 +5,7 @@
 }
 
 mat-card {
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.14), 0 2px 1px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 
@@ -32,16 +32,25 @@ mat-card {
   justify-content: center;
 }
 
-.mat-column-NAME {
-  flex: 0 0 30%;
+mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-type {
+  padding-right: 0;
+  padding-left: 0;
 }
 
-.mat-column-Description {
-  flex: 0 0 30%;
+mat-cell:first-of-type, mat-header-cell:first-of-type, mat-footer-cell:first-of-type {
+  padding-left: 24px;
+}
+
+.mat-column-NAME {
+  flex: 0 0 48%;
+}
+
+.mat-column-DESCRIPTION {
+  flex: 0 0 48%;
 }
 
 .mat-column-CONF {
-  flex: 0 0 5%;
+  flex: 0 0 4%;
 }
 
 .search-dataset {
@@ -70,18 +79,18 @@ mat-card {
 }
 
 #input {
-  border-radius: 3.5px;
+  border-radius: 3px;
   position: absolute;
   height: 24px;
   left: 16px;
   right: 221px;
   top: 16px;
-  font-family: Roboto;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  letter-spacing: 0.15px;
+  letter-spacing: 0;
   color: rgba(0, 0, 0, 0.6);
 }
 

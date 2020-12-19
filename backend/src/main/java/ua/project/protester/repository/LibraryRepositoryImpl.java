@@ -107,8 +107,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         namedParams.addValue("filterLibraryName", paginationLibrary.getName() + "%");
 
         log.info("sql query {}", sql);
-        log.info(String.valueOf(env.getActiveProfiles()));
-        log.info(String.valueOf(env.getDefaultProfiles()));
         log.info("params {}", namedParams);
         log.info("pagination {}", paginationLibrary);
         return namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);

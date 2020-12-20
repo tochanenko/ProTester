@@ -7,6 +7,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class StepParameterRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public void saveAll(Integer id, Map<String, String> parameters) {
         parameters.forEach((key, value) -> save(id, key, value));
     }

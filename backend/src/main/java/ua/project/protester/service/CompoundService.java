@@ -26,12 +26,6 @@ public class CompoundService {
     }
 
     @Transactional
-    public OuterComponent updateCompound(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
-        OuterComponent updatedCompound = testScenarioRepresentation.getOuterComponent();
-        return outerComponentRepository.updateOuterComponent(id, updatedCompound, true).orElse(null);
-    }
-
-    @Transactional
     public Page<OuterComponent> getAllCompounds(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
                 outerComponentRepository.findAllOuterComponents(true, filter, loadSteps),

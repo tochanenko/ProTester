@@ -5,7 +5,6 @@
 <mat-card class="dataset-list">
 
   <div class="search-dataset">
-
     <mat-form-field appearance="outline">
       <mat-label>Search dataset</mat-label>
       <input class="input-search" matInput type="text" id="searchDataset" [(ngModel)]="datasetFilter.name"
@@ -15,6 +14,7 @@
   </div>
 
   <mat-table [dataSource]="dataSource">
+
     <ng-container matColumnDef="NAME">
       <mat-header-cell *matHeaderCellDef class="header">Name</mat-header-cell>
       <mat-cell *matCellDef="let element"><a>{{element.name}}</a></mat-cell>
@@ -26,7 +26,6 @@
     </ng-container>
 
     <ng-container matColumnDef="CONF">
-
       <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
       <mat-cell *matCellDef="let row">
         <button [matMenuTriggerFor]="menuTable" mat-icon-button>
@@ -55,6 +54,5 @@
                  [pageSizeOptions]="pageSizeOptions"
                  [pageSize]="datasetFilter.pageSize"
                  class="header">
-
   </mat-paginator>
 </mat-card>

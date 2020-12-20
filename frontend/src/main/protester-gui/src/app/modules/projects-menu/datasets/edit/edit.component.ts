@@ -71,7 +71,7 @@ export class EditComponent extends Unsubscribe implements OnInit {
     this.datasetService.update(datasetUpdateResponse)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        data => {
+        () => {
           console.log(datasetUpdateResponse);
           this.isSuccessful = true;
           this.dialogRef.close();

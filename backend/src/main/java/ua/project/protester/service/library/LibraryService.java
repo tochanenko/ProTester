@@ -1,4 +1,4 @@
-package ua.project.protester.service;
+package ua.project.protester.service.library;
 
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.LibraryNotFoundException;
@@ -17,9 +17,6 @@ public interface LibraryService {
 
     @Transactional
     Page<Library> findAll(PaginationLibrary paginationLibrary);
-
-    @Transactional
-    Library findLibraryByName(String name) throws LibraryNotFoundException;
 
     @Transactional
     Library getLibraryById(int id) throws LibraryNotFoundException;

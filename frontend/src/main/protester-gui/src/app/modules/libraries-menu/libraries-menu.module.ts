@@ -6,6 +6,7 @@ import { ViewComponent } from './view/view.component';
 import {LibrariesModule} from "./libraries/libraries.module";
 import { CompoundsModule } from "./compounds/compounds.module";
 import {ActionsModule} from "./actions/actions.module";
+import {MaterialModule} from "../../services/material.module";
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import {ActionsModule} from "./actions/actions.module";
     LibrariesMenuRoutingModule,
     LibrariesModule,
     CompoundsModule,
-    ActionsModule
+    ActionsModule,
+    MaterialModule
   ]
 })
 export class LibrariesMenuModule { }

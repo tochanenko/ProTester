@@ -19,6 +19,11 @@ public class ActionResultDto {
     protected AbstractAction action;
     protected OffsetDateTime startDate;
     protected OffsetDateTime endDate;
+
+    protected String startDateStr;
+
+    protected String endDateStr;
+
     protected ResultStatus status;
     protected Map<String, String> inputParameters;
     protected String message;
@@ -40,5 +45,15 @@ public class ActionResultDto {
         this.status = that.status;
         this.inputParameters = that.inputParameters;
         this.message = that.message;
+    }
+
+    public ActionResultDto(Integer id, AbstractAction action, OffsetDateTime startDate, OffsetDateTime endDate, ResultStatus status, Map<String, String> inputParameters, String message) {
+        this.id = id;
+        this.action = action;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+        this.inputParameters = inputParameters;
+        this.message = message;
     }
 }

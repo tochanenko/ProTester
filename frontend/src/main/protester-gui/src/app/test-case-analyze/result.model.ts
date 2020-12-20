@@ -30,6 +30,9 @@ export class ActionResult {
   action?: AbstractAction;
   startDate = '';
   endDate = '';
+
+  startDateStr = '';
+  endDateStr = '';
   status?: Status;
   inputParameters?: { [name: string]: string };
 
@@ -63,6 +66,7 @@ export class ActionResult {
     tempAction.name = actionWrapper.name;
     tempAction.description = actionWrapper.description;
     tempAction.className = actionWrapper.className;
+    tempAction.type = actionWrapper.type;
 
     this.action = tempAction;
     this.startDate = actionWrapper.startDate;

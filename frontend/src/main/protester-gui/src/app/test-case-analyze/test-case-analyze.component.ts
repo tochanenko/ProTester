@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActionResult, TestCaseResult} from './result.model';
+import {ActionResult, Status, TestCaseResult} from './result.model';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
 import {WebsocketsService} from './websockets.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {concatMap, map} from 'rxjs/operators';
+import {concatMap, map, mergeMap} from 'rxjs/operators';
 import {TestCaseWrapperResult} from './wrapper.model';
 
 @Component({
@@ -22,7 +22,6 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   public isLoading = true;
   public isError = false;
   private idToRun: number;
-  private isTestCasesCompleted: number[] = [];
   private subscription: Subscription = new Subscription();
   private testCaseWrapperResult: TestCaseWrapperResult[];
 
@@ -43,13 +42,6 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
           this.testCaseWrapperResult = item.testCaseResults;
           item.testCaseResults.forEach(i => this.idTestCaseList.push(i.testResultId));
 
-          // const testCaseResultsIdList: number[] = [];
-          //
-          // item.testCaseResults.forEach(
-          //   (testCase) => testCaseResultsConverted.push(testCase.testResultId)
-          // );
-          //
-          // this.idList = testCaseResultsIdList;
           return of({});
         }),
         concatMap(() => {
@@ -57,7 +49,7 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         }),
         concatMap(() => {
           this.isLoading = false;
-          return of(this.openWebSocketWithActionResults());
+          return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
         })
       ).subscribe(
         () => console.log('successfully'),
@@ -73,48 +65,33 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
         observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-          map((item2) => {
-            if (item2.innerResults.length === 0) {
-              const innerResultsTemp: ActionResult[] = [];
+          map((result) => {
+            const innerResultsTemp: ActionResult[] = [];
+            result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-              item.actionWrapperList.forEach((wrapper) => innerResultsTemp.push(new ActionResult(wrapper)));
+            item.actionWrapperList.slice(result.innerResults.length)
+              .forEach(i => innerResultsTemp.push(new ActionResult(i)));
 
-              item2.innerResults = innerResultsTemp;
-            }
-            this.resultList.push(item2);
-            // console.log('_________________________' + JSON.stringify(this.resultList));
-            return item2;
+            result.innerResults = innerResultsTemp;
+
+            this.resultList.push(result);
+            return result;
           }))
         );
       }
     );
-
-    // for (const id of this.idList) {
-    //   observables.push(this.analyzeService.loadTestCasesResults(id).pipe(
-    //     map((item) => {
-    //
-    //       this.resultList.push(item);
-    //       return item;
-    //     }))
-    //   );
-    // }
 
     return forkJoin(observables);
   }
 
   openWebSocketWithActionResults(): Observable<any> {
 
-    // todo
-    // if (!this.isAllTestCasesCompleted()) {
-    console.log('IN openWebSocketWithActionResults - not all completed');
-
     return of(this.websocketsService.connect(() => {
 
-        // todo delete inner subscription
         this.subscription.add(
           of(this.subscribeToResult()).pipe(
-            concatMap(() => {
-              console.log('2 run');
+            mergeMap(() => {
+              console.log('before run');
               return this.testCaseService.runTestCase(this.idToRun);
             })
           ).subscribe(
@@ -124,17 +101,11 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         );
       })
     );
-
-    // } else {
-    //   console.log('IN openWebSocketWithActionResults - all completed');
-    // }
-
   }
 
   subscribeToResult(): void {
     for (const testCase of this.testCaseWrapperResult) {
       for (const wrapper of testCase.actionWrapperList) {
-        console.log('IN subscribe d-' + testCase.id + ' w- ' + wrapper.id);
         this.websocketsService.getStompClient()
           .subscribe('/topic/public/' + wrapper.id, (actionFromMessage) => {
             this.onMessageReceive(actionFromMessage, wrapper.id, testCase.testResultId);
@@ -143,62 +114,53 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
     }
   }
 
-
   onMessageReceive(actionFromMessage, wrapperId: number, testCaseId: number): void {
-
     const actionToAdd: ActionResult = JSON.parse(actionFromMessage.body);
+
+    actionToAdd.startDate = actionToAdd.startDateStr;
+    actionToAdd.endDate = actionToAdd.endDateStr;
 
     const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === testCaseId);
 
-    const actionIndex = this.resultList[indexOfTestCase].innerResults
+    const testCase = this.resultList[indexOfTestCase];
+
+    const actionIndex = testCase.innerResults
       .findIndex(item => item.id === wrapperId);
 
     actionIndex === -1
-      ? this.resultList[indexOfTestCase].innerResults.push(actionToAdd)
-      : this.resultList[indexOfTestCase].innerResults[actionIndex] = actionToAdd;
+      ? testCase.innerResults.push(actionToAdd)
+      : testCase.innerResults[actionIndex] = actionToAdd;
 
-
-    if (actionIndex === -1) {
-      this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
-    } else {
-      this.resultList[indexOfTestCase].innerResults[actionIndex] = actionToAdd;
+    if (actionToAdd.isLastAction) {
+      testCase.endDate = actionToAdd.endDate;
+      testCase.status = actionToAdd.status;
     }
 
-    // todo
-    // if (this.findCompletedTestCases(id, actionToAdd)) {
-    //   this.isTestCasesCompleted.push(id);
-    // }
-    //
-
-    // todo
-    // if (this.isAllTestCasesCompleted) {
-    //   this.onTestCasesCompleted();
-    // }
+    this.onAllTestCasesAreFinished();
 
     this.testCaseInfoComponents
       .forEach((child) => child.refreshTree());
   }
 
-
-  findCompletedTestCases(testCaseId: number, action: ActionResult): boolean {
-    console.log('IN findCompletedTestCases');
-    return action.isLastAction && !this.isTestCasesCompleted.some((element) => element === testCaseId);
+  isAllTestCasesCompleted(): boolean {
+    return this.resultList.some(item => item.status !== Status.IN_PROGRESS);
   }
 
-  onTestCasesCompleted(): void {
-    // if (this.idList.sort() === this.isTestCasesCompleted.sort()) {
-    //   console.log('IN onTestCasesCompleted --- true');
-    //   this.loadTestCasesResults();
-    //   this.websocketsService.disconnectClient();
-    // } else {
-    //   console.log('IN onTestCasesCompleted --- false');
-    // }
+  onAllTestCasesAreFinished(): void {
+
+    if (this.isAllTestCasesCompleted()) {
+      this.disconnectClient();
+    }
+  }
+
+  disconnectClient(): void {
+    this.websocketsService.disconnectClient();
   }
 
   ngOnDestroy(): void {
-    this.websocketsService.disconnectClient();
     this.subscription.unsubscribe();
+    this.disconnectClient();
   }
-
 }
+

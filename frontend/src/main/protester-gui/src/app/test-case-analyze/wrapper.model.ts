@@ -22,9 +22,9 @@ export class ActionWrapperModel {
 
   name: string;
 
-  startDate: string;
+  startDate: '';
 
-  endDate: string;
+  endDate: '';
 
   message: string;
 

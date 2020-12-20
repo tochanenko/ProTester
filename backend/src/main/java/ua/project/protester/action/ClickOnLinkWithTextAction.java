@@ -13,15 +13,15 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on link with text ${text}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on link with specified ${text}",
+        description = "Click on link with the specified text",
         parameterNames = {"text"}
 )
 public class ClickOnLinkWithTextAction extends AbstractAction {
     @Override
     protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
-            System.out.println("RESULT text: " + params.get("text"));
             driver.findElement(By.linkText(params.get("text"))).click();
             return new ActionResultTechnicalDto();
         } catch (WebDriverException ex) {

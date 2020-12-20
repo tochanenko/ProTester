@@ -2,6 +2,7 @@ package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebDriver;
 import org.reflections.Reflections;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -11,13 +12,22 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ActionRepresentation;
+import ua.project.protester.model.executable.ExecutableComponentType;
+import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultSqlDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
 import ua.project.protester.request.ActionFilter;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,6 +36,7 @@ public class ActionRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
+    private final Reflections reflections;
 
     private static void connectDbActionClass(String actionClassInDb, List<String> actionClassesInCode) {
         ListIterator<String> iterator = actionClassesInCode.listIterator();
@@ -41,43 +52,136 @@ public class ActionRepository {
                 "Failed to find " + actionClassInDb + " action implementation.");
     }
 
-    public void syncWithDb() {
-        log.info("Starting action synchronization");
+    public void initialize() {
+        log.info("Starting action repository initialization");
+
         log.info("Performing action implementations scanning...");
         List<String> actionClassesInCode = scanForActionClassesInCode();
         log.info(String.format(
                 "Action scan complete, found %d action implementations",
                 actionClassesInCode.size()));
-        log.info("Performing action classes loading from DB...");
+
+        log.info("Performing action classes loading from database...");
         List<String> actionCLassesInDb = loadAllActionClassesFromDb();
         log.info(String.format(
-                "Loaded %d action classes from DB. Full list: %s",
+                "Loaded %d action classes from database. Full list: %s",
                 actionCLassesInDb.size(),
                 actionCLassesInDb));
+
         log.info("Performing integrity check...");
         List<String> newActionClasses = checkIntegrity(actionClassesInCode, actionCLassesInDb);
         log.info(String.format(
                 "Integrity check complete, found %d new action implementations. Full list: %s",
                 newActionClasses.size(),
                 newActionClasses));
+
         if (newActionClasses.size() > 0) {
             log.info("Performing new actions uploading to DB...");
             uploadNewActionsToDb(newActionClasses);
             log.info("Actions uploading complete");
         }
-        log.info("Action synchronization complete");
+
+        log.info("Action repository initialization complete");
+    }
+
+    private void validateAction(Class<? extends AbstractAction> actionClass) throws IllegalActionLogicImplementation {
+        Action a = getMetadata(actionClass);
+        ExecutableComponentType type = getActionType(a);
+        checkLogicReturningType(actionClass, type);
+        checkNamePlaceholders(a);
+    }
+
+    private Action getMetadata(Class<? extends AbstractAction> actionClass) throws IllegalActionLogicImplementation {
+        Action actionMetadata = actionClass.getAnnotation(Action.class);
+        if (actionMetadata == null) {
+            throw new IllegalActionLogicImplementation("Action must be annotated with Action annotation");
+        }
+        return actionMetadata;
+    }
+
+    private ExecutableComponentType getActionType(Action actionMetadata) throws IllegalActionLogicImplementation {
+        ExecutableComponentType actionType = actionMetadata.type();
+        switch (actionType) {
+            case TECHNICAL:
+            case UI:
+            case SQL:
+            case REST:
+                return actionType;
+            default:
+                throw new IllegalActionLogicImplementation("Action has incorrect type. Possible types are TECHNICAL, UI, SQL, REST");
+        }
+    }
+
+    private void checkLogicReturningType(Class<? extends AbstractAction> actionClass, ExecutableComponentType declaredReturnType) throws IllegalActionLogicImplementation {
+        try {
+            Class<?> actualReturnTypeClass = actionClass
+                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class)
+                    .getReturnType();
+
+            switch (declaredReturnType) {
+                case TECHNICAL:
+                    checkType(actualReturnTypeClass, ActionResultTechnicalDto.class);
+                    break;
+                case REST:
+                    checkType(actualReturnTypeClass, ActionResultRestDto.class);
+                    break;
+                case SQL:
+                    checkType(actualReturnTypeClass, ActionResultSqlDto.class);
+                    break;
+                case UI:
+                    checkType(actualReturnTypeClass, ActionResultUiDto.class);
+                    break;
+                default:
+            }
+        } catch (NoSuchMethodException e) {
+            log.error("It looks like AbstractAction logic method signature has been updated. Please, update it here too.");
+            throw new IllegalActionLogicImplementation("Something bad happened during validation. Check log for details");
+        }
+    }
+
+    private void checkType(Class<?> actual, Class<?> declared) throws IllegalActionLogicImplementation {
+        if (!declared.isAssignableFrom(actual)) {
+            throw new IllegalActionLogicImplementation(String.format(
+                    "Action logic method must have %s returning type. But %s found",
+                    declared.getCanonicalName(),
+                    actual.getCanonicalName()));
+        }
+    }
+
+    private void checkNamePlaceholders(Action actionMetadata) throws IllegalActionLogicImplementation {
+        Set<String> declaredParameterNames = Set.of(actionMetadata.parameterNames());
+
+        Matcher matcher = Pattern
+                .compile("(?<=\\$\\{)(.+?)(?=})", Pattern.CASE_INSENSITIVE)
+                .matcher(actionMetadata.name());
+
+        Set<String> parametersInActionName = matcher
+                .results()
+                .map(MatchResult::group)
+                .collect(Collectors.toSet());
+
+        if (!parametersInActionName.equals(declaredParameterNames)) {
+            throw new IllegalActionLogicImplementation(String.format(
+                    "Action name must contain all parameter names. Declared parameter names: %s. Parameter names in action name: %s",
+                    declaredParameterNames,
+                    parametersInActionName));
+        }
     }
 
     private List<String> scanForActionClassesInCode() {
         List<String> actionClassesInCode = new LinkedList<>();
-        Reflections reflections = new Reflections("ua.project.protester.action");
-        Set<Class<?>> actionCandidates = reflections.getTypesAnnotatedWith(Action.class);
-        for (Class<?> actionCandidate : actionCandidates) {
-            if (AbstractAction.class.isAssignableFrom(actionCandidate)) {
+        reflections.getSubTypesOf(AbstractAction.class);
+        Set<Class<? extends AbstractAction>> actionCandidates = reflections.getSubTypesOf(AbstractAction.class);
+        for (Class<? extends AbstractAction> actionCandidate : actionCandidates) {
+            try {
+                validateAction(actionCandidate);
                 actionClassesInCode.add(actionCandidate.getCanonicalName());
                 log.info("Action implementation found: " + actionCandidate.getCanonicalName());
-            } else {
-                log.warn("Failed to load action class " + actionCandidate.getCanonicalName());
+            } catch (IllegalActionLogicImplementation e) {
+                log.warn(String.format(
+                        "Failed to load action implementation %s. Cause: %s",
+                        actionCandidate.getCanonicalName(),
+                        e.getMessage()));
             }
         }
         return actionClassesInCode;
@@ -136,7 +240,7 @@ public class ActionRepository {
 
             action.init(
                     id,
-                    metadata.name().isEmpty() ? actionClass.getSimpleName() : metadata.name(),
+                    metadata.name(),
                     metadata.type(),
                     description == null || description.isEmpty() ? metadata.description() : description,
                     className,
@@ -145,7 +249,7 @@ public class ActionRepository {
             return action;
         } catch (Exception e) {
             throw new ActionImplementationNotFoundException(
-                    "Failed to load action implementation for class " + className);
+                    "Failed to load action implementation for class " + className, e);
         }
     }
 

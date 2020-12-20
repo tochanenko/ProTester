@@ -13,8 +13,9 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on element with id ${id}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on element with specified ${id}",
+        description = "Click on element with the specified id",
         parameterNames = {"id"}
 )
 public class ClickOnElementWithIdAction extends AbstractAction {

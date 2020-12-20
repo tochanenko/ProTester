@@ -12,8 +12,9 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on element with xpath ${xpath}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on element with specified ${xpath}",
+        description = "Click on element with the specified xpath",
         parameterNames = {"xpath"}
 )
 public class ClickOnElementWithXPathAction extends AbstractAction {

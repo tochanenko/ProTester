@@ -12,15 +12,15 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Input text ${text} into field with id ${id}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Input ${text} into field with specified ${id}",
+        description = "Input provided text into field with the specified id",
         parameterNames = {"text", "id"}
 )
 public class InputTextIntoFieldWithIdAction extends AbstractAction {
     @Override
     protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
         try {
-            System.out.println("RESULT  id: " + params.get("id") + " text: " + params.get("text"));
             driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
             return new ActionResultTechnicalDto();
         } catch (WebDriverException ex) {

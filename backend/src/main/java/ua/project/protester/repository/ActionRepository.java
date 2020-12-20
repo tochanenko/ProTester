@@ -136,7 +136,7 @@ public class ActionRepository {
 
             action.init(
                     id,
-                    metadata.name().isEmpty() ? actionClass.getSimpleName() : metadata.name(),
+                    metadata.name(),
                     metadata.type(),
                     description == null || description.isEmpty() ? metadata.description() : description,
                     className,
@@ -145,7 +145,7 @@ public class ActionRepository {
             return action;
         } catch (Exception e) {
             throw new ActionImplementationNotFoundException(
-                    "Failed to load action implementation for class " + className);
+                    "Failed to load action implementation for class " + className, e);
         }
     }
 

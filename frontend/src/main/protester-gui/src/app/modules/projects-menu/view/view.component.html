@@ -1,20 +1,20 @@
-<div class="project-menu">
-  <mat-grid-list cols="3" rowHeight="3:2" gutterSize="40px">
-
-    <a [routerLink]="'/projects-menu/projects/create'">
-      <mat-grid-tile>
-        <mat-card class="inside-grid">
-          <span class="material-icons">content_paste</span>
-          <div class="text-inside-grid">new project</div>
-        </mat-card>
-      </mat-grid-tile>
-    </a>
+<div class="projects-menu">
+  <mat-grid-list cols="2" rowHeight="3:2" gutterSize="40px">
 
     <a [routerLink]="'/projects-menu/projects'">
       <mat-grid-tile>
         <mat-card class="inside-grid">
-          <span class="material-icons">search</span>
-          <div class="text-inside-grid">search project</div>
+          <span class="material-icons">content_paste</span>
+          <div class="text-inside-grid">project</div>
+        </mat-card>
+      </mat-grid-tile>
+    </a>
+
+    <a [routerLink]="">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">assignment_turned_in</span>
+          <div class="text-inside-grid">results</div>
         </mat-card>
       </mat-grid-tile>
     </a>
@@ -28,29 +28,11 @@
       </mat-grid-tile>
     </a>
 
-    <a [routerLink]="">
-      <mat-grid-tile>
-        <mat-card class="inside-grid">
-          <span class="material-icons">card_travel</span>
-          <div class="text-inside-grid">test case</div>
-        </mat-card>
-      </mat-grid-tile>
-    </a>
-
     <a [routerLink]="'/projects-menu/datasets'">
       <mat-grid-tile>
         <mat-card class="inside-grid">
           <span class="material-icons-outlined">book</span>
           <div class="text-inside-grid">data set</div>
-        </mat-card>
-      </mat-grid-tile>
-    </a>
-
-    <a [routerLink]="">
-      <mat-grid-tile>
-        <mat-card class="inside-grid">
-          <span class="material-icons-outlined">assignment_turned_in</span>
-          <div class="text-inside-grid">results</div>
         </mat-card>
       </mat-grid-tile>
     </a>

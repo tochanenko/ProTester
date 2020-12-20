@@ -1,4 +1,4 @@
-package ua.project.protester.repository;
+package ua.project.protester.repository.library;
 
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
@@ -15,8 +15,6 @@ public interface LibraryRepository {
     List<Library> findAll(PaginationLibrary paginationLibrary);
 
     Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException;
-
-    Optional<Library> findByName(String name);
 
     void deleteLibraryById(Integer id);
 

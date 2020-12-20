@@ -5,7 +5,6 @@ import {Router} from "@angular/router";
 import {DatasetService} from "../../../../services/dataset.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {takeUntil} from "rxjs/operators";
-import {log} from "util";
 import {Unsubscribe} from "../unsubscribe";
 import {DataSet, DataSetParameter} from "../dataset.model";
 import {ListComponent} from "../list/list.component";
@@ -53,8 +52,7 @@ export class CreateComponent extends Unsubscribe implements OnInit {
     this.datasetService.create(datasetCreateResponse)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        (data) => {
-          log(data);
+        () => {
           this.isSuccessful = true;
           this.dialogRef.close();
         },

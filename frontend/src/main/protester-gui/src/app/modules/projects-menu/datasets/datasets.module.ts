@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { DatasetsRoutingModule } from './datasets-routing.module';
 import { ListComponent } from './list/list.component';
 import {MaterialModule} from "../../../services/material.module";
@@ -9,16 +8,18 @@ import { ViewComponent } from './view/view.component';
 import { EditComponent } from './edit/edit.component';
 import { DeleteComponent } from './delete/delete.component';
 import { CreateComponent } from './create/create.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 @NgModule({
   declarations: [ListComponent, ViewComponent, EditComponent, DeleteComponent, CreateComponent],
-  imports: [
-    CommonModule,
-    DatasetsRoutingModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        DatasetsRoutingModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatTooltipModule
+    ]
 })
 export class DatasetsModule { }

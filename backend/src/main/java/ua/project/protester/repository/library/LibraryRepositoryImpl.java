@@ -1,11 +1,10 @@
-package ua.project.protester.repository;
+package ua.project.protester.repository.library;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -20,7 +19,9 @@ import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.Step;
-import ua.project.protester.utils.LibraryRowMapper;
+import ua.project.protester.repository.ActionRepository;
+import ua.project.protester.repository.OuterComponentRepository;
+import ua.project.protester.repository.StepParameterRepository;
 import ua.project.protester.utils.PaginationLibrary;
 import ua.project.protester.utils.PropertyExtractor;
 
@@ -37,7 +38,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final Environment env;
-    private final LibraryRowMapper rowMapper;
     private final ActionRepository actionRepository;
     private final OuterComponentRepository outerComponentRepository;
     private final StepParameterRepository stepParameterRepository;
@@ -55,8 +55,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 new String[]{idColumnName});
         Integer libraryId = (Integer) keyHolder.getKey();
 
-        log.info("sql {}", sql);
-        log.info("create {} library", library.getName());
         saveLibraryStorages(library, libraryId);
     }
 
@@ -70,7 +68,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                         .addValue("library_description", library.getDescription())
         );
 
-        log.info("update {} library {}", library.getName(), library);
         deleteLibrariesStorage(id);
         saveLibraryStorages(library, id);
     }
@@ -93,10 +90,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
                 .forEach(library -> library.setComponents(
                         findAllLibraryStorageById(library.getId())));
 
-        log.info("sql query {}", sql);
-        log.info("params {}", namedParams);
-        log.info("All libraries {}", allLibraries);
-
         return allLibraries;
     }
 
@@ -106,11 +99,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("filterLibraryName", paginationLibrary.getName() + "%");
 
-        log.info("sql query {}", sql);
-        log.info(String.valueOf(env.getActiveProfiles()));
-        log.info(String.valueOf(env.getDefaultProfiles()));
-        log.info("params {}", namedParams);
-        log.info("pagination {}", paginationLibrary);
         return namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
     }
 
@@ -127,28 +115,13 @@ public class LibraryRepositoryImpl implements LibraryRepository {
             if (library == null) {
                 return Optional.empty();
             }
-            log.info("sql query {}", sql);
-            log.info("find by id {} library", library.getName());
+
             List<Step> steps = findAllLibraryStorageById(library.getId());
             library.setComponents(steps);
             return Optional.of(library);
 
         } catch (DataAccessException e) {
             throw new LibraryNotFoundException();
-        }
-    }
-
-    @Override
-    public Optional<Library> findByName(String name) {
-        try {
-            String sql = PropertyExtractor.extract(env, "findLibraryByName");
-            MapSqlParameterSource namedParams = new MapSqlParameterSource();
-
-            namedParams.addValue("library_name", name);
-
-            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, namedParams, rowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
         }
     }
 

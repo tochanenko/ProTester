@@ -8,32 +8,9 @@
   margin-right: auto;
 }
 
-.button-flex-container-yes {
-  border: 1px solid rgba(92, 107, 192, 0.54);
-  box-sizing: border-box;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  display: flex;
-  width: 25%;
-  justify-content: center;
-  margin-top: 100px;
+.button-no {
+  background: #5C6BC0aa;
 }
-
-.button-flex-container-no {
-  background: #5C6BC0;
-  border-radius: 4px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  display: flex;
-  width: 25%;
-  justify-content: center;
-  margin-left: 10px;
-}
-
 
 ::ng-deep .mat-dialog-content {
   width: 100%;
@@ -41,6 +18,8 @@
   font: 500 15px/24px Roboto, "Helvetica Neue", sans-serif;
   letter-spacing: normal;
   overflow: hidden;
+  margin: 0 0;
+  padding: 0 2px;
 }
 
 .text {
@@ -49,4 +28,3 @@
   font-size: 14px;
   line-height: 16px;
 }
-

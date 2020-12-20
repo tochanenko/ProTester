@@ -9,9 +9,37 @@
   margin-right: auto;
 }
 
+::ng-deep .mat-dialog-content {
+  width: 100%;
+  height: 60%;
+  overflow: auto;
+  display: block;
+  margin: 0 0;
+  padding: 0 24px;
+  max-height: 65vh;
+}
+
+::ng-deep .mat-input-element {
+  caret-color: #5C6BC0;
+}
+
 mat-card {
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.14), 0 2px 1px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
+}
+
+.header {
+  background-color: #F4F2FF;
+}
+
+.header-title {
+  text-transform: uppercase;
+  color: #5C6BC0;
+  line-height: 16px;
+  letter-spacing: 1px;
+  display:table;
+  margin:12px auto;
+  font: 500 35px Roboto, "Helvetica Neue", sans-serif;
 }
 
 .mat-row:nth-child(even) {
@@ -19,10 +47,6 @@ mat-card {
 }
 
 .mat-row:nth-child(odd) {
-  background-color: #F4F2FF;
-}
-
-.header {
   background-color: #F4F2FF;
 }
 
@@ -37,17 +61,28 @@ mat-card {
   justify-content: center;
 }
 
+mat-cell:last-of-type, mat-header-cell:last-of-type, mat-footer-cell:last-of-type {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .mat-column-NAME {
-  flex: 0 0 43%;
+  flex: 0 0 45%;
 }
 
 .mat-column-VALUE {
-  flex: 0 0 43%;
+  flex: 0 0 45%;
 }
 
 .mat-form-field {
   width: 100%;
   min-width: 300px;
+}
+
+
+.cell-field {
+  text-align: center;
+  justify-content: center;
 }
 
 .invalid-input {
@@ -57,9 +92,8 @@ mat-card {
 .button-text {
   font-size: 14px;
   line-height: 16px;
-
   text-align: center;
-  letter-spacing: 1.25px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #FFFFFF;
 }
@@ -77,40 +111,12 @@ mat-card {
   margin-top: 10px;
 }
 
-.button-flex-container-add {
-  background: #5C6BC0;
-  border-radius: 4px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-::ng-deep .mat-dialog-content {
-  width: 100%;
-  height: 60%;
-  overflow: scroll;
-}
-
 .error-info {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.cell-field {
-  text-align: center;
-  justify-content: center;
-}
-
-.iconbutton {
+.icon-button {
   color: #5C6BC0;
-}
-
-::ng-deep .mat-input-element {
-  caret-color: #5C6BC0;
 }

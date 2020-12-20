@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
@@ -18,7 +19,7 @@ import java.util.Map;
 )
 public class GoToUrlAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
 
         try {
             driver.navigate().to(params.get("url"));

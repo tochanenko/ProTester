@@ -2,6 +2,7 @@ package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import org.reflections.Reflections;
 import org.springframework.core.env.Environment;
@@ -115,7 +116,7 @@ public class ActionRepository {
     private void checkLogicReturningType(Class<? extends AbstractAction> actionClass, ExecutableComponentType declaredReturnType) throws IllegalActionLogicImplementation {
         try {
             Class<?> actualReturnTypeClass = actionClass
-                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class)
+                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, OkHttpClient.class)
                     .getReturnType();
 
             switch (declaredReturnType) {
@@ -134,7 +135,7 @@ public class ActionRepository {
                 default:
             }
         } catch (NoSuchMethodException e) {
-            log.error("It looks like AbstractAction logic method signature has been updated. Please, update it here too.");
+            log.error("It looks like AbstractAction logic method signature has been updated. Please, update validation checking method.");
             throw new IllegalActionLogicImplementation("Something bad happened during validation. Check log for details");
         }
     }

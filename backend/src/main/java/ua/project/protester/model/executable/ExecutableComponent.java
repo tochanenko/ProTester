@@ -2,6 +2,7 @@ package ua.project.protester.model.executable;
 
 import lombok.Getter;
 import lombok.Setter;
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
@@ -19,5 +20,5 @@ public abstract class ExecutableComponent {
     protected ExecutableComponentType type;
     protected String[] parameterNames;
 
-    public abstract void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation;
+    public abstract void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation;
 }

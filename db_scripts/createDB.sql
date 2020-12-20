@@ -187,7 +187,7 @@ CREATE TABLE action_result (
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ NOT NULL,
     status_id INTEGER NOT NULL,
-    message VARCHAR(512),
+    message TEXT,
     CONSTRAINT action_result_test_case_result_id_fk FOREIGN KEY (test_case_result_id) REFERENCES test_case_result (test_case_result_id) ON DELETE CASCADE,
     CONSTRAINT action_result_action_id_fk FOREIGN KEY (action_id) REFERENCES actions (action_id) ON DELETE SET NULL,
     CONSTRAINT action_result_status_id_fk FOREIGN KEY (status_id) REFERENCES statuses (status_id)
@@ -197,7 +197,7 @@ CREATE TABLE action_result_input_param (
     action_result_input_param_id SERIAL PRIMARY KEY,
     action_result_id INTEGER NOT NULL,
     key VARCHAR(128) NOT NULL,
-    value VARCHAR(512) NOT NULL,
+    value TEXT NOT NULL,
     CONSTRAINT action_result_input_param_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
@@ -212,15 +212,15 @@ CREATE TABLE action_result_technical_extra (
     action_result_technical_id SERIAL PRIMARY KEY,
     action_result_id INTEGER NOT NULL,
     key VARCHAR(128) NOT NULL,
-    value VARCHAR(512) NOT NULL,
+    value TEXT NOT NULL,
     CONSTRAINT action_result_technical_extra_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE action_result_rest (
     action_result_rest_id SERIAL PRIMARY KEY,
     action_result_id INTEGER NOT NULL,
-    request VARCHAR(512) NOT NULL,
-    response VARCHAR(512) NOT NULL,
+    request TEXT NOT NULL,
+    response TEXT NOT NULL,
     status_code INTEGER NOT NULL,
     CONSTRAINT action_result_rest_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );

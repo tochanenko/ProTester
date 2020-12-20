@@ -2,8 +2,6 @@ import {TestCaseModel} from './test-case.model';
 
 export class RunTestCaseModel {
   id?: number;
-  testCaseRequestList: TestCaseModel[];
+  testCaseResponseList: TestCaseModel[];
   userId: number;
-
-  env?: string;
 }

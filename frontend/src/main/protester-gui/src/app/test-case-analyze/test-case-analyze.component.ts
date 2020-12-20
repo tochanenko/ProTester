@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActionResult, ExecutableComponentType, Message, Status, TestCaseResult} from './result.model';
+import {ActionResult, Status, TestCaseResult} from './result.model';
 import {TestCaseAnalyzeService} from './test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../services/test-case/test-case-service';
 import {WebsocketsService} from './websockets.service';
-import {TestCaseRunAnalyzeService} from '../services/test-case-run-analyze.service';
-import {RunResultModel} from '../test-case/run-result.model';
+import {forkJoin, Observable, of, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {concatMap, map, mergeMap} from 'rxjs/operators';
+import {TestCaseWrapperResult} from './wrapper.model';
 
 @Component({
   selector: 'app-test-case-run',
@@ -14,241 +16,151 @@ import {RunResultModel} from '../test-case/run-result.model';
 })
 export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
 
- // // resultList: TestCaseResult[] = [
- //    {
- //      id: 1,
- //      user: {
- //        username: 'username1',
- //        password: 'password',
- //        email: 'email',
- //        firstName: 'firstname',
- //        lastName: 'lastname',
- //        role: 'role',
- //      },
- //      testCase: {
- //        name: 'testcase1',
- //        scenarioId: 1
- //      },
- //      status: Status.PASSED,
- //      startDate: '02/03/101',
- //      endDate: '04/02/303',
- //      innerResults: [
- //        {
- //          id: 4,
- //          action: {
- //            id: 3,
- //            name: 'action1',
- //            type: ExecutableComponentType.REST
- //          },
- //          startDate: '06/04/2020',
- //          endDate: '06/05/2020',
- //          status: Status.PASSED,
- //          inputParameters: {urljjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjurljjjjjjjjjjjjjjjjjjjjjj: 'urjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjl1', sssd: 'sssssssss'},
- //          request: 'request',
- //          response: 'response',
- //          statusCode: 202
- //        },
- //        {
- //          id: 7,
- //          action: {
- //            id: 6,
- //            name: 'action5',
- //            type: ExecutableComponentType.SQL
- //          },
- //          startDate: '06/04/2220',
- //          endDate: '06/05/2320',
- //          status: Status.PASSED,
- //          inputParameters: {url: 'url1', sssd: 'sssssssss'},
- //          connectionUrl: 'url',
- //          username: 'username',
- //          query: 'select * from users',
- //          columns: [
- //            {
- //              id: 1,
- //              name: 'id',
- //              rows: ['560', '561']
- //            },
- //            {
- //              id: 2,
- //              name: 'nickNamnnnnnnnnn',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //            {
- //              id: 2,
- //              name: 'nickNamennnnnnn',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'dddddd333d',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            {
- //              id: 2,
- //              name: 'ddddddd',
- //              rows: ['Vasya', 'Illya']
- //            },
- //
- //            {
- //              id: 2,
- //              name: 'dddddd333d',
- //              rows: ['Vasya', 'Illya']
- //            },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'ddddddd',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'dddddd333d',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'ddddddd',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //            //
- //            // {
- //            //   id: 2,
- //            //   name: 'dddddd333d',
- //            //   rows: ['Vasya', 'Illya']
- //            // },
- //
- //          ]
- //        }
- //      ]
- //    },
- //  ];
-
-  resultList: TestCaseResult[] = [];
-  idList: number[] = [];
-  isLoading = true;
-  isError = false;
-  idToRun: number;
+  public resultList: TestCaseResult[] = [];
+  private idWrapperList: number[] = [];
+  private idTestCaseList: number[] = [];
+  public isLoading = true;
+  public isError = false;
+  private idToRun: number;
+  private subscription: Subscription = new Subscription();
+  private testCaseWrapperResult: TestCaseWrapperResult[];
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
               private websocketsService: WebsocketsService,
-              private runAnalyzeService: TestCaseRunAnalyzeService) {
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(params => this.idToRun = params.id);
   }
 
   ngOnInit(): void {
-   // const result: RunResultModel = this.runAnalyzeService.runResultModel;
-   // console.log('------------' + result.id + ',  ids:' + result.testCaseResult);
-    this.idList = this.runAnalyzeService.runResultModel.testCaseResult;
-    this.loadTestCasesResults();
-    this.isLoading = false;
+
+    this.subscription.add(
+      this.testCaseService.findRunResultByID(this.idToRun).pipe(
+        concatMap((item) => {
+          this.testCaseWrapperResult = item.testCaseResults;
+          item.testCaseResults.forEach(i => this.idTestCaseList.push(i.testResultId));
+
+          return of({});
+        }),
+        concatMap(() => {
+          return this.loadTestCasesResults();
+        }),
+        concatMap(() => {
+          this.isLoading = false;
+          return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
+        })
+      ).subscribe(
+        () => console.log('successfully'),
+        () => console.log('error')
+      )
+    );
   }
 
-  loadTestCasesResults(): void {
-    for (let i = 0; i < this.idList.length; i++) {
-      this.analyzeService.loadTestCasesResults(this.idList[i])
-        .subscribe(
-          data => {
-            this.isLoading = false;
-            this.resultList.push(data);
-            this.idToRun = this.runAnalyzeService.runResultModel.id;
-            this.openWebSocketWithActionResults();
-          },
-          error => console.log('error')
+  loadTestCasesResults(): Observable<TestCaseResult[]> {
+    const observables: Observable<TestCaseResult>[] = [];
+
+    this.testCaseWrapperResult.forEach((item) => {
+        item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
+
+        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+          map((result) => {
+            const innerResultsTemp: ActionResult[] = [];
+            result.innerResults.forEach(i => innerResultsTemp.push(i));
+
+            item.actionWrapperList.slice(result.innerResults.length)
+              .forEach(i => innerResultsTemp.push(new ActionResult(i)));
+
+            result.innerResults = innerResultsTemp;
+
+            this.resultList.push(result);
+            return result;
+          }))
         );
-    }
-  }
-
-  openWebSocketWithActionResults(): void {
-    this.websocketsService.connect(() => {
-      console.log(this.runAnalyzeService.runResultModel.id + '*********');
-      console.log('----------------------------------------');
-      for (let index = 0; index < this.idList.length; index++) {
-        const id = this.idList[index];
-        this.websocketsService.getStompClient().subscribe('/topic/public/' + id, (hello) => {
-          // console.log(JSON.stringify(hello.body));
-          // const res: ActionResult = JSON.parse(hello.body).hello;
-          // console.log(res + '++++++++++++++++++++++++');
-          console.log('------------------------hello');
-          this.onMessageReceive(hello, id);
-        });
       }
+    );
 
-      this.testCaseService.runTestCase(this.runAnalyzeService.runResultModel.id)
-        .subscribe(result => {
-          console.log('running');
-        });
-    });
+    return forkJoin(observables);
   }
 
-  onMessageReceive(hello, id: number): void {
+  openWebSocketWithActionResults(): Observable<any> {
 
-    // console.log(JSON.parse(hello.body));
-    // const actionToAdd = {
-    //     id: 4,
-    //     action: {
-    //       id: 3,
-    //       name: JSON.parse(hello.body).hello,
-    //       type: ExecutableComponentType.REST
-    //     },
-    //     startDate: '06/04/2020',
-    //     endDate: '06/05/2020',
-    //     status: Status.PASSED,
-    //     inputParameters: {url: 'url1', sssd: 'sssssssss'},
-    //     request: 'request',
-    //     response: 'response',
-    //     statusCode: 202
-    //   };
+    return of(this.websocketsService.connect(() => {
 
-    // const actionToAddjson: any = JSON.parse(hello.body);
-    // const message: Message = actionToAddjson as Message;
+        this.subscription.add(
+          of(this.subscribeToResult()).pipe(
+            mergeMap(() => {
+              console.log('before run');
+              return this.testCaseService.runTestCase(this.idToRun);
+            })
+          ).subscribe(
+            () => console.log('running'),
+            () => console.log('error')
+          )
+        );
+      })
+    );
+  }
 
-    console.log('---');
+  subscribeToResult(): void {
+    for (const testCase of this.testCaseWrapperResult) {
+      for (const wrapper of testCase.actionWrapperList) {
+        this.websocketsService.getStompClient()
+          .subscribe('/topic/public/' + wrapper.id, (actionFromMessage) => {
+            this.onMessageReceive(actionFromMessage, wrapper.id, testCase.testResultId);
+          });
+      }
+    }
+  }
 
-    const actionToAdd: ActionResult = JSON.parse(hello.body);
-    console.log('id-----' + actionToAdd.id);
-    console.log(id + '--------');
-    console.log('type' + typeof actionToAdd);
-    console.log('!!!!!!!!!!' + JSON.stringify(actionToAdd));
+  onMessageReceive(actionFromMessage, wrapperId: number, testCaseId: number): void {
+    const actionToAdd: ActionResult = JSON.parse(actionFromMessage.body);
+
+    actionToAdd.startDate = actionToAdd.startDateStr;
+    actionToAdd.endDate = actionToAdd.endDateStr;
+
     const indexOfTestCase: number = this.resultList
-      .findIndex(e => e.id === id);
+      .findIndex(e => e.id === testCaseId);
 
-    console.log('index = ' + indexOfTestCase);
+    const testCase = this.resultList[indexOfTestCase];
 
-    if (indexOfTestCase === undefined) {
-      this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
-    } else {
-      const actionIndex = this.resultList[indexOfTestCase].innerResults.findIndex(e => e.id === actionToAdd.id);
-      this.resultList[indexOfTestCase].innerResults[actionIndex] = (actionToAdd);
+    const actionIndex = testCase.innerResults
+      .findIndex(item => item.id === wrapperId);
+
+    actionIndex === -1
+      ? testCase.innerResults.push(actionToAdd)
+      : testCase.innerResults[actionIndex] = actionToAdd;
+
+    if (actionToAdd.isLastAction) {
+      testCase.endDate = actionToAdd.endDate;
+      testCase.status = actionToAdd.status;
     }
 
-    this.resultList[indexOfTestCase].innerResults.push(actionToAdd);
-    console.log('_______________' + typeof this.resultList[indexOfTestCase].innerResults[0]);
-    console.log('--------------------------' + this.resultList[indexOfTestCase].startDate);
+    this.onAllTestCasesAreFinished();
 
     this.testCaseInfoComponents
       .forEach((child) => child.refreshTree());
   }
 
-  ngOnDestroy(): void {
+  isAllTestCasesCompleted(): boolean {
+    return this.resultList.some(item => item.status !== Status.IN_PROGRESS);
+  }
+
+  onAllTestCasesAreFinished(): void {
+
+    if (this.isAllTestCasesCompleted()) {
+      this.disconnectClient();
+    }
+  }
+
+  disconnectClient(): void {
     this.websocketsService.disconnectClient();
   }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.disconnectClient();
+  }
 }
+

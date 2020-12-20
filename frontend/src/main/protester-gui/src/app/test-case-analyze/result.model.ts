@@ -1,5 +1,6 @@
 import {User} from '../models/user.model';
 import {TestCaseModel} from '../test-case/test-case.model';
+import {ActionWrapperModel} from './wrapper.model';
 
 export class TestCaseResult {
   id: number;
@@ -25,13 +26,20 @@ export class Message {
 }
 
 export class ActionResult {
-  id: number;
-  action: AbstractAction;
+  id?: number;
+  action?: AbstractAction;
   startDate = '';
   endDate = '';
-  status: Status;
+
+  startDateStr = '';
+  endDateStr = '';
+  status?: Status;
   inputParameters?: { [name: string]: string };
+
+  isLastAction?: boolean;
+
   exception?: ActionExecutionException;
+  message?: string;
 
   // rest
   request?: string;
@@ -49,6 +57,24 @@ export class ActionResult {
 
   // ui
   path?: string;
+
+
+  constructor(actionWrapper: ActionWrapperModel) {
+    this.id = actionWrapper.id;
+
+    const tempAction: AbstractAction = new AbstractAction();
+    tempAction.name = actionWrapper.name;
+    tempAction.description = actionWrapper.description;
+    tempAction.className = actionWrapper.className;
+    tempAction.type = actionWrapper.type;
+
+    this.action = tempAction;
+    this.startDate = actionWrapper.startDate;
+    this.endDate = actionWrapper.endDate;
+    this.status = actionWrapper.resultStatus;
+    this.inputParameters = actionWrapper.parameters;
+    this.message = actionWrapper.message;
+  }
 }
 
 export class ActionExecutionException {

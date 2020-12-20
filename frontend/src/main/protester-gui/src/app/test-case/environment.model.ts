@@ -1,5 +1,8 @@
 export class EnvironmentModel {
   id: number;
-  url?: string;
-  testCaseId?: number;
+  name: string;
+  description: string;
+  username: string;
+  password: string;
+  url: string;
 }

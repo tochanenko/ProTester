@@ -1,9 +1,7 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as Stomp from '@stomp/stompjs';
 import {Client} from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
-import {Observable, of, Subscription, throwError, timer} from 'rxjs';
-import {delay, delayWhen, map, retry, retryWhen} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +33,7 @@ export class WebsocketsService {
   }
 
   getStompClient(): Client {
+    console.log(this.client + '--------');
     return this.client;
   }
 

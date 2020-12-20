@@ -15,6 +15,7 @@ export class SelectEnvComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: { environments: EnvironmentModel[], testCaseName: string}) { }
 
   ngOnInit(): void {
+    console.log(JSON.stringify(this.data.environments));
   }
 
   onSubmit(): void {

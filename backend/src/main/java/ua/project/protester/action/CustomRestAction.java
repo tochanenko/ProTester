@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.util.Map;
 
 @Action(
+        name = "Send ${method} request to url ${url} with body ${body}",
         type = ExecutableComponentType.REST,
-        description = "Send ${method} request to url ${url} with body ${body}",
+        description = "Send request with the specified method to the specified url with the specified body",
         parameterNames = {"method", "url", "body"}
 )
 public class CustomRestAction extends AbstractAction {

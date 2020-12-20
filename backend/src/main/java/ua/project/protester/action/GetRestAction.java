@@ -12,9 +12,10 @@ import java.io.IOException;
 import java.util.Map;
 
 @Action(
+        name = "Send get request to url ${url}",
         type = ExecutableComponentType.REST,
-        description = "Send get request to url ${url}",
-        parameterNames = {"method"}
+        description = "Send get request to the specified url",
+        parameterNames = {"url"}
 )
 public class GetRestAction extends AbstractAction {
 

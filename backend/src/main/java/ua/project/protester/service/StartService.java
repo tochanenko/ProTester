@@ -85,7 +85,7 @@ public class StartService {
         initMap.put("username", "volodya");
         initMap.put("password", "tank85943221");
         initMap.put("url", "www.youtube.com");
-        initMap.put("rztk_id", "rztk_id from input param");
+     //   initMap.put("rztk_id", "rztk_id from input param");
 
         Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);

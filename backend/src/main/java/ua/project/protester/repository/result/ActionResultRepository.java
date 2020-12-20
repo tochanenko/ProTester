@@ -184,7 +184,7 @@ public class ActionResultRepository {
         }
     }
 
-    private ActionResultDto loadSubtypeData(ActionResultDto resultDto) {
+    public ActionResultDto loadSubtypeData(ActionResultDto resultDto) {
         if (resultDto.getAction() == null) {
             return resultDto;
         }

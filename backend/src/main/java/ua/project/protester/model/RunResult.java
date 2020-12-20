@@ -15,12 +15,20 @@ public class RunResult {
 
     private Long id;
 
-    private List<Integer> testCaseResult;
+    private List<TestCaseWrapperResult> testCaseResults;
 
-    private Long userId;
-
-    public RunResult(Long id, Long userId) {
+    public RunResult(Long id) {
         this.id = id;
-        this.userId = userId;
     }
+
+    //first - testCaseResultId, second - wrapper
+    //private Map<Integer, List<ActionWrapper>> actionWrapper = new HashMap<>();
+
+//    public RunResult(Long id, Long userId) {
+//        this.id = id;
+//        this.userId = userId;
+//    }
+
+
+
 }

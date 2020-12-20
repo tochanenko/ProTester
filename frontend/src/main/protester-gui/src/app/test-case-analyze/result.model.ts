@@ -1,5 +1,6 @@
 import {User} from '../models/user.model';
 import {TestCaseModel} from '../test-case/test-case.model';
+import {ActionWrapperModel} from './wrapper.model';
 
 export class TestCaseResult {
   id: number;
@@ -55,8 +56,20 @@ export class ActionResult {
   path?: string;
 
 
-  constructor(wrapper: Wrapper) {
-    this.id = id;
+  constructor(actionWrapper: ActionWrapperModel) {
+    this.id = actionWrapper.id;
+
+    const tempAction: AbstractAction = new AbstractAction();
+    tempAction.name = actionWrapper.name;
+    tempAction.description = actionWrapper.description;
+    tempAction.className = actionWrapper.className;
+
+    this.action = tempAction;
+    this.startDate = actionWrapper.startDate;
+    this.endDate = actionWrapper.endDate;
+    this.status = actionWrapper.resultStatus;
+    this.inputParameters = actionWrapper.parameters;
+    this.message = actionWrapper.message;
   }
 }
 
@@ -81,36 +94,4 @@ export enum ExecutableComponentType {
   SQL = 'SQL',
   TECHNICAL = 'TECHNICAL',
   UI = 'UI'
-}
-
-export class Wrapper {
-  id?: number;
-  action?: AbstractAction;
-  startDate = '';
-  endDate = '';
-  status?: Status;
-  inputParameters?: { [name: string]: string };
-
-  isLastAction?: boolean;
-
-  exception?: ActionExecutionException;
-  message?: string;
-
-  // rest
-  request?: string;
-  response?: string;
-  statusCode?: number;
-
-  // sql
-  connectionUrl?: string;
-  username?: string;
-  query?: string;
-  columns?: SqlColumnDto[];
-
-  // technical
-  extra?: { [name: string]: string };
-
-  // ui
-  path?: string;
-
 }

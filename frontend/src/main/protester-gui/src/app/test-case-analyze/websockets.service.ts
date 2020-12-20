@@ -33,6 +33,7 @@ export class WebsocketsService {
   }
 
   getStompClient(): Client {
+    console.log(this.client + '--------');
     return this.client;
   }
 

@@ -35,7 +35,7 @@ export class RunComponent implements OnInit, OnDestroy {
   testCasesCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['select', 'NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET'];
-  private subscription: Subscription;
+  private subscription: Subscription = new Subscription();
 
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
@@ -74,24 +74,28 @@ export class RunComponent implements OnInit, OnDestroy {
 
 
   searchCases(): void {
-    this.subscription = this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
-      data => {
-        this.dataSource = data.list;
-        this.testCasesCount = data.totalItems;
-      },
-      error => console.log('error in initDataSource')
+    this.subscription.add(
+      this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
+        data => {
+          this.dataSource = data.list;
+          this.testCasesCount = data.totalItems;
+        },
+        error => console.log('error in initDataSource')
+      )
     );
   }
 
   loadEnvironments(): void {
-    this.testCaseService.loadEnvironments()
-      .subscribe(
-        data => {
-          this.environmentList = data;
-          console.log('env list loaded');
-        },
-        error => console.log('env load error')
-      );
+    this.subscription.add(
+      this.testCaseService.loadEnvironments()
+        .subscribe(
+          data => {
+            this.environmentList = data;
+            console.log('env list loaded');
+          },
+          error => console.log('env load error')
+        )
+    );
   }
 
   selectTestCase(testCase: TestCaseModel): void {
@@ -100,22 +104,27 @@ export class RunComponent implements OnInit, OnDestroy {
     if (this.selection.isSelected(testCase)) {
       this.selection.deselect(testCase);
     } else {
-      if (testCase.name === 'shhshs' || testCase.name === 'testcase3') {
+      if (testCase.name === 'shhshs2' || testCase.name === 'testcase32') {
         // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+
+        // todo move to css
         const updateDialogRef = this.dialog.open(SelectEnvComponent, {
           height: 'auto',
           width: '40%',
           data: {environments: this.environmentList, testCaseName: testCase.name}
         });
 
-        this.subscription = updateDialogRef.afterClosed().subscribe(result => {
-          console.log('after closed idenv =' + result);
+        this.subscription.add(
+          updateDialogRef.afterClosed().subscribe(result => {
+              console.log('after closed idenv =' + result);
 
-          if (result === undefined) {
-            this.selection.deselect(testCase);
-          }
-          testCase.environment = result;
-        });
+              if (result === undefined) {
+                this.selection.deselect(testCase);
+              }
+              testCase.environment = result;
+            }
+          )
+        );
       }
 
       this.selection.toggle(testCase);
@@ -137,29 +146,28 @@ export class RunComponent implements OnInit, OnDestroy {
 
   runTestCases(): void {
 
-    this.runTestCaseModel.testCaseRequestList = this.selection.selected;
+    this.runTestCaseModel.testCaseResponseList = this.selection.selected;
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
-    this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
+    // this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
     // this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
 
-    if (this.runTestCaseModel.testCaseRequestList.length === 0) {
+    if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }
 
-    this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
-      result => {
-        console.log('-------------successful id=' + result.id);
-        // this.runAnalyzeService.runResultModel = result;
-        this.router.navigate(['/test-case-analyze', result.id]).then();
+    this.subscription.add(
+      this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
+        result => {
+          // this.runAnalyzeService.runResultModel = result;
+          this.router.navigate(['/test-case-analyze', result.id]).then();
 
-      }, error => console.log('IN saveTestCaseResult - error')
+        }, error => console.log('IN saveTestCaseResult - error')
+      )
     );
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 }

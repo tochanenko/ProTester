@@ -11,8 +11,9 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Go to ${url}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Performs get method on specified ${url}",
+        description = "Open the specified url",
         parameterNames = {"url"}
 )
 public class GoToUrlAction extends AbstractAction {
@@ -20,7 +21,6 @@ public class GoToUrlAction extends AbstractAction {
     protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
 
         try {
-            System.out.println("RESULT  " + params.get("url"));
             driver.navigate().to(params.get("url"));
             return new ActionResultTechnicalDto();
         } catch (WebDriverException ex) {

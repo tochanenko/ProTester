@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ViewRoutingModule } from './view-routing.module';
 import {TestCasesModule} from "./test-cases/test-cases.module";
+import {EnvironmentModule} from "./environment/environment.module";
 
 
 @NgModule({
@@ -10,7 +11,8 @@ import {TestCasesModule} from "./test-cases/test-cases.module";
   imports: [
     CommonModule,
     ViewRoutingModule,
-    TestCasesModule
+    TestCasesModule,
+    EnvironmentModule
   ]
 })
 export class ViewModule { }

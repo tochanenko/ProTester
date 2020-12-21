@@ -26,7 +26,7 @@ public class TestScenarioService {
     @Transactional
     public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
         OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
-        return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
+        return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
     }
 
     @Transactional

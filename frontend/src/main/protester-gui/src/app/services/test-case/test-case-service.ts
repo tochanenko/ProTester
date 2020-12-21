@@ -1,10 +1,11 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {TestCaseModel} from '../../test-case/test-case.model';
-import {TestCaseResponse} from '../../test-case/test-case-response';
-import {TestCaseFilter} from '../../test-case/test-case-filter';
 import {Injectable} from '@angular/core';
+import {DataSetResponse} from "../../models/data-set-response";
 import {DataSetRequestResponse} from "../../models/data-set-request-response";
+import {TestCaseModel} from "../../modules/projects-menu/projects/view/test-cases/test-case.model";
+import {TestCaseFilter} from "../../modules/projects-menu/projects/view/test-cases/test-case-filter";
+import {TestCaseResponse} from "../../modules/projects-menu/projects/view/test-cases/test-case-response";
 import {RunTestCaseModel} from '../../test-case/run-test-case.model';
 import {RunResultModel} from '../../test-case/run-result.model';
 import {EnvironmentModel} from '../../test-case/environment.model';

@@ -1,6 +1,5 @@
 import {Component, Inject, Injectable, OnInit} from '@angular/core';
 import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from "@angular/material/bottom-sheet";
-import {ExecutableComponent} from "../../models/executable.model";
 import {Action} from "../../models/action.model";
 import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {OuterComponent} from "../../models/outer.model";
@@ -19,7 +18,7 @@ export class BottomSheetComponent implements OnInit{
               private _bottomSheetRef: MatBottomSheetRef<BottomSheetComponent>,
               private interactionService: LibraryBottomsheetInteractionService) {}
 
-  openLink(event: MouseEvent): void {
+  close(event: MouseEvent): void {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
   }

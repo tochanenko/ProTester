@@ -1,0 +1,40 @@
+<div class="libraries-menu">
+  <mat-grid-list cols="2" rowHeight="3:2" gutterSize="40px">
+
+    <a [routerLink]="'/libraries-menu/libraries/create'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">chrome_reader_mode</span>
+          <div class="text-inside-grid">new library</div>
+        </mat-card>
+      </mat-grid-tile>
+    </a>
+
+    <a [routerLink]="'/libraries-menu/libraries'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">search</span>
+          <div class="text-inside-grid">search library</div>
+        </mat-card>
+      </mat-grid-tile>
+    </a>
+
+    <a [routerLink]="'/libraries-menu/actions'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">featured_play_list</span>
+          <div class="text-inside-grid">actions</div>
+        </mat-card>
+      </mat-grid-tile>
+    </a>
+
+    <a [routerLink]="'/libraries-menu/compounds'">
+      <mat-grid-tile>
+        <mat-card class="inside-grid">
+          <span class="material-icons-outlined">description</span>
+          <div class="text-inside-grid">compounds</div>
+        </mat-card>
+      </mat-grid-tile>
+    </a>
+  </mat-grid-list>
+</div>

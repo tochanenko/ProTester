@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from "rxjs";
-import {Action} from "../../actions/action.model";
-import {ActionFilter} from "../../actions/action-filter.model";
-import {ActionResponse} from "../../actions/action-response";
+import {ActionFilter} from "../../modules/libraries-menu/actions/action-filter.model";
+import {ActionResponse} from "../../modules/libraries-menu/actions/action-response";
+import {Action} from "../../modules/libraries-menu/actions/action.model";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -16,7 +16,6 @@ const httpOptions = {
 
 export class ActionService {
 
-  private actionsUrl = 'api/actions';
 
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -30,6 +29,7 @@ export class ActionService {
     params = params.append('newDescription', String(actionUpdateResponse.description));
     return this.http.put<any>(`/api/actions/${actionUpdateResponse.id}`, httpOptions, {params});
   }
+
   getAll(filter: ActionFilter): Observable<ActionResponse> {
     let params = new HttpParams();
     params = params.append('pageSize', String(filter.pageSize));

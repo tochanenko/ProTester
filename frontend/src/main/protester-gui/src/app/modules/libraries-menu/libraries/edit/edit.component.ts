@@ -48,7 +48,6 @@ export class EditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(1);
     this.getIdFromParams();
     this.getLibraryById(this.library_id);
     this.createForm();

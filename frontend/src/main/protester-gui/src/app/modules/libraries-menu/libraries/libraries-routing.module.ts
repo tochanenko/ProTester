@@ -20,33 +20,41 @@ const routes: Routes = [
         component: ListComponent
       },
       {
-        path: ':id',
-        data: {
-          breadcrumb: 'Library'
-        },
-        children: [
-          {
-            path: '',
-            data: {
-              breadcrumb: null
-            },
-            component: ViewComponent
-          },
-          {
-            path: 'edit',
-            data: {
-              breadcrumb: 'Edit'
-            },
-            component: EditComponent
-          }
-        ]
-      },
-      {
         path: 'create',
         data: {
           breadcrumb: 'Create'
         },
         component: CreateComponent
+      },
+      {
+        path: ':id',
+        data: {
+          breadcrumb: null
+        },
+        children: [
+          {
+            path: '',
+            data: {
+              breadcrumb: 'Library'
+            },
+            children: [
+              {
+                path: '',
+                data: {
+                  breadcrumb: null
+                },
+                component: ViewComponent
+              },
+              {
+                path: 'edit',
+                data: {
+                  breadcrumb: 'Edit'
+                },
+                component: EditComponent
+              }
+            ]
+          }
+        ]
       }
     ]
   }

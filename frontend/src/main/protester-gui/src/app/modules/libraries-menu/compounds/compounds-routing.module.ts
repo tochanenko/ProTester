@@ -19,9 +19,9 @@ const routes: Routes = [
         component: SearchComponent
       },
       {
-        path: 'view',
+        path: ':id',
         data: {
-          breadcrumb: 'View'
+          breadcrumb: 'Compound'
         },
         component: ViewComponent
       },

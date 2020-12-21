@@ -48,6 +48,7 @@ export class EditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(1);
     this.getIdFromParams();
     this.getLibraryById(this.library_id);
     this.createForm();
@@ -65,7 +66,7 @@ export class EditComponent implements OnInit {
   }
 
   getIdFromParams(): void {
-    this.componentSubscription = this.activateRoute.queryParams.subscribe(params=>this.library_id=params['id']);
+    this.componentSubscription = this.activateRoute.params.subscribe(params=>this.library_id=params['id']);
   }
 
   getLibraryById(id: number): void {
@@ -129,7 +130,7 @@ export class EditComponent implements OnInit {
       })
     }
     this.libraryService.updateLibrary(libraryUpdateRequest, this.library.id).subscribe(() => {
-        this.router.navigateByUrl('/libraries-menu/libraries').then();
+        this.router.navigateByUrl(`/libraries-menu/libraries/${this.library.id}`).then();
       },
       () => {
         console.error("Error of creation");

@@ -11,17 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.Environment;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.*;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 import ua.project.protester.model.executable.result.subtype.ActionResultTechnicalDto;
 import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.repository.result.ActionResultRepository;
@@ -154,6 +150,7 @@ public class StartService {
                     case TECHNICAL:
                         ActionResultTechnicalDto actionResultUiDto = (ActionResultTechnicalDto) actionResultDto;
                         log.info("action result {}", actionResultUiDto.getClass().getName());
+                        log.info("------------------------ {}", actionResultUiDto);
                         log.info("actionWrapper {}", actionWrappers.get(counter));
                         Thread.sleep((long) (Math.random() * 1000));
                         messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultUiDto);
@@ -161,6 +158,16 @@ public class StartService {
                         break;
                     case SQL:
 
+                        counter++;
+                        break;
+
+                    case REST:
+                        ActionResultRestDto actionResultRestDto = (ActionResultRestDto) actionResultDto;
+                        log.info("action result {}", actionResultRestDto.getClass().getName());
+                        log.info("------------------------ {}", actionResultRestDto);
+                        log.info("actionWrapper {}", actionWrappers.get(counter));
+                        Thread.sleep((long) (Math.random() * 1000));
+                        messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultRestDto);
                         counter++;
                         break;
                     default:

@@ -17,12 +17,10 @@ export class WebsocketsService {
 
     this.getStompClient().connect({}, () => {
         frame();
-        console.log('in connect');
       },
 
       () => {
         this.reconnect(frame);
-        console.log('error');
       });
   }
 
@@ -33,7 +31,6 @@ export class WebsocketsService {
   }
 
   getStompClient(): Client {
-    console.log(this.client + '--------');
     return this.client;
   }
 

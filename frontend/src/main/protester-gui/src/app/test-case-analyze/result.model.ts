@@ -36,7 +36,7 @@ export class ActionResult {
   status?: Status;
   inputParameters?: { [name: string]: string };
 
-  isLastAction?: boolean;
+  last?: boolean;
 
   exception?: ActionExecutionException;
   message?: string;

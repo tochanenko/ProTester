@@ -91,7 +91,6 @@ export class RunComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.environmentList = data;
-            console.log('env list loaded');
           },
           error => console.log('env load error')
         )
@@ -116,7 +115,6 @@ export class RunComponent implements OnInit, OnDestroy {
 
         this.subscription.add(
           updateDialogRef.afterClosed().subscribe(result => {
-              console.log('after closed idenv =' + result);
 
               if (result === undefined) {
                 this.selection.deselect(testCase);
@@ -128,7 +126,6 @@ export class RunComponent implements OnInit, OnDestroy {
       }
 
       this.selection.toggle(testCase);
-      console.log(this.selection.selected.length + '------------------------------');
     }
   }
 
@@ -149,9 +146,6 @@ export class RunComponent implements OnInit, OnDestroy {
     this.runTestCaseModel.testCaseResponseList = this.selection.selected;
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
-    // this.runTestCaseModel.testCaseRequestList[0].dataSetId = [1];
-    // this.runTestCaseModel.testCaseRequestList[1].dataSetId = [1];
-
     if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }
@@ -159,7 +153,6 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
         result => {
-          // this.runAnalyzeService.runResultModel = result;
           this.router.navigate(['/test-case-analyze', result.id]).then();
 
         }, error => console.log('IN saveTestCaseResult - error')

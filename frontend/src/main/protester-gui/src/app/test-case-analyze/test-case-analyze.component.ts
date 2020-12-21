@@ -48,6 +48,9 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
           return this.loadTestCasesResults();
         }),
         concatMap(() => {
+          return of(this.loadStatusForFinishedTestCases());
+        }),
+        concatMap(() => {
           this.isLoading = false;
           return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
         })
@@ -91,7 +94,6 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
         this.subscription.add(
           of(this.subscribeToResult()).pipe(
             mergeMap(() => {
-              console.log('before run');
               return this.testCaseService.runTestCase(this.idToRun);
             })
           ).subscribe(
@@ -132,25 +134,37 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
       ? testCase.innerResults.push(actionToAdd)
       : testCase.innerResults[actionIndex] = actionToAdd;
 
-    if (actionToAdd.isLastAction) {
+    if (actionToAdd.last) {
       testCase.endDate = actionToAdd.endDate;
       testCase.status = actionToAdd.status;
-    }
+      if (actionToAdd.status === Status.FAILED && testCase.innerResults[actionIndex + 1]) {
+        testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = Status.NOT_STARTED);
+      }
+      this.onAllTestCasesAreFinished();
 
-    this.onAllTestCasesAreFinished();
+    }
 
     this.testCaseInfoComponents
       .forEach((child) => child.refreshTree());
   }
 
   isAllTestCasesCompleted(): boolean {
-    return this.resultList.some(item => item.status !== Status.IN_PROGRESS);
+    return this.resultList.every(item => item.status !== Status.IN_PROGRESS);
   }
 
   onAllTestCasesAreFinished(): void {
-
     if (this.isAllTestCasesCompleted()) {
       this.disconnectClient();
+    }
+  }
+
+  loadStatusForFinishedTestCases(): void {
+    for (const test of this.resultList) {
+      for (let actionIndex = 0; actionIndex < test.innerResults.length; actionIndex++) {
+        if (test.innerResults[actionIndex].status === Status.FAILED && test.innerResults[actionIndex + 1]) {
+          test.innerResults.slice(actionIndex + 1).forEach(item => item.status = Status.NOT_STARTED);
+        }
+      }
     }
   }
 

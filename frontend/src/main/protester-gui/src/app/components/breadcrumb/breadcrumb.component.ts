@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {filter, first} from "rxjs/operators";
+import {filter, mergeMap} from "rxjs/operators";
 import {MenuItem} from "primeng/api";
 import {Subscription} from "rxjs";
 import {User} from "../../models/user.model";
@@ -27,6 +27,9 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
 
   user: User = new User();
 
+  component_id: number;
+  component_name: string;
+
   constructor(
     private storageService: StorageService,
     private router: Router,
@@ -38,11 +41,14 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userSubscription = this.storageService.currentUser.subscribe(user => this.user = user);
     this.navigationSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        console.log("------------Start----------------")
-        this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
-        console.log("-------------End-----------------")
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        mergeMap(() => this.menuItems = this.createBreadcrumbs(this.activatedRoute.root)),
+        filter(menuItem => menuItem.label === 'Project'),
+        mergeMap(() => this.projectService.getProjectById(this.component_id)))
+      .subscribe(value => {
+        console.log(value.projectName);
+        this.menuItems.find(mi => mi.label === 'Project').label = value.projectName;
       });
   }
 
@@ -59,31 +65,10 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
       url += `/${routeURL}`;
     }
 
-    const id = route.snapshot.params['id'];
+    this.component_id = route.snapshot.params['id'];
 
     let label = child.snapshot.data[BreadcrumbComponent.ROUTE_DATA_BREADCRUMB];
     if (!(label === null || label === undefined)) {
-      let addition: string = '';
-      switch (label) {
-        case 'Compound':
-          if (this.compoundSubscription != undefined) {
-            this.compoundSubscription.unsubscribe();
-          }
-          this.compoundSubscription = this.compoundService.getCompoundById(id)
-            .pipe(first())
-            .subscribe(component => addition = component.name);
-          break;
-        case 'Project':
-          if (this.projectSubscription != undefined) {
-            this.projectSubscription.unsubscribe();
-          }
-          this.projectSubscription = this.projectService.getProjectById(id)
-            .pipe(first())
-            .subscribe(component => addition = component.projectName);
-      }
-
-      label += addition;
-
       breadcrumbs.push({label, url});
     }
 

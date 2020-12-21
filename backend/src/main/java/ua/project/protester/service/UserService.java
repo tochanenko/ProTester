@@ -3,7 +3,6 @@ package ua.project.protester.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +40,7 @@ public class UserService {
 
 
     @Transactional
-    public int createUser(UserCreationRequestDto userRequest) throws MailSendException {
+    public void createUser(UserCreationRequestDto userRequest) throws MailSendException {
         User user = userMapper.toUserFromUserRequest(userRequest);
         user.setRole(roleService.findRoleByName(user.getRole().getName())
                 .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
@@ -49,7 +48,7 @@ public class UserService {
         logger.info("Creating user {}", user);
         mailService.sendRegistrationCredentials(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Transactional
@@ -59,14 +58,6 @@ public class UserService {
                 .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
         logger.info("Updating user {}", user);
         userRepository.update(user);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Transactional
-    public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserFoundException("User doesn`t exist"));
-        //user.getRole().getUsers().remove(user);
-        userRepository.delete(user);
     }
 
     @Transactional

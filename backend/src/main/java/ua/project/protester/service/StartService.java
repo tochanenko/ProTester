@@ -8,9 +8,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.DataSetNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.exception.result.RunResultNotFoundException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.RunResult;
@@ -94,10 +97,10 @@ public class StartService {
                 .filter(Objects::nonNull)
                 .forEachOrdered(outerComponent -> {
                             try {
-                                outerComponent.orElseThrow().execute(initMap, environment, webDriver, getConsumer(testCaseResultId));
+                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, environment, webDriver, getConsumer(testCaseResultId));
                                 resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
                                 counter = 0;
-                            } catch (ActionExecutionException a) {
+                            } catch (ActionExecutionException | OuterComponentNotFoundException a) {
                                 resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
                                 counter = 0;
                             }
@@ -167,7 +170,7 @@ public class StartService {
     Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
         try {
             OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
-            DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).orElseThrow();
+            DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found"));
             List<Step> stepsParams = testScenario.getSteps();
             for (Step s : stepsParams
             ) {
@@ -176,13 +179,13 @@ public class StartService {
                         entry.setValue(initMap.get(entry.getValue()));
                     }
                     if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
-                        entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).orElseThrow());
+                        entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found")));
                     }
                 }
             }
             return Optional.of(testScenario);
         } catch (TestScenarioNotFoundException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return Optional.empty();
     }
@@ -193,7 +196,7 @@ public class StartService {
         List<DataSet> dataSets = new ArrayList<>();
 
         testCaseResponse.getDataSetResponseList()
-                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow()));
+                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found"))));
         testCase.setDataSetList(dataSets);
         return testCase;
     }
@@ -201,6 +204,6 @@ public class StartService {
     @Transactional
     public RunResult findById(Long id) {
         return runResultRepository.findRunResultById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
     }
 }

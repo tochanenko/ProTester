@@ -45,6 +45,12 @@ VALUES ((SELECT role_id
        ((SELECT role_id
          FROM roles
          WHERE role_name = 'MANAGER'), 'wolf', '$2a$10$OVH2hTUh1EC8rZwp1I0b2utSptMWwWOHS.gBcW.cLG8VtnRs69CBu', 'j.belfort@mail.com', TRUE, 'Jordan', 'Belfort'),
+       ((SELECT role_id
+         FROM roles
+         WHERE role_name = 'MANAGER'), 'jack', '$2a$10$OVH2hTUh1EC8rZwp1I0b2utSptMWwWOHS.gBcW.cLG8VtnRs69CBu', 't.durden@mail.com', TRUE, 'Tyler', 'Durden'),
+       ((SELECT role_id
+         FROM roles
+         WHERE role_name = 'MANAGER'), 'crowbar', '$2a$10$OVH2hTUh1EC8rZwp1I0b2utSptMWwWOHS.gBcW.cLG8VtnRs69CBu', 'g.freeman@mail.com', TRUE, 'Gordon', 'Freeman'),
 	   ((SELECT role_id
 		 FROM roles
 		 WHERE role_name = 'ENGINEER'), 'IsaacClarke', '$2a$10$OVH2hTUh1EC8rZwp1I0b2utSptMWwWOHS.gBcW.cLG8VtnRs69CBu', 'i.clarke@mail.com', FALSE, 'Isaac', 'Clarke'),

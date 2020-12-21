@@ -67,7 +67,7 @@ public class StartService {
 
         RunResult runResult = runResultRepository.findRunResultById(id).get();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
-        testCaseResults.forEach(runResults -> runResults.getActionWrapperList().stream().forEach(System.out::println));
+        testCaseResults.forEach(runResults -> runResults.getActionWrapperList().forEach(System.out::println));
         log.info("run result {}", runResult);
         for (int i = 0; i < testCaseResponses.size(); i++) {
             runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId());
@@ -125,8 +125,7 @@ public class StartService {
         for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
             TestCaseResponse currentTestCaseResponse = runTestCaseRequest.getTestCaseResponseList().get(i);
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
-            List<Step> step = testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps().stream()
-                    .collect(Collectors.toList());
+            List<Step> step = testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps();
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
@@ -146,13 +145,18 @@ public class StartService {
                 actionResultDto.setEndDateStr(LocalDate.from(actionResultDto.getEndDate()).format(DateTimeFormatter.ISO_LOCAL_DATE));
                 actionResultDto.setStartDateStr(LocalDate.from(actionResultDto.getStartDate()).format(DateTimeFormatter.ISO_LOCAL_DATE));
                 actionWrappers.get(counter).setActionResultDtoId(actionResultDto.getId());
+
+                if (counter == actionWrappers.size() - 1 || actionResultDto.getStatus().equals(ResultStatus.FAILED)) {
+                    actionResultDto.setLast(true);
+                    System.out.println("last " + counter);
+                }
+
                 switch (actionResultDto.getAction().getType()) {
                     case TECHNICAL:
                         ActionResultTechnicalDto actionResultUiDto = (ActionResultTechnicalDto) actionResultDto;
                         log.info("action result {}", actionResultUiDto.getClass().getName());
                         log.info("------------------------ {}", actionResultUiDto);
                         log.info("actionWrapper {}", actionWrappers.get(counter));
-                        Thread.sleep((long) (Math.random() * 1000));
                         messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultUiDto);
                         counter++;
                         break;
@@ -173,7 +177,7 @@ public class StartService {
                     default:
                         throw new RuntimeException();
                 }
-            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation | InterruptedException illegalActionLogicImplementation) {
+            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation  illegalActionLogicImplementation) {
                 illegalActionLogicImplementation.printStackTrace();
             }
         };

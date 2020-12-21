@@ -24,6 +24,8 @@ public class ActionResultDto {
 
     protected String endDateStr;
 
+    protected boolean isLast;
+
     protected ResultStatus status;
     protected Map<String, String> inputParameters;
     protected String message;

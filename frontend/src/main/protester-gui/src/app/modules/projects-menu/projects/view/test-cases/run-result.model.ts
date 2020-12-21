@@ -1,9 +1,9 @@
-import {TestCaseWrapperResult} from '../test-case-analyze/wrapper.model';
+import {TestCaseWrapperResultModel} from '../../../../../models/run-analyze/wrapper.model';
 
 export class RunResultModel {
 
   id: number;
 
-  testCaseResults: TestCaseWrapperResult[];
+  testCaseResults: TestCaseWrapperResultModel[];
 
 }

@@ -1,6 +1,6 @@
-import {ExecutableComponentType, Status} from './result.model';
+import {ExecutableComponentTypeModel, StatusModel} from './result.model';
 
-export class TestCaseWrapperResult {
+export class TestCaseWrapperResultModel {
 
   id: number;
 
@@ -28,11 +28,11 @@ export class ActionWrapperModel {
 
   message: string;
 
-  type: ExecutableComponentType;
+  type: ExecutableComponentTypeModel;
 
   parameters: { [name: string]: string };
 
-  resultStatus: Status;
+  resultStatus: StatusModel;
 
   stepId: number;
 

@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {TestCaseResult} from '../result.model';
+import {TestCaseResultModel} from '../../../../../models/run-analyze/result.model';
 
 @Component({
   selector: 'app-result-list',
@@ -8,7 +8,7 @@ import {TestCaseResult} from '../result.model';
 })
 export class ResultListComponent implements OnChanges {
 
-  @Input() testCaseResult: TestCaseResult;
+  @Input() testCaseResult: TestCaseResultModel;
   panelOpenState = true;
 
   constructor() { }

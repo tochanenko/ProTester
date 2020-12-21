@@ -1,35 +1,37 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActionResult, Status, TestCaseResult} from './result.model';
-import {TestCaseAnalyzeService} from './test-case-analyze.service';
+
+import {TestCaseAnalyzeService} from '../../../../services/analyze/test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
-import {TestCaseService} from '../services/test-case/test-case-service';
-import {WebsocketsService} from './websockets.service';
+import {TestCaseService} from '../../../../services/test-case/test-case-service';
+import {WebsocketService} from '../../../../models/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {TestCaseWrapperResult} from './wrapper.model';
+import {ActionResultModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
+import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
+
 
 @Component({
-  selector: 'app-test-case-run',
-  templateUrl: './test-case-analyze.component.html',
-  styleUrls: ['./test-case-analyze.component.css']
+  selector: 'app-analyze',
+  templateUrl: './analyze.component.html',
+  styleUrls: ['./analyze.component.css']
 })
-export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
+export class AnalyzeComponent implements OnInit, OnDestroy {
 
-  public resultList: TestCaseResult[] = [];
+  public resultList: TestCaseResultModel[] = [];
   private idWrapperList: number[] = [];
   private idTestCaseList: number[] = [];
   public isLoading = true;
   public isError = false;
   private idToRun: number;
   private subscription: Subscription = new Subscription();
-  private testCaseWrapperResult: TestCaseWrapperResult[];
+  private testCaseWrapperResult: TestCaseWrapperResultModel[];
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
-              private websocketsService: WebsocketsService,
+              private websocketsService: WebsocketService,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => this.idToRun = params.id);
   }
@@ -61,19 +63,19 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadTestCasesResults(): Observable<TestCaseResult[]> {
-    const observables: Observable<TestCaseResult>[] = [];
+  loadTestCasesResults(): Observable<TestCaseResultModel[]> {
+    const observables: Observable<TestCaseResultModel>[] = [];
 
     this.testCaseWrapperResult.forEach((item) => {
-        item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
+      item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
-        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-          map((result) => {
-            const innerResultsTemp: ActionResult[] = [];
-            result.innerResults.forEach(i => innerResultsTemp.push(i));
+      observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+        map((result) => {
+          const innerResultsTemp: ActionResultModel[] = [];
+          result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-            item.actionWrapperList.slice(result.innerResults.length)
-              .forEach(i => innerResultsTemp.push(new ActionResult(i)));
+          item.actionWrapperList.slice(result.innerResults.length)
+            .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
 
             result.innerResults = innerResultsTemp;
 
@@ -117,7 +119,7 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   }
 
   onMessageReceive(actionFromMessage, wrapperId: number, testCaseId: number): void {
-    const actionToAdd: ActionResult = JSON.parse(actionFromMessage.body);
+    const actionToAdd: ActionResultModel = JSON.parse(actionFromMessage.body);
 
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
@@ -137,8 +139,8 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
     if (actionToAdd.last) {
       testCase.endDate = actionToAdd.endDate;
       testCase.status = actionToAdd.status;
-      if (actionToAdd.status === Status.FAILED && testCase.innerResults[actionIndex + 1]) {
-        testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = Status.NOT_STARTED);
+      if (actionToAdd.status === StatusModel.FAILED && testCase.innerResults[actionIndex + 1]) {
+        testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
       }
       this.onAllTestCasesAreFinished();
 
@@ -149,7 +151,7 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   }
 
   isAllTestCasesCompleted(): boolean {
-    return this.resultList.every(item => item.status !== Status.IN_PROGRESS);
+    return this.resultList.every(item => item.status !== StatusModel.IN_PROGRESS);
   }
 
   onAllTestCasesAreFinished(): void {
@@ -161,8 +163,8 @@ export class TestCaseAnalyzeComponent implements OnInit, OnDestroy {
   loadStatusForFinishedTestCases(): void {
     for (const test of this.resultList) {
       for (let actionIndex = 0; actionIndex < test.innerResults.length; actionIndex++) {
-        if (test.innerResults[actionIndex].status === Status.FAILED && test.innerResults[actionIndex + 1]) {
-          test.innerResults.slice(actionIndex + 1).forEach(item => item.status = Status.NOT_STARTED);
+        if (test.innerResults[actionIndex].status === StatusModel.FAILED && test.innerResults[actionIndex + 1]) {
+          test.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
         }
       }
     }

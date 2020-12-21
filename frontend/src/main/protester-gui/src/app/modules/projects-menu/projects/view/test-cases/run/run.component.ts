@@ -1,20 +1,20 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {TestCaseModel} from '../../test-case.model';
+import {TestCaseModel} from '../test-case.model';
 import {PageEvent} from '@angular/material/paginator';
-import {TestCaseFilter} from '../../test-case-filter';
+import {TestCaseFilter} from '../test-case-filter';
 import {SelectionModel} from '@angular/cdk/collections';
-import {RunTestCaseModel} from '../../run-test-case.model';
-import {EnvironmentModel} from '../../environment.model';
+import {RunTestCaseModel} from '../run-test-case.model';
 import {Subscription} from 'rxjs';
-import {TestCaseService} from '../../../services/test-case/test-case-service';
-import {TestScenarioService} from '../../../services/test-scenario/test-scenario-service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {EnvironmentService} from '../../environment.service';
-import {MatDialog} from '@angular/material/dialog';
 import {SelectEnvComponent} from '../select-env/select-env.component';
-import {TestScenario} from '../../../models/test-scenario';
-import {StorageService} from '../../../services/auth/storage.service';
-import {TestCaseRunAnalyzeService} from '../../../services/test-case-run-analyze.service';
+import {EnvironmentModel} from '../../../../../../models/environment.model';
+import {TestScenario} from '../../../../../../models/test-scenario';
+import {TestCaseService} from '../../../../../../services/test-case/test-case-service';
+import {TestScenarioService} from '../../../../../../services/test-scenario/test-scenario-service';
+import {MatDialog} from '@angular/material/dialog';
+import {StorageService} from '../../../../../../services/auth/storage.service';
+import {TestCaseRunAnalyzeService} from '../../../../../../services/test-case/run-analyze/test-case-run-analyze.service';
+import {EnvironmentService} from '../../../../../../services/environment/environment.service';
 
 @Component({
   selector: 'app-run',
@@ -153,7 +153,7 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
         result => {
-          this.router.navigate(['/test-case-analyze', result.id]).then();
+          this.router.navigate(['projects-menu/results/', result.id]).then();
 
         }, error => console.log('IN saveTestCaseResult - error')
       )

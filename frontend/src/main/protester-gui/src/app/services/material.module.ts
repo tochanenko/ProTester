@@ -17,6 +17,9 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatTreeModule} from '@angular/material/tree';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -38,7 +41,11 @@ import {MatChipsModule} from '@angular/material/chips';
     MatDialogModule,
     MatRadioModule,
     MatTabsModule,
-    MatTreeModule
+    MatTreeModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatChipsModule
   ],
   exports: [
     MatCardModule,
@@ -58,7 +65,11 @@ import {MatChipsModule} from '@angular/material/chips';
     MatDialogModule,
     MatRadioModule,
     MatTabsModule,
-    MatTreeModule
+    MatTreeModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatChipsModule
   ]
 })
 export class MaterialModule {

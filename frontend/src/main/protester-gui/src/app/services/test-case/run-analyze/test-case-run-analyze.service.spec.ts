@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { TestCaseRunAnalyzeService } from './test-case-run-analyze.service';
+import {TestCaseRunAnalyzeService} from './test-case-run-analyze.service';
 
 describe('TestCaseRunAnalyzeService', () => {
   let service: TestCaseRunAnalyzeService;

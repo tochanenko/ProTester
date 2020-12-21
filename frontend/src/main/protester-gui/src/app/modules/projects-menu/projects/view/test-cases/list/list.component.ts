@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PageEvent} from "@angular/material/paginator";
-import {TestScenario} from "../../../../../../models/test-scenario";
-import {Subscription} from "rxjs";
-import {TestCaseService} from "../../../../../../services/test-case/test-case-service";
-import {TestScenarioService} from "../../../../../../services/test-scenario/test-scenario-service";
-import {ActivatedRoute} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {TestCaseFilter} from "../test-case-filter";
-import {EditComponent} from "../edit/edit.component";
-import {CreateComponent} from "../create/create.component";
-import {TestCaseModel} from "../test-case.model";
+import {PageEvent} from '@angular/material/paginator';
+import {TestScenario} from '../../../../../../models/test-scenario';
+import {Subscription} from 'rxjs';
+import {TestCaseService} from '../../../../../../services/test-case/test-case-service';
+import {TestScenarioService} from '../../../../../../services/test-scenario/test-scenario-service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {TestCaseFilter} from '../test-case-filter';
+import {EditComponent} from '../edit/edit.component';
+import {CreateComponent} from '../create/create.component';
+import {TestCaseModel} from '../test-case.model';
 
 @Component({
   selector: 'app-list',
@@ -81,9 +81,11 @@ export class ListComponent implements OnInit, OnDestroy {
       this.searchCases();
     });
   }
-  searchTestCases($event: KeyboardEvent):void {
+
+  searchTestCases($event: KeyboardEvent): void {
     this.searchCases();
   }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -97,6 +99,6 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   runTestCaseView(): void {
-    this.router.navigateByUrl('/test-case-run/' + this.projectId).then();
+    this.router.navigateByUrl(`/projects-menu/projects/${this.projectId}/test-cases/run`).then();
   }
 }

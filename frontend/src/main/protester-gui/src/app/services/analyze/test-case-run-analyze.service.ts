@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {RunResultModel} from '../test-case/run-result.model';
+import {Injectable} from '@angular/core';
+import {RunResultModel} from '../../modules/projects-menu/projects/view/test-cases/run-result.model';
 
 @Injectable({
   providedIn: 'root'

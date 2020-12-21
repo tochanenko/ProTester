@@ -49,7 +49,7 @@
     </ng-container>
 
     <ng-container matColumnDef="EDIT">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> EDIT</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
                 color="primary" (click)="openUpdateDialog(element.id)">
@@ -59,7 +59,7 @@
     </ng-container>
 
     <ng-container matColumnDef="DELETE">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> DELETE</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> DELETE</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <button mat-icon-button matTooltip="Click to Delete" class="iconbutton"
                 color="primary" (click)="deleteCase(element.id)">

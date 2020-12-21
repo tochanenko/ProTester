@@ -1,44 +1,40 @@
-import {User} from '../models/user.model';
-import {TestCaseModel} from '../test-case/test-case.model';
 import {ActionWrapperModel} from './wrapper.model';
+import {User} from '../user.model';
+import {TestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/test-case.model';
 
-export class TestCaseResult {
+export class TestCaseResultModel {
   id: number;
   user: User;
   testCase: TestCaseModel;
-  status: Status;
+  status: StatusModel;
   startDate = '';
   endDate = '';
-  innerResults?: ActionResult[];
+  innerResults?: ActionResultModel[];
 }
 
-export class AbstractAction {
+export class AbstractActionModel {
   id?: number;
   name: string;
   description?: string;
-  type: ExecutableComponentType;
+  type: ExecutableComponentTypeModel;
   parameterNames?: string[];
   className?: string;
 }
 
-export class Message {
-  hello: ActionResult;
-}
-
-export class ActionResult {
+export class ActionResultModel {
   id?: number;
-  action?: AbstractAction;
+  action?: AbstractActionModel;
   startDate = '';
   endDate = '';
 
   startDateStr = '';
   endDateStr = '';
-  status?: Status;
+  status?: StatusModel;
   inputParameters?: { [name: string]: string };
 
   last?: boolean;
 
-  exception?: ActionExecutionException;
+  exception?: ActionExecutionExceptionModel;
   message?: string;
 
   // rest
@@ -50,7 +46,7 @@ export class ActionResult {
   connectionUrl?: string;
   username?: string;
   query?: string;
-  columns?: SqlColumnDto[];
+  columns?: SqlColumnDtoModel[];
 
   // technical
   extra?: { [name: string]: string };
@@ -62,7 +58,7 @@ export class ActionResult {
   constructor(actionWrapper: ActionWrapperModel) {
     this.id = actionWrapper.id;
 
-    const tempAction: AbstractAction = new AbstractAction();
+    const tempAction: AbstractActionModel = new AbstractActionModel();
     tempAction.name = actionWrapper.name;
     tempAction.description = actionWrapper.description;
     tempAction.className = actionWrapper.className;
@@ -77,23 +73,23 @@ export class ActionResult {
   }
 }
 
-export class ActionExecutionException {
+export class ActionExecutionExceptionModel {
 }
 
-export class SqlColumnDto {
+export class SqlColumnDtoModel {
   id: number;
   name: string;
   rows: string[];
 }
 
-export enum Status {
+export enum StatusModel {
   PASSED = 'PASSED',
   IN_PROGRESS = 'IN_PROGRESS',
   NOT_STARTED = 'NOT STARTED',
   FAILED = 'FAILED'
 }
 
-export enum ExecutableComponentType {
+export enum ExecutableComponentTypeModel {
   REST = 'REST',
   SQL = 'SQL',
   TECHNICAL = 'TECHNICAL',

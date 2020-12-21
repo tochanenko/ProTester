@@ -6,7 +6,7 @@ import * as SockJS from 'sockjs-client';
 @Injectable({
   providedIn: 'root'
 })
-export class WebsocketsService {
+export class WebsocketService {
   url = '/test-case-list';
   client: Client;
 

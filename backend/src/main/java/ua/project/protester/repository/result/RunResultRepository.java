@@ -128,7 +128,7 @@ public class RunResultRepository {
         }
     }
 
-    public List<ActionWrapper> findActionWrapperByTestCaseWrapperResult(Integer testCaseWrapperId, Integer scenarioId) throws TestScenarioNotFoundException {
+    private List<ActionWrapper> findActionWrapperByTestCaseWrapperResult(Integer testCaseWrapperId, Integer scenarioId) throws TestScenarioNotFoundException {
         List<Step> steps = testScenarioService.getTestScenarioById(scenarioId).getSteps();
 
         try {

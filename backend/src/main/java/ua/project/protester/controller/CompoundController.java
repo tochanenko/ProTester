@@ -23,11 +23,6 @@ public class CompoundController {
         return compoundService.saveCompound(request);
     }
 
-    @PutMapping("/{id}")
-    public OuterComponent updateTestScenario(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws OuterComponentStepSaveException {
-        return compoundService.updateCompound(id, request);
-    }
-
     @GetMapping
     public Page<OuterComponent> getAllCompounds(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                 @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,

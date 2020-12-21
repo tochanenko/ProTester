@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
@@ -36,6 +38,7 @@ public class OuterComponentRepository {
     private final ActionRepository actionRepository;
     private final StepParameterRepository stepParameterRepository;
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public Optional<OuterComponent> saveOuterComponent(OuterComponent outerComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "saveCompound")
@@ -60,6 +63,7 @@ public class OuterComponentRepository {
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter, boolean loadSteps) {
         String sql = areCompounds
                 ? PropertyExtractor.extract(env, "findAllCompounds")
@@ -105,6 +109,7 @@ public class OuterComponentRepository {
                 Long.class);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public OuterComponent findOuterComponentById(Integer id, boolean isCompound) throws OuterComponentNotFoundException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "findCompoundById")
@@ -128,6 +133,7 @@ public class OuterComponentRepository {
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public Optional<OuterComponent> deleteOuterComponentById(Integer id, boolean isCompound) {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "deleteCompoundById")
@@ -146,7 +152,31 @@ public class OuterComponentRepository {
         return deletedOuterComponent;
     }
 
-    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Optional<OuterComponent> updateTestScenario(int id, OuterComponent updatedTestScenario) throws OuterComponentStepSaveException {
+        int updatedRows = namedParameterJdbcTemplate.update(
+                PropertyExtractor.extract(env, "updateTestScenario"),
+                new MapSqlParameterSource()
+                        .addValue("id", id)
+                        .addValue("name", updatedTestScenario.getName())
+                        .addValue("description", updatedTestScenario.getDescription()));
+
+        if (updatedRows == 0) {
+            return Optional.empty();
+        }
+
+        deleteOuterComponentSteps(id, false);
+        saveOuterComponentSteps(updatedTestScenario, id, false);
+        try {
+            return Optional.of(findOuterComponentById(id, false));
+        } catch (OuterComponentNotFoundException e) {
+            log.warn(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Deprecated
+    private Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "updateCompound")
                 : PropertyExtractor.extract(env, "updateTestScenario");

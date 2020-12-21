@@ -7,12 +7,12 @@
     <div class="form">
       <div class="comp-title-container">
         <mat-label>Name:</mat-label>
-        <mat-label class="name-text"> {{scenario.name}} </mat-label>
+        <mat-label class="name-text"> {{scenario.description}} </mat-label>
       </div>
       <div class="comp-title-container">
         <mat-label>Description:</mat-label>
         <div class="name-text">
-        <ng-container *ngFor="let sub_string of scenario.description">
+        <ng-container *ngFor="let sub_string of scenario.name">
           <div *ngIf="sub_string['input']">
             <div class="description-input-disabled mat-elevation-z3">
                     <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
@@ -46,7 +46,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                 <div class="description-input-disabled mat-elevation-z3">
                     <span class="description-input-disabled-span"> {{sub_string.text}}
@@ -81,7 +81,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                   <div class="description-input-disabled mat-elevation-z3">
                     <span class="description-input-disabled-span"> {{sub_string.text}}

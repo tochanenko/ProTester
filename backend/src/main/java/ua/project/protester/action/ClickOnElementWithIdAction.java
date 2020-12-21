@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -12,13 +13,14 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on element with id ${id}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on element with specified ${id}",
+        description = "Click on element with the specified id",
         parameterNames = {"id"}
 )
 public class ClickOnElementWithIdAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
             driver.findElement(By.id(params.get("id"))).click();
             return new ActionResultTechnicalDto();

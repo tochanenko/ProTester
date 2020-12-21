@@ -1,8 +1,10 @@
 <div class="update-form">
-
   <mat-dialog-content class="mat-update">
-
     <form (ngSubmit)="onSubmit()" [formGroup]="datasetUpdateForm">
+
+      <mat-card-title>
+        <span class="header-title"> Edit Dataset </span>
+      </mat-card-title>
 
       <mat-form-field class="full-width-input" appearance="outline">
         <mat-label>Name</mat-label>
@@ -27,6 +29,7 @@
       </mat-error>
 
       <mat-table [dataSource]="editDatasetParameters">
+
         <ng-container matColumnDef="NAME">
           <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
           <mat-cell *matCellDef="let element, let i = index">
@@ -37,6 +40,7 @@
             </mat-form-field>
           </mat-cell>
         </ng-container>
+
         <ng-container matColumnDef="VALUE">
           <mat-header-cell *matHeaderCellDef class="header">VALUE</mat-header-cell>
           <mat-cell *matCellDef="let element, let i = index">
@@ -47,14 +51,16 @@
             </mat-form-field>
           </mat-cell>
         </ng-container>
+
         <ng-container matColumnDef="CONF">
           <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button *ngIf="editDatasetParameters.length > 1"(click)="deleteRow(row)" mat-icon-button matTooltip="Click to Delete" class="iconbutton">
+            <button *ngIf="editDatasetParameters.length > 1" (click)="deleteRow(row)" mat-icon-button matTooltip="Click to Delete" class="icon-button">
               <mat-icon aria-label="Delete">delete</mat-icon>
             </button>
           </mat-cell>
         </ng-container>
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>

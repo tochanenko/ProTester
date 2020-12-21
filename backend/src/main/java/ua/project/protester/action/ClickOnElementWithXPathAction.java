@@ -1,5 +1,6 @@
 package ua.project.protester.action;
 
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -12,13 +13,14 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on element with xpath ${xpath}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on element with specified ${xpath}",
+        description = "Click on element with the specified xpath",
         parameterNames = {"xpath"}
 )
 public class ClickOnElementWithXPathAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
             driver.findElement(By.xpath(params.get("xpath"))).click();
             return new ActionResultTechnicalDto();

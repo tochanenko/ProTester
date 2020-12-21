@@ -3,6 +3,7 @@ package ua.project.protester.model.executable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
@@ -61,22 +62,24 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step : steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
                     context,
                     driver,
+                    okHttpClient,
                     callback);
         }
     }
 
-    public void execute(Map<String, String> params, WebDriver driver, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step : steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
                     new HashMap<>(),
                     driver,
+                    okHttpClient,
                     callback);
         }
     }

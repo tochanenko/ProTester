@@ -7,8 +7,8 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Action {
-    String name() default "";
-    ExecutableComponentType type() default ExecutableComponentType.TECHNICAL;
+    String name();
+    ExecutableComponentType type();
     String description() default "Empty description";
     String[] parameterNames() default {};
 }

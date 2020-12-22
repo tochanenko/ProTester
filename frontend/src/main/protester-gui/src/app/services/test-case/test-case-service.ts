@@ -1,12 +1,15 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {DataSetRequestResponse} from "../../models/data-set-request-response";
-import {TestCaseModel} from "../../modules/projects-menu/projects/view/test-cases/test-case.model";
-import {TestCaseFilter} from "../../modules/projects-menu/projects/view/test-cases/test-case-filter";
-import {TestCaseResponse} from "../../modules/projects-menu/projects/view/test-cases/test-case-response";
-import {RunResultModel} from '../../modules/projects-menu/projects/view/test-cases/run-result.model';
+import {DataSetRequestResponse} from '../../models/data-set-request-response';
+import {TestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/test-case.model';
+import {TestCaseFilter} from '../../modules/projects-menu/projects/view/test-cases/test-case-filter';
+import {TestCaseResponse} from '../../modules/projects-menu/projects/view/test-cases/test-case-response';
+
 import {EnvironmentModel} from '../../models/environment.model';
+
+import {ValidationDataSetResponseModel} from '../../models/run-analyze/validation-data-set-response.model';
+import {RunResultModel} from '../../modules/projects-menu/projects/view/test-cases/run-result.model';
 import {RunTestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/run-test-case.model';
 
 
@@ -26,7 +29,7 @@ export class TestCaseService {
   }
 
   update(testCase: TestCaseModel): Observable<any> {
-     return this.http.put('/api/testCase', testCase, httpOptions);
+    return this.http.put('/api/testCase', testCase, httpOptions);
   }
 
   getAll(projectId: number, filter: TestCaseFilter): Observable<TestCaseResponse> {
@@ -46,6 +49,7 @@ export class TestCaseService {
   getAllDataSets(): Observable<DataSetRequestResponse> {
     return this.http.get<DataSetRequestResponse>(`/api/dataset`);
   }
+
   deleteTestCase(id: number): Observable<any> {
     return this.http.delete<string>(`/api/testCase/${id}`);
   }
@@ -68,5 +72,10 @@ export class TestCaseService {
 
   findRunResultByID(id: number): Observable<RunResultModel> {
     return this.http.get<RunResultModel>(`/api/test/result/${id}`, httpOptions);
+  }
+
+
+  validateTestCaseDataSet(testCase: TestCaseModel): Observable<ValidationDataSetResponseModel> {
+    return this.http.post<ValidationDataSetResponseModel>(`/api/testCase/validate`, testCase, httpOptions);
   }
 }

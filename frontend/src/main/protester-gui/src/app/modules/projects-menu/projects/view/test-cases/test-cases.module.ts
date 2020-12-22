@@ -7,12 +7,13 @@ import {CreateComponent} from './create/create.component';
 import {EditComponent} from './edit/edit.component';
 import {MaterialModule} from '../../../../../services/material.module';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {RunComponent} from './run/run.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import { ValidationComponent } from './validation/validation.component';
+import {RunComponent} from './run/run.component';
 import {SelectEnvComponent} from './select-env/select-env.component';
 
 @NgModule({
-  declarations: [ListComponent, CreateComponent, EditComponent, RunComponent, SelectEnvComponent],
+  declarations: [ListComponent, CreateComponent, EditComponent, RunComponent, SelectEnvComponent, ValidationComponent],
   imports: [
     CommonModule,
     TestCasesRoutingModule,

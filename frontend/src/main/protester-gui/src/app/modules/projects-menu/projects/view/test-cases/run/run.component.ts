@@ -15,6 +15,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {StorageService} from '../../../../../../services/auth/storage.service';
 import {TestCaseRunAnalyzeService} from '../../../../../../services/test-case/run-analyze/test-case-run-analyze.service';
 import {EnvironmentService} from '../../../../../../services/environment/environment.service';
+import {
+  ValidationDataSetResponseModel,
+  ValidationDataSetStatusModel
+} from '../../../../../../models/run-analyze/validation-data-set-response.model';
+import {Status} from 'tslint/lib/runner';
+import {ValidationComponent} from '../validation/validation.component';
 
 @Component({
   selector: 'app-run',
@@ -103,30 +109,52 @@ export class RunComponent implements OnInit, OnDestroy {
     if (this.selection.isSelected(testCase)) {
       this.selection.deselect(testCase);
     } else {
-      if (testCase.name === 'shhshs2' || testCase.name === 'testcase32') {
-        // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
 
-        // todo move to css
-        const updateDialogRef = this.dialog.open(SelectEnvComponent, {
-          height: 'auto',
-          width: '40%',
-          data: {environments: this.environmentList, testCaseName: testCase.name}
-        });
+      let validationResult: ValidationDataSetResponseModel;
 
-        this.subscription.add(
-          updateDialogRef.afterClosed().subscribe(result => {
+      this.testCaseService.validateTestCaseDataSet(testCase).subscribe(
+        result => validationResult = result,
+        () => console.log('error')
+      );
 
-              if (result === undefined) {
-                this.selection.deselect(testCase);
-              }
-              testCase.environment = result;
-            }
-          )
-        );
+      if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
+        this.openTestCaseDataSetErrorForm(validationResult);
+      } else {
+        // if (testCase.name === 'shhshs2' || testCase.name === 'testcase32') {
+        if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+
+          this.openSelectEnvironmentView(testCase);
+        }
       }
-
-      this.selection.toggle(testCase);
     }
+  }
+
+  openSelectEnvironmentView(testCase: TestCaseModel): void {
+
+    const updateDialogRef = this.dialog.open(SelectEnvComponent, {
+      height: 'auto',
+      width: '40%',
+      data: {environments: this.environmentList, testCaseName: testCase.name}
+    });
+
+    this.subscription.add(
+      updateDialogRef.afterClosed().subscribe(result => {
+
+          if (result === undefined) {
+            this.selection.deselect(testCase);
+          }
+          testCase.environment = result;
+        }
+      )
+    );
+
+    this.selection.toggle(testCase);
+  }
+
+  openTestCaseDataSetErrorForm(validationResult: ValidationDataSetResponseModel): void {
+    const errorDialogRef = this.dialog.open(ValidationComponent, {
+      data: {result: validationResult}
+    });
   }
 
   searchTestCases($event: KeyboardEvent): void {

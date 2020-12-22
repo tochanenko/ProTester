@@ -1,0 +1,18 @@
+<div class="validation">
+
+  <h2 class="header">Can not run</h2>
+
+  <mat-card-title>
+    <span class="header-title"> Can not run Test Case </span>
+  </mat-card-title>
+
+  <mat-dialog-content class="mat-validation">
+
+    <p>DataSet<b>{{data.dataSetName}}</b> has missing parameters:</p>
+    <ul *ngFor="let i of data.missingParameters">
+      <li>
+        {{i}}
+      </li>
+    </ul>
+  </mat-dialog-content>
+</div>

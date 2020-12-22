@@ -1,8 +1,11 @@
 <div class="update-form">
 
   <mat-dialog-content class="mat-update">
-
     <form (ngSubmit)="onSubmit()" [formGroup]="projectUpdateForm">
+
+      <mat-card-title>
+        <span class="header-title"> Update Project </span>
+      </mat-card-title>
 
       <mat-form-field class="full-width-input" appearance="outline">
         <mat-label>Project name</mat-label>

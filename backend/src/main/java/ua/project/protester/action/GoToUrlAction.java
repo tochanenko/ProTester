@@ -24,9 +24,8 @@ public class GoToUrlAction extends AbstractAction {
         try {
             driver.navigate().to(params.get("url"));
             return new ActionResultTechnicalDto();
-        } catch (WebDriverException ex) {
-            System.out.println(ex.getClass().getName());
-            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getMessage()));
+        } catch (WebDriverException e) {
+            return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));
         }
     }
 }

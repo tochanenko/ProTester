@@ -51,7 +51,7 @@ export class ViewComponent implements OnInit {
 
 
   getIdFromParams(): void {
-    this.subscription = this.activateRoute.queryParams.subscribe(params=>this.compound_id=params['id']);
+    this.subscription = this.activateRoute.params.subscribe(params => this.compound_id=params['id']);
   }
 
   getCompoundById(id: number): void {

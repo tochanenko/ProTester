@@ -19,18 +19,26 @@ const routes: Routes = [
         component: SearchComponent
       },
       {
-        path: 'view',
-        data: {
-          breadcrumb: 'View'
-        },
-        component: ViewComponent
-      },
-      {
         path: 'new',
         data: {
           breadcrumb: 'Create'
         },
         component: CreateComponent
+      },
+      {
+        path: ':id',
+        data: {
+          breadcrumb: null
+        },
+        children: [
+          {
+            path: '',
+            data: {
+              breadcrumb: 'Scenario'
+            },
+            component: ViewComponent
+          }
+        ]
       }
     ]
   }

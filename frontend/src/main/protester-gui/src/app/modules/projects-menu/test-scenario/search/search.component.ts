@@ -46,7 +46,7 @@ export class SearchComponent implements OnInit {
 
   goToView(id): void {
     if (id) {
-      this.router.navigate([`projects-menu/scenarios/view`], {queryParams: {id: id}}).then();
+      this.router.navigate([`projects-menu/scenarios/${id}`]).then();
     }
   }
 

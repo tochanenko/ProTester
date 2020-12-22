@@ -53,12 +53,12 @@ export class ViewComponent implements OnInit {
   }
 
   getIdFromParams(): void {
-    this.componentSubscription = this.activateRoute.queryParams.subscribe(params=>this.library_id=params['id']);
+    this.componentSubscription = this.activateRoute.params.subscribe(params=>this.library_id=params['id']);
   }
 
   goToEdit(id): void {
     if (id) {
-      this.router.navigate(['libraries-menu/libraries/edit'], {queryParams: {id: id}}).then();
+      this.router.navigate([`libraries-menu/libraries/${id}/edit`]).then();
     }
   }
 

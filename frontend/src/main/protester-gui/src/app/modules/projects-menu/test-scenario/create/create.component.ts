@@ -63,7 +63,7 @@ export class CreateComponent implements OnInit {
 
   createForm(): void {
     this.scenarioCreateForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
+      name: ['', [Validators.required]],
       description: ['', [Validators.required]]
     })
   }

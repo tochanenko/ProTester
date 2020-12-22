@@ -18,7 +18,6 @@ export class ProjectService {
   }
 
   create(project: Project): Observable<any> {
-    console.log('-----' + JSON.stringify(project));
     return this.http.post<any>('/api/project/create', project, httpOptions);
   }
 

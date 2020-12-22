@@ -10,12 +10,16 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.DataSetNotFoundException;
-import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.*;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.TestCase;
+import ua.project.protester.model.RunResult;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -27,6 +31,8 @@ import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
 import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
+import ua.project.protester.response.ValidationDataSetResponse;
+import ua.project.protester.response.ValidationDataSetStatus;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -65,7 +71,7 @@ public class StartService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void execute(Long id) {
+    public void execute(Long id) throws TestScenarioNotFoundException {
 
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
@@ -77,33 +83,21 @@ public class StartService {
     }
 
     @Transactional
-    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) {
+    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
 
-        Map<String, String> initMap = new HashMap<>();
-        initMap.put("username", "volodya");
-        initMap.put("password", "tank85943221");
-        initMap.put("url", "www.youtube.com");
-        initMap.put("rztk_id", "rztk_id from input param");
-
-        //input text ${username} with id ${id}
         OkHttpClient okHttpClient = new OkHttpClient();
         Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
-        testCase.getDataSetList().stream()
-                .map(DataSet::getId)
-                .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
-                .filter(Objects::nonNull)
-                .forEachOrdered(outerComponent -> {
-                            try {
-                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, environment, webDriver, okHttpClient, getConsumer(testCaseResultId));
-                                resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
-                                counter = 0;
-                            } catch (ActionExecutionException | OuterComponentNotFoundException | IllegalActionLogicImplementation a) {
-                                resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
-                                counter = 0;
-                            }
-                        }
-                );
+        DataSet dataSet = testCase.getDataSetList().get(0);
+        log.info("dataset{}", dataSet);
+        try {
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, okHttpClient, getConsumer(testCaseResultId));
+            resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
+            counter = 0;
+        } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
+            resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
+            counter = 0;
+        }
     }
 
     @Transactional
@@ -163,38 +157,13 @@ public class StartService {
         };
     }
 
-
-    @Transactional
-    Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
-        try {
-            OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
-            DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found"));
-            List<Step> stepsParams = testScenario.getSteps();
-            for (Step s : stepsParams
-            ) {
-                for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (initMap.containsKey(entry.getValue())) {
-                        entry.setValue(initMap.get(entry.getValue()));
-                    }
-                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
-                        entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found")));
-                    }
-                }
-            }
-            return Optional.of(testScenario);
-        } catch (TestScenarioNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return Optional.empty();
-    }
-
     @Transactional
     TestCase fromTestCaseResponseToModel(TestCaseResponse testCaseResponse) {
         TestCase testCase = modelMapper.map(testCaseResponse, TestCase.class);
         List<DataSet> dataSets = new ArrayList<>();
 
         testCaseResponse.getDataSetResponseList()
-                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow(() -> new DataSetNotFoundException("DatasSet was not found"))));
+                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was not found"))));
         testCase.setDataSetList(dataSets);
         return testCase;
     }
@@ -203,5 +172,23 @@ public class StartService {
     public RunResult findById(Long id) {
         return runResultRepository.findRunResultById(id)
                 .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
+    }
+
+    public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
+       log.info("test case {}", testCaseResponse);
+        DataSet dataSet = dataSetRepository.findDataSetById(testCaseResponse.getDataSetResponseList().stream().filter(Objects::nonNull).findFirst().get().getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found"));
+        OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseResponse.getScenarioId().intValue());
+        List<String> names = Arrays.asList(testScenario.getParameterNames());
+        Set<String> dataSetKeys = dataSet.getParameters().keySet();
+
+        ValidationDataSetResponse validationResponse = new ValidationDataSetResponse();
+
+        validationResponse.setMissingParameters(names.stream().filter(value -> !dataSetKeys.contains(value)).collect(Collectors.toList()));
+
+        validationResponse.setStatus(validationResponse.getMissingParameters().size() > 0 ? ValidationDataSetStatus.FAILED : ValidationDataSetStatus.PASSED);
+
+        validationResponse.setDataSetName(dataSet.getName());
+
+        return validationResponse;
     }
 }

@@ -20,7 +20,7 @@ export class CreateComponent implements OnInit {
   validatorsConfig = {
     name: {
       minLength: 5,
-      maxLength: 15
+      maxLength: 60
     },
     description: {
       maxLength: 200
@@ -196,7 +196,7 @@ export class CreateComponent implements OnInit {
   recursiveStepParsing(steps, mappingParams, parentParams) {
     steps.forEach(item => {
       let clonedMappingParams = Object.assign({}, mappingParams);
-      item.component.description = this.parseDescription(item.component.description);
+      item.component.name = this.parseDescription(item.component.name);
       if (Object.keys(item.parameters).length > 0) {
         for (let [key, value] of Object.entries(item.parameters)) {
           let cleanedParam = this.cleanParam(value.toString());
@@ -247,8 +247,8 @@ export class CreateComponent implements OnInit {
   getAllActionsForBottomSheet(): void {
     this.compoundService.getAllActions().subscribe(data => {
       data['list'].forEach(item => {
-        if (typeof item.description !== "object") {
-          item.description = this.parseDescription(item.description);
+        if (typeof item.name !== "object") {
+          item.name = this.parseDescription(item.name);
         }
       })
       this.bottomSheetData['actions'] = data['list'];
@@ -258,8 +258,8 @@ export class CreateComponent implements OnInit {
   getAllCompoundsForBottomSheet(): void {
     this.compoundService.getAllCompounds().subscribe(data => {
       data['list'].forEach(item => {
-        if (typeof item.description !== "object") {
-          item.description = this.parseDescription(item.description);
+        if (typeof item.name !== "object") {
+          item.name = this.parseDescription(item.name);
         }
       })
       this.bottomSheetData['compounds'] = data['list'];

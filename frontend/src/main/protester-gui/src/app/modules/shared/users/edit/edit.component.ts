@@ -36,13 +36,12 @@ export class EditComponent implements OnInit {
               private route: ActivatedRoute,
               private formBuilder: FormBuilder
   ) {
-
     this.editUserForm = this.formBuilder.group({
       username: [this.username],
       email: [this.email],
       firstName: [this.firstName],
       lastName: [this.lastName],
-      role: [new FormControl(this.roles[1].value)],
+      role: new FormControl(this.roles[2].value),
       active: [this.active]
     });
 
@@ -69,7 +68,7 @@ export class EditComponent implements OnInit {
               email: [this.email],
               firstName: [this.firstName],
               lastName: [this.lastName],
-              role: [new FormControl(this.roles[1].value)],
+              role: this.role,
               active: [this.active]
             });
           }
@@ -91,7 +90,7 @@ export class EditComponent implements OnInit {
       username: this.f.username.value,
       firstName: this.f.firstName.value,
       lastName: this.f.lastName.value,
-      role: this.f.role.value.value,
+      role: this.role,
       active: this.f.active.value
     };
 
@@ -101,5 +100,9 @@ export class EditComponent implements OnInit {
       res => this.router.navigate([`/account/users/${this.id}`]),
       err => console.log(err)
     );
+  }
+
+  updateRole(event: string) {
+    this.role = event;
   }
 }

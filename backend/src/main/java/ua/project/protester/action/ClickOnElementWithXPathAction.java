@@ -3,7 +3,6 @@ package ua.project.protester.action;
 import okhttp3.OkHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.executable.AbstractAction;
@@ -24,9 +23,8 @@ public class ClickOnElementWithXPathAction extends AbstractAction {
         try {
             driver.findElement(By.xpath(params.get("xpath"))).click();
             return new ActionResultTechnicalDto();
-        } catch (WebDriverException ex) {
-            System.out.println(ex.getClass().getName());
-            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getMessage()));
+        } catch (Exception e) {
+            return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));
         }
     }
 }

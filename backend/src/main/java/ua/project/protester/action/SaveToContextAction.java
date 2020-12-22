@@ -1,7 +1,6 @@
 package ua.project.protester.action;
 
 import okhttp3.OkHttpClient;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
@@ -12,16 +11,16 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Input ${text} into field with specified ${xpath}",
+        name = "Save value ${value} with key ${key} to context",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Input text into field wtih id action",
-        parameterNames = {"text", "xpath"}
+        description = "Save the specified pair (key,value) to context",
+        parameterNames = {"value", "key"}
 )
-public class InputTextIntoFieldWithXPathAction extends AbstractAction {
+public class SaveToContextAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient httpClient) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
         try {
-            driver.findElement(By.xpath(params.get("xpath"))).sendKeys(params.get("text"));
+            context.put(params.get("key"), params.get("value"));
             return new ActionResultTechnicalDto();
         } catch (Exception e) {
             return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));

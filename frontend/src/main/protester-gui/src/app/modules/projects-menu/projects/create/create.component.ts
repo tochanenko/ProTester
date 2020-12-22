@@ -1,9 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Subscription} from "rxjs";
-import {Router} from "@angular/router";
-import {ProjectService} from "../../../../services/project.service";
-import {StorageService} from "../../../../services/auth/storage.service";
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ProjectService} from '../../../../services/project.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-create',
@@ -16,19 +15,20 @@ export class CreateComponent implements OnInit, OnDestroy {
   submitted = false;
   isSuccessful = false;
   isFailed = false;
-  private subscription: Subscription;
+  subscription: Subscription;
 
-  constructor(private router: Router,
+  constructor(public dialogRef: MatDialogRef<CreateComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: { userId: number },
               private formBuilder: FormBuilder,
-              private projectService: ProjectService,
-              private storageService: StorageService) {
+              private projectService: ProjectService) {
+    this.subscription = new Subscription();
   }
 
   ngOnInit(): void {
     this.createProjectCreateForm();
   }
 
-  get f() {
+  get f(): { [p: string]: AbstractControl } {
     return this.projectCreateForm.controls;
   }
 
@@ -39,6 +39,9 @@ export class CreateComponent implements OnInit, OnDestroy {
         Validators.maxLength(50)])
       ],
       projectWebsiteLink: [null, Validators.compose([
+        Validators.required
+      ])],
+      projectActive: [null, Validators.compose([
         Validators.required
       ])]
     });
@@ -54,20 +57,21 @@ export class CreateComponent implements OnInit, OnDestroy {
     const projectCreateResponse = {
       projectName: this.f.projectName.value,
       projectWebsiteLink: this.f.projectWebsiteLink.value,
-      creatorId: this.storageService.getUser.id
+      creatorId: this.data.userId,
+      projectActive: this.f.projectActive.value,
     };
 
-    this.subscription = this.projectService.create(projectCreateResponse)
-      .subscribe(
-        data => {
-          this.isSuccessful = true;
-          this.router.navigateByUrl('/projects-menu/projects').then();
-        },
-        err => {
-          this.errorMessage = err.error.message;
-          this.isFailed = true;
-        }
-      );
+    this.subscription.add(
+      this.projectService.create(projectCreateResponse)
+        .subscribe(
+          () => this.dialogRef.close(),
+          () => this.isFailed = true
+        )
+    );
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
   ngOnDestroy(): void {
@@ -75,4 +79,5 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
     }
   }
+
 }

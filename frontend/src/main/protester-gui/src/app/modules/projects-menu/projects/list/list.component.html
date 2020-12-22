@@ -1,10 +1,12 @@
-<a [routerLink]="'/projects-menu'" class="navigation">
-  <span class="material-icons navigation">navigate_before</span>
-</a>
-
 <mat-card class="project-list">
 
   <div class="search-project">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Search project</mat-label>
+      <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="projectFilter.projectName"
+             (keyup)="onFilterChange($event)">
+    </mat-form-field>
 
     <button mat-icon-button class="filter-button" [matMenuTriggerFor]="menu">
       <span class="material-icons filter">filter_alt</span>
@@ -17,11 +19,9 @@
       <button (click)="FilterIsActive('false')" mat-menu-item>Not active</button>
     </mat-menu>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Search project</mat-label>
-      <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="projectFilter.projectName"
-             (keyup)="onFilterChange($event)">
-    </mat-form-field>
+    <button mat-icon-button class="create-button" (click)="openCreateDialog()">
+      Create
+    </button>
 
   </div>
 

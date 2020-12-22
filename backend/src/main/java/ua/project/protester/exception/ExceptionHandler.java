@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
+import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -173,6 +175,16 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Test not found!");
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(InnerCompoundDeleteException.class)
+    public ResponseEntity<?> handleInnerCompoundDeleteException(InnerCompoundDeleteException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "outerComponents", e.getOuterComponents()),
+                HttpStatus.BAD_REQUEST);
     }
 
 }

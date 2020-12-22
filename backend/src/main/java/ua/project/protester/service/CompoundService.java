@@ -11,7 +11,10 @@ import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
+import ua.project.protester.response.LightOuterComponentResponse;
 import ua.project.protester.utils.Page;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +46,9 @@ public class CompoundService {
 
     @Transactional
     public OuterComponent deleteCompoundById(int id) throws InnerCompoundDeleteException {
-        if (outerComponentRepository.compoundWithIdIsInnerComponent(id)) {
-            throw new InnerCompoundDeleteException("Attempt to delete inner compound");
+        List<LightOuterComponentResponse> outerComponents = outerComponentRepository.findOuterComponentsByInnerCompoundId(id);
+        if (!outerComponents.isEmpty()) {
+            throw new InnerCompoundDeleteException("Attempt to delete inner compound", outerComponents);
         }
         return outerComponentRepository.deleteOuterComponentById(id, true).orElse(null);
     }

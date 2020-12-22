@@ -1,6 +1,7 @@
 package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,15 @@ import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.result.RunResultNotFoundException;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.TestCase;
+import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.RunResult;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.ActionWrapper;
-import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.DataSet;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.repository.result.ActionResultRepository;
@@ -90,7 +90,7 @@ public class StartService {
         initMap.put("rztk_id", "rztk_id from input param");
 
         //input text ${username} with id ${id}
-        Environment environment = new Environment();
+        OkHttpClient okHttpClient = new OkHttpClient();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         testCase.getDataSetList().stream()
                 .map(DataSet::getId)
@@ -98,10 +98,10 @@ public class StartService {
                 .filter(Objects::nonNull)
                 .forEachOrdered(outerComponent -> {
                             try {
-                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, environment, webDriver, getConsumer(testCaseResultId));
+                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, webDriver, okHttpClient, getConsumer(testCaseResultId));
                                 resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
                                 counter = 0;
-                            } catch (ActionExecutionException | OuterComponentNotFoundException a) {
+                            } catch (ActionExecutionException | OuterComponentNotFoundException | IllegalActionLogicImplementation a) {
                                 resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
                                 counter = 0;
                             }

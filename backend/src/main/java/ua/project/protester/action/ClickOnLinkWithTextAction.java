@@ -24,9 +24,8 @@ public class ClickOnLinkWithTextAction extends AbstractAction {
         try {
             driver.findElement(By.linkText(params.get("text"))).click();
             return new ActionResultTechnicalDto();
-        } catch (WebDriverException ex) {
-            System.out.println(ex.getClass().getName());
-            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getMessage()));
+        } catch (Exception e) {
+            return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));
         }
     }
 }

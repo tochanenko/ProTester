@@ -24,9 +24,8 @@ public class InputTextIntoFieldWithIdAction extends AbstractAction {
         try {
             driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
             return new ActionResultTechnicalDto();
-        } catch (WebDriverException ex) {
-            System.out.println(ex.getClass().getName());
-            return new ActionResultTechnicalDto(new ActionExecutionException(ex.getMessage()));
+        } catch (Exception e) {
+            return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));
         }
     }
 }

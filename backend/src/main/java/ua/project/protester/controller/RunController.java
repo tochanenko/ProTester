@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.request.RunTestCaseRequest;
+import ua.project.protester.response.TestCaseResponse;
+import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.service.StartService;
 
 @RestController
@@ -21,7 +23,7 @@ public class RunController {
 
     @Transactional
     @GetMapping("/{id}")
-    public void run(@PathVariable Long id) {
+    public void run(@PathVariable Long id) throws TestScenarioNotFoundException {
         startService.execute(id);
     }
 
@@ -30,4 +32,8 @@ public class RunController {
         return startService.findById(id);
     }
 
+    @PostMapping("/validate")
+    public ValidationDataSetResponse validate(@RequestBody TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
+        return startService.validateDataSetWithTestScenario(testCaseResponse);
+    }
 }

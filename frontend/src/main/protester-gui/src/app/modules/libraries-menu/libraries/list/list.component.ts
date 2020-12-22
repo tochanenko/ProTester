@@ -36,13 +36,13 @@ export class ListComponent implements OnInit {
 
   goToEdit(id): void {
     if (id) {
-      this.router.navigate(['libraries-menu/libraries/edit'], {queryParams: {id: id}}).then();
+      this.router.navigate([`libraries-menu/libraries/${id}/edit`]).then();
     }
   }
 
   goToView(id): void {
     if (id) {
-      this.router.navigate(['libraries-menu/libraries/view'], {queryParams: {id: id}}).then();
+      this.router.navigate([`libraries-menu/libraries/${id}`]).then();
     }
   }
 

@@ -21,17 +21,33 @@ const routes: Routes = [
       {
         path: ':id',
         data: {
-          breadcrumb: 'View'
+          breadcrumb: null
         },
-        component: ViewComponent
+        children: [
+          {
+            path: '',
+            data: {
+              breadcrumb: 'User'
+            },
+            children: [
+              {
+                path: '',
+                data: {
+                  breadcrumb: null
+                },
+                component: ViewComponent
+              },
+              {
+                path: 'edit',
+                data: {
+                  breadcrumb: 'Edit'
+                },
+                component: EditComponent
+              }
+            ]
+          }
+        ]
       },
-      {
-        path: ':id/edit',
-        data: {
-          breadcrumb: 'Edit'
-        },
-        component: EditComponent
-      }
     ]
   }
 ];

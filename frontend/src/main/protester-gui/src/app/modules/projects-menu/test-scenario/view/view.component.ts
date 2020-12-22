@@ -49,7 +49,7 @@ export class ViewComponent implements OnInit {
 
 
   getIdFromParams(): void {
-    this.subscription = this.activateRoute.queryParams.subscribe(params=>this.scenario_id=params['id']);
+    this.subscription = this.activateRoute.params.subscribe(params=>this.scenario_id=params['id']);
   }
 
   getScenarioById(id: number): void {

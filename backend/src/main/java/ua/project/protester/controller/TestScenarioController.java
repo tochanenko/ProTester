@@ -1,6 +1,7 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
@@ -11,6 +12,7 @@ import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.TestScenarioService;
 import ua.project.protester.utils.Page;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/test-scenarios")

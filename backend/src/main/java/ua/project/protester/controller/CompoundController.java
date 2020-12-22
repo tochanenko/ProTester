@@ -1,6 +1,7 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
@@ -12,6 +13,7 @@ import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.CompoundService;
 import ua.project.protester.utils.Page;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/compounds")
@@ -43,6 +45,7 @@ public class CompoundController {
         return compoundService.getCompoundById(id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     @DeleteMapping("/{id}")
     public OuterComponent deleteCompound(@PathVariable int id) throws InnerCompoundDeleteException {
         return compoundService.deleteCompoundById(id);

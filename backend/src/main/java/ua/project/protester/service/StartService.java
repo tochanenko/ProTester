@@ -15,11 +15,7 @@ import ua.project.protester.exception.executable.TestScenarioNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.ActionWrapper;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.RunResult;
+import ua.project.protester.model.*;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -91,6 +87,7 @@ public class StartService {
 
         //input text ${username} with id ${id}
         OkHttpClient okHttpClient = new OkHttpClient();
+        Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         testCase.getDataSetList().stream()
                 .map(DataSet::getId)
@@ -98,7 +95,7 @@ public class StartService {
                 .filter(Objects::nonNull)
                 .forEachOrdered(outerComponent -> {
                             try {
-                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, webDriver, okHttpClient, getConsumer(testCaseResultId));
+                                outerComponent.orElseThrow(() -> new OuterComponentNotFoundException(1, false)).execute(initMap, environment, webDriver, okHttpClient, getConsumer(testCaseResultId));
                                 resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
                                 counter = 0;
                             } catch (ActionExecutionException | OuterComponentNotFoundException | IllegalActionLogicImplementation a) {

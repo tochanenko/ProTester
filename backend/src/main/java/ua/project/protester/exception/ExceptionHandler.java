@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ua.project.protester.exception.executable.UsedTestScenarioDeleteException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 
@@ -187,4 +188,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(UsedTestScenarioDeleteException.class)
+    public ResponseEntity<?> handleUsedTestScenarioDeleteException(UsedTestScenarioDeleteException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "testCases", e.getTestCases()),
+                HttpStatus.BAD_REQUEST);
+    }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.UsedTestScenarioDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
@@ -41,7 +42,7 @@ public class TestScenarioController {
     }
 
     @DeleteMapping("/{id}")
-    public OuterComponent deleteTestScenario(@PathVariable int id) {
+    public OuterComponent deleteTestScenario(@PathVariable int id) throws UsedTestScenarioDeleteException {
         return testScenarioService.deleteTestScenarioById(id);
     }
 }

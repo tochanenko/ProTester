@@ -2,8 +2,8 @@ import {ExecutableComponentType} from "./executable-type.model";
 
 export class ExecutableComponent {
   id: number;
-  name: string;
-  description: string | Object;
+  name: string | Object;
+  description: string;
   type: ExecutableComponentType;
   parameterNames: Array<string>;
 

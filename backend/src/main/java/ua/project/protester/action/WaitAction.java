@@ -1,7 +1,6 @@
 package ua.project.protester.action;
 
 import okhttp3.OkHttpClient;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
@@ -13,16 +12,16 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Input ${text} into field with specified ${xpath}",
+        name = "Wait ${n} seconds",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Input text into field wtih id action",
-        parameterNames = {"text", "xpath"}
+        description = "Wait the specified amount of time",
+        parameterNames = {"n"}
 )
-public class InputTextIntoFieldWithXPathAction extends AbstractAction {
+public class WaitAction extends AbstractAction {
     @Override
     protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient httpClient) {
         try {
-            driver.findElement(By.xpath(params.get("xpath"))).sendKeys(params.get("text"));
+            Thread.sleep(Integer.parseInt(params.get("n")) * 1000);
             return new ActionResultTechnicalDto();
         } catch (Exception e) {
             return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));

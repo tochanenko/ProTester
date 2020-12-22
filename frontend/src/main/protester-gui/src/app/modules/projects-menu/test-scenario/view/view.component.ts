@@ -65,7 +65,7 @@ export class ViewComponent implements OnInit {
         this.recursiveStepParsing(scenario.steps, mappingParams, parentParams);
       }
 
-      scenario.description = this.parseDescription(scenario.description.toString());
+      scenario.name = this.parseDescription(scenario.name.toString());
       this.scenario = scenario;
       this.componentCtx.components = scenario.steps;
     })
@@ -112,7 +112,7 @@ export class ViewComponent implements OnInit {
   recursiveStepParsing(steps, mappingParams, parentParams) {
     steps.forEach(item => {
       let clonedMappingParams = Object.assign({}, mappingParams);
-      item.component.description = this.parseDescription(item.component.description);
+      item.component.name = this.parseDescription(item.component.name);
       if (Object.keys(item.parameters).length > 0) {
         for (let [key, value] of Object.entries(item.parameters)) {
           let cleanedParam = this.cleanParam(value.toString());

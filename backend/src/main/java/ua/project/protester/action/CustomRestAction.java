@@ -3,6 +3,7 @@ package ua.project.protester.action;
 import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import ua.project.protester.annotation.Action;
+import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class CustomRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient httpClient) {
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient httpClient) {
         return new ActionResultRestDto();
     }
 

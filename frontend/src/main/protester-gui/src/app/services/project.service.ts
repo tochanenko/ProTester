@@ -1,8 +1,8 @@
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
-import {ProjectFilter} from "../models/project/project-filter.model";
-import {Project} from "../models/project/project.model";
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {ProjectFilter} from '../models/project/project-filter.model';
+import {Project} from '../models/project/project.model';
 import {ProjectResponse} from '../models/project/project-response.model';
 
 const httpOptions = {
@@ -18,7 +18,7 @@ export class ProjectService {
   }
 
   create(project: Project): Observable<any> {
-    return this.http.post('/api/project/create', project, httpOptions);
+    return this.http.post<any>('/api/project/create', project, httpOptions);
   }
 
   update(project: Project): Observable<any> {

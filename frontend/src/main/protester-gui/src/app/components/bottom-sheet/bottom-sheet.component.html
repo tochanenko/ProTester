@@ -12,7 +12,7 @@
     <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.actions">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <ng-container *ngFor="let sub_string of component.description">
+          <ng-container *ngFor="let sub_string of component.name">
             <div *ngIf="sub_string['input']">
               <div class="description-input-disabled mat-elevation-z6">
                 <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
@@ -42,7 +42,7 @@
     <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.compounds">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <ng-container *ngFor="let sub_string of component.description">
+          <ng-container *ngFor="let sub_string of component.name">
             <div *ngIf="sub_string['input']">
               <div class="description-input-disabled mat-elevation-z6">
                 <span class="description-input-disabled-span"> {{sub_string['text']}} </span>

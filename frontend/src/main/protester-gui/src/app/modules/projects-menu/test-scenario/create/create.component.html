@@ -8,7 +8,7 @@
       <div class="lib-title-container">
         <mat-label class="lib-name">Name:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
-          <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
+          <input matInput type="text" id="name" name="name" formControlName="description" class="create-input"
                  placeholder="Scenario name...">
           <mat-error *ngIf="formControls.name.errors" class="invalid-input">
             <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
@@ -24,7 +24,7 @@
       <div class="lib-title-container">
         <mat-label class="lib-description">Description:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
-              <textarea matInput type="text" id="description" name="description" formControlName="description"
+              <textarea matInput type="text" id="description" name="description" formControlName="name"
                         class="create-input" placeholder="Scenario description..."></textarea>
           <mat-error *ngIf="formControls.description.errors" class="invalid-input">
             <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length
@@ -66,7 +66,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                 <mat-form-field class="description-input">
                   <mat-label> {{sub_string.text}} </mat-label>
@@ -110,7 +110,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                 <mat-form-field
                   *ngIf="checkIfParamInterpolated(component.parameters[sub_string.text]) && formControls[parent.id + '-' + cleanParam(component.parameters[sub_string.text])]; else printParams"

@@ -26,4 +26,7 @@ public class TestCaseResultController {
             @RequestParam(value = "loadActionResults", defaultValue = "true") boolean loadActionResults) {
         return testCaseResultService.getAllTestCaseResults(filter, loadActionResults);
     }
+    // name : "compound"
+    //"parameters" : [ {"id":"login_id" , "text":"${password}"}]
+
 }

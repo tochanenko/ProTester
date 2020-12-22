@@ -89,6 +89,7 @@ public class StartService {
         initMap.put("url", "www.youtube.com");
         initMap.put("rztk_id", "rztk_id from input param");
 
+        //input text ${username} with id ${id}
         Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         testCase.getDataSetList().stream()

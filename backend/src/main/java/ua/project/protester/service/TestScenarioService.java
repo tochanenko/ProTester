@@ -5,17 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
+import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
+import ua.project.protester.response.LightTestCaseResponse;
 import ua.project.protester.utils.Page;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
+    private final TestCaseRepository testCaseRepository;
 
     @Transactional
     public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) throws OuterComponentStepSaveException {
@@ -26,7 +32,7 @@ public class TestScenarioService {
     @Transactional
     public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
         OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
-        return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
+        return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
     @Transactional
@@ -46,7 +52,11 @@ public class TestScenarioService {
     }
 
     @Transactional
-    public OuterComponent deleteTestScenarioById(int id) {
+    public OuterComponent deleteTestScenarioById(int id) throws UsedTestScenarioDeleteException {
+        List<LightTestCaseResponse> testCases = testCaseRepository.findTestCasesByTestScenarioId(id);
+        if (!testCases.isEmpty()) {
+            throw new UsedTestScenarioDeleteException("Attempt to delete used test scenario", testCases);
+        }
         return outerComponentRepository.deleteOuterComponentById(id, false).orElse(null);
     }
 }

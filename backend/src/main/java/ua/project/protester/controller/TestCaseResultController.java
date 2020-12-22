@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.result.TestCaseResultNotFoundException;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
-import ua.project.protester.request.TestCaseResultFilter;
 import ua.project.protester.service.TestCaseResultService;
-import ua.project.protester.utils.Page;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,14 +17,4 @@ public class TestCaseResultController {
     public TestCaseResultDto getResultById(@PathVariable int id) throws TestCaseResultNotFoundException {
         return testCaseResultService.getTestCaseResultById(id);
     }
-
-    @GetMapping
-    public Page<TestCaseResultDto> getAllResults(
-            @RequestBody TestCaseResultFilter filter,
-            @RequestParam(value = "loadActionResults", defaultValue = "true") boolean loadActionResults) {
-        return testCaseResultService.getAllTestCaseResults(filter, loadActionResults);
-    }
-    // name : "compound"
-    //"parameters" : [ {"id":"login_id" , "text":"${password}"}]
-
 }

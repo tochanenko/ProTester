@@ -1,0 +1,97 @@
+<div class="library-new-form">
+  <mat-card class="card">
+    <mat-card-title>
+      <span class="material-icons chrome_reader_mode">chrome_reader_mode</span>
+      <span class="header-title"> create new library </span>
+    </mat-card-title>
+    <form (ngSubmit)="onSubmit()" [formGroup]="libraryCreateForm">
+      <div class="lib-title-container">
+        <mat-label class="lib-name">Name:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+          <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
+                 placeholder="Library name...">
+          <mat-error *ngIf="formControls.name.errors" class="invalid-input">
+            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length - {{validatorsConfig.name.maxLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length - {{validatorsConfig.name.minLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="lib-title-container">
+        <mat-label class="lib-description">Description:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+              <textarea matInput type="text" id="description" name="description" formControlName="description"
+                        class="create-input" placeholder="Library description..."></textarea>
+          <mat-error *ngIf="formControls.description.errors" class="invalid-input">
+            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length - {{validatorsConfig.description.maxLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.description.errors.required">Description is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="component-table">
+        <div class="grid-header">
+          <div class="grib-sub-header actions-tile">
+            <p>ACTIONS</p>
+          </div>
+          <div class="grib-sub-header">
+            <p>COMPOUNDS</p>
+          </div>
+        </div>
+        <div class="content">
+          <div class="compound-tile-inner actions-tile">
+            <div *ngIf="actions.length == 0" class="tile-label-wrapper">
+              <mat-label class="tile-label"> Add actions</mat-label>
+            </div>
+            <div class="component-container">
+              <mat-accordion *ngIf="actions.length > 0">
+                <mat-expansion-panel hideToggle *ngFor="let component of actions">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title color="#5C6BC0">
+                      {{component.name}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <button mat-icon-button (click)="deleteComponentFromArray(actions, component.id)">
+                    <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+                  </button>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <button type="button" mat-icon-button (click)="openBottomSheetWithActions()">
+              <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+            </button>
+          </div>
+
+          <div class="compound-tile-inner">
+            <div *ngIf="compounds.length == 0" class="tile-label-wrapper">
+              <mat-label class="tile-label"> Add compounds</mat-label>
+            </div>
+            <div class="component-container">
+              <mat-accordion *ngIf="compounds.length > 0">
+                <mat-expansion-panel hideToggle *ngFor="let component of compounds">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title color="#5C6BC0">
+                      {{component.name}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
+                    <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+                  </button>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <button mat-icon-button type='button' (click)="openBottomSheetWithCompounds()">
+              <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button mat-raised-button class="button-flex-container">
+        <p class="button-text">CREATE</p>
+      </button>
+    </form>
+  </mat-card>
+</div>

@@ -1,17 +1,19 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {TestCaseModel} from '../../test-case/test-case.model';
-import {TestCaseResponse} from '../../test-case/test-case-response';
-import {TestCaseFilter} from '../../test-case/test-case-filter';
 import {Injectable} from '@angular/core';
 import {DataSetRequestResponse} from "../../models/data-set-request-response";
-import {RunTestCaseModel} from '../../test-case/run-test-case.model';
-import {RunResultModel} from '../../test-case/run-result.model';
-import {EnvironmentModel} from '../../test-case/environment.model';
+import {TestCaseModel} from "../../modules/projects-menu/projects/view/test-cases/test-case.model";
+import {TestCaseFilter} from "../../modules/projects-menu/projects/view/test-cases/test-case-filter";
+import {TestCaseResponse} from "../../modules/projects-menu/projects/view/test-cases/test-case-response";
+import {RunResultModel} from '../../modules/projects-menu/projects/view/test-cases/run-result.model';
+import {EnvironmentModel} from '../../models/environment.model';
+import {RunTestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/run-test-case.model';
+
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
+
 @Injectable({
   providedIn: 'root'
 })

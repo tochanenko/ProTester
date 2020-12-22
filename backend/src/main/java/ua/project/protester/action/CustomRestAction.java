@@ -6,6 +6,7 @@ import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.ActionResultDto;
+import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 
 import java.util.Map;
 
@@ -18,8 +19,8 @@ import java.util.Map;
 public class CustomRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultDto logic(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver) {
-        return null;
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver) {
+        return new ActionResultRestDto();
     }
 
 }

@@ -1,0 +1,36 @@
+mat-grid-tile {
+  background: #F2F2F2;
+  border: 6px solid #5C6BC0;
+  box-sizing: border-box;
+  border-radius: 18px;
+}
+
+.projects-menu {
+  height: 50%;
+  width: 35%;
+  margin-top: 8%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.material-icons, .material-icons-outlined {
+  font-size: 400%;
+  color: #5C6BC0;
+}
+
+.inside-grid {
+  background-color: #F2F2F2;
+  border: none;
+  box-shadow: none;
+  text-align: center;
+}
+
+.text-inside-grid {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #5C6BC0;
+}

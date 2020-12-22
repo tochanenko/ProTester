@@ -3,7 +3,7 @@ import {User} from "../../models/user.model";
 import {StorageService} from "../../services/auth/storage.service";
 import {AuthService} from "../../services/auth/auth.service";
 import {Subscription} from "rxjs";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -16,9 +16,19 @@ export class HeaderComponent implements OnInit {
   isWhiteTheme = true;
   user: User = new User();
   isAdmin: boolean = false;
-  links = [{'link': 'projectMenu', 'label': 'Projects'}, {'link': 'profile', 'label': 'Library'}];
+  links = [
+    {
+      'link': 'projects-menu',
+      'label': 'Projects'
+    },
+    {
+      'link': 'libraries-menu',
+      'label': 'Libraries'
+    }
+  ];
   activeLink = this.links[0];
-  subscription: Subscription;
+  userSubscription: Subscription;
+  navigationSubscription: Subscription;
 
   constructor(private storageService: StorageService,
               private authService: AuthService,
@@ -26,9 +36,21 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.subscription = this.storageService.currentUser.subscribe(user => {
+    this.userSubscription = this.storageService.currentUser.subscribe(user => {
       this.user = user;
       this.isAdmin = user != null && user.role === 'ADMIN';
+    });
+    this.navigationSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        switch (event.urlAfterRedirects.split("/")[1]) {
+          case 'projects-menu':
+            this.activeLink = this.links[0];
+            break;
+          case 'libraries-menu':
+            this.activeLink = this.links[1];
+            break;
+        }
+      }
     });
   }
 
@@ -39,10 +61,11 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigateByUrl('/login').then();
+    this.router.navigateByUrl('/account/login').then();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.userSubscription.unsubscribe();
+    this.navigationSubscription.unsubscribe();
   }
 }

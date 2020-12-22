@@ -13,6 +13,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Click on link",
         type = ExecutableComponentType.TECHNICAL,
         description = "Click on link with specified ${text}",
         parameterNames = {"text"}

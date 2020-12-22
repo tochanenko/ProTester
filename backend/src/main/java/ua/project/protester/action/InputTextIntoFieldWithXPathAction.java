@@ -13,6 +13,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "Input text into field by id",
         type = ExecutableComponentType.TECHNICAL,
         description = "Input ${text} into field with specified ${xpath}",
         parameterNames = {"text", "xpath"}

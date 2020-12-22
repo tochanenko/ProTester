@@ -12,6 +12,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
+        name = "UrlAction",
         type = ExecutableComponentType.TECHNICAL,
         description = "Performs get method on specified ${url}",
         parameterNames = {"url"}

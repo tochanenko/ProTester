@@ -33,7 +33,7 @@ public abstract class AbstractAction extends ExecutableComponent {
     public void execute(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         OffsetDateTime startDate = OffsetDateTime.now();
 
-        ActionResultDto actionResult = logic(params, context,driver, environment, okHttpClient);
+        ActionResultDto actionResult = logic(params, context, driver, environment, okHttpClient);
 
         actionResult.setEndDate(OffsetDateTime.now());
         actionResult.setStartDate(startDate);

@@ -54,7 +54,7 @@
       <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
       <mat-cell *matCellDef="let element" class="header">
         <ng-container *ngFor="let datasets of element.dataSetResponseList" >
-          <a [routerLink]="'/login'">{{datasets.name}}</a>
+          <a [routerLink]="'/projects-menu/datasets'">{{datasets.name}}</a>
         </ng-container>
       </mat-cell>
     </ng-container>

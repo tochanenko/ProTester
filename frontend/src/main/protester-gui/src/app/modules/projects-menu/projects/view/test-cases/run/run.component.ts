@@ -19,7 +19,6 @@ import {
   ValidationDataSetResponseModel,
   ValidationDataSetStatusModel
 } from '../../../../../../models/run-analyze/validation-data-set-response.model';
-import {Status} from 'tslint/lib/runner';
 import {ValidationComponent} from '../validation/validation.component';
 
 @Component({
@@ -110,22 +109,21 @@ export class RunComponent implements OnInit, OnDestroy {
       this.selection.deselect(testCase);
     } else {
 
-      let validationResult: ValidationDataSetResponseModel;
-
       this.testCaseService.validateTestCaseDataSet(testCase).subscribe(
-        result => validationResult = result,
+        validationResult => {
+          if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
+            this.openTestCaseDataSetErrorForm(validationResult, testCase);
+          } else {
+            if (testCase.name === 'shhshs' || testCase.name === 'testcase32') {
+              // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+
+              this.openSelectEnvironmentView(testCase);
+            }
+          }
+        },
         () => console.log('error')
       );
 
-      if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
-        this.openTestCaseDataSetErrorForm(validationResult);
-      } else {
-        // if (testCase.name === 'shhshs2' || testCase.name === 'testcase32') {
-        if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
-
-          this.openSelectEnvironmentView(testCase);
-        }
-      }
     }
   }
 
@@ -151,10 +149,18 @@ export class RunComponent implements OnInit, OnDestroy {
     this.selection.toggle(testCase);
   }
 
-  openTestCaseDataSetErrorForm(validationResult: ValidationDataSetResponseModel): void {
+  openTestCaseDataSetErrorForm(validationResult: ValidationDataSetResponseModel, testCase: TestCaseModel): void {
     const errorDialogRef = this.dialog.open(ValidationComponent, {
       data: {result: validationResult}
     });
+
+    this.subscription.add(
+      errorDialogRef.afterClosed().subscribe(
+        () => this.selection.deselect(testCase)
+      )
+    );
+
+    this.selection.toggle(testCase);
   }
 
   searchTestCases($event: KeyboardEvent): void {

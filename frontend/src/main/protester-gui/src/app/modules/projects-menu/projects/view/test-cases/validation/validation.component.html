@@ -1,18 +1,17 @@
 <div class="validation">
 
-  <h2 class="header">Can not run</h2>
-
   <mat-card-title>
-    <span class="header-title"> Can not run Test Case </span>
+    <span class="header-title" style="color: red"> Can not run Test Case</span>
   </mat-card-title>
 
   <mat-dialog-content class="mat-validation">
-
-    <p>DataSet<b>{{data.dataSetName}}</b> has missing parameters:</p>
-    <ul *ngFor="let i of data.missingParameters">
+    Missing parameters in DataSet <b>{{data.result.dataSetName}}</b>:
+    <ul *ngFor="let i of data.result.missingParameters">
       <li>
         {{i}}
       </li>
     </ul>
+    <a [routerLink]="" (click)="forwardToDataSetList()">Go to datasets to change input parameters </a>
   </mat-dialog-content>
+
 </div>

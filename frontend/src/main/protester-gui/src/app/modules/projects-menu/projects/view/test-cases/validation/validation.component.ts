@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ValidationDataSetResponseModel} from '../../../../../../models/run-analyze/validation-data-set-response.model';
 import {RunComponent} from '../run/run.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-validation',
@@ -11,10 +12,20 @@ import {RunComponent} from '../run/run.component';
 export class ValidationComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<RunComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: ValidationDataSetResponseModel) {
+              @Inject(MAT_DIALOG_DATA) public data: { result: ValidationDataSetResponseModel },
+              private router: Router) {
   }
 
   ngOnInit(): void {
   }
 
+  forwardToDataSetList(): void {
+    this.router.navigateByUrl('/projects-menu/datasets').then(
+      () => this.dialogRef.close()
+    );
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

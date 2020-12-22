@@ -76,6 +76,6 @@ export class TestCaseService {
 
 
   validateTestCaseDataSet(testCase: TestCaseModel): Observable<ValidationDataSetResponseModel> {
-    return this.http.post<ValidationDataSetResponseModel>(`/api/testCase/validate`, testCase, httpOptions);
+    return this.http.post<ValidationDataSetResponseModel>(`/api/test/validate`, testCase, httpOptions);
   }
 }

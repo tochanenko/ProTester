@@ -1,4 +1,4 @@
-package ua.project.protester.exception.executable;
+package ua.project.protester.exception.executable.scenario;
 
 import lombok.Getter;
 import ua.project.protester.response.LightTestCaseResponse;

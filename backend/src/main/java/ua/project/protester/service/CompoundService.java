@@ -7,6 +7,7 @@ import ua.project.protester.exception.executable.OuterComponentStepSaveException
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
+import ua.project.protester.exception.executable.compound.InnerCompoundEditException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.request.OuterComponentFilter;
@@ -26,6 +27,16 @@ public class CompoundService {
     public OuterComponent saveCompound(OuterComponentRepresentation compoundRequest) throws OuterComponentStepSaveException {
         OuterComponent newOuterComponent = compoundRequest.getOuterComponent();
         return outerComponentRepository.saveOuterComponent(newOuterComponent, true).orElse(null);
+    }
+
+    @Transactional
+    public OuterComponent updateCompound(int id, OuterComponentRepresentation compoundRepresentation) throws OuterComponentStepSaveException, InnerCompoundEditException {
+        List<LightOuterComponentResponse> outerComponents = outerComponentRepository.findOuterComponentsByInnerCompoundId(id);
+        if (!outerComponents.isEmpty()) {
+            throw new InnerCompoundEditException("Attempt to edit inner compound", outerComponents);
+        }
+        OuterComponent updatedCompound = compoundRepresentation.getOuterComponent();
+        return outerComponentRepository.updateOuterComponent(id, updatedCompound, true).orElse(null);
     }
 
     @Transactional

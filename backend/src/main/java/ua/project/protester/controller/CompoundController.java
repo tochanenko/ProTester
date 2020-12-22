@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
+import ua.project.protester.exception.executable.compound.InnerCompoundEditException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
@@ -21,6 +22,11 @@ public class CompoundController {
     @PostMapping
     public OuterComponent createCompound(@RequestBody OuterComponentRepresentation request) throws OuterComponentStepSaveException {
         return compoundService.saveCompound(request);
+    }
+
+    @PutMapping("/{id}")
+    public OuterComponent updateCompound(@RequestBody OuterComponentRepresentation request, @PathVariable int id) throws OuterComponentStepSaveException, InnerCompoundEditException {
+        return compoundService.updateCompound(id, request);
     }
 
     @GetMapping

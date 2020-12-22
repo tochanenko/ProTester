@@ -154,30 +154,7 @@ public class OuterComponentRepository {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public Optional<OuterComponent> updateTestScenario(int id, OuterComponent updatedTestScenario) throws OuterComponentStepSaveException {
-        int updatedRows = namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "updateTestScenario"),
-                new MapSqlParameterSource()
-                        .addValue("id", id)
-                        .addValue("name", updatedTestScenario.getName())
-                        .addValue("description", updatedTestScenario.getDescription()));
-
-        if (updatedRows == 0) {
-            return Optional.empty();
-        }
-
-        deleteOuterComponentSteps(id, false);
-        saveOuterComponentSteps(updatedTestScenario, id, false);
-        try {
-            return Optional.of(findOuterComponentById(id, false));
-        } catch (OuterComponentNotFoundException e) {
-            log.warn(e.getMessage());
-            return Optional.empty();
-        }
-    }
-
-    @Deprecated
-    private Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
+    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "updateCompound")
                 : PropertyExtractor.extract(env, "updateTestScenario");

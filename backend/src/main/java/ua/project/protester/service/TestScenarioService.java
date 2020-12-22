@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
-import ua.project.protester.exception.executable.UsedTestScenarioDeleteException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.repository.testCase.TestCaseRepository;
@@ -32,7 +32,7 @@ public class TestScenarioService {
     @Transactional
     public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
         OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
-        return outerComponentRepository.updateTestScenario(id, updatedTestScenario).orElse(null);
+        return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
     @Transactional

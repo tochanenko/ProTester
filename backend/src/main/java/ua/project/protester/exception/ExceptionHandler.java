@@ -10,9 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ua.project.protester.exception.executable.UsedTestScenarioDeleteException;
+import ua.project.protester.exception.executable.compound.InnerCompoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
-import ua.project.protester.exception.executable.compound.InnerCompoundDeleteException;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -178,8 +178,8 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(InnerCompoundDeleteException.class)
-    public ResponseEntity<?> handleInnerCompoundDeleteException(InnerCompoundDeleteException e) {
+    @org.springframework.web.bind.annotation.ExceptionHandler(InnerCompoundException.class)
+    public ResponseEntity<?> handleInnerCompoundDeleteException(InnerCompoundException e) {
         return new ResponseEntity<>(
                 Map.of(
                         "timestamp", OffsetDateTime.now(),

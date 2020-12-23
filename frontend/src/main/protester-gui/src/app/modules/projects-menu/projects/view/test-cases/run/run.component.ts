@@ -92,7 +92,7 @@ export class RunComponent implements OnInit, OnDestroy {
 
   loadEnvironments(): void {
     this.subscription.add(
-      this.testCaseService.loadEnvironments()
+      this.testCaseService.loadEnvironments(this.projectId)
         .subscribe(
           data => {
             this.environmentList = data;
@@ -193,6 +193,10 @@ export class RunComponent implements OnInit, OnDestroy {
         }, error => console.log('IN saveTestCaseResult - error')
       )
     );
+  }
+
+  showProjectEnvironments(): void {
+    this.router.navigate(['', this.projectId]).then();
   }
 
   ngOnDestroy(): void {

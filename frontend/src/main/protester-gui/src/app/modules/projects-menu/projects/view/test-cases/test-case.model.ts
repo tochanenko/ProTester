@@ -10,6 +10,6 @@ export class TestCaseModel {
   scenarioId: number;
   dataSetResponseList?: Array<DataSetResponse>;
   dataSetId?: Array<number>;
-
+  scenarioName?: string | Object;
   environment?: number;
 }

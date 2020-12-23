@@ -68,14 +68,14 @@ mat-card {
   margin-bottom: 2%;
 }
 
-.filter-button {
+.run-button {
   background: #FFFFFF;
   border: 1px solid rgba(92, 107, 192, 0.54);
   box-sizing: border-box;
   border-radius: 6px;
-  width: 12%;
+  width: 20%;
   height: 50px;
-  margin-top: 0.5%;
+  margin-top: 0.4%;
 }
 
 

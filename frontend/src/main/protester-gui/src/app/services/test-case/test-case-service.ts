@@ -66,8 +66,8 @@ export class TestCaseService {
     return this.http.get<boolean>(`/api/testCase/project/${projectId}/${testCaseId}`, httpOptions);
   }
 
-  loadEnvironments(): Observable<EnvironmentModel[]> {
-    return this.http.get<EnvironmentModel[]>('/api/environment', httpOptions);
+  loadEnvironments(id: number): Observable<EnvironmentModel[]> {
+    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${id}`, httpOptions);
   }
 
   findRunResultByID(id: number): Observable<RunResultModel> {

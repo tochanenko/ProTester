@@ -45,6 +45,11 @@ export class ListComponent implements OnInit, OnDestroy {
     this.subscription = this.testCaseService.getAll(this.projectId, this.testCaseFilter).subscribe(
       data => {
         this.dataSource = data.list;
+        this.dataSource.forEach(item => {
+          this.testScenarioService.getById(item.id).subscribe(test => {
+            item.scenarioName = test.name;
+          });
+        });
         this.testCasesCount = data.totalItems;
       },
       error => console.log('error in initDataSource')

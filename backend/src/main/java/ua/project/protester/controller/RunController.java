@@ -3,7 +3,7 @@ package ua.project.protester.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;

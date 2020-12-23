@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.TestCaseNotFoundException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.Step;

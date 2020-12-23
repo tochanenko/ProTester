@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.ActionWrapper;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.model.TestCaseWrapperResult;

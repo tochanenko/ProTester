@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.TestCaseNotFoundException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.service.testcase.TestCaseService;

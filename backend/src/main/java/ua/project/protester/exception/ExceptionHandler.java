@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
+import ua.project.protester.exception.executable.compound.InnerCompoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
 
 import java.time.LocalDateTime;

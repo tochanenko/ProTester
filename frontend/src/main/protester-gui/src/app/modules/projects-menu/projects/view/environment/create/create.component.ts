@@ -11,6 +11,7 @@ export class CreateComponent implements OnInit {
 
   envCreateForm: FormGroup;
   submitted = false;
+  hidePasswordField = true;
 
   constructor( public dialogRef: MatDialogRef<CreateComponent>,
                @Inject(MAT_DIALOG_DATA) public data: { projectId: number},

@@ -89,8 +89,7 @@ public class StartService {
 
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
-        Environment environment = environmentService.findById(testCaseResponse.getEnvironmentId())
-                .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+        Environment environment = checkSQLEnvironment(testCaseResponse);
         log.info("dataset{}", dataSet);
         try {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
@@ -192,5 +191,12 @@ public class StartService {
         validationResponse.setDataSetName(dataSet.getName());
 
         return validationResponse;
+    }
+
+    public ua.project.protester.model.Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
+        if (testCaseResponse.getEnvironmentId() == null) {
+            return new ua.project.protester.model.Environment();
+        }
+        return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
     }
 }

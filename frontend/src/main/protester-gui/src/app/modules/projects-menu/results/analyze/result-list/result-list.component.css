@@ -5,32 +5,32 @@
 .action-info {
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  width: 96%;
-  margin-left: 3%;
+  width: 93%;
+  margin-left: 4%;
   margin-top: 0.8%;
+  /*margin-right: 1%;*/
 }
 
 .action-failed-result {
   border: 2px solid #ff0000;
-  width: 96%;
-  margin-left: 2.8%;
+  width: 92.7%;
+  margin-left: 3.8%;
   margin-top: 0.8%;
 }
 
 .expansion-body {
-  background: #F2F2F2;
+  background: #eae8e8;
   box-shadow: none;
+  margin-right: 10px;
 }
 
 .test-case-title {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  display: flex;
 
   font-family: Roboto;
   font-style: normal;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 31px;
   line-height: 35px;
 
   color: rgba(0, 0, 0, 0.87);
@@ -38,10 +38,9 @@
 
 .test-case-info {
   display: flex;
-  margin-top: -1%;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  width: 99%;
+  width: 97%;
 }
 
 mat-expansion-panel-header {
@@ -58,7 +57,6 @@ mat-expansion-panel-header {
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
-  line-height: 26px;
   letter-spacing: 0.5px;
   color: rgba(0, 0, 0, 0.87)
 }
@@ -97,14 +95,71 @@ mat-expansion-panel-header {
   margin-right: 7px;
 }
 
-table, th , td {
-  padding-right: 80px;
+table, th, td {
   padding-bottom: 5px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
   letter-spacing: 0.5px;
-
   color: rgba(0, 0, 0, 0.87);
+  margin-right: 10px;
+}
+
+.sql-table, .parameters-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  display: block;
+  border: 1px solid #ddd;
+  width: 100%;
+  text-align: center;
+  overflow: auto;
+}
+
+.table-view {
+  display: flex;
+  width: 95%;
+}
+
+.sql-table-inner {
+  border-collapse: collapse;
+}
+
+.sql-tr-td, .parameters-tr-td {
+  padding: 8px;
+  text-align: left;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  left: 5px;
+  width: 0.1%;
+}
+
+.sql-tr-td-inner {
+  display: flex;
+  text-align: left;
+  margin-left: 5px;
+}
+
+.table-info {
+  width: 90%;
+}
+
+.column-name {
+  width: 20%;
+  min-width: 150px;
+}
+
+.second-column {
+  color: rgba(0, 0, 0, 0.6);
+  width: 80%;
+  padding-right: 10px;
+  padding-left: 0;
+}
+
+.desc-column {
+  display: flex;
+  width: 150px;
+}
+
+.desc-second {
+  width: 60%;
+  min-width: 200px;
+  color: rgba(0, 0, 0, 0.6);
 }

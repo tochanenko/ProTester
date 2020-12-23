@@ -116,7 +116,7 @@ public class ActionRepository {
     private void checkLogicReturningType(Class<? extends AbstractAction> actionClass, ExecutableComponentType declaredReturnType) throws IllegalActionLogicImplementation {
         try {
             Class<?> actualReturnTypeClass = actionClass
-                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, OkHttpClient.class)
+                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, ua.project.protester.model.Environment.class, OkHttpClient.class)
                     .getReturnType();
 
             switch (declaredReturnType) {

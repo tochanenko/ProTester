@@ -7,12 +7,12 @@
       <div class="action-list">
         <span *ngIf="node.status === 'PASSED'" class="material-icons passed">check_circle</span>
         <span *ngIf="node.status === 'FAILED'" class="material-icons-round failed">highlight_off</span>
-        <span *ngIf="node.status === 'NOT STARTED'" class="material-icons-round not_started">schedule</span>
-        <span *ngIf="node.status === 'IN PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
+        <span *ngIf="node.status === 'NOT STARTED'" class="material-icons-round not_started">remove_circle</span>
+        <span *ngIf="node.status === 'IN_PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
       </div>
 
       <div class="node_text">
-        {{node.actionName}}
+        {{node.action.name}}
       </div>
 
     </li>
@@ -35,11 +35,11 @@
           <span *ngIf="node.status === 'PASSED'" class="material-icons passed">check_circle</span>
           <span *ngIf="node.status === 'FAILED'" class="material-icons-round failed">highlight_off</span>
           <span *ngIf="node.status === 'NOT STARTED'" class="material-icons-round not_started">schedule</span>
-          <span *ngIf="node.status === 'IN PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
+          <span *ngIf="node.status === 'IN_PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
         </div>
 
         <div class="node_text">
-          {{node.name}}
+          {{node.testCase.name}}
         </div>
       </div>
 

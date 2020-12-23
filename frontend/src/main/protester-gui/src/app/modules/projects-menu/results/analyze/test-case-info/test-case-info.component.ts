@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActionResult, TestCaseResult} from '../result.model';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
+import {ActionResultModel, TestCaseResultModel} from '../../../../../models/run-analyze/result.model';
 
 @Component({
   selector: 'app-test-case-info',
@@ -10,17 +10,17 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 })
 export class TestCaseInfoComponent implements OnInit {
 
-  @Input() testCaseResult: TestCaseResult;
+  @Input() testCaseResult: TestCaseResultModel;
 
-  dataSource: MatTreeNestedDataSource<TestCaseResult>;
-  treeControl: NestedTreeControl<ActionResult, ActionResult>;
+  dataSource: MatTreeNestedDataSource<TestCaseResultModel>;
+  treeControl: NestedTreeControl<ActionResultModel, ActionResultModel>;
 
   constructor() {
   }
 
   ngOnInit(): void {
     this.treeControl = new NestedTreeControl<any>(node => node.innerResults);
-    this.dataSource = new MatTreeNestedDataSource<TestCaseResult>();
+    this.dataSource = new MatTreeNestedDataSource<TestCaseResultModel>();
     this.dataSource.data = [this.testCaseResult];
   }
 

@@ -3,12 +3,14 @@ package ua.project.protester.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class TestCaseResponse {
 
     private Long id;
@@ -24,4 +26,6 @@ public class TestCaseResponse {
     private Long scenarioId;
 
     private List<DataSetResponse> dataSetResponseList;
+
+
 }

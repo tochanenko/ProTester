@@ -28,4 +28,6 @@ public class TestCaseRequest {
 
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<Long> dataSetId = new ArrayList<>();
+
+    private Long environmentId;
 }

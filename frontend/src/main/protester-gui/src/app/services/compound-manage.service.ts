@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {Action} from "../models/action.model";
 import {OuterComponent} from "../models/outer.model";

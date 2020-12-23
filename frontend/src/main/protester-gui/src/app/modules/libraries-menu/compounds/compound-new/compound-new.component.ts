@@ -61,8 +61,8 @@ export class CreateComponent implements OnInit {
 
   createForm(): void {
     this.compoundCreateForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), Validators.maxLength(this.validatorsConfig.name.maxLength)]],
-      description: ['', [Validators.required, Validators.maxLength(this.validatorsConfig.description.maxLength)]]
+      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
+      description: ['', [Validators.required]]
     })
   }
 
@@ -128,7 +128,7 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    this.compoundCreateRequest['description'] = f.name.value;
+    this.compoundCreateRequest['description'] = f.description.value;
     this.compoundCreateRequest['name'] = f.name.value;
     this.compoundCreateRequest['steps'] = this.components.map(item => {
       const step: StepRepresentation = {
@@ -138,6 +138,8 @@ export class CreateComponent implements OnInit {
       }
       return step;
     });
+
+    console.log(this.compoundCreateRequest);
 
     this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();

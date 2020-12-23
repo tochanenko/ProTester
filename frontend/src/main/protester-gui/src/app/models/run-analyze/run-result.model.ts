@@ -1,4 +1,4 @@
-import {TestCaseWrapperResultModel} from '../../../../../models/run-analyze/wrapper.model';
+import {TestCaseWrapperResultModel} from './wrapper.model';
 
 export class RunResultModel {
 

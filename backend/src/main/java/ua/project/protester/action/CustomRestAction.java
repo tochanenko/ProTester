@@ -1,7 +1,10 @@
 package ua.project.protester.action;
 
-import okhttp3.*;
 import org.openqa.selenium.WebDriver;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.Environment;
@@ -9,7 +12,6 @@ import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Action(
@@ -21,37 +23,24 @@ import java.util.Map;
 public class CustomRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient httpClient) {
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
+        String requestBody = params.get("body");
         try {
-            String requestBody = params.get("body");
+            ResponseEntity<String> response = restTemplate.exchange(
+                    params.get("url"),
+                    HttpMethod.valueOf(params.get("method")),
+                    new HttpEntity<>(requestBody),
+                    String.class);
 
-            Request request = new Request.Builder()
-                    .url(params.get("url"))
-                    .method(
-                            params.get("method"),
-                            RequestBody.create(
-                                    MediaType.parse("application/json"),
-                                    requestBody))
-                    .build();
+            return new ActionResultRestDto(
+                    requestBody,
+                    response.getBody(),
+                    response.getStatusCodeValue());
 
-            try {
-                Response response = httpClient.newCall(request).execute();
-                ResponseBody body = response.body();
-                return new ActionResultRestDto(
-                        requestBody,
-                        body != null ? body.string() : "",
-                        response.code());
-            } catch (IOException e) {
-                return new ActionResultRestDto(
-                        new ActionExecutionException(e.getMessage()),
-                        requestBody,
-                        "",
-                        0);
-            }
         } catch (Exception e) {
             return new ActionResultRestDto(
                     new ActionExecutionException(e.getMessage()),
-                    params.get("body"),
+                    requestBody,
                     "",
                     0);
         }

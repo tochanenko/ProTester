@@ -3,7 +3,7 @@ import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/co
 import {TestCaseAnalyzeService} from '../../../../services/analyze/test-case-analyze.service';
 import {TestCaseInfoComponent} from './test-case-info/test-case-info.component';
 import {TestCaseService} from '../../../../services/test-case/test-case-service';
-import {WebsocketService} from '../../../../models/websocket.service';
+import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';

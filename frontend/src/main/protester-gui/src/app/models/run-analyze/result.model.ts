@@ -1,6 +1,6 @@
 import {ActionWrapperModel} from './wrapper.model';
 import {User} from '../user.model';
-import {TestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/test-case.model';
+import {TestCaseModel} from '../test-case/test-case.model';
 
 export class TestCaseResultModel {
   id: number;

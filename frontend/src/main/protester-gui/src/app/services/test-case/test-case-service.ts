@@ -2,15 +2,15 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {DataSetRequestResponse} from '../../models/data-set-request-response';
-import {TestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/test-case.model';
-import {TestCaseFilter} from '../../modules/projects-menu/projects/view/test-cases/test-case-filter';
-import {TestCaseResponse} from '../../modules/projects-menu/projects/view/test-cases/test-case-response';
+import {TestCaseModel} from '../../models/test-case/test-case.model';
+import {TestCaseFilter} from '../../models/test-case/test-case-filter';
+import {TestCaseResponse} from '../../models/test-case/test-case-response';
 
-import {EnvironmentModel} from '../../models/environment.model';
+import {EnvironmentModel} from '../../models/environment/environment.model';
 
 import {ValidationDataSetResponseModel} from '../../models/run-analyze/validation-data-set-response.model';
-import {RunResultModel} from '../../modules/projects-menu/projects/view/test-cases/run-result.model';
-import {RunTestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/run-test-case.model';
+import {RunResultModel} from '../../models/run-analyze/run-result.model';
+import {RunTestCaseModel} from '../../models/run-analyze/run-test-case.model';
 
 
 const httpOptions = {
@@ -66,8 +66,8 @@ export class TestCaseService {
     return this.http.get<boolean>(`/api/testCase/project/${projectId}/${testCaseId}`, httpOptions);
   }
 
-  loadEnvironments(): Observable<EnvironmentModel[]> {
-    return this.http.get<EnvironmentModel[]>('/api/environment', httpOptions);
+  loadEnvironments(id: number): Observable<EnvironmentModel[]> {
+    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${id}`, httpOptions);
   }
 
   findRunResultByID(id: number): Observable<RunResultModel> {

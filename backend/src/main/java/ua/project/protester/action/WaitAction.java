@@ -1,7 +1,7 @@
 package ua.project.protester.action;
 
-import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.Environment;
@@ -19,7 +19,7 @@ import java.util.Map;
 )
 public class WaitAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient httpClient) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
         try {
             Thread.sleep(Integer.parseInt(params.get("n")) * 1000);
             return new ActionResultTechnicalDto();

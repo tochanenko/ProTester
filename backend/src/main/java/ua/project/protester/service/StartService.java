@@ -1,7 +1,6 @@
 package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 public class StartService {
 
     private WebDriver webDriver;
+    private final RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
     private ModelMapper modelMapper;
@@ -59,8 +60,9 @@ public class StartService {
     private static int counter = 0;
 
     @Autowired
-    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
+    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
         this.webDriver = webDriver;
+        this.restTemplate = restTemplate;
         this.dataSetRepository = dataSetRepository;
         this.testScenarioService = testScenarioService;
         this.modelMapper = modelMapper;
@@ -85,13 +87,12 @@ public class StartService {
     @Transactional
     void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
 
-        OkHttpClient okHttpClient = new OkHttpClient();
         Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
         log.info("dataset{}", dataSet);
         try {
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, okHttpClient, getConsumer(testCaseResultId));
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {

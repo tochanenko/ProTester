@@ -70,7 +70,7 @@ CREATE TABLE actions (
 
 CREATE TABLE compounds (
     compound_id				SERIAL PRIMARY KEY,
-    compound_name			VARCHAR(64)	NOT NULL,
+    compound_name			TEXT    	NOT NULL,
     compound_description 	TEXT        NOT NULL
 );
 
@@ -93,7 +93,7 @@ CREATE TABLE libraries_storage (
 
 CREATE TABLE tests_scenarios (
     scenario_id 			SERIAL PRIMARY KEY,
-    scenario_name 			VARCHAR(64) NOT NULL,
+    scenario_name 			TEXT        NOT NULL,
     scenario_description 	TEXT        NOT NULL
 );
 
@@ -289,7 +289,9 @@ CREATE TABLE environment
     description VARCHAR(128) NOT NULL,
     username    VARCHAR(128) NOT NULL,
     password    VARCHAR(128) NOT NULL,
-    url         VARCHAR(128) NOT NULL
+    url         VARCHAR(128) NOT NULL,
+    project_id  INTEGER      NOT NULL,
+    CONSTRAINT environment_environment_id_fk FOREIGN KEY (project_id) REFERENCES projects (project_id)
 );
 
 

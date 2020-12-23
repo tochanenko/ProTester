@@ -8,7 +8,7 @@
       <div class="lib-title-container">
         <mat-label class="lib-name">Name:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
-          <input matInput type="text" id="name" name="name" formControlName="description" class="create-input"
+          <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
                  placeholder="Compound name...">
           <mat-error *ngIf="formControls.name.errors" class="invalid-input">
             <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
@@ -24,7 +24,7 @@
       <div class="lib-title-container">
         <mat-label class="lib-description">Description:</mat-label>
         <mat-form-field class="full-width-input" appearance="outline">
-              <textarea matInput type="text" id="description" name="description" formControlName="name"
+              <textarea matInput type="text" id="description" name="description" formControlName="description"
                         class="create-input" placeholder="Compound description..."></textarea>
           <mat-error *ngIf="formControls.description.errors" class="invalid-input">
             <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length

@@ -1,6 +1,7 @@
 package ua.project.protester.repository.testCase;
 
 import ua.project.protester.model.TestCase;
+import ua.project.protester.response.LightTestCaseResponse;
 import ua.project.protester.utils.Pagination;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface TestCaseRepository {
     Long getCountTestCase(Pagination pagination, Long projectId);
 
     Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId);
+
+    List<LightTestCaseResponse> findTestCasesByTestScenarioId(int id);
 }

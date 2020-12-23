@@ -14,6 +14,7 @@ import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -186,4 +187,23 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(InnerCompoundException.class)
+    public ResponseEntity<?> handleInnerCompoundDeleteException(InnerCompoundException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "outerComponents", e.getOuterComponents()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UsedTestScenarioDeleteException.class)
+    public ResponseEntity<?> handleUsedTestScenarioDeleteException(UsedTestScenarioDeleteException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "testCases", e.getTestCases()),
+                HttpStatus.BAD_REQUEST);
+    }
 }

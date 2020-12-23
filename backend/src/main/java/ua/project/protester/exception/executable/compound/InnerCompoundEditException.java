@@ -4,9 +4,9 @@ import ua.project.protester.response.LightOuterComponentResponse;
 
 import java.util.List;
 
-public class InnerCompoundDeleteException extends InnerCompoundException {
+public class InnerCompoundEditException extends InnerCompoundException {
 
-    public InnerCompoundDeleteException(String message, List<LightOuterComponentResponse> outerComponents) {
+    public InnerCompoundEditException(String message, List<LightOuterComponentResponse> outerComponents) {
         super(message, outerComponents);
     }
 }

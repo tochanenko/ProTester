@@ -2,8 +2,8 @@ package ua.project.protester.model.executable;
 
 import lombok.Getter;
 import lombok.ToString;
-import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.model.Environment;
@@ -30,10 +30,10 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         OffsetDateTime startDate = OffsetDateTime.now();
 
-        ActionResultDto actionResult = logic(params, context, driver, environment, okHttpClient);
+        ActionResultDto actionResult = logic(params, context, driver, environment, restTemplate);
 
         actionResult.setEndDate(OffsetDateTime.now());
         actionResult.setStartDate(startDate);
@@ -54,5 +54,5 @@ public abstract class AbstractAction extends ExecutableComponent {
         }
     }
 
-    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient okHttpClient);
+    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate);
 }

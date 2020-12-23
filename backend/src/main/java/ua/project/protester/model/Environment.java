@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -35,13 +35,13 @@ public class Environment {
         this.url = url;
     }
 
-    public NamedParameterJdbcTemplate getTemplate(Environment environment) {
+    public JdbcTemplate getTemplate() {
         DataSource dataSource = DataSourceBuilder
                 .create()
-                .url(environment.getUrl())
-                .username(environment.getUsername())
-                .password(environment.getPassword())
+                .url(this.getUrl())
+                .username(this.getUsername())
+                .password(this.getPassword())
                 .build();
-        return new NamedParameterJdbcTemplate(dataSource);
+        return new JdbcTemplate(dataSource);
     }
 }

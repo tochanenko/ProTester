@@ -2,7 +2,6 @@ package ua.project.protester.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import org.reflections.Reflections;
 import org.springframework.core.env.Environment;
@@ -10,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionImplementationNotFoundException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
@@ -116,7 +116,7 @@ public class ActionRepository {
     private void checkLogicReturningType(Class<? extends AbstractAction> actionClass, ExecutableComponentType declaredReturnType) throws IllegalActionLogicImplementation {
         try {
             Class<?> actualReturnTypeClass = actionClass
-                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, ua.project.protester.model.Environment.class, OkHttpClient.class)
+                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, ua.project.protester.model.Environment.class, RestTemplate.class)
                     .getReturnType();
 
             switch (declaredReturnType) {

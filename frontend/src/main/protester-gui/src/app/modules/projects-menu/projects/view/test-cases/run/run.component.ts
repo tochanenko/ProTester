@@ -114,11 +114,12 @@ export class RunComponent implements OnInit, OnDestroy {
           if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
             this.openTestCaseDataSetErrorForm(validationResult, testCase);
           } else {
-            if (testCase.name === 'shhshs' || testCase.name === 'testcase32') {
-              // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+            //if (testCase.name === 'shhshs' || testCase.name === 'testcase32') {
+            // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
 
-              this.openSelectEnvironmentView(testCase);
-            }
+            //this.openSelectEnvironmentView(testCase);
+            //}
+            this.selection.toggle(testCase);
           }
         },
         () => console.log('error')

@@ -30,16 +30,22 @@ DROP TABLE IF EXISTS action_result_rest CASCADE;
 DROP TABLE IF EXISTS action_result_sql CASCADE;
 DROP TABLE IF EXISTS sql_column CASCADE;
 DROP TABLE IF EXISTS sql_column_cell CASCADE;
+DROP TABLE IF EXISTS run_result_users CASCADE;
+DROP TABLE IF EXISTS test_case_wrapper_result CASCADE;
+DROP TABLE IF EXISTS action_wrapper CASCADE;
+DROP TABLE IF EXISTS environment CASCADE;
 
-CREATE TABLE roles (
+CREATE TABLE roles
+(
     role_id   SERIAL PRIMARY KEY,
     role_name VARCHAR(16) UNIQUE NOT NULL
 );
 
-CREATE TABLE users (
-    user_id			SERIAL PRIMARY KEY,
-    role_id			INTEGER			   NOT NULL,
-    user_username	VARCHAR(32) UNIQUE NOT NULL,
+CREATE TABLE users
+(
+    user_id            SERIAL PRIMARY KEY,
+    role_id            INTEGER               NOT NULL,
+    user_username      VARCHAR(32) UNIQUE    NOT NULL,
     user_password	VARCHAR(60) 		   NOT NULL,
     user_email 		VARCHAR(32) UNIQUE NOT NULL,
     user_active		BOOLEAN			   NOT NULL,
@@ -234,17 +240,56 @@ CREATE TABLE action_result_sql (
     CONSTRAINT action_result_sql_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
-CREATE TABLE sql_column (
+CREATE TABLE sql_column(
     sql_column_id SERIAL PRIMARY KEY,
     action_result_sql_id INTEGER NOT NULL,
     name VARCHAR(64) NOT NULL,
     CONSTRAINT sql_column_action_result_sql_id_fk FOREIGN KEY (action_result_sql_id) REFERENCES action_result_sql (action_result_sql_id) ON DELETE CASCADE
 );
 
-CREATE TABLE sql_column_cell (
-    sql_cell_id SERIAL PRIMARY KEY,
+CREATE TABLE sql_column_cell
+(
+    sql_cell_id   SERIAL PRIMARY KEY,
     sql_column_id INTEGER NOT NULL,
-    order_number INTEGER NOT NULL,
-    value VARCHAR(128),
+    order_number  INTEGER NOT NULL,
+    value         VARCHAR(128),
     CONSTRAINT sql_column_cell_sql_column_id_fk FOREIGN KEY (sql_column_id) REFERENCES sql_column (sql_column_id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE run_result_users
+(
+    run_id  SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL
+);
+
+CREATE TABLE test_case_wrapper_result
+(
+    case_wrapper_id  SERIAL PRIMARY KEY,
+    scenario_id      INTEGER NOT NULL,
+    run_result_id    INTEGER NOT NULL,
+    test_case_result INTEGER NOT NULL,
+    CONSTRAINT table_case_wrapper_result_tests_scenarios_scenario_id_fk FOREIGN KEY (scenario_id) REFERENCES tests_scenarios (scenario_id)
+);
+
+CREATE TABLE action_wrapper
+(
+    action_wrapper_id    SERIAL PRIMARY KEY,
+    test_case_wrapper_id INTEGER NOT NULL,
+    step_id              INTEGER NOT NULL,
+    CONSTRAINT action_wrapper_steps_step_id_fk FOREIGN KEY (step_id) REFERENCES steps (step_id),
+    CONSTRAINT action_wrapper_test_case_wrapper_result_case_wrapper_id_fk FOREIGN KEY (test_case_wrapper_id) REFERENCES test_case_wrapper_result (case_wrapper_id)
+
+);
+
+CREATE TABLE environment
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(128) NOT NULL,
+    description VARCHAR(128) NOT NULL,
+    username    VARCHAR(128) NOT NULL,
+    password    VARCHAR(128) NOT NULL,
+    url         VARCHAR(128) NOT NULL
+);
+
+

@@ -3,13 +3,13 @@ package ua.project.protester.service;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.DataSetNotFoundException;
+import ua.project.protester.exception.EnvironmentNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class StartService {
 
     private WebDriver webDriver;
-    private final RestTemplate restTemplate;
+    private  RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
     private ModelMapper modelMapper;
@@ -55,12 +55,11 @@ public class StartService {
     private UserService userService;
     private RunResultRepository runResultRepository;
     private SimpMessagingTemplate messagingTemplate;
-
-    private static List<TestCaseResponse> testCaseResponses = new ArrayList<>();
+    private List<TestCaseResponse> testCaseResponses;
+    private EnvironmentService environmentService;
     private static int counter = 0;
 
-    @Autowired
-    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
+    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
         this.webDriver = webDriver;
         this.restTemplate = restTemplate;
         this.dataSetRepository = dataSetRepository;
@@ -71,6 +70,7 @@ public class StartService {
         this.userService = userService;
         this.runResultRepository = runResultRepository;
         this.messagingTemplate = messagingTemplate;
+        this.environmentService = environmentService;
     }
 
     public void execute(Long id) throws TestScenarioNotFoundException {
@@ -87,9 +87,10 @@ public class StartService {
     @Transactional
     void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
 
-        Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
+        Environment environment = environmentService.findById(testCaseResponse.getEnvironmentId())
+                .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
         log.info("dataset{}", dataSet);
         try {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
@@ -126,7 +127,7 @@ public class StartService {
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
-        StartService.testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
+        testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
 
         return resultFromDb;
     }

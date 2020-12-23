@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PageEvent} from "@angular/material/paginator";
-import {TestScenario} from "../../../../../../models/test-scenario";
-import {Subscription} from "rxjs";
-import {TestCaseService} from "../../../../../../services/test-case/test-case-service";
-import {TestScenarioService} from "../../../../../../services/test-scenario/test-scenario-service";
-import {ActivatedRoute} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {TestCaseFilter} from "../test-case-filter";
-import {EditComponent} from "../edit/edit.component";
-import {CreateComponent} from "../create/create.component";
-import {TestCaseModel} from "../test-case.model";
+import {PageEvent} from '@angular/material/paginator';
+import {TestScenario} from '../../../../../../models/test-scenario';
+import {Subscription} from 'rxjs';
+import {TestCaseService} from '../../../../../../services/test-case/test-case-service';
+import {TestScenarioService} from '../../../../../../services/test-scenario/test-scenario-service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filter';
+import {EditComponent} from '../edit/edit.component';
+import {CreateComponent} from '../create/create.component';
+import {TestCaseModel} from '../../../../../../models/test-case/test-case.model';
 
 @Component({
   selector: 'app-list',
@@ -31,7 +31,8 @@ export class ListComponent implements OnInit, OnDestroy {
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
               private route: ActivatedRoute,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private router: Router) {
     route.params.subscribe(params => this.projectId = params[`id`]);
     console.log(`Project id in test-case-list ${this.projectId}`);
   }
@@ -80,9 +81,11 @@ export class ListComponent implements OnInit, OnDestroy {
       this.searchCases();
     });
   }
-  searchTestCases($event: KeyboardEvent):void {
+
+  searchTestCases($event: KeyboardEvent): void {
     this.searchCases();
   }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -93,5 +96,9 @@ export class ListComponent implements OnInit, OnDestroy {
     console.log(`deleted id ${id}`);
     this.testCaseService.deleteTestCase(id).subscribe();
     this.searchCases();
+  }
+
+  runTestCaseView(): void {
+    this.router.navigateByUrl(`/projects-menu/projects/${this.projectId}/test-cases/run`).then();
   }
 }

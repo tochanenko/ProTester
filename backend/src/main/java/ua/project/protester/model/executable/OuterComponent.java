@@ -3,10 +3,11 @@ package ua.project.protester.model.executable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.result.ActionResultDto;
 
 import java.util.HashMap;
@@ -62,24 +63,26 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, Map<String, String> context, Environment environment, WebDriver driver, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step : steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
                     context,
+                    environment,
                     driver,
-                    okHttpClient,
+                    restTemplate,
                     callback);
         }
     }
 
-    public void execute(Map<String, String> params, WebDriver driver, OkHttpClient okHttpClient, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, Environment environment, WebDriver driver, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         for (Step step : steps) {
             step.getComponent().execute(
                     fitInputParameters(params, step.getParameters()),
                     new HashMap<>(),
+                    environment,
                     driver,
-                    okHttpClient,
+                    restTemplate,
                     callback);
         }
     }

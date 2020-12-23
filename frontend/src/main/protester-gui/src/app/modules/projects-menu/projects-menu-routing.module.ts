@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {ViewComponent} from "./view/view.component";
 
 const routes: Routes = [
@@ -36,7 +36,14 @@ const routes: Routes = [
           breadcrumb: null
         },
         loadChildren: 'src/app/modules/projects-menu/test-scenario/test-scenario.module#TestScenarioModule'
-      }
+      },
+      {
+        path: 'results',
+        data: {
+          breadcrumb: null
+        },
+        loadChildren: 'src/app/modules/projects-menu/results/results.module#ResultsModule'
+      },
     ]
   }
 ];

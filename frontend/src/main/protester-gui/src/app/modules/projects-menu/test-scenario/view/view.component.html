@@ -7,22 +7,22 @@
     <div class="form">
       <div class="comp-title-container">
         <mat-label>Name:</mat-label>
-        <mat-label class="name-text"> {{scenario.description}} </mat-label>
+        <div class="name-text">
+          <ng-container *ngFor="let sub_string of scenario.name">
+            <div *ngIf="sub_string['input']">
+              <div class="description-input-disabled mat-elevation-z3">
+                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+              </div>
+            </div>
+            <div *ngIf="!sub_string['input']" class="description-text">
+              <span>{{sub_string['text']}}</span>
+            </div>
+          </ng-container>
+        </div>
       </div>
       <div class="comp-title-container">
         <mat-label>Description:</mat-label>
-        <div class="name-text">
-        <ng-container *ngFor="let sub_string of scenario.name">
-          <div *ngIf="sub_string['input']">
-            <div class="description-input-disabled mat-elevation-z3">
-                    <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-            </div>
-          </div>
-          <div *ngIf="!sub_string['input']" class="description-text">
-            <span>{{sub_string['text']}}</span>
-          </div>
-        </ng-container>
-        </div>
+        <mat-label class="name-text"> {{scenario.description}} </mat-label>
       </div>
       <div class="component-table">
         <div class="grid-header">

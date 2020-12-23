@@ -62,10 +62,6 @@ public class DataSetService {
                 .collect(Collectors.toList());
     }
 
-    public void connectDataSetWithTestScenario(Long dataSetId, Long testScenarioId) {
-
-    }
-
     @Transactional
     public Page<DataSetResponse> findAllDataSets(Pagination pagination) {
         log.info("IN findAllDataSet");

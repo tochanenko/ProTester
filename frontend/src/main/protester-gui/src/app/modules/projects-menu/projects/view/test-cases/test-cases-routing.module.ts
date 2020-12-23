@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import {ListComponent} from "./list/list.component";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ListComponent} from './list/list.component';
+import {RunComponent} from './run/run.component';
+
 
 const routes: Routes = [
   {
@@ -15,6 +17,13 @@ const routes: Routes = [
           breadcrumb: null
         },
         component: ListComponent
+      },
+      {
+        path: 'run',
+        data: {
+          breadcrumb: 'Run'
+        },
+        component: RunComponent
       }
     ]
   }

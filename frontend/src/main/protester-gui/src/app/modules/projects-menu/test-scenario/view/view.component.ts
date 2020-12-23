@@ -12,15 +12,6 @@ import {TestScenario} from "../../../../models/test-scenario";
 })
 
 export class ViewComponent implements OnInit {
-  validatorsConfig = {
-    name: {
-      minLength: 5,
-      maxLength: 15
-    },
-    description: {
-      maxLength: 200
-    }
-  }
 
   private subscription: Subscription;
   scenario_id: number;

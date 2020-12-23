@@ -13,19 +13,16 @@ import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {TestCaseAnalyzeModule} from './test-case-analyze/test-case-analyze.module';
 import {ScrollingModule} from "@angular/cdk/scrolling";
-import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.component';
-import {
-  MAT_BOTTOM_SHEET_DEFAULT_OPTIONS
-} from "@angular/material/bottom-sheet";
+import {BottomSheetComponent} from './components/bottom-sheet/bottom-sheet.component';
+import {MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from "@angular/material/bottom-sheet";
 import {MatTabsModule} from "@angular/material/tabs";
 import {SharedModule} from "./modules/shared/shared.module";
 import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
 import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
-import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import {BreadcrumbComponent} from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
-import { TestScenarioModule } from "./modules/projects-menu/test-scenario/test-scenario.module";
+import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-scenario.module";
 
 
 @NgModule({
@@ -46,7 +43,6 @@ import { TestScenarioModule } from "./modules/projects-menu/test-scenario/test-s
     MaterialModule,
     NgxMatSelectSearchModule,
     MatCheckboxModule,
-    TestCaseAnalyzeModule,
     NgxMatSelectSearchModule,
     ScrollingModule,
     MatTabsModule,

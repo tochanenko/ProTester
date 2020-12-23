@@ -1,5 +1,5 @@
 import {Component, Inject, Injectable, OnInit} from '@angular/core';
-import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from "@angular/material/bottom-sheet";
+import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {Action} from "../../models/action.model";
 import {LibraryBottomsheetInteractionService} from "../../services/library/library-bottomsheet-interaction.service";
 import {OuterComponent} from "../../models/outer.model";

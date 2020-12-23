@@ -1,14 +1,15 @@
 package ua.project.protester.action;
 
-import okhttp3.*;
 import org.openqa.selenium.WebDriver;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Action(
@@ -20,28 +21,14 @@ import java.util.Map;
 public class GetRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, OkHttpClient okHttpClient) {
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
         try {
-            OkHttpClient client = new OkHttpClient();
+            ResponseEntity<String> response = restTemplate.getForEntity(params.get("url"), String.class);
+            return new ActionResultRestDto(
+                    "",
+                    response.getBody(),
+                    response.getStatusCodeValue());
 
-            Request request = new Request.Builder()
-                    .url(params.get("url"))
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                ResponseBody body = response.body();
-                return new ActionResultRestDto(
-                        "",
-                        body != null ? body.string() : "",
-                        response.code());
-            } catch (IOException e) {
-                return new ActionResultRestDto(
-                        new ActionExecutionException(e.getMessage()),
-                        "",
-                        "",
-                        0);
-            }
         } catch (Exception e) {
             return new ActionResultRestDto(
                     new ActionExecutionException(e.getMessage()),

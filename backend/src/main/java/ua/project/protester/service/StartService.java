@@ -1,7 +1,6 @@
 package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +87,6 @@ public class StartService {
     @Transactional
     void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
 
-        OkHttpClient okHttpClient = new OkHttpClient();
         Environment environment = new Environment();
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);

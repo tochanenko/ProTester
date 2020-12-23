@@ -114,17 +114,16 @@ export class RunComponent implements OnInit, OnDestroy {
           if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
             this.openTestCaseDataSetErrorForm(validationResult, testCase);
           } else {
-            //if (testCase.name === 'shhshs' || testCase.name === 'testcase32') {
-            // if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
-
-            //this.openSelectEnvironmentView(testCase);
-            //}
-            this.selection.toggle(testCase);
+            if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
+              this.openSelectEnvironmentView(testCase);
+            } else {
+              this.selection.select(testCase);
+            }
           }
         },
         () => console.log('error')
       );
-
+      this.selection.toggle(testCase);
     }
   }
 
@@ -139,15 +138,15 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       updateDialogRef.afterClosed().subscribe(result => {
 
-          if (result === undefined) {
-            this.selection.deselect(testCase);
-          }
+        if (result === undefined) {
+          this.selection.deselect(testCase);
+        } else {
           testCase.environment = result;
+          this.selection.select(testCase);
+        }
         }
       )
     );
-
-    this.selection.toggle(testCase);
   }
 
   openTestCaseDataSetErrorForm(validationResult: ValidationDataSetResponseModel, testCase: TestCaseModel): void {
@@ -181,6 +180,7 @@ export class RunComponent implements OnInit, OnDestroy {
     this.runTestCaseModel.testCaseResponseList = this.selection.selected;
     this.runTestCaseModel.userId = this.storageService.getUser.id;
 
+    console.log(JSON.stringify(this.runTestCaseModel.testCaseResponseList));
     if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }

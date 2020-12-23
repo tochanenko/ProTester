@@ -1,19 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {TestCaseModel} from '../test-case.model';
+import {TestCaseModel} from '../../../../../../models/test-case/test-case.model';
 import {PageEvent} from '@angular/material/paginator';
-import {TestCaseFilter} from '../test-case-filter';
+import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filter';
 import {SelectionModel} from '@angular/cdk/collections';
-import {RunTestCaseModel} from '../run-test-case.model';
+import {RunTestCaseModel} from '../../../../../../models/run-analyze/run-test-case.model';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SelectEnvComponent} from '../select-env/select-env.component';
-import {EnvironmentModel} from '../../../../../../models/environment.model';
+import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
 import {TestScenario} from '../../../../../../models/test-scenario';
 import {TestCaseService} from '../../../../../../services/test-case/test-case-service';
 import {TestScenarioService} from '../../../../../../services/test-scenario/test-scenario-service';
 import {MatDialog} from '@angular/material/dialog';
 import {StorageService} from '../../../../../../services/auth/storage.service';
-import {TestCaseRunAnalyzeService} from '../../../../../../services/test-case/run-analyze/test-case-run-analyze.service';
 import {EnvironmentService} from '../../../../../../services/environment/environment.service';
 import {
   ValidationDataSetResponseModel,
@@ -48,8 +47,7 @@ export class RunComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private environmentService: EnvironmentService,
               public dialog: MatDialog,
-              private storageService: StorageService,
-              private runAnalyzeService: TestCaseRunAnalyzeService) {
+              private storageService: StorageService) {
     route.params.subscribe(params => this.projectId = params[`id`]);
   }
 
@@ -92,7 +90,7 @@ export class RunComponent implements OnInit, OnDestroy {
 
   loadEnvironments(): void {
     this.subscription.add(
-      this.testCaseService.loadEnvironments(this.projectId)
+      this.environmentService.findAll(this.projectId)
         .subscribe(
           data => {
             this.environmentList = data;
@@ -138,12 +136,12 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       updateDialogRef.afterClosed().subscribe(result => {
 
-        if (result === undefined) {
-          this.selection.deselect(testCase);
-        } else {
-          testCase.environment = result;
-          this.selection.select(testCase);
-        }
+          if (result === undefined) {
+            this.selection.deselect(testCase);
+          } else {
+            testCase.environment = result;
+            this.selection.select(testCase);
+          }
         }
       )
     );
@@ -196,7 +194,7 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   showProjectEnvironments(): void {
-    this.router.navigate(['', this.projectId]).then();
+    this.router.navigateByUrl(`projects-menu/projects/${this.projectId}/environment`).then();
   }
 
   ngOnDestroy(): void {

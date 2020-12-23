@@ -45,7 +45,8 @@ export class CreateComponent implements OnInit {
       url: [null, Validators.compose([
         Validators.minLength(4),
         Validators.maxLength(50)])
-      ]
+      ],
+      projectId: []
     });
   }
 
@@ -61,7 +62,8 @@ export class CreateComponent implements OnInit {
       description: this.f.description.value,
       username: this.f.username.value,
       password: this.f.password.value,
-      url: this.f.url.value
+      url: this.f.url.value,
+      projectId: this.data.projectId
     };
 
     this.dialogRef.close(envCreateResponse);

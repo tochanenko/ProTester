@@ -5,4 +5,5 @@ export class EnvironmentModel {
   username: string;
   password: string;
   url: string;
+  projectId: number;
 }

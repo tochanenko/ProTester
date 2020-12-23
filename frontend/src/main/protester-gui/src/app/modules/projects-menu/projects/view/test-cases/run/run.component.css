@@ -5,7 +5,7 @@ table {
 .test-case-run {
   height: 100%;
   width: 90%;
-  margin: 0 auto;
+  margin: 50px auto;
 }
 
 mat-card {

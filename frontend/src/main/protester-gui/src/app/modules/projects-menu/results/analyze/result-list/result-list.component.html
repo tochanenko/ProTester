@@ -40,7 +40,7 @@
               <span *ngIf="item.status === 'NOT STARTED'" class="material-icons-round not_started">remove_circle</span>
               <span *ngIf="item.status === 'IN_PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
 
-              {{item.action.name}}
+              {{item.action.description}}
 
             </div>
 
@@ -58,8 +58,8 @@
 
           <table class="table-info">
             <tr>
-              <td class="column-name">Description</td>
-              <td class="second-column">{{item.action.description}}</td>
+              <td class="column-name">Name</td>
+              <td class="second-column">{{item.action.name}}</td>
             </tr>
             <tr *ngIf="item.startDate">
               <td class="column-name">Start date</td>

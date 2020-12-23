@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {EnvironmentModel} from '../../../../../../models/environment.model';
+import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
 
 @Component({
   selector: 'app-edit',
@@ -53,7 +53,8 @@ export class EditComponent implements OnInit {
         Validators.required,
         Validators.minLength(4),
         Validators.maxLength(50)])
-      ]
+      ],
+      projectId: []
     });
   }
 
@@ -70,7 +71,8 @@ export class EditComponent implements OnInit {
       description: this.f.description.value,
       username: this.f.username.value,
       password: this.f.password.value,
-      url: this.f.url.value
+      url: this.f.url.value,
+      projectId: this.data.environment.projectId
     };
 
     this.dialogRef.close(envUpdateResponse);

@@ -1,4 +1,4 @@
-import {DataSetResponse} from "../../../../../models/data-set-response";
+import {DataSetResponse} from "../data-set-response";
 
 
 export class TestCaseModel {

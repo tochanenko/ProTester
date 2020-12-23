@@ -32,7 +32,7 @@
 
     <ng-container matColumnDef="PASSWORD">
       <mat-header-cell *matHeaderCellDef class="header">PASSWORD</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.password}}</mat-cell>
+      <mat-cell *matCellDef="let element">********</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="URL">
@@ -69,7 +69,7 @@
   </mat-table>
   <mat-paginator class="header"
                  [pageSizeOptions]="pageSizeOptions"
-                 [length]="projectsCount"
+                 [length]="environmentsCount"
                  [pageSize]="environmentFilter.pageSize"
                  (page)="pageEvent = $event; onPaginateChange($event)">
 

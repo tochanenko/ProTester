@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EnvironmentModel} from '../../../../../../models/environment.model';
+import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
 import {PageEvent} from '@angular/material/paginator';
 import {Subscription} from 'rxjs';
-import {EnvironmentService} from '../../../../../../services/environment.service';
-import {Router} from '@angular/router';
+import {EnvironmentService} from '../../../../../../services/environment/environment.service';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
-import {EnvironmentFilterModel} from '../environment-filter.model';
+import {EnvironmentFilterModel} from '../../../../../../models/environment/environment-filter.model';
 
 @Component({
   selector: 'app-list',
@@ -18,18 +18,19 @@ export class ListComponent implements OnInit, OnDestroy {
 
   dataSource: EnvironmentModel[];
   pageEvent: PageEvent;
+  projectId: number;
 
-  environmentFilter: EnvironmentFilterModel;
-  projectsCount = 10;
+  environmentFilter: EnvironmentFilterModel = new EnvironmentFilterModel();
+  environmentsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'USERNAME', 'PASSWORD', 'URL', 'CONF'];
-  subscription: Subscription;
+  subscription: Subscription = new Subscription();
 
   constructor(private environmentService: EnvironmentService,
               private router: Router,
-              public dialog: MatDialog) {
-    this.subscription = new Subscription();
-    this.environmentFilter = new EnvironmentFilterModel();
+              public dialog: MatDialog,
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(params => this.projectId = params[`id`]);
   }
 
   ngOnInit(): void {
@@ -50,9 +51,11 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchEnvironments(): void {
-    this.subscription.add(this.environmentService.findAll().subscribe(
+    this.subscription.add(this.environmentService.findAllPaginated(this.projectId, this.environmentFilter).subscribe(
       data => {
-        this.dataSource = data;
+        this.dataSource = data.list;
+        this.environmentsCount = data.totalItems;
+        console.log('------' + JSON.stringify(data.list));
       },
       error => console.log('error in initDataSource')
     ));
@@ -85,7 +88,7 @@ export class ListComponent implements OnInit, OnDestroy {
     const createDialogRef = this.dialog.open(CreateComponent, {
       height: 'auto',
       width: '50%',
-      data: {}
+      data: {projectId: this.projectId}
     });
 
     this.subscription.add(

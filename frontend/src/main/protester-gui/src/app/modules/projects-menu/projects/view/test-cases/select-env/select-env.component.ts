@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {EnvironmentModel} from '../../../../../../models/environment.model';
+import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
 
 @Component({
   selector: 'app-select-env',

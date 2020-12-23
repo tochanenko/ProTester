@@ -24,6 +24,8 @@ import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource("classpath:queries/test-case-result.properties")
 @Repository
@@ -56,6 +58,21 @@ public class TestCaseResultRepository {
                         .addValue("id", id)
                         .addValue("statusId", statusRepository.getIdByLabel(status))
                         .addValue("endDate", endDate));
+    }
+
+    @Transactional
+    public List<TestCaseResultDto> findAllByProjectId(Long projectId) {
+        List<Integer> list = namedParameterJdbcTemplate.queryForList(
+                PropertyExtractor.extract(env, "findTestCaseResultsByProjectId"),
+                new MapSqlParameterSource()
+                        .addValue("projectId", projectId), Integer.class);
+        return list.stream().map(id -> {
+            try {
+                return findById(id);
+            } catch (TestCaseResultNotFoundException e) {
+                return null;
+            }
+        }).collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

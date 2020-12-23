@@ -3,10 +3,6 @@ package ua.project.protester.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.sql.DataSource;
 
 @Data
 @NoArgsConstructor
@@ -33,15 +29,5 @@ public class Environment {
         this.username = username;
         this.password = password;
         this.url = url;
-    }
-
-    public JdbcTemplate getTemplate() {
-        DataSource dataSource = DataSourceBuilder
-                .create()
-                .url(this.getUrl())
-                .username(this.getUsername())
-                .password(this.getPassword())
-                .build();
-        return new JdbcTemplate(dataSource);
     }
 }

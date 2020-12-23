@@ -36,14 +36,13 @@ public class Environment {
         this.url = url;
     }
 
-    public JdbcTemplate getTemplate(Environment environment) {
+    public JdbcTemplate getTemplate() {
         DataSource dataSource = DataSourceBuilder
                 .create()
-                .url(environment.getUrl())
-                .username(environment.getUsername())
-                .password(environment.getPassword())
+                .url(this.getUrl())
+                .username(this.getUsername())
+                .password(this.getPassword())
                 .build();
-        JdbcTemplate template = new JdbcTemplate(dataSource);
-        return template;
+        return new JdbcTemplate(dataSource);
     }
 }

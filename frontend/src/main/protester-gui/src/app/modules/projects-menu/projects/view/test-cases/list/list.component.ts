@@ -6,10 +6,10 @@ import {TestCaseService} from '../../../../../../services/test-case/test-case-se
 import {TestScenarioService} from '../../../../../../services/test-scenario/test-scenario-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {TestCaseFilter} from '../test-case-filter';
+import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filter';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
-import {TestCaseModel} from '../test-case.model';
+import {TestCaseModel} from '../../../../../../models/test-case/test-case.model';
 
 @Component({
   selector: 'app-list',

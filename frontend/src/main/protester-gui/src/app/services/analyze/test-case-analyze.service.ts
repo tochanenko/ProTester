@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {TestCaseModel} from '../../modules/projects-menu/projects/view/test-cases/test-case.model';
+import {TestCaseModel} from '../../models/test-case/test-case.model';
 import {TestCaseResultModel} from '../../models/run-analyze/result.model';
 
 const httpOptions = {

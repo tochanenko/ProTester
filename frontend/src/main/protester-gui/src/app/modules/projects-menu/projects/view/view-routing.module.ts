@@ -19,6 +19,13 @@ const routes: Routes = [
           breadcrumb: null
         },
         loadChildren: 'src/app/modules/projects-menu/projects/view/test-cases/test-cases.module#TestCasesModule'
+      },
+      {
+        path: 'environment',
+        data: {
+          breadcrumb: null
+        },
+        loadChildren: 'src/app/modules/projects-menu/projects/view/environment/environment.module#EnvironmentModule'
       }
     ]
   }

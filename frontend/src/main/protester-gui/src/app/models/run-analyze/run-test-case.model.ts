@@ -1,4 +1,4 @@
-import {TestCaseModel} from './test-case.model';
+import {TestCaseModel} from '../test-case/test-case.model';
 
 export class RunTestCaseModel {
   id?: number;

@@ -30,15 +30,14 @@ public class EnvironmentRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         log.info("saving {} environment with description {}", environment.getName(), environment.getDescription());
 
-        String saveEnvironment = "INSERT INTO environment(name, description, password, username, url)"
-                + "VALUES (:name, :description, :password, :username, :url)";
         namedParameterJdbcTemplate.update(
-                saveEnvironment,
+                PropertyExtractor.extract(env, "saveEnvironment"),
                 new MapSqlParameterSource()
                         .addValue("name", environment.getName())
                         .addValue("description", environment.getDescription())
                         .addValue("password", environment.getPassword())
                         .addValue("username", environment.getUsername())
+                        .addValue("projectId", environment.getProjectId())
                         .addValue("url", environment.getUrl()),
                 keyHolder,
                 new String[]{"id"});
@@ -50,15 +49,13 @@ public class EnvironmentRepository {
 
     public ua.project.protester.model.Environment updateEnvironment(ua.project.protester.model.Environment environment) {
 
-        String updateEnvironment = "UPDATE environment"
-                + "  SET name = :name,description = :description,password = :password,"
-                + "username = :username, url = :url WHERE id = :id";
         namedParameterJdbcTemplate.update(
-                updateEnvironment,
+                PropertyExtractor.extract(env, "updateEnvironment"),
                 new MapSqlParameterSource()
                         .addValue("id", environment.getId())
                         .addValue("name", environment.getName())
                         .addValue("description", environment.getDescription())
+                        .addValue("projectId", environment.getProjectId())
                         .addValue("password", environment.getPassword())
                         .addValue("username", environment.getUsername())
                         .addValue("url", environment.getUrl()));
@@ -68,21 +65,16 @@ public class EnvironmentRepository {
     }
 
     public void deleteEnvironmentById(Long id) {
-        String delete = "DELETE FROM environment WHERE id = :id";
         namedParameterJdbcTemplate.update(
-                //PropertyExtractor.extract(env, "deleteEnvironment"),
-                delete,
+                PropertyExtractor.extract(env, "deleteEnvironment"),
                 new MapSqlParameterSource()
                         .addValue("id", id));
     }
 
     public Optional<ua.project.protester.model.Environment> findEnvironmentById(Long id) {
         try {
-            String findById = " SELECT e.id, e.name, e.description, e.password, e.username, e.url "
-                    + "FROM environment e WHERE id = :id";
             ua.project.protester.model.Environment environment = namedParameterJdbcTemplate.queryForObject(
-                    //PropertyExtractor.extract(env, "findEnvironmentById"),
-                    findById,
+                    PropertyExtractor.extract(env, "findEnvironmentById"),
                     new MapSqlParameterSource().addValue("id", id),
                     (rs, rowNum) -> new ua.project.protester.model.Environment(
                             rs.getLong("id"),
@@ -90,7 +82,8 @@ public class EnvironmentRepository {
                             rs.getString("description"),
                             rs.getString("username"),
                             rs.getString("password"),
-                            rs.getString("url"))
+                            rs.getString("url"),
+                            rs.getLong("project_id"))
             );
             if (environment == null) {
                 return Optional.empty();
@@ -103,19 +96,22 @@ public class EnvironmentRepository {
         }
     }
 
-    public List<ua.project.protester.model.Environment> findAll() {
+    public List<ua.project.protester.model.Environment> findAll(Long projectId) {
         try {
 
-            String findAll = "SELECT * FROM ENVIRONMENT";
+            MapSqlParameterSource namedParams = new MapSqlParameterSource();
+            namedParams.addValue("projectId", projectId);
             List<ua.project.protester.model.Environment> environment = namedParameterJdbcTemplate.query(
-                    findAll,
+                    PropertyExtractor.extract(env, "findAllEnvironment"),
+                    namedParams,
                     (rs, rowNum) -> new ua.project.protester.model.Environment(
                             rs.getLong("id"),
                             rs.getString("name"),
                             rs.getString("description"),
                             rs.getString("username"),
                             rs.getString("password"),
-                            rs.getString("url"))
+                            rs.getString("url"),
+                            rs.getLong("project_id"))
             );
             if (environment.size() == 0) {
                 return Collections.emptyList();
@@ -127,16 +123,17 @@ public class EnvironmentRepository {
         }
     }
 
-    public List<ua.project.protester.model.Environment> findAll(Pagination pagination) {
+    public List<ua.project.protester.model.Environment> findAll(Pagination pagination, Long projectId) {
         System.out.println("IN REPO  " + pagination.getSearchField());
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("pageSize", pagination.getPageSize());
         namedParams.addValue("offset", pagination.getOffset());
+        namedParams.addValue("projectId", projectId);
         namedParams.addValue("environmentName", pagination.getSearchField() + "%");
 
         try {
             List<ua.project.protester.model.Environment> environmentList = namedParameterJdbcTemplate.query(
-                    PropertyExtractor.extract(env, "findAllPaginated"),
+                    PropertyExtractor.extract(env, "findAllEnvironmentPaginated"),
                     namedParams,
                     (rs, rowNum) -> new ua.project.protester.model.Environment(
                             rs.getLong("id"),
@@ -144,7 +141,8 @@ public class EnvironmentRepository {
                             rs.getString("description"),
                             rs.getString("username"),
                             rs.getString("password"),
-                            rs.getString("url"))
+                            rs.getString("url"),
+                            rs.getLong("project_id"))
             );
             if (environmentList.size() == 0) {
                 return Collections.emptyList();
@@ -156,10 +154,10 @@ public class EnvironmentRepository {
         }
     }
 
-    public Long count(Pagination pagination) {
+    public Long count(Pagination pagination, Long projectId) {
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("environmentName", pagination.getSearchField() + "%");
-
+        namedParams.addValue("projectId", projectId);
         return namedParameterJdbcTemplate.queryForObject(PropertyExtractor.extract(env, "countEnvironment"),
                 namedParams, Long.class);
     }

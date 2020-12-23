@@ -1,5 +1,6 @@
 package ua.project.protester.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Environment {
     private Long id;
 
@@ -22,6 +24,7 @@ public class Environment {
 
     private String url;
 
+    private Long projectId;
 
     public Environment(Long id, String name, String description, String username, String password, String url) {
         this.id = id;

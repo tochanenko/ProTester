@@ -208,4 +208,14 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                         "testCases", e.getTestCases()),
                 HttpStatus.BAD_REQUEST);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(EnvironmentNotFoundException.class)
+    public ResponseEntity<?> environmentNotFoundException(EnvironmentNotFoundException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "environmentId", e.getEnvironmentId()),
+                HttpStatus.NOT_FOUND);
+    }
 }

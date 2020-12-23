@@ -1,15 +1,18 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentStepSaveException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
 import ua.project.protester.service.TestScenarioService;
 import ua.project.protester.utils.Page;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/test-scenarios")
@@ -41,7 +44,7 @@ public class TestScenarioController {
     }
 
     @DeleteMapping("/{id}")
-    public OuterComponent deleteTestScenario(@PathVariable int id) {
+    public OuterComponent deleteTestScenario(@PathVariable int id) throws UsedTestScenarioDeleteException {
         return testScenarioService.deleteTestScenarioById(id);
     }
 }

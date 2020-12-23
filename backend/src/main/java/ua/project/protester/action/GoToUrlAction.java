@@ -1,8 +1,8 @@
 package ua.project.protester.action;
 
-import okhttp3.OkHttpClient;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.model.Environment;
@@ -13,14 +13,14 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Get action by url ${url}",
+        name = "Go to url ${url}",
         type = ExecutableComponentType.TECHNICAL,
         description = "Performs get method on specified url",
         parameterNames = {"url"}
 )
 public class GoToUrlAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, OkHttpClient httpClient) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
 
         try {
             System.out.println("RESULT  " + params.get("url"));

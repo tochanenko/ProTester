@@ -122,6 +122,7 @@ export class CreateComponent implements OnInit {
     const f = this.formControls;
 
     if (this.scenarioCreateForm.invalid) {
+      console.error(this.scenarioCreateForm, "VAlIDATION ERROR");
       return;
     }
 
@@ -140,8 +141,10 @@ export class CreateComponent implements OnInit {
       }
       return step;
     });
-
-    this.scenarioService.create(this.scenarioCreateRequest).subscribe(() => {
+    console.log("SUBMIT");
+    console.log(this.scenarioCreateRequest);
+    this.scenarioService.create(this.scenarioCreateRequest).subscribe((data) => {
+        console.log(data, "CREATED");
         this.router.navigateByUrl('/projects-menu/scenarios').then();
       },
       () => {

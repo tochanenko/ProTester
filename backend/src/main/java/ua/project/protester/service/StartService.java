@@ -14,7 +14,12 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.*;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.RunResult;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.TestCase;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.ActionWrapper;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -38,7 +43,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@SuppressWarnings("PMD.UnusedImports")
 public class StartService {
 
     private WebDriver webDriver;

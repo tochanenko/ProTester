@@ -66,7 +66,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                 <mat-form-field class="description-input">
                   <mat-label> {{sub_string.text}} </mat-label>
@@ -110,7 +110,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title color="#5C6BC0">
           <div class="description-container">
-            <ng-container *ngFor="let sub_string of component.component.description">
+            <ng-container *ngFor="let sub_string of component.component.name">
               <div *ngIf="sub_string.input">
                 <mat-form-field
                   *ngIf="checkIfParamInterpolated(component.parameters[sub_string.text]) && formControls[parent.id + '-' + cleanParam(component.parameters[sub_string.text])]; else printParams"

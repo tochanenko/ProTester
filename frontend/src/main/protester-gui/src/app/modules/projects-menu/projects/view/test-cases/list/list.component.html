@@ -7,6 +7,12 @@
       Create
     </button>
 
+    <button mat-icon-button class="run-button" (click)="runTestCaseView()">
+      <span class="material-icons run">play_circle_filled</span>
+      Run
+    </button>
+
+
     <mat-form-field appearance="outline">
       <mat-label>Search test cases</mat-label>
       <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="testCaseFilter.testCaseName"
@@ -43,19 +49,23 @@
     </ng-container>
 
     <ng-container matColumnDef="EDIT">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> EDIT </mat-header-cell>
-      <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
-                                                   color="primary" (click)="openUpdateDialog(element.id)">
-        <mat-icon>edit</mat-icon>
-      </button> </mat-cell>
+      <mat-header-cell *matHeaderCellDef> EDIT</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Click to Edit" class="iconbutton"
+                color="primary" (click)="openUpdateDialog(element.id)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="DELETE">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> DELETE </mat-header-cell>
-      <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Delete" class="iconbutton"
-                                                   color="primary" (click)="deleteCase(element.id)">
-        <mat-icon>delete</mat-icon>
-      </button> </mat-cell>
+      <mat-header-cell *matHeaderCellDef> DELETE</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Click to Delete" class="iconbutton"
+                color="primary" (click)="deleteCase(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -23,6 +23,7 @@ import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.response.LightOuterComponentResponse;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.util.*;
@@ -153,30 +154,7 @@ public class OuterComponentRepository {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public Optional<OuterComponent> updateTestScenario(int id, OuterComponent updatedTestScenario) throws OuterComponentStepSaveException {
-        int updatedRows = namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "updateTestScenario"),
-                new MapSqlParameterSource()
-                        .addValue("id", id)
-                        .addValue("name", updatedTestScenario.getName())
-                        .addValue("description", updatedTestScenario.getDescription()));
-
-        if (updatedRows == 0) {
-            return Optional.empty();
-        }
-
-        deleteOuterComponentSteps(id, false);
-        saveOuterComponentSteps(updatedTestScenario, id, false);
-        try {
-            return Optional.of(findOuterComponentById(id, false));
-        } catch (OuterComponentNotFoundException e) {
-            log.warn(e.getMessage());
-            return Optional.empty();
-        }
-    }
-
-    @Deprecated
-    private Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
+    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "updateCompound")
                 : PropertyExtractor.extract(env, "updateTestScenario");
@@ -201,14 +179,14 @@ public class OuterComponentRepository {
         }
     }
 
-    public boolean compoundWithIdIsInnerComponent(int id) {
+    public List<LightOuterComponentResponse> findOuterComponentsByInnerCompoundId(int id) {
         try {
-            return null != namedParameterJdbcTemplate.queryForObject(
-                    PropertyExtractor.extract(env, "findInnerCompoundIdByInnerCompoundId"),
+            return namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findOuterComponentsByInnerCompoundId"),
                     new MapSqlParameterSource().addValue("id", id),
-                    Integer.class);
+                    new BeanPropertyRowMapper<>(LightOuterComponentResponse.class));
         } catch (DataAccessException e) {
-            return false;
+            return Collections.emptyList();
         }
     }
 

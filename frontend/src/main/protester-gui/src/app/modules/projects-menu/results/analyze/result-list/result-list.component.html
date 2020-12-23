@@ -1,0 +1,130 @@
+<mat-accordion class="expansion-body" *ngIf="testCaseResult">
+  <mat-expansion-panel (opened)="panelOpenState = true"
+                       (closed)="panelOpenState = false" [expanded]="true" class="expansion-body">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="test-case-title">
+        {{testCaseResult.testCase.name}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-card class="test-case-info">
+      <mat-card-content>
+
+        <table class="table-info">
+          <tr>
+            <td class="desc-column"> Description</td>
+            <td class="desc-second">{{testCaseResult.testCase.description}}</td>
+          </tr>
+          <tr>
+            <td class="desc-column"> Start Date</td>
+            <td class="desc-second">{{testCaseResult.startDate | date:'medium' }}</td>
+          </tr>
+          <tr>
+            <td class="desc-column" *ngIf="testCaseResult.endDate"> End Date</td>
+            <td class="desc-second">{{testCaseResult.endDate | date:'medium'}}</td>
+          </tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngFor="let item of testCaseResult.innerResults">
+      <mat-card class="action-info" [ngClass]="{'action-failed-result':item.status === 'FAILED'}">
+
+        <mat-card-title>
+          <div class="action-header">
+
+            <div class="action-name">
+
+              <span *ngIf="item.status === 'PASSED'" class="material-icons passed">check_circle</span>
+              <span *ngIf="item.status === 'FAILED'" class="material-icons-round failed">highlight_off</span>
+              <span *ngIf="item.status === 'NOT STARTED'" class="material-icons-round not_started">remove_circle</span>
+              <span *ngIf="item.status === 'IN_PROGRESS'" class="material-icons in_progress">play_circle_filled</span>
+
+              {{item.action.name}}
+
+            </div>
+
+            <mat-chip-list aria-label="Action Type">
+              <mat-chip color="warn" selected *ngIf="item.action.type === 'REST'">REST</mat-chip>
+              <mat-chip color="primary" selected *ngIf="item.action.type === 'SQL'">SQL</mat-chip>
+              <mat-chip color="warn" selected *ngIf="item.action.type === 'TECHNICAL'">TECHNICAL</mat-chip>
+              <mat-chip color="primary" selected *ngIf="item.action.type === 'UI'">UI</mat-chip>
+            </mat-chip-list>
+
+          </div>
+        </mat-card-title>
+
+        <mat-card-content>
+
+          <table class="table-info">
+            <tr>
+              <td class="column-name">Description</td>
+              <td class="second-column">{{item.action.description}}</td>
+            </tr>
+            <tr *ngIf="item.startDate">
+              <td class="column-name">Start date</td>
+              <td class="second-column">{{item.startDate | date:'medium'}}</td>
+            </tr>
+            <tr *ngIf="item.endDate">
+              <td class="column-name">End date</td>
+              <td class="second-column">{{item.endDate | date:'medium'}}</td>
+            </tr>
+            <tr *ngIf="item.action.type === 'REST' && item.request">
+              <td class="column-name"> Request</td>
+              <td class="second-column">{{item.request}}</td>
+            </tr>
+            <tr *ngIf="item.action.type === 'REST' && item.response">
+              <td class="column-name"> Response</td>
+              <td class="second-column">{{item.response}}</td>
+            </tr>
+            <tr *ngIf="item.action.type === 'REST' && item.statusCode">
+              <td class="column-name"> Code</td>
+              <td class="second-column">{{item.statusCode}}</td>
+            </tr>
+          </table>
+
+          <div class="table-view" *ngIf="item.inputParameters">
+            <p class="column-name"> Parameters </p>
+            <table class="parameters-table">
+              <tr>
+                <th class="parameters-tr-td">name</th>
+                <th class="parameters-tr-td">value</th>
+              </tr>
+              <tr class="parameters-tr-td" *ngFor="let i of item.inputParameters | keyvalue">
+                <td class="parameters-tr-td">{{ i.key }}</td>
+                <td class="parameters-tr-td">{{ i.value }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns.length > 0">
+            <p class="column-name"> Output </p>
+            <table class="sql-table">
+              <tr>
+                <th class="sql-tr-td" *ngFor="let header of item.columns">{{ header.name }}</th>
+              </tr>
+              <tr>
+                <td *ngFor="let i of item.columns">
+                  <table>
+                    <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <tr>
+            <td class="column-name" *ngIf="item.message">Message</td>
+            <td class="second-column">{{item.message}}</td>
+          </tr>
+
+        </mat-card-content>
+
+      </mat-card>
+    </div>
+
+  </mat-expansion-panel>
+
+</mat-accordion>
+
+<br>

@@ -51,7 +51,7 @@ export class ViewComponent implements OnInit {
 
 
   getIdFromParams(): void {
-    this.subscription = this.activateRoute.queryParams.subscribe(params=>this.compound_id=params['id']);
+    this.subscription = this.activateRoute.params.subscribe(params => this.compound_id=params['id']);
   }
 
   getCompoundById(id: number): void {
@@ -67,7 +67,7 @@ export class ViewComponent implements OnInit {
         this.recursiveStepParsing(compound.steps, mappingParams, parentParams);
       }
 
-      compound.description = this.parseDescription(compound.description.toString());
+      compound.name = this.parseDescription(compound.name.toString());
       this.compound = compound;
       this.componentCtx.components = compound.steps;
     })
@@ -118,7 +118,7 @@ export class ViewComponent implements OnInit {
   recursiveStepParsing(steps, mappingParams, parentParams) {
     steps.forEach(item => {
       let clonedMappingParams = Object.assign({}, mappingParams);
-      item.component.description = this.parseDescription(item.component.description);
+      item.component.name = this.parseDescription(item.component.name);
       if (Object.keys(item.parameters).length > 0) {
         for (let [key, value] of Object.entries(item.parameters)) {
           let cleanedParam = this.cleanParam(value.toString());

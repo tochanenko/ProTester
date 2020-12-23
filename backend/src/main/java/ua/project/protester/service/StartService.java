@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@SuppressWarnings("PMD.UnusedImports")
 public class StartService {
 
     private WebDriver webDriver;

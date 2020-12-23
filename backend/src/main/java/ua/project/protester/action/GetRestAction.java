@@ -1,6 +1,7 @@
 package ua.project.protester.action;
 
 import org.openqa.selenium.WebDriver;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
@@ -23,10 +24,14 @@ public class GetRestAction extends AbstractAction {
     @Override
     protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(params.get("url"), String.class);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    params.get("url"),
+                    HttpMethod.GET,
+                    null,
+                    String.class);
             return new ActionResultRestDto(
                     "",
-                    response.getBody(),
+                    response.getBody() != null ? response.getBody() : "",
                     response.getStatusCodeValue());
 
         } catch (Exception e) {

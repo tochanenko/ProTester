@@ -1,6 +1,7 @@
 package ua.project.protester.service.testcase;
 
 import ua.project.protester.exception.TestCaseNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.utils.Page;
@@ -17,4 +18,7 @@ public interface TestCaseService {
     TestCaseResponse findById(Long id) throws TestCaseNotFoundException;
 
     Page<TestCaseResponse> findAllProjectTestCases(Pagination pagination, Long projectId);
+
+    boolean findSqlActionsInTestCaseByProjectIdAndTestCaseId(Long projectId, Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException;
+
 }

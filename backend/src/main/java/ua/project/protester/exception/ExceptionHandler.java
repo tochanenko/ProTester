@@ -10,9 +10,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.exception.executable.compound.InnerCompoundException;
 import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
-import ua.project.protester.exception.executable.action.ActionNotFoundException;
+import ua.project.protester.exception.result.RunResultNotFoundException;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -178,6 +179,16 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(RunResultNotFoundException.class)
+    public ResponseEntity<Object> handleRunResultNotFoundException(
+            TestCaseNotFoundException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Run result not found!");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(InnerCompoundException.class)
     public ResponseEntity<?> handleInnerCompoundDeleteException(InnerCompoundException e) {
         return new ResponseEntity<>(
@@ -196,5 +207,15 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                         "message", e.getMessage(),
                         "testCases", e.getTestCases()),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(EnvironmentNotFoundException.class)
+    public ResponseEntity<?> environmentNotFoundException(EnvironmentNotFoundException e) {
+        return new ResponseEntity<>(
+                Map.of(
+                        "timestamp", OffsetDateTime.now(),
+                        "message", e.getMessage(),
+                        "environmentId", e.getEnvironmentId()),
+                HttpStatus.NOT_FOUND);
     }
 }

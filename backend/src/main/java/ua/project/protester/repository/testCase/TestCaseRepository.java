@@ -21,5 +21,7 @@ public interface TestCaseRepository {
 
     Long getCountTestCase(Pagination pagination, Long projectId);
 
+    Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId);
+
     List<LightTestCaseResponse> findTestCasesByTestScenarioId(int id);
 }

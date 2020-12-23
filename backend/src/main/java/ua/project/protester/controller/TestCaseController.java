@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.TestCaseNotFoundException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.request.TestCaseRequest;
 import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.service.testcase.TestCaseService;
@@ -49,6 +50,14 @@ public class TestCaseController {
         Pagination pagination = new Pagination(pageSize, pageNumber, testCaseName);
 
         return testCaseService.findAllProjectTestCases(pagination, projectId);
+    }
+
+
+    @GetMapping("/project/{projectId}/{testCaseId}")
+    public boolean findAllProjectTestCases(@PathVariable Long projectId,
+                                                          @PathVariable Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
+
+        return testCaseService.findSqlActionsInTestCaseByProjectIdAndTestCaseId(projectId, testCaseId);
     }
 
 }

@@ -3,6 +3,8 @@ package ua.project.protester.service;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StartService {
 
-    private WebDriver webDriver;
     private  RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
@@ -59,8 +60,7 @@ public class StartService {
     private EnvironmentService environmentService;
     private static int counter = 0;
 
-    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
-        this.webDriver = webDriver;
+    public StartService(RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
         this.restTemplate = restTemplate;
         this.dataSetRepository = dataSetRepository;
         this.testScenarioService = testScenarioService;
@@ -75,18 +75,25 @@ public class StartService {
 
     public void execute(Long id) throws TestScenarioNotFoundException {
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--headless");
+        options.addArguments("--lang=en");
+        WebDriver driver = new ChromeDriver(options);
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
           for (int i = 0; i < testCaseResponses.size(); i++) {
-            runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId());
+            runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
         }
+          driver.quit();
         log.info("testCaseResponses are {}", testCaseResponses);
         testCaseResponses.clear();
     }
 
     @Transactional
-    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
-
+    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
         Environment environment = checkSQLEnvironment(testCaseResponse);
@@ -136,6 +143,7 @@ public class StartService {
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
+                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);

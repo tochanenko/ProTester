@@ -45,7 +45,7 @@ export class ListComponent implements OnInit, OnDestroy {
       data => {
         this.dataSource = data.list;
         this.dataSource.forEach(item => {
-          this.testScenarioService.getById(item.id).subscribe(test => {
+          this.testScenarioService.getById(item.scenarioId).subscribe(test => {
             item.scenarioName = test.name;
           });
         });

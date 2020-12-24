@@ -1,0 +1,150 @@
+<div class="library-new-form">
+  <mat-card class="card">
+    <mat-card-title>
+      <span class="material-icons chrome_reader_mode">chrome_reader_mode</span>
+      <span class="header-title"> create new compound </span>
+    </mat-card-title>
+    <form (ngSubmit)="onSubmit()" [formGroup]="compoundUpdateForm">
+      <div class="lib-title-container">
+        <mat-label class="lib-name">Name:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+          <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
+                 placeholder="Compound name...">
+          <mat-error *ngIf="formControls.name.errors" class="invalid-input">
+            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
+              - {{validatorsConfig.name.maxLength}} symbols
+            </mat-error>
+            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length
+              - {{validatorsConfig.name.minLength}} symbols
+            </mat-error>
+            <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="lib-title-container">
+        <mat-label class="lib-description">Description:</mat-label>
+        <mat-form-field class="full-width-input" appearance="outline">
+              <textarea matInput type="text" id="description" name="description" formControlName="description"
+                        class="create-input" placeholder="Compound description..."></textarea>
+          <mat-error *ngIf="formControls.description.errors" class="invalid-input">
+            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length
+              - {{validatorsConfig.description.maxLength}} symbols
+            </mat-error>
+            <mat-error *ngIf="formControls.description.errors.required">Description is required</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="component-table">
+        <div class="grid-header">
+          <p>ACTIONS & COMPOUNDS</p>
+        </div>
+        <div class="content">
+          <div class="compound-tile-inner actions-tile">
+            <div *ngIf="components.length == 0" class="tile-label-wrapper">
+              <mat-label class="tile-label"> Add actions or compounds</mat-label>
+            </div>
+            <div class="component-container">
+              <ng-container *ngTemplateOutlet="expansionListOuter; context: componentCtx"></ng-container>
+            </div>
+            <button type="button" mat-icon-button (click)="openBottomSheet()">
+              <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button mat-raised-button class="button-flex-container">
+        <p class="button-text">SAVE</p>
+      </button>
+    </form>
+  </mat-card>
+</div>
+<ng-template #expansionListOuter let-components="components">
+  <mat-accordion *ngIf="components.length > 0">
+    <mat-expansion-panel [disabled]="component.component.type === 'COMPOUND' ? clickInput : true"
+                         (click)="clickInput=false" hideToggle
+                         *ngFor="let component of components"
+                         [formGroup]="compoundUpdateForm">
+      <mat-expansion-panel-header>
+        <mat-panel-title color="#5C6BC0">
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.name">
+              <div *ngIf="sub_string.input">
+                <mat-form-field class="description-input">
+                  <mat-label> {{sub_string.text}} </mat-label>
+                  <input matInput (click)="clickInput=true" type="text" [id]="component.id + '-' + sub_string.text"
+                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}"
+                         [formControlName]="component.id + '-' + sub_string.text"
+                         [(ngModel)]="component.parameters[sub_string.text]">
+                </mat-form-field>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+              <p class="compound-label-text">Compound</p>
+            </div>
+            <button type="button" mat-icon-button (click)="deleteComponentFromArray(components, component.id)">
+              <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
+            </button>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="component.component['steps']">
+        <ng-container
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: component}"></ng-container>
+      </ng-container>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</ng-template>
+
+<ng-template #expansionListInner let-array="array" let-parent="parent">
+  <mat-accordion *ngIf="array.length > 0">
+    <mat-expansion-panel [disabled]="component.component.type === 'COMPOUND' ? clickInput : true"
+                         (click)="clickInput=false" hideToggle
+                         *ngFor="let component of array"
+                         [formGroup]="compoundUpdateForm">
+      <mat-expansion-panel-header>
+        <mat-panel-title color="#5C6BC0">
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.name">
+              <div *ngIf="sub_string.input">
+                <mat-form-field
+                  *ngIf="checkIfParamInterpolated(component.parameters[sub_string.text]) && formControls[parent.id + '-' + getKeyByValue(parent.parameters, component.parameters[sub_string.text])]; else printParams"
+                  class="description-input">
+                  <mat-label> {{sub_string.text}} </mat-label>
+                  <input matInput type="text" (click)="clickInput=true" [id]="parent.id + '-' + cleanParam(component.parameters[sub_string.text])"
+                         [name]="component.id + '-' + sub_string.text" placeholder="Enter {{sub_string.text}}"
+                         [formControlName]="parent.id + '-' + getKeyByValue(parent.parameters, component.parameters[sub_string.text])"
+                         [(ngModel)]="parent.parameters[getKeyByValue(parent.parameters, component.parameters[sub_string.text])]">
+                </mat-form-field>
+                <ng-template #printParams>
+                  <div class="description-input-disabled mat-elevation-z6">
+                    <span class="description-input-disabled-span"> {{sub_string.text}}
+                      : {{component.parameters[sub_string.text]}} </span>
+                  </div>
+                </ng-template>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z4">
+              <p class="compound-label-text">Compound</p>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-container *ngIf="component.component['steps']">
+        <ng-container
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: parent}"></ng-container>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</ng-template>

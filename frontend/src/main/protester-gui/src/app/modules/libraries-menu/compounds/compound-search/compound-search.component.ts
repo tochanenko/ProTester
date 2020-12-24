@@ -50,6 +50,12 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  goToEdit(id): void {
+    if (id) {
+      this.router.navigate([`libraries-menu/compounds/${id}/edit`]).then();
+    }
+  }
+
   getLibrariesCount(): void {
     this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
       this.librariesCount = data["totalItems"];

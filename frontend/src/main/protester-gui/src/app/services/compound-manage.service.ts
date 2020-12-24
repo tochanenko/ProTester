@@ -43,6 +43,10 @@ export class CompoundManageService {
     return this.http.post('api/compounds', compound, httpOptions);
   }
 
+  updateCompound(id, compound): Observable<any> {
+    return this.http.put(`api/compounds/${id}`, compound, httpOptions);
+  }
+
   deleteCompound(compound_id): Observable<any> {
     return this.http.delete(`api/compounds/${compound_id}`, httpOptions);
   }

@@ -75,8 +75,6 @@ public class StartService {
 
     public void execute(Long id) throws TestScenarioNotFoundException {
 
-        System.setProperty("webdriver.chrome.driver", "webdriver\\chromedriver.exe");
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");

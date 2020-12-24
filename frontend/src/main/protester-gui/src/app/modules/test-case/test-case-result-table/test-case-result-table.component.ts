@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TestCaseResultService} from "../../../services/test-case-result.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-test-case-result-table',
@@ -9,14 +10,15 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class TestCaseResultTableComponent implements OnInit {
 
-  displayedColumns = ['caseName', 'user', 'status', 'start', 'finish', 'actions'];
+  displayedColumns = ['caseName', 'user', 'status', 'start', 'finish'];
   dataSource = [];
   projectId = -1;
 
   constructor(
     private testCaseResultService: TestCaseResultService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public datePipe: DatePipe
   ) {
   }
 
@@ -25,20 +27,22 @@ export class TestCaseResultTableComponent implements OnInit {
       params => {
         console.log(params);
         this.projectId = params['id'];
+        this.projectId = 1;
         this.testCaseResultService.getForProject(this.projectId).subscribe(
           results => {
             let testCaseResults = [];
-            for (let result in results) {
+            results.forEach(result => {
+              console.log(result);
               testCaseResults.push({
+                startDate: this.datePipe.transform(result['startDate'], 'short'),
+                endDate: this.datePipe.transform(result['endDate'], 'short'),
                 caseId: result['id'],
                 caseName: result['testCase']['name'],
                 userId: result['user']['id'],
                 userName: result['user']['username'],
-                status: result['status'],
-                startDate: result['startDate'],
-                endDate: result['endDate']
-              });
-            }
+                status: result['status']
+              })
+            });
             this.dataSource = testCaseResults;
           }
         );

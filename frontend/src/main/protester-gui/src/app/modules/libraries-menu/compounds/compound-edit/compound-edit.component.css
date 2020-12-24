@@ -205,8 +205,8 @@ mat-error {
 
 .panel-buttons-block {
   display: flex;
+  justify-self: flex-end;
   align-items: center;
-  margin-right: 3%;
 }
 
 .arrow_downward {
@@ -253,6 +253,17 @@ mat-error {
   margin-right: 10px;
   align-items: center;
   width: auto;
+}
+
+.change-order-arrows {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+
+.shift-arrow {
+  size: 24px;
+  font-size: 24px;
 }
 
 .add_circle_outline {

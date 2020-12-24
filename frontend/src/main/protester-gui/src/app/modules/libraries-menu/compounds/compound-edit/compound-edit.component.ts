@@ -8,6 +8,7 @@ import {Step} from "../../../../models/step.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {StepRepresentation} from "../../../../models/StepRepresentation";
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-compound-edit',
@@ -72,6 +73,10 @@ export class CompoundEditComponent implements OnInit {
     })
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.components, event.previousIndex, event.currentIndex);
+  }
+
   getIdFromParams(): void {
     this.subscription = this.activateRoute.params.subscribe(params => this.compound_id=params['id']);
   }
@@ -110,6 +115,16 @@ export class CompoundEditComponent implements OnInit {
 
   getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
+  }
+
+  shiftComponentUp(component_id) {
+    let shifted_component = this.components.splice(component_id, 1);
+    this.components.splice(component_id - 1, 0, shifted_component[0]);
+  }
+
+  shiftComponentDown(component_id) {
+    let shifted_component = this.components.splice(component_id, 1);
+    this.components.splice(component_id + 1, 0, shifted_component[0]);
   }
 
   onFilterKeyboard(event) {

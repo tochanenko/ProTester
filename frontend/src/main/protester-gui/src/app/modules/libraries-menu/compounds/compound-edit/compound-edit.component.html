@@ -89,6 +89,14 @@
             <button type="button" mat-icon-button (click)="deleteComponentFromArray(components, component.id)">
               <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
             </button>
+            <div class="change-order-arrows">
+              <button type="button" mat-icon-button *ngIf="components.indexOf(component) > 0" (click)="clickInput=true; shiftComponentUp(components.indexOf(component))">
+                <mat-icon class="material-icons add_circle_outline shift-arrow">arrow_circle_up</mat-icon>
+              </button>
+              <button type="button" mat-icon-button *ngIf="components.indexOf(component) < components.length - 1" (click)="clickInput=true; shiftComponentDown(components.indexOf(component))">
+                <mat-icon class="material-icons add_circle_outline shift-arrow">arrow_circle_down</mat-icon>
+              </button>
+            </div>
           </div>
         </mat-panel-title>
       </mat-expansion-panel-header>

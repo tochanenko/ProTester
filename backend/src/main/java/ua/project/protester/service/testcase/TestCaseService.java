@@ -1,5 +1,6 @@
 package ua.project.protester.service.testcase;
 
+import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.exception.TestCaseNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.request.TestCaseRequest;
@@ -9,7 +10,7 @@ import ua.project.protester.utils.Pagination;
 
 public interface TestCaseService {
 
-    TestCaseResponse create(TestCaseRequest testCaseRequest);
+    TestCaseResponse create(TestCaseRequest testCaseRequest) throws TestCaseCreateException;
 
     TestCaseResponse update(TestCaseRequest testCaseRequest);
 

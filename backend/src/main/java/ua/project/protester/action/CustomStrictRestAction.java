@@ -35,14 +35,14 @@ public class CustomStrictRestAction  extends AbstractAction {
             if (response.getStatusCodeValue() < 400) {
                 return new ActionResultRestDto(
                         requestBody,
-                        response.getBody(),
+                        response.getBody() != null ? response.getBody() : "",
                         response.getStatusCodeValue());
             }
 
             return new ActionResultRestDto(
                     new ActionExecutionException("Response status code is " + response.getStatusCodeValue()),
                     requestBody,
-                    response.getBody(),
+                    response.getBody() != null ? response.getBody() : "",
                     response.getStatusCodeValue());
 
         } catch (Exception e) {

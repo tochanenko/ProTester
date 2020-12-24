@@ -92,7 +92,7 @@ export class ListComponent extends Unsubscribe implements OnInit {
 
     deleteDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.searchDataset();
-    })
+    });
   }
 
   private searchDataset(): void {

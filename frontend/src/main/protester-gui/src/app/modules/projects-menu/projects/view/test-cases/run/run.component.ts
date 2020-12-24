@@ -139,7 +139,7 @@ export class RunComponent implements OnInit, OnDestroy {
           if (result === undefined) {
             this.selection.deselect(testCase);
           } else {
-            testCase.environment = result;
+            testCase.environmentId = result;
             this.selection.select(testCase);
           }
         }

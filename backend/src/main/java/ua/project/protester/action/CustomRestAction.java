@@ -31,7 +31,6 @@ public class CustomRestAction extends AbstractAction {
                     HttpMethod.valueOf(params.get("method")),
                     new HttpEntity<>(requestBody),
                     String.class);
-
             return new ActionResultRestDto(
                     requestBody,
                     response.getBody() != null ? response.getBody() : "",

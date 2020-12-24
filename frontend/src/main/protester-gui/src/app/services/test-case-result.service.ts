@@ -24,14 +24,4 @@ export class TestCaseResultService {
   getForProject(id: any): Observable<any> {
     return this.http.get('/api/test-case-results/project/' + id, httpOptions);
   }
-
-
-  /*
-    test_case_result_id SERIAL PRIMARY KEY,
-    user_id INTEGER,
-    test_case_id INTEGER,
-    status_id INTEGER NOT NULL,
-    start_date TIMESTAMPTZ NOT NULL,
-    end_date TIMESTAMPTZ,
-   */
 }

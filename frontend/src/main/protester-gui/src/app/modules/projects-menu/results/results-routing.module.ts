@@ -10,12 +10,17 @@ const routes: Routes = [
     },
     children: [
       {
+        path: '',
+        redirectTo: '/projects-menu',
+        pathMatch: 'full'
+      },
+      {
         path: ':id',
         data: {
           breadcrumb: null
         },
         component: AnalyzeComponent
-      },
+      }
     ]
   }
 ];

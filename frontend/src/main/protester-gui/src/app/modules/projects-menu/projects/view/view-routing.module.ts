@@ -31,7 +31,7 @@ const routes: Routes = [
       {
         path: 'results',
         data: {
-          breadcrumb: 'results'
+          breadcrumb: 'Results'
         },
         component: TestCaseResultTableComponent
       }

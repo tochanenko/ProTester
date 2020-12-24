@@ -1,5 +1,6 @@
 package ua.project.protester.repository.testCase;
 
+import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.response.LightTestCaseResponse;
 import ua.project.protester.utils.Pagination;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 public interface TestCaseRepository {
 
-    TestCase create(TestCase testCase, List<Long> dataSet);
+    TestCase create(TestCase testCase, List<Long> dataSet) throws TestCaseCreateException;
 
     TestCase update(TestCase testCase, List<Long> dataSet);
 

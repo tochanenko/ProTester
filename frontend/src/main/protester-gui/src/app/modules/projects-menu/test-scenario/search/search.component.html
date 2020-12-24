@@ -19,7 +19,18 @@
     <mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="NAME">
         <mat-header-cell *matHeaderCellDef class="header"> NAME</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        <mat-cell *matCellDef="let element">
+          <ng-container *ngFor="let sub_string of element.name">
+            <div *ngIf="sub_string['input']">
+              <div class="description-input-disabled mat-elevation-z3">
+                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+              </div>
+            </div>
+            <div *ngIf="!sub_string['input']" class="description-text">
+              <span>{{sub_string['text']}}</span>
+            </div>
+          </ng-container>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="DESCRIPTION">

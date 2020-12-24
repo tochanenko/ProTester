@@ -44,6 +44,8 @@ export class SearchComponent implements OnInit {
   searchByFilter(): void {
     this.subscription = this.compoundService.getAllCompoundsWithFilter(this.compoundFilter).subscribe(data => {
       this.librariesCount = data["totalItems"];
+      data["list"].forEach(item => item.name = this.parseDescription(item.name));
+      console.log(data["list"]);
       this.dataSource = data["list"];
     });
   }
@@ -112,6 +114,28 @@ export class SearchComponent implements OnInit {
   onFormBlurs(): void {
     this.compoundFilter.compoundName = this.f.search.value;
     this.searchByFilter();
+  }
+
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\$\\{.+?\\})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
   }
 
   ngOnDestroy(): void {

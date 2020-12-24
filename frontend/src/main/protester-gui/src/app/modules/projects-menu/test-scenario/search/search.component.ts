@@ -40,8 +40,31 @@ export class SearchComponent implements OnInit {
     this.subscription = this.scenarioService.getAllWithFilter(this.scenarioFilter).subscribe(data =>
     {
       this.scenarioCount = data["totalItems"];
+      data["list"].forEach(item => item.name = this.parseDescription(item.name));
       this.dataSource = data["list"];
     });
+  }
+
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\$\\{.+?\\})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
   }
 
   goToView(id): void {

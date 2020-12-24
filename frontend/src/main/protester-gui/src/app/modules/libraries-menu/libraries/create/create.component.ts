@@ -172,7 +172,7 @@ export class CreateComponent implements OnInit {
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
       data['list'].forEach(item => {
-        item.description = this.parseDescription(item.description);
+        item.name = this.parseDescription(item.name);
       })
       this.bottomSheetData['actions'] = data['list'];
     });
@@ -181,7 +181,7 @@ export class CreateComponent implements OnInit {
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
       data['list'].forEach(item => {
-        item.description = this.parseDescription(item.description);
+        item.name = this.parseDescription(item.name);
       })
       this.bottomSheetData['compounds'] = data['list'];
     });

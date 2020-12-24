@@ -193,7 +193,22 @@ mat-error {
 
   color: #FFFFFF;
 }
+.description-container {
+  display: flex;
+  width: 100%;
+  justify-self: flex-start;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+}
 
+.description-input {
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+  width: auto;
+}
 .description-input-disabled {
   display: flex;
   align-self: center;
@@ -208,6 +223,7 @@ mat-error {
 
 .description-input-disabled-span {
   margin: 5px;
+  color: #000000;
 }
 
 .description-text {

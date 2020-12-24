@@ -70,16 +70,39 @@ export class ViewComponent implements OnInit {
         let inner;
         if (component['action']) {
           inner = <Action>component.component;
+          inner.name = this.parseDescription(inner.name);
           this.actions.push(new Action(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.className, inner.prepared, inner.preparedParams))
         } else
         {
           inner = <OuterComponent>component.component;
+          inner.name = this.parseDescription(inner.name);
           this.compounds.push(new OuterComponent(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.steps))
         }
       })
     });
   }
 
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\${\\w*})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.actionSubscription) {

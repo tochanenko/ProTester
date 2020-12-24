@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import {ListComponent} from "./list/list.component";
-import {CreateComponent} from "./create/create.component";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ListComponent} from './list/list.component';
 
 const routes: Routes = [
   {
@@ -16,13 +15,6 @@ const routes: Routes = [
           breadcrumb: null
         },
         component: ListComponent
-      },
-      {
-        path: 'create',
-        data: {
-          breadcrumb: 'Create'
-        },
-        component: CreateComponent
       },
       {
         path: ':id',

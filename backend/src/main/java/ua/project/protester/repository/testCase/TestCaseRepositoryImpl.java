@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,10 +14,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.response.LightTestCaseResponse;
 import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 import ua.project.protester.utils.testcase.TestCaseRowMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +138,33 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     }
 
     @Override
+    public Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId) {
+        log.info("IN TestCaseRepositoryImpl findAllProjectTestCases  projectId={} testCaseId={}", projectId, testCaseId);
+
+        MapSqlParameterSource namedParams = new MapSqlParameterSource();
+        namedParams.addValue("project_id", projectId);
+        namedParams.addValue("test_case_id", testCaseId);
+
+        try {
+            TestCase testCase = namedJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "findTestCaseByProjectIdAndTestCaseId"),
+                    namedParams,
+                    testCaseRowMapper);
+
+            if (testCase != null) {
+                testCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(testCaseId));
+                return Optional.of(testCase);
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("test cases were`nt found");
+            return Optional.empty();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public Long getCountTestCase(Pagination pagination, Long projectId) {
         log.info("IN TestCaseRepositoryImpl getCountTestCase pagination={}, projectId={}",
                 pagination, projectId);
@@ -144,6 +175,18 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("filterName", pagination.getSearchField() + "%")
                         .addValue("project_id", projectId),
                 Long.class);
+    }
+
+    @Override
+    public List<LightTestCaseResponse> findTestCasesByTestScenarioId(int id) {
+        try {
+            return namedJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findTestCasesByTestScenarioId"),
+                    new MapSqlParameterSource().addValue("id", id),
+                    new BeanPropertyRowMapper<>(LightTestCaseResponse.class));
+        } catch (DataAccessException e) {
+            return Collections.emptyList();
+        }
     }
 
     private void saveDataSet(Long testCaseId, Long dataSetId) {

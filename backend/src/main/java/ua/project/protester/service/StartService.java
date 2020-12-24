@@ -1,132 +1,202 @@
 package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.openqa.selenium.WebDriver;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import ua.project.protester.request.TestCaseRequest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import ua.project.protester.exception.DataSetNotFoundException;
+import ua.project.protester.exception.EnvironmentNotFoundException;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
+import ua.project.protester.exception.result.RunResultNotFoundException;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.RunResult;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.TestCase;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.executable.OuterComponent;
+import ua.project.protester.model.executable.Step;
+import ua.project.protester.model.executable.result.ActionResultDto;
+import ua.project.protester.model.executable.result.ResultStatus;
+import ua.project.protester.model.executable.result.TestCaseResultDto;
+import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.repository.result.ActionResultRepository;
+import ua.project.protester.repository.result.RunResultRepository;
+import ua.project.protester.repository.result.TestCaseResultRepository;
+import ua.project.protester.request.RunTestCaseRequest;
+import ua.project.protester.response.TestCaseResponse;
+import ua.project.protester.response.ValidationDataSetResponse;
+import ua.project.protester.response.ValidationDataSetStatus;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class StartService {
 
-    // TODO: uncomment
-    // private WebDriver webDriver;
-    // private DataSetRepository dataSetRepository;
-    // private TestScenarioService testScenarioService;
-    // private ModelMapper modelMapper;
-    // private ActionResultRepository actionResultRepository;
-    // private TestCaseResultRepository resultRepository;
+    private WebDriver webDriver;
+    private  RestTemplate restTemplate;
+    private DataSetRepository dataSetRepository;
+    private TestScenarioService testScenarioService;
+    private ModelMapper modelMapper;
+    private ActionResultRepository actionResultRepository;
+    private TestCaseResultRepository resultRepository;
+    private UserService userService;
+    private RunResultRepository runResultRepository;
+    private SimpMessagingTemplate messagingTemplate;
+    private List<TestCaseResponse> testCaseResponses;
+    private EnvironmentService environmentService;
+    private static int counter = 0;
 
-
-    // TODO uncomment
-    /*
-    @Autowired
-    public StartService(@Lazy WebDriver webDriver, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository) {
-        // TODO: delete all logs, uncomment lines
-        // this.webDriver = webDriver;
-        log.warn(webDriver.toString());
-        // this.dataSetRepository = dataSetRepository;
-        log.warn(dataSetRepository.toString());
-        // this.testScenarioService = testScenarioService;
-        log.warn(testScenarioService.toString());
-        // this.modelMapper = modelMapper;
-        log.warn(modelMapper.toString());
-        // this.actionResultRepository = actionResultRepository;
-        log.warn(actionResultRepository.toString());
-        // this.resultRepository = resultRepository;
-        log.warn(resultRepository.toString());
+    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
+        this.webDriver = webDriver;
+        this.restTemplate = restTemplate;
+        this.dataSetRepository = dataSetRepository;
+        this.testScenarioService = testScenarioService;
+        this.modelMapper = modelMapper;
+        this.actionResultRepository = actionResultRepository;
+        this.resultRepository = resultRepository;
+        this.userService = userService;
+        this.runResultRepository = runResultRepository;
+        this.messagingTemplate = messagingTemplate;
+        this.environmentService = environmentService;
     }
-    */
 
-    public void execute(List<TestCaseRequest> testCaseRequests) {
-        List<Integer> testCaseResults = getTestCaseExecutionResult(testCaseRequests);
-        for (int i = 0; i < testCaseRequests.size(); i++) {
-            runTestCase(testCaseRequests.get(i), testCaseResults.get(i));
+    public void execute(Long id) throws TestScenarioNotFoundException {
+
+        RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
+        List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
+          for (int i = 0; i < testCaseResponses.size(); i++) {
+            runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId());
+        }
+        log.info("testCaseResponses are {}", testCaseResponses);
+        testCaseResponses.clear();
+    }
+
+    @Transactional
+    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
+
+        TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
+        DataSet dataSet = testCase.getDataSetList().get(0);
+        Environment environment = checkSQLEnvironment(testCaseResponse);
+        log.info("dataset{}", dataSet);
+        try {
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
+            resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
+            counter = 0;
+        } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
+            resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
+            counter = 0;
         }
     }
 
-    private void runTestCase(TestCaseRequest testCaseRequest, int testCaseResultId) {
-        // TODO: implement
-        /* TestCase testCase = modelMapper.map(testCaseRequest, TestCase.class);
-        List<DataSet> dataSets = new ArrayList<>();
+    @Transactional
+    public RunResult getTestCaseExecutionResult(RunTestCaseRequest runTestCaseRequest) throws TestScenarioNotFoundException {
 
-        testCaseRequest.getDataSetId()
-                .forEach(id -> dataSets.add(dataSetRepository.findDataSetById(id).get()));
-        testCase.setDataSetList(dataSets);
+        RunResult resultFromDb = runResultRepository.saveRunResult(runTestCaseRequest.getUserId());
 
-        Map<String, String> initMap = new HashMap<>();
-        initMap.put("username", "volodya");
-        initMap.put("password", "tank85943221");
-        initMap.put("url", "www.youtube.com");
-
-        TestCaseResult testCaseResult = resultRepository.findTestCaseResultById(testCaseResultId).get();
-
-        testCase.getDataSetList().stream()
-                .map(DataSet::getId)
-                .map(id -> connectDataSetWithTestScenario(testCase.getScenarioId().intValue(), id, initMap))
-                .filter(Objects::nonNull)
-                .forEach(outerComponent -> {
-                            resultRepository.updateTestCaseResultStartDate(testCaseResultId, OffsetDateTime.now());
-                            try {
-                                Consumer<ActionResult> resultCallback = (action) -> {
-                                    action.setTestCaseResultId(testCaseResultId);
-                                    actionResultRepository.save(action);
-                                    testCaseResult.getInnerResults().add(action);
-                                };
-                                outerComponent.get().execute(initMap, webDriver, resultCallback);
-                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.PASSED);
-                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                            } catch (ActionExecutionException e) {
-                                resultRepository.updateTestCaseResultStatus(testCaseResult.getId(), ResultStatus.FAILED);
-                                resultRepository.updateTestCaseResultEndDate(testCaseResult.getId(), OffsetDateTime.now());
-                            }
-                        }
-                );*/
-        // TODO: delete log
-        log.warn(testCaseRequest.toString() + " " + testCaseResultId);
-    }
-
-    private List<Integer> getTestCaseExecutionResult(List<TestCaseRequest> testCaseRequests) {
-        // TODO: implement
-        /*return testCaseRequests.stream()
-                .map(testCaseRequest -> {
-                    TestCaseResult testCaseResult = new TestCaseResult();
-                    List<ActionResult> actionResult = new ArrayList<>();
-                    testCaseResult.setTestCaseId(testCaseRequest.getId().intValue());
-                    testCaseResult.setUserId(testCaseRequest.getAuthorId().intValue());
+        resultFromDb.setTestCaseResults(runTestCaseRequest.getTestCaseResponseList().stream()
+                .map(response -> {
+                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(response.getAuthorId()).orElseThrow(), fromTestCaseResponseToModel(response));
+                    List<ActionResultDto> actionResult = new ArrayList<>();
                     testCaseResult.setStatus(ResultStatus.IN_PROGRESS);
-                    testCaseResult.setStatusId(3);
                     testCaseResult.setStartDate(OffsetDateTime.now());
                     testCaseResult.setInnerResults(actionResult);
-                    return resultRepository.saveTestCaseResult(testCaseResult).getId();
+                    TestCaseWrapperResult result = runResultRepository.saveTestCaseWrapperResult(response, resultFromDb.getId().intValue(), resultRepository.save(testCaseResult).getId());
+                    result.setScenarioId(response.getScenarioId().intValue());
+                    return result;
                 })
-                .collect(Collectors.toList());*/
-        // TODO: delete log
-        log.warn(testCaseRequests.toString());
-        return null;
+                .collect(Collectors.toList()));
+
+        for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
+            TestCaseResponse currentTestCaseResponse = runTestCaseRequest.getTestCaseResponseList().get(i);
+            TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
+            List<Step> step = testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps();
+            List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
+            resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
+        }
+        testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
+
+        return resultFromDb;
     }
 
-    // TODO: uncomment
-    /*
-    private Optional<OuterComponent> connectDataSetWithTestScenario(Integer scenarioId, Long dataSetId, Map<String, String> initMap) {
-        try {
-            OuterComponent testScenario = testScenarioService.getTestScenarioById(scenarioId);
-            DataSet dataSet = dataSetRepository.findDataSetById(dataSetId).get();
-            List<Step> stepsParams = testScenario.getSteps();
-            for (Step s : stepsParams
-            ) {
-                for (Map.Entry<String, String> entry : s.getParameters().entrySet()) {
-                    if (dataSet.getParameters().containsKey(entry.getValue()) && !initMap.containsKey(entry.getValue())) {
-                        entry.setValue(dataSetRepository.findValueByKeyAndId(dataSetId, entry.getValue()).get());
-                    }
+
+    @Transactional
+    Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
+        return (action) -> {
+            try {
+                List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
+                        runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
+                ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
+                actionResultDto.setEndDateStr(LocalDateTime.from(actionResultDto.getEndDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                actionResultDto.setStartDateStr(LocalDateTime.from(actionResultDto.getStartDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                actionWrappers.get(counter).setActionResultDtoId(actionResultDto.getId());
+
+                if (counter == actionWrappers.size() - 1 || actionResultDto.getStatus().equals(ResultStatus.FAILED)) {
+                    actionResultDto.setLast(true);
                 }
+
+                log.info("action result {}", actionResultDto.getClass().getName());
+                log.info("actionWrapper {}", actionWrappers.get(counter));
+                messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultDto);
+                counter++;
+
+            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation  illegalActionLogicImplementation) {
+                illegalActionLogicImplementation.printStackTrace();
             }
-            return Optional.of(testScenario);
-        } catch (TestScenarioNotFoundException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
+        };
     }
-    */
+
+    @Transactional
+    TestCase fromTestCaseResponseToModel(TestCaseResponse testCaseResponse) {
+        TestCase testCase = modelMapper.map(testCaseResponse, TestCase.class);
+        List<DataSet> dataSets = new ArrayList<>();
+
+        testCaseResponse.getDataSetResponseList()
+                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was not found"))));
+        testCase.setDataSetList(dataSets);
+        return testCase;
+    }
+
+    @Transactional
+    public RunResult findById(Long id) {
+        return runResultRepository.findRunResultById(id)
+                .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
+    }
+
+    public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
+       log.info("test case {}", testCaseResponse);
+        DataSet dataSet = dataSetRepository.findDataSetById(testCaseResponse.getDataSetResponseList().stream().filter(Objects::nonNull).findFirst().get().getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found"));
+        OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseResponse.getScenarioId().intValue());
+        List<String> names = Arrays.asList(testScenario.getParameterNames());
+        Set<String> dataSetKeys = dataSet.getParameters().keySet();
+
+        ValidationDataSetResponse validationResponse = new ValidationDataSetResponse();
+
+        validationResponse.setMissingParameters(names.stream().filter(value -> !dataSetKeys.contains(value)).collect(Collectors.toList()));
+
+        validationResponse.setStatus(validationResponse.getMissingParameters().size() > 0 ? ValidationDataSetStatus.FAILED : ValidationDataSetStatus.PASSED);
+
+        validationResponse.setDataSetName(dataSet.getName());
+
+        return validationResponse;
+    }
+
+    private Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
+        if (testCaseResponse.getEnvironmentId() == null) {
+            return new Environment();
+        }
+        return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+    }
 }

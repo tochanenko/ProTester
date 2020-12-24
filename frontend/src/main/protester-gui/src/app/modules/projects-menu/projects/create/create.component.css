@@ -14,24 +14,8 @@
   min-width: 300px;
 }
 
-.logo, mat-card-content {
-  display: flex;
-  justify-content: center;
-}
-
-
-mat-error {
-  padding-bottom: 20px;
-}
-
 .invalid-input {
-  margin-bottom: 20px;
-}
-
-.error-info {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 10px;
 }
 
 .button-flex-container {
@@ -56,23 +40,38 @@ mat-error {
   color: #FFFFFF;
 }
 
-mat-card {
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-
+.mat-radio-group {
+  display: flex;
+  width: 40%;
+  font-size: 14px;
+  justify-content: space-around;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2%;
 }
 
-::ng-deep .mat-card-title {
-  text-align: center;
+::ng-deep .mat-dialog-content {
+  width: 100%;
+  height: 60%;
+  overflow: auto;
+  display: block;
+  margin: 0 0;
+  padding: 0 24px;
+  max-height: 65vh;
 }
 
-.icon {
-  font-size: 600%;
+.header-title {
+  text-transform: uppercase;
   color: #5C6BC0;
+  line-height: 16px;
+  letter-spacing: 1px;
+  display: table;
+  margin: 12px auto;
+  font: 500 35px Roboto, "Helvetica Neue", sans-serif;
 }
 
-.navigation {
-  font-size: 160%;
-  color: #5C6BC0;
-  margin-left: 10px;
+.error-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

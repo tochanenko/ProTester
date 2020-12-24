@@ -1,0 +1,22 @@
+.mat-cell {
+  padding-right: 24px;
+}
+
+mat-card-content {
+  display: flex;
+  justify-content: center;
+}
+
+.mat-form-field {
+  width: 100%;
+  min-width: 300px;
+}
+
+.login-form-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 90%;
+  margin: 50px auto;
+}

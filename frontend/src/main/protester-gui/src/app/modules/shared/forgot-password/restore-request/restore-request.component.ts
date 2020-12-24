@@ -35,7 +35,6 @@ export class RestoreRequestComponent implements OnInit {
     this.submitted = true;
 
     if (this.recoveryForm.invalid) {
-      console.log('invalid');
       return;
     }
 

@@ -36,7 +36,6 @@ export class TokenSentComponent implements OnInit {
     this.submitted = true;
 
     if (this.recoveryForm.invalid) {
-      console.log('invalid');
       return;
     }
 

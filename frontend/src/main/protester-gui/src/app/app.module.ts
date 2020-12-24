@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {CommonModule} from "@angular/common";
+import {CommonModule, DatePipe} from "@angular/common";
 import {AuthInterceptor} from "./services/auth/auth.interceptor";
 import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
@@ -54,7 +54,7 @@ import { DialogUtilComponent } from './components/dialog-util/dialog-util.compon
     BreadcrumbModule,
     TestScenarioModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {

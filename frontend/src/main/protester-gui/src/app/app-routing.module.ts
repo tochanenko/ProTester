@@ -32,6 +32,14 @@ const routes: Routes = [
         }
       },
       {
+        path: 'test-case-result',
+        loadChildren: 'src/app/modules/test-case/test-case.module#TestCaseModule',
+        canActivate: [AuthGuard],
+        data: {
+          roles: ['ADMIN', 'MANAGER', 'ENGINEER']
+        }
+      },
+      {
         path: '**',
         redirectTo: '404'
       }

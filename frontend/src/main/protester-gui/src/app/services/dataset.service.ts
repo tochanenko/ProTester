@@ -21,7 +21,6 @@ export class DatasetService {
   }
 
   public update(dataset: DataSet): Observable<any> {
-    console.log(dataset);
     return this.http.put('/api/dataset', dataset, httpOptions);
   }
 
@@ -34,7 +33,6 @@ export class DatasetService {
     params = params.append('pageSize', String(filter.pageSize));
     params = params.append('pageNumber', String(filter.pageNumber));
     params = params.append('dataSetName', filter.name);
-    console.log(filter.name);
     return this.http.get<DatasetResponseModel>('/api/dataset', {params});
   }
 

@@ -36,7 +36,6 @@ export class CreateComponent implements OnInit, OnDestroy {
               private testScenarioService: TestScenarioService,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.projectId = data.id;
-    console.log(`project id = ${this.projectId}`);
   }
 
   ngOnInit(): void {

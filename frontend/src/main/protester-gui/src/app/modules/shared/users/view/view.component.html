@@ -1,5 +1,8 @@
 <div class="login-form-flex">
-  <mat-card class="content">
+
+  <mat-spinner *ngIf="!completed"></mat-spinner>
+
+  <mat-card class="content" *ngIf="completed">
     <h3 class="username">{{user.username}}</h3>
     <table>
       <tr>
@@ -24,7 +27,7 @@
       </tr>
       <tr>
         <td><b>Status</b></td>
-        <td>{{user.isActive}}</td>
+        <td><span *ngIf="user.isActive">ACTIVE</span><span *ngIf="!user.isActive">DEACTIVATED</span></td>
       </tr>
     </table>
   </mat-card>

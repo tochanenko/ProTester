@@ -101,8 +101,6 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   selectTestCase(testCase: TestCaseModel): void {
-    console.log(this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar + '000000000');
-
     if (this.selection.isSelected(testCase)) {
       this.selection.deselect(testCase);
     } else {
@@ -177,8 +175,6 @@ export class RunComponent implements OnInit, OnDestroy {
 
     this.runTestCaseModel.testCaseResponseList = this.selection.selected;
     this.runTestCaseModel.userId = this.storageService.getUser.id;
-
-    console.log(JSON.stringify(this.runTestCaseModel.testCaseResponseList));
     if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }

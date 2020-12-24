@@ -93,7 +93,6 @@ export class SearchComponent implements OnInit {
   deleteCompound(id): void {
     this.subscription = this.compoundService.deleteCompound(id).subscribe(data => {
       if (data) {
-        console.log("Successful delete!")
         this.searchByFilter();
       }
     }, error => console.error(error.error.message));

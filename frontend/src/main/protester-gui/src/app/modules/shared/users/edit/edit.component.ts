@@ -47,11 +47,9 @@ export class EditComponent implements OnInit {
 
     this.route.params.subscribe(
       params => {
-        console.log(params);
         this.id = params['id'];
         this.userService.getUserById(this.id).subscribe(
           user => {
-            console.log(user);
 
             this.username = user['username'];
             this.email = user['email'];
@@ -93,8 +91,6 @@ export class EditComponent implements OnInit {
       role: this.role,
       active: this.f.active.value
     };
-
-    console.log(editUserResponse);
 
     this.userService.updateUser(this.id, editUserResponse).subscribe(
       res => this.router.navigate([`/account/users/${this.id}`]),

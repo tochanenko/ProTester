@@ -31,10 +31,8 @@ export class CreateNewComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.token = params['t'];
-      console.log(this.token);
       this.passwordService.confirmReset(this.token).subscribe(
         email => {
-          console.log(email)
           if (email == null || email.length == 0) {
             this.router.navigateByUrl('/account/forgot-password/invalid-token').then();
           } else {

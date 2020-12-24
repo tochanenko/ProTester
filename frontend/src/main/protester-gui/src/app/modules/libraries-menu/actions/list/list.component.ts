@@ -36,7 +36,6 @@ export class ListComponent implements OnInit, OnDestroy {
       this.subscription = this.actionService.getAll(this.actionFilter).subscribe(
         data => {
           this.dataSource = data.list;
-          console.log(data.list);
           this.actionsCount = data.totalItems;
         },
         error => console.log('error in initDataSource')

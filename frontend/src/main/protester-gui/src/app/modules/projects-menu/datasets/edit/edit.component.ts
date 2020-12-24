@@ -72,7 +72,6 @@ export class EditComponent extends Unsubscribe implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         () => {
-          console.log(datasetUpdateResponse);
           this.isSuccessful = true;
           this.dialogRef.close();
         },
@@ -92,7 +91,6 @@ export class EditComponent extends Unsubscribe implements OnInit {
 
   public addRowTable() {
     this.editDatasetParameters.push(this.createParameter());
-    console.log(this.editDatasetParameters);
     this.table.renderRows();
   }
 

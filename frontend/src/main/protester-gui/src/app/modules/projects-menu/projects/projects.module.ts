@@ -8,10 +8,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { EditComponent } from './edit/edit.component';
 import { CreateComponent } from './create/create.component';
 import {ViewModule} from "./view/view.module";
+import {TestCaseResultTableComponent} from "./test-case-result-table/test-case-result-table.component";
 
 
 @NgModule({
-  declarations: [ListComponent, EditComponent, CreateComponent],
+  declarations: [ListComponent, EditComponent, CreateComponent, TestCaseResultTableComponent],
   imports: [
     CommonModule,
     ProjectsRoutingModule,

@@ -140,8 +140,6 @@ export class CreateComponent implements OnInit {
       return step;
     });
 
-    console.log(this.compoundCreateRequest);
-
     this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();
       },

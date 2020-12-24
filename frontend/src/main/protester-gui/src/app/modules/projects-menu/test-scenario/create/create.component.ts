@@ -141,10 +141,7 @@ export class CreateComponent implements OnInit {
       }
       return step;
     });
-    console.log("SUBMIT");
-    console.log(this.scenarioCreateRequest);
     this.scenarioService.create(this.scenarioCreateRequest).subscribe((data) => {
-        console.log(data, "CREATED");
         this.router.navigateByUrl('/projects-menu/scenarios').then();
       },
       () => {

@@ -6,8 +6,8 @@
     <mat-card-content>
       <form (ngSubmit)="onSubmit()" [formGroup]="recoveryForm">
         <div class="more-info">
-          Write your new password in the fields below. Your password must be at least 8 symbols long (maximum 32
-          symbols), contain at least one letter in upper and lower cases, one number and one special symbol.
+          Write your new password in the fields below. Your password must be at least 8 symbols long (maximum 30
+          symbols) and be a combination of a-z, A-Z and 0-9.
         </div>
 
         <mat-form-field class="full-width-input" appearance="outline">
@@ -20,7 +20,7 @@
             {{hideNewPasswordField ? 'visibility_off' : 'visibility'}}
           </mat-icon>
           <mat-error *ngIf="submitted && f.password.errors" class="invalid-input">
-            <mat-error *ngIf="f.password.errors.required">Field is required</mat-error>
+            <mat-error *ngIf="f.password.errors.required">Check your password.</mat-error>
           </mat-error>
         </mat-form-field>
 
@@ -36,7 +36,7 @@
             {{hideConfirmPasswordField ? 'visibility_off' : 'visibility'}}
           </mat-icon>
           <mat-error *ngIf="submitted && f.password.errors && comparePasswords" class="invalid-input">
-            <mat-error *ngIf="f.password.errors.required">Field is required</mat-error>
+            <mat-error *ngIf="f.password.errors.required">Check your password.</mat-error>
           </mat-error>
         </mat-form-field>
 

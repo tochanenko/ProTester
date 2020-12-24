@@ -193,9 +193,9 @@ public class StartService {
         return validationResponse;
     }
 
-    public ua.project.protester.model.Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
+    public Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
         if (testCaseResponse.getEnvironmentId() == null) {
-            return new ua.project.protester.model.Environment();
+            return new Environment();
         }
         return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
     }

@@ -11,7 +11,7 @@ import ua.project.protester.service.library.LibraryService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.PaginationLibrary;
 
-@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/library")
 @RequiredArgsConstructor

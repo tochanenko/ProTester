@@ -23,6 +23,7 @@ import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.modul
 import {BreadcrumbComponent} from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-scenario.module";
+import { DialogUtilComponent } from './components/dialog-util/dialog-util.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-sce
     AppComponent,
     HeaderComponent,
     BottomSheetComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    DialogUtilComponent
   ],
   imports: [
     BrowserModule,

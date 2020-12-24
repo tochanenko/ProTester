@@ -98,3 +98,18 @@ form {
 .mat-menu-delete-button {
   color: #711313;
 }
+
+.description-input-disabled {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  background: #F4F2FF;
+
+  border-radius: 5px;
+}
+
+.description-input-disabled-span {
+  margin: 5px;
+}

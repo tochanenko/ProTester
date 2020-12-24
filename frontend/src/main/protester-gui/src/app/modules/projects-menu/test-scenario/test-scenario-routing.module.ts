@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {SearchComponent} from "./search/search.component";
 import {ViewComponent} from "./view/view.component";
 import {CreateComponent} from "./create/create.component";
+import {EditComponent} from "./edit/edit.component";
 
 const routes: Routes = [
   {
@@ -37,6 +38,13 @@ const routes: Routes = [
               breadcrumb: 'Scenario'
             },
             component: ViewComponent
+          },
+          {
+            path: 'edit',
+            data: {
+              breadcrumb: 'Scenario'
+            },
+            component: EditComponent
           }
         ]
       }

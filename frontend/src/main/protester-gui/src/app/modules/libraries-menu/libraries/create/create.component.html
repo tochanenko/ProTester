@@ -11,8 +11,12 @@
           <input matInput type="text" id="name" name="name" formControlName="name" class="create-input"
                  placeholder="Library name...">
           <mat-error *ngIf="formControls.name.errors" class="invalid-input">
-            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length - {{validatorsConfig.name.maxLength}} symbols</mat-error>
-            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length - {{validatorsConfig.name.minLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.name.errors.maxlength">Name`s maximum length
+              - {{validatorsConfig.name.maxLength}} symbols
+            </mat-error>
+            <mat-error *ngIf="formControls.name.errors.minlength">Name`s minimum length
+              - {{validatorsConfig.name.minLength}} symbols
+            </mat-error>
             <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
           </mat-error>
         </mat-form-field>
@@ -23,7 +27,9 @@
               <textarea matInput type="text" id="description" name="description" formControlName="description"
                         class="create-input" placeholder="Library description..."></textarea>
           <mat-error *ngIf="formControls.description.errors" class="invalid-input">
-            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length - {{validatorsConfig.description.maxLength}} symbols</mat-error>
+            <mat-error *ngIf="formControls.description.errors.maxlength">Description`s maximum length
+              - {{validatorsConfig.description.maxLength}} symbols
+            </mat-error>
             <mat-error *ngIf="formControls.description.errors.required">Description is required</mat-error>
           </mat-error>
         </mat-form-field>
@@ -47,7 +53,18 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of actions">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      {{component.name}}
+                      <div class="description-container">
+                        <ng-container *ngFor="let sub_string of component.name">
+                          <div *ngIf="sub_string['input']">
+                            <div class="description-input-disabled mat-elevation-z3">
+                              <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                            </div>
+                          </div>
+                          <div *ngIf="!sub_string['input']" class="description-text">
+                            <span>{{sub_string['text']}}</span>
+                          </div>
+                        </ng-container>
+                      </div>
                     </mat-panel-title>
                     <mat-panel-description>
                     </mat-panel-description>
@@ -72,7 +89,18 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of compounds">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      {{component.name}}
+                      <div class="description-container">
+                        <ng-container *ngFor="let sub_string of component.name">
+                          <div *ngIf="sub_string['input']">
+                            <div class="description-input-disabled mat-elevation-z3">
+                              <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                            </div>
+                          </div>
+                          <div *ngIf="!sub_string['input']" class="description-text">
+                            <span>{{sub_string['text']}}</span>
+                          </div>
+                        </ng-container>
+                      </div>
                     </mat-panel-title>
                     <mat-panel-description>
                     </mat-panel-description>

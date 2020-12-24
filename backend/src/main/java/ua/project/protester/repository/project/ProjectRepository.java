@@ -1,5 +1,6 @@
 package ua.project.protester.repository.project;
 
+import ua.project.protester.exception.ProjectCreateException;
 import ua.project.protester.model.Project;
 import ua.project.protester.model.ProjectDto;
 import ua.project.protester.utils.Pagination;
@@ -9,11 +10,11 @@ import java.util.Optional;
 
 public interface ProjectRepository {
 
-    void create(Project project);
+    Project create(Project project) throws ProjectCreateException;
 
-    void update(Project project);
+    Project update(Project project);
 
-    void changeProjectStatus(Long id, Boolean isActive);
+    Project changeProjectStatus(Project project, Boolean isActive);
 
     List<ProjectDto> findAll(Pagination pagination);
 

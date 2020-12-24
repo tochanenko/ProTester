@@ -11,7 +11,7 @@ import ua.project.protester.service.project.ProjectService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
-@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
@@ -21,24 +21,24 @@ public class ProjectController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectDto createProject(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
+    public ProjectDto create(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
         return projectService.createProject(project);
     }
 
     @PutMapping("/update")
-    public ProjectDto updateProject(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
+    public ProjectDto update(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
         return projectService.updateProject(project);
     }
 
     @PutMapping("/changeStatus/{id}")
-    public void changeProjectStatus(@PathVariable Long id) throws ProjectNotFoundException {
-        projectService.changeProjectStatus(id);
+    public ProjectDto changeStatus(@PathVariable Long id) throws ProjectNotFoundException {
+        return projectService.changeProjectStatus(id);
     }
 
     @GetMapping
-    public Page<ProjectDto> getAllProjects(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                           @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                           @RequestParam(value = "projectName", defaultValue = "") String projectName) {
+    public Page<ProjectDto> getAll(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                   @RequestParam(value = "projectName", defaultValue = "") String projectName) {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
@@ -46,10 +46,10 @@ public class ProjectController {
     }
 
     @GetMapping("/filter")
-    public Page<ProjectDto> getAllProjectsByStatus(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                                   @RequestParam(value = "projectActive") Boolean projectActive,
-                                                   @RequestParam(value = "projectName", defaultValue = "") String projectName) {
+    public Page<ProjectDto> getAllByStatus(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                           @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                           @RequestParam(value = "projectActive") Boolean projectActive,
+                                           @RequestParam(value = "projectName", defaultValue = "") String projectName) {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
@@ -57,7 +57,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectDto getProjectById(@PathVariable Long id) throws ProjectNotFoundException {
+    public ProjectDto getById(@PathVariable Long id) throws ProjectNotFoundException {
         return projectService.getProjectDtoById(id);
     }
 

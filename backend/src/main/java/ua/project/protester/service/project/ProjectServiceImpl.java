@@ -24,50 +24,56 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectDto createProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
-        log.info("IN createProject");
+        log.info("IN ProjectServiceImpl createProject, projectDto: {}", projectDto);
 
-        Project projectToSave = projectMapper.toEntity(projectDto);
-        projectToSave.setProjectActive(true);
+        Project savedProjectFromBd;
 
         try {
-            projectRepository.create(projectToSave);
+            Project projectToSave = projectMapper.toEntity(projectDto);
+            projectToSave.setProjectActive(true);
+
+            savedProjectFromBd = projectRepository.create(projectToSave);
         } catch (Exception e) {
-            log.error("IN createProject - project {} already exists", projectToSave);
+            log.error("IN ProjectServiceImpl createProject - project {} already exists", projectDto);
             throw new ProjectAlreadyExistsException("project already exists", e);
         }
 
-        log.info("IN createProject - project {} was successfully created", projectToSave);
-
-        return projectMapper.toResponse(projectToSave);
+        log.info("IN ProjectServiceImpl createProject - project {} was successfully created", savedProjectFromBd);
+        return projectMapper.toResponse(savedProjectFromBd);
     }
 
     @Transactional
     @Override
     public ProjectDto updateProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
-        log.info("IN updateProject");
+        log.info("IN ProjectServiceImpl updateProject, projectDto: {}", projectDto);
 
-        Project projectToUpdate = projectMapper.toEntity(projectDto);
+        Project updatedProjectFromBd;
 
         try {
-            projectRepository.update(projectToUpdate);
+            updatedProjectFromBd = projectRepository.update(projectMapper.toEntity(projectDto));
         } catch (Exception e) {
-            log.error("IN updateProject - project {} already exists", projectToUpdate);
+            log.error("IN ProjectServiceImpl updateProject - project {} already exists", projectDto);
             throw new ProjectAlreadyExistsException("project already exists", e);
         }
 
-        log.info("IN updateProject - project {} was successfully updated", projectToUpdate);
-        return projectMapper.toResponse(projectToUpdate);
+        log.info("IN ProjectServiceImpl updateProject - project {} was successfully updated", updatedProjectFromBd);
+        return projectMapper.toResponse(updatedProjectFromBd);
     }
 
     @Transactional
     @Override
-    public void changeProjectStatus(Long projectId) throws ProjectNotFoundException {
-        log.info("IN changeProjectStatus");
+    public ProjectDto changeProjectStatus(Long projectId) throws ProjectNotFoundException {
+        log.info("IN changeProjectStatus, projectId: {}", projectId);
 
-        Project projectToArchive = getProjectById(projectId);
-        projectRepository.changeProjectStatus(projectId, !projectToArchive.getProjectActive());
+        Project projectToChangeStatus = getProjectById(projectId);
 
-        log.info("IN changeProjectStatus - project status {} was changed", projectToArchive);
+        Project updatedProjectFromBd = projectRepository.changeProjectStatus(
+                projectToChangeStatus,
+                !projectToChangeStatus.getProjectActive()
+        );
+
+        log.info("IN changeProjectStatus - project status {} was changed", updatedProjectFromBd);
+        return projectMapper.toResponse(updatedProjectFromBd);
     }
 
     @Transactional

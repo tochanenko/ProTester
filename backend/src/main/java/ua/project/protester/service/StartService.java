@@ -84,7 +84,7 @@ public class StartService {
           for (int i = 0; i < testCaseResponses.size(); i++) {
             runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
         }
-        driver.close();
+          driver.quit();
         log.info("testCaseResponses are {}", testCaseResponses);
         testCaseResponses.clear();
     }

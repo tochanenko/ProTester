@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.exception.TestCaseNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.TestCase;
@@ -32,51 +33,62 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     @Transactional
     @Override
-    public TestCaseResponse create(TestCaseRequest testCaseRequest) {
-        log.info("IN create testCase, {}", testCaseRequest);
+    public TestCaseResponse create(TestCaseRequest testCaseRequest) throws TestCaseCreateException {
+        log.info("IN TestCaseServiceImpl create - testCase, {}", testCaseRequest);
 
-        TestCase testCase = testCaseMapper.toEntity(testCaseRequest);
-        return testCaseMapper.toResponse(testCaseRepository.create(testCase, testCaseRequest.getDataSetId()));
+        TestCase createdTestCase = testCaseRepository.create(
+                testCaseMapper.toEntity(testCaseRequest),
+                testCaseRequest.getDataSetId());
+
+        log.info("IN TestCaseServiceImpl create - testCase: {} was successfully created", createdTestCase);
+        return testCaseMapper.toResponse(createdTestCase);
     }
 
     @Transactional
     @Override
     public TestCaseResponse update(TestCaseRequest testCaseRequest) {
-        log.info("IN update testCase, {}", testCaseRequest);
+        log.info("IN TestCaseServiceImpl update - testCase, {}", testCaseRequest);
 
-        TestCase testCase = testCaseMapper.toEntity(testCaseRequest);
-        return testCaseMapper.toResponse(testCaseRepository.update(testCase, testCaseRequest.getDataSetId()));
+        TestCase updatedTestCase = testCaseRepository.update(
+                testCaseMapper.toEntity(testCaseRequest),
+                testCaseRequest.getDataSetId());
+
+        log.info("IN TestCaseServiceImpl update - testCase: {} was successfully updated", updatedTestCase);
+        return testCaseMapper.toResponse(updatedTestCase);
     }
 
     @Transactional
     @Override
     public void delete(Long id) throws TestCaseNotFoundException {
-        log.info("IN delete testCase, id={}", id);
+        log.info("IN TestCaseServiceImpl delete - testCase, id={}", id);
 
         TestCase testCase = getTestCaseById(id);
+
         testCaseRepository.delete(testCase.getId());
+        log.info("IN TestCaseServiceImpl delete - testCase id={} was successfully deleted", id);
     }
 
     @Override
     public TestCaseResponse findById(Long id) throws TestCaseNotFoundException {
-        log.info("IN  findById, id={}", id);
+        log.info("IN TestCaseServiceImpl findById - id={}", id);
 
         TestCase testCase = getTestCaseById(id);
+
+        log.info("IN  TestCaseServiceImpl findById, id={}, found {}", id, testCase);
         return testCaseMapper.toResponse(testCase);
     }
 
 
-
     @Override
     public Page<TestCaseResponse> findAllProjectTestCases(Pagination pagination, Long projectId) {
-        log.info("IN findAllProjectTestCases, pagination={}, projectId={}", pagination, projectId);
+        log.info("IN TestCaseServiceImpl findAllProjectTestCases - pagination={}, projectId={}", pagination, projectId);
 
-        List<TestCaseResponse> testCasesMapped = testCaseRepository.findAllProjectTestCases(pagination, projectId).stream()
+        List<TestCaseResponse> testCaseList = testCaseRepository.findAllProjectTestCases(pagination, projectId).stream()
                 .map(testCaseMapper::toResponse)
                 .collect(Collectors.toList());
 
         return new Page<>(
-                testCasesMapped,
+                testCaseList,
                 testCaseRepository.getCountTestCase(pagination, projectId)
         );
     }

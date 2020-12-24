@@ -97,8 +97,10 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deleteCase(id: number): void {
-    this.testCaseService.deleteTestCase(id).subscribe();
-    this.searchCases();
+    console.log(`deleted id ${id}`);
+    this.testCaseService.deleteTestCase(id).subscribe(
+      () => this.searchCases()
+    );
   }
 
   runTestCaseView(): void {

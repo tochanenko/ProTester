@@ -12,7 +12,7 @@ public interface ProjectService {
 
     ProjectDto updateProject(ProjectDto projectDto) throws ProjectAlreadyExistsException;
 
-    void changeProjectStatus(Long projectId) throws ProjectNotFoundException;
+    ProjectDto changeProjectStatus(Long projectId) throws ProjectNotFoundException;
 
     Page<ProjectDto> findAllProjects(Pagination pagination);
 

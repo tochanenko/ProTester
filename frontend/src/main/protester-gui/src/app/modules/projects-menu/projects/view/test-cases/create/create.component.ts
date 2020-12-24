@@ -93,7 +93,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         data => {
           this.isSuccessful = true;
           this.dialogRef.close();
-          this.router.navigateByUrl(`/project-menu/projects/${this.projectId}/test-cases`).then();
+          this.router.navigateByUrl(`/projects-menu/projects/${this.projectId}/test-cases`).then();
         },
         err => {
           this.errorMessage = err.error.message;

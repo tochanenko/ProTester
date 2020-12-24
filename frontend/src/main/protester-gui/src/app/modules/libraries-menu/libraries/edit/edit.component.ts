@@ -71,7 +71,6 @@ export class EditComponent implements OnInit {
   getLibraryById(id: number): void {
     this.libraryService.getLibraryById(id).subscribe(library => {
       this.library = library;
-      console.log(library);
 
       let f = this.formControls;
       f.name.setValue(library.name);
@@ -104,7 +103,6 @@ export class EditComponent implements OnInit {
       return;
     }
     let libraryUpdateRequest = {};
-    console.log(libraryUpdateRequest);
 
 
     libraryUpdateRequest['description'] = f.description.value;

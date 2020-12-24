@@ -98,7 +98,6 @@ export class ListComponent extends Unsubscribe implements OnInit {
   private searchDataset(): void {
     this.subscription = this.datasetService.getAll(this.datasetFilter).subscribe(
       data => {
-        console.log(data.list);
         this.dataSource = data.list;
         this.datasetsCount = data.totalItems;
       }

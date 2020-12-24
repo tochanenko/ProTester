@@ -38,7 +38,6 @@ export class TestCaseResultTableComponent implements OnInit {
           results => {
             let testCaseResults = [];
             results.forEach(result => {
-              console.log(result);
               testCaseResults.push({
                 startDate: this.datePipe.transform(result['startDate'], 'short'),
                 endDate: this.datePipe.transform(result['endDate'], 'short'),

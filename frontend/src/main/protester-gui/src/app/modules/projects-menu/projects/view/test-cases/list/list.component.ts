@@ -34,7 +34,6 @@ export class ListComponent implements OnInit, OnDestroy {
               public dialog: MatDialog,
               private router: Router) {
     route.params.subscribe(params => this.projectId = params[`id`]);
-    console.log(`Project id in test-case-list ${this.projectId}`);
   }
 
   ngOnInit(): void {
@@ -98,7 +97,6 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deleteCase(id: number): void {
-    console.log(`deleted id ${id}`);
     this.testCaseService.deleteTestCase(id).subscribe();
     this.searchCases();
   }

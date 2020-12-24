@@ -68,7 +68,6 @@ export class CreateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('SUBMIT');
     const f = this.formControls;
 
 
@@ -105,8 +104,6 @@ export class CreateComponent implements OnInit {
         libraryCreateRequest['components'].push(compound_step);
       })
     }
-
-    console.log(libraryCreateRequest)
 
     this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/libraries').then();

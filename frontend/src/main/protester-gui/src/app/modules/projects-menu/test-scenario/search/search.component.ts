@@ -53,7 +53,6 @@ export class SearchComponent implements OnInit {
   deleteScenario(id): void {
     this.subscription = this.scenarioService.delete(id).subscribe(data =>{
       if (data) {
-        console.log("Successful delete!")
         this.searchByFilter();
       }
     }, error => console.error(error.error.message));

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {TestCaseResultService} from "../../../services/test-case-result.service";
+import {TestCaseResultService} from "../../../../services/test-case-result.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 
@@ -25,9 +25,7 @@ export class TestCaseResultTableComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(
       params => {
-        console.log(params);
         this.projectId = params['id'];
-        this.projectId = 1;
         this.testCaseResultService.getForProject(this.projectId).subscribe(
           results => {
             let testCaseResults = [];

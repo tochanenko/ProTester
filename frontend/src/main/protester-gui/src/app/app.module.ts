@@ -23,7 +23,6 @@ import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.modul
 import {BreadcrumbComponent} from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-scenario.module";
-import {TestCaseModule} from "./modules/test-case/test-case.module";
 
 
 @NgModule({
@@ -51,8 +50,7 @@ import {TestCaseModule} from "./modules/test-case/test-case.module";
     ProjectsMenuModule,
     LibrariesMenuModule,
     BreadcrumbModule,
-    TestScenarioModule,
-    TestCaseModule
+    TestScenarioModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry, DatePipe],
   bootstrap: [AppComponent]

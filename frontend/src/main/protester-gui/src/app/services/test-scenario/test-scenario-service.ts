@@ -27,6 +27,10 @@ export class TestScenarioService {
     return this.http.post(`/api/test-scenarios`, scenario, httpOptions);
   }
 
+  updateScenario(id, scenario): Observable<any> {
+    return this.http.put(`api/test-scenarios/${id}`, scenario, httpOptions);
+  }
+
   getAllWithFilter(filter: ScenarioFilterModel): Observable<TestScenarioRequestResponse[]> {
     let params = new HttpParams();
     params = params.append('pageSize', String(filter.pageSize));

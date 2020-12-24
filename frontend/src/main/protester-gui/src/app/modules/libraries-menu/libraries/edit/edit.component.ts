@@ -81,10 +81,12 @@ export class EditComponent implements OnInit {
         let inner;
         if (component['action']) {
           inner = <Action> component.component;
+          inner.name = this.parseDescription(inner.name);
           this.actions.push(new Action(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.className, inner.prepared, inner.preparedParams))
         } else
         {
           inner = <OuterComponent> component.component;
+          inner.name = this.parseDescription(inner.name);
           this.compounds.push(new OuterComponent(inner.name, inner.description, inner.type, inner.parameterNames, inner.id, inner.steps))
         }
       })
@@ -179,14 +181,42 @@ export class EditComponent implements OnInit {
   }
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
-      this.bottomSheetData['actions'] = data;
+      data['list'].forEach(item => {
+        item.name = this.parseDescription(item.name);
+      })
+      this.bottomSheetData['actions'] = data['list'];
     });
   }
 
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
+      data['list'].forEach(item => {
+        item.name = this.parseDescription(item.name);
+      })
       this.bottomSheetData['compounds'] = data['list'];
     });
+  }
+
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\${\\w*})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
   }
 
   ngOnDestroy(): void {

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -60,8 +60,10 @@ public class LibraryRepositoryImpl implements LibraryRepository {
 
     @Override
     public void updateLibrary(Library library, int id) {
+        String sql = PropertyExtractor.extract(env, "updateLibrary");
+
         namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "updateLibrary"),
+                sql,
                 new MapSqlParameterSource()
                         .addValue("library_id", id)
                         .addValue("library_name", library.getName())
@@ -75,6 +77,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
     @Override
     public List<Library> findAll(PaginationLibrary paginationLibrary) {
         String sql = PropertyExtractor.extract(env, "findAllLibraries");
+
         MapSqlParameterSource namedParams = new MapSqlParameterSource();
         namedParams.addValue("count", paginationLibrary.getPageSize());
         namedParams.addValue("offset", paginationLibrary.getOffset());
@@ -103,30 +106,31 @@ public class LibraryRepositoryImpl implements LibraryRepository {
     }
 
     @Override
-    public Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException {
+    public Optional<Library> findLibraryById(Integer id) {
         String sql = PropertyExtractor.extract(env, "findLibraryById");
+        Library library;
 
         try {
-            Library library = namedParameterJdbcTemplate.queryForObject(
+            library = namedParameterJdbcTemplate.queryForObject(
                     sql,
                     new MapSqlParameterSource().addValue("library_id", id),
                     new BeanPropertyRowMapper<>(Library.class)
             );
-            if (library == null) {
-                return Optional.empty();
-            }
-
-            List<Step> steps = findAllLibraryStorageById(library.getId());
-            library.setComponents(steps);
-            return Optional.of(library);
-
-        } catch (DataAccessException e) {
-            throw new LibraryNotFoundException();
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
+
+        if (library == null) {
+            return Optional.empty();
+        }
+
+        List<Step> steps = findAllLibraryStorageById(library.getId());
+        library.setComponents(steps);
+        return Optional.of(library);
     }
 
     @Override
-    public void deleteLibraryById(Integer id) {
+    public void deleteLibraryById(Integer id) throws LibraryNotFoundException {
         String sql = PropertyExtractor.extract(env, "deleteLibraryById");
 
         namedParameterJdbcTemplate.update(

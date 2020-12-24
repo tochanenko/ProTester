@@ -2,7 +2,9 @@ package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.request.LibraryRequestModel;
@@ -10,6 +12,7 @@ import ua.project.protester.service.library.LibraryService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.PaginationLibrary;
 
+@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
 @RestController
 @RequestMapping("/api/library")
 @RequiredArgsConstructor
@@ -19,21 +22,24 @@ public class LibraryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createLibrary(@RequestBody LibraryRequestModel request) {
+    public void createLibrary(@RequestBody LibraryRequestModel request) throws LibraryAlreadyExistsException {
         libraryService.createLibrary(request);
     }
 
     @PutMapping("/{id}")
-    public void updateLibrary(@RequestBody LibraryRequestModel request, @PathVariable int id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void updateLibrary(@RequestBody LibraryRequestModel request, @PathVariable int id) throws LibraryAlreadyExistsException {
         libraryService.updateLibrary(request, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLibrary(@PathVariable int id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteLibrary(@PathVariable int id) throws LibraryNotFoundException {
         libraryService.deleteLibraryById(id);
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<Library> getAll(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                 @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
                                 @RequestParam(value = "libraryName", defaultValue = "") String libraryName) {

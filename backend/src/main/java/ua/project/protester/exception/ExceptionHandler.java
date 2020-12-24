@@ -159,6 +159,16 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(LibraryNotFoundException.class)
+    public ResponseEntity<Object> handleLibraryNotFoundException(
+            LibraryNotFoundException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Library not found!");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(WebDriverException.class)
     public ResponseEntity<Object> handleWebDriverException(
             WebDriverException ex, WebRequest request) {

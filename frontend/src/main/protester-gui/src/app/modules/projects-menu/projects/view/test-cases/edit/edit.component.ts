@@ -52,7 +52,6 @@ export class EditComponent implements OnInit {
         this.testCaseUpdateForm.patchValue(data);
       },
       error => {
-        console.log(error);
         this.isFailed = true;
         this.errorMessage = error;
       });
@@ -79,8 +78,6 @@ export class EditComponent implements OnInit {
     if (this.testCaseUpdateForm.invalid) {
       return;
     }
-
-    console.log(JSON.stringify(this.testCaseUpdateForm.value));
 
     const testCaseUpdateResponse = {
       id: this.testCaseId,

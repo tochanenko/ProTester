@@ -22,5 +22,5 @@ public interface LibraryService {
     Library getLibraryById(int id) throws LibraryNotFoundException;
 
     @Transactional
-    void deleteLibraryById(int id);
+    void deleteLibraryById(int id) throws LibraryNotFoundException;
 }

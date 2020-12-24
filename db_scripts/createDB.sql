@@ -260,7 +260,8 @@ CREATE TABLE sql_column_cell
 CREATE TABLE run_result_users
 (
     run_id  SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL
+    user_id INTEGER NOT NULL,
+    CONSTRAINT table_case_wrapper_run_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 CREATE TABLE test_case_wrapper_result
@@ -269,6 +270,7 @@ CREATE TABLE test_case_wrapper_result
     scenario_id      INTEGER NOT NULL,
     run_result_id    INTEGER NOT NULL,
     test_case_result INTEGER NOT NULL,
+    CONSTRAINT table_case_wrapper_run_user_result_id_fk FOREIGN KEY (run_result_id) REFERENCES run_result_users (run_id),
     CONSTRAINT table_case_wrapper_result_tests_scenarios_scenario_id_fk FOREIGN KEY (scenario_id) REFERENCES tests_scenarios (scenario_id)
 );
 

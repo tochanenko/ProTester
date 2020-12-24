@@ -21,6 +21,8 @@ export class ListComponent implements OnInit {
   pageSize = 10;
   length: number;
 
+  completed = false;
+
   currentUser: any;
 
   constructor(private router: Router,
@@ -71,6 +73,7 @@ export class ListComponent implements OnInit {
         this.length = users.length;
         this.usersList = users;
         this.dataSource = this.usersList.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+        this.completed = true;
       },
       err => console.log(err)
     );

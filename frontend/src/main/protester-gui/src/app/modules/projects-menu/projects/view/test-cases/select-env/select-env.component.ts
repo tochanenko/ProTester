@@ -9,7 +9,7 @@ import {EnvironmentModel} from '../../../../../../models/environment/environment
 })
 export class SelectEnvComponent implements OnInit {
 
-  selectedEnv: string;
+  selectedEnv: number;
 
   constructor( public dialogRef: MatDialogRef<SelectEnvComponent>,
                @Inject(MAT_DIALOG_DATA) public data: { environments: EnvironmentModel[], testCaseName: string}) { }

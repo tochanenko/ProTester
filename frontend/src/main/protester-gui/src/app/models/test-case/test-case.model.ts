@@ -11,5 +11,5 @@ export class TestCaseModel {
   dataSetResponseList?: Array<DataSetResponse>;
   dataSetId?: Array<number>;
   scenarioName?: string | Object;
-  environment?: number;
+  environmentId?: number;
 }

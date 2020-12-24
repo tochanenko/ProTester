@@ -92,13 +92,12 @@ export class ListComponent extends Unsubscribe implements OnInit {
 
     deleteDialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.searchDataset();
-    })
+    });
   }
 
   private searchDataset(): void {
     this.subscription = this.datasetService.getAll(this.datasetFilter).subscribe(
       data => {
-        console.log(data.list);
         this.dataSource = data.list;
         this.datasetsCount = data.totalItems;
       }

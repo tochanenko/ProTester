@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {PageEvent} from "@angular/material/paginator";
 import {CompoundFilter} from "./compound-filter.model";
@@ -6,6 +6,9 @@ import {Subscription} from "rxjs";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {OuterComponent} from "../../../../models/outer.model";
 import {Router} from "@angular/router";
+import {DialogUtilComponent} from "../../../../components/dialog-util/dialog-util.component";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogWarningModel} from "../../../../models/dialog-warning.model";
 
 @Component({
   selector: 'app-compound-search',
@@ -26,8 +29,10 @@ export class SearchComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private compoundService: CompoundManageService,
-              private router: Router
-  ) { }
+              private router: Router,
+              private dialog: MatDialog
+  ) {
+  }
 
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
@@ -37,9 +42,10 @@ export class SearchComponent implements OnInit {
   }
 
   searchByFilter(): void {
-    this.subscription = this.compoundService.getAllCompoundsWithFilter(this.compoundFilter).subscribe(data =>
-    {
+    this.subscription = this.compoundService.getAllCompoundsWithFilter(this.compoundFilter).subscribe(data => {
       this.librariesCount = data["totalItems"];
+      data["list"].forEach(item => item.name = this.parseDescription(item.name));
+      console.log(data["list"]);
       this.dataSource = data["list"];
     });
   }
@@ -50,16 +56,43 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  goToEdit(id): void {
+    if (id) {
+      this.router.navigate([`libraries-menu/compounds/${id}/edit`]).then();
+    }
+  }
+
+  openDialogDelete(id): void {
+    this.compoundService.deleteCompound(id).subscribe((data) => {
+
+      }, error => {
+      console.log(error);
+      const warning: DialogWarningModel = {
+        error_name: error.error.message,
+        message: '',
+        links: error.error.outerComponents.map(component =>  `/libraries-menu/compounds/${component.id}` )
+      }
+        const dialogRef = this.dialog.open(DialogUtilComponent, {
+          width: '350px',
+          data: warning
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      }
+    );
+  }
+
   getLibrariesCount(): void {
-    this.subscription = this.compoundService.getAllCompounds().subscribe( data => {
+    this.subscription = this.compoundService.getAllCompounds().subscribe(data => {
       this.librariesCount = data["totalItems"];
     });
   }
 
   deleteCompound(id): void {
-    this.subscription = this.compoundService.deleteCompound(id).subscribe(data =>{
+    this.subscription = this.compoundService.deleteCompound(id).subscribe(data => {
       if (data) {
-        console.log("Successful delete!")
         this.searchByFilter();
       }
     }, error => console.error(error.error.message));
@@ -82,7 +115,29 @@ export class SearchComponent implements OnInit {
     this.searchByFilter();
   }
 
-  ngOnDestroy() : void {
+  parseDescription(description: string | Object) {
+    if (typeof description !== "object") {
+      const regexp = new RegExp('(\\$\\{.+?\\})');
+      let splitted = description.split(regexp);
+      return splitted.map(sub_string => {
+        if (sub_string.includes("${")) {
+          return {
+            text: sub_string.replace('${', '').replace('}', ''),
+            input: true
+          }
+        } else {
+          return {
+            text: sub_string,
+            input: false
+          }
+        }
+      })
+    } else {
+      return description;
+    }
+  }
+
+  ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }

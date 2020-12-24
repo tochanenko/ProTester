@@ -12,6 +12,8 @@ export class ViewComponent implements OnInit {
   userId: number = -1;
   user: User = null;
 
+  completed = false;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private userService: UserService
@@ -39,6 +41,8 @@ export class ViewComponent implements OnInit {
           this.user.isActive = user['active'];
           this.user.role = user['role'];
           this.user.username = user['username'];
+
+          this.completed = true;
         },
         err => console.log(err)
       )

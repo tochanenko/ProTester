@@ -96,8 +96,9 @@ export class CreateComponent implements OnInit {
 
   parseDescription(description: string | Object) {
     if (typeof description !== "object") {
-      const regexp = new RegExp('(\\${\\w*})');
+      const regexp = new RegExp('(\\$\\{.+?\\})');
       let splitted = description.split(regexp);
+      console.log(splitted)
       return splitted.map(sub_string => {
         if (sub_string.includes("${")) {
           return {
@@ -138,8 +139,6 @@ export class CreateComponent implements OnInit {
       }
       return step;
     });
-
-    console.log(this.compoundCreateRequest);
 
     this.compoundService.createCompound(this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();

@@ -17,7 +17,6 @@ export class TestCaseAnalyzeService {
   }
 
   loadTestCasesResults(id: number): Observable<TestCaseResultModel> {
-    console.log('IN LOAD ' + id);
     return this.http.get<TestCaseResultModel>(`/api/test-case-results/${id}`, httpOptions);
   }
 

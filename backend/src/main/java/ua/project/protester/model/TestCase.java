@@ -24,6 +24,8 @@ public class TestCase {
 
     private Long scenarioId;
 
+    private Long environmentId;
+
     private List<DataSet> dataSetList = new ArrayList<>();
 
 }

@@ -32,8 +32,6 @@ export class EditComponent implements OnInit, OnDestroy {
     this.createActionUpdateForm();
     this.subscription = this.actionService.getActionById(this.actionId).subscribe(
       data => {
-        console.log(data);
-        console.log(`Changing data` + data);
         this.actionUpdateForm.setValue(data);
       },
       error => {
@@ -67,8 +65,6 @@ export class EditComponent implements OnInit, OnDestroy {
     if (this.actionUpdateForm.invalid) {
       return;
     }
-
-    console.log('valid');
 
     const actionUpdateResponse = {
       id: this.actionId,

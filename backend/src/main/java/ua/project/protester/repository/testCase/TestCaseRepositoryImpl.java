@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.model.TestCase;
 import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.response.LightTestCaseResponse;
@@ -35,7 +36,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     private final DataSetRepository dataSetRepository;
 
     @Override
-    public TestCase create(TestCase testCase, List<Long> dataSet) {
+    public TestCase create(TestCase testCase, List<Long> dataSet) throws TestCaseCreateException {
         log.info("IN TestCaseRepositoryImpl create - testCase: {}, dataSet: {}", testCase, dataSet);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -48,15 +49,18 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("description", testCase.getDescription())
                         .addValue("author_id", testCase.getAuthorId())
                         .addValue("scenario_id", testCase.getScenarioId()),
-                keyHolder,
-                new String[]{"test_case_id"});
+                keyHolder);
 
-        log.info("saving testCase with name {}", testCase.getName());
+        Integer id = (Integer) (Optional.ofNullable(keyHolder.getKeys())
+                .orElseThrow(TestCaseCreateException::new)
+                .get("test_case_id"));
 
-        Integer id = (Integer) keyHolder.getKey();
         testCase.setId(id.longValue());
 
         saveDataSet(testCase.getId(), dataSet);
+
+        log.info("IN TestCaseRepositoryImpl - saved testCase {}", testCase);
+
         return testCase;
     }
 
@@ -64,17 +68,13 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     public TestCase update(TestCase testCase, List<Long> dataSet) {
         log.info("IN TestCaseRepositoryImpl update - testCase: {}, dataSet: {}", testCase, dataSet);
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
         namedJdbcTemplate.update(
                 PropertyExtractor.extract(env, "updateTestCase"),
                 new MapSqlParameterSource()
                         .addValue("test_case_id", testCase.getId())
                         .addValue("name", testCase.getName())
                         .addValue("description", testCase.getDescription())
-                        .addValue("scenario_id", testCase.getScenarioId()),
-                keyHolder,
-                new String[]{"test_case_id"});
+                        .addValue("scenario_id", testCase.getScenarioId()));
 
         log.info("updating testCase {}", testCase.getName());
         deleteDataSet(testCase.getId());
@@ -105,7 +105,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                             .addValue("test_case_id", id),
                     testCaseRowMapper));
 
-            testCase.ifPresent(aCase -> aCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(aCase.getId())));
+            testCase.ifPresent(t -> t.setDataSetList(dataSetRepository.findDataSetByTestCaseId(t.getId())));
             return testCase;
         } catch (EmptyResultDataAccessException e) {
             log.warn("testCase with id {} was not found", id);

@@ -55,7 +55,6 @@ export class ListComponent implements OnInit, OnDestroy {
       data => {
         this.dataSource = data.list;
         this.environmentsCount = data.totalItems;
-        console.log('------' + JSON.stringify(data.list));
       },
       error => console.log('error in initDataSource')
     ));
@@ -71,7 +70,6 @@ export class ListComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       updateDialogRef.afterClosed().subscribe(env => {
-        console.log(JSON.stringify(env));
         this.environmentService.update(env)
           .subscribe(
             () => {

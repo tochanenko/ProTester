@@ -16,7 +16,7 @@ public interface LibraryRepository {
 
     Optional<Library> findLibraryById(Integer id) throws LibraryNotFoundException;
 
-    void deleteLibraryById(Integer id);
+    void deleteLibraryById(Integer id) throws LibraryNotFoundException;
 
     Long getCountLibraries(PaginationLibrary paginationLibrary);
 }

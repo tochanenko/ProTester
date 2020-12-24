@@ -25,6 +25,8 @@ public class TestCaseResponse {
 
     private Long scenarioId;
 
+    private Long environmentId;
+
     private List<DataSetResponse> dataSetResponseList;
 
 

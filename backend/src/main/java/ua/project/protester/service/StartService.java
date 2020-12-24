@@ -3,13 +3,15 @@ package ua.project.protester.service;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.DataSetNotFoundException;
+import ua.project.protester.exception.EnvironmentNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
@@ -45,8 +47,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StartService {
 
-    private WebDriver webDriver;
-    private final RestTemplate restTemplate;
+    private  RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
     private ModelMapper modelMapper;
@@ -55,13 +56,11 @@ public class StartService {
     private UserService userService;
     private RunResultRepository runResultRepository;
     private SimpMessagingTemplate messagingTemplate;
-
-    private static List<TestCaseResponse> testCaseResponses = new ArrayList<>();
+    private List<TestCaseResponse> testCaseResponses;
+    private EnvironmentService environmentService;
     private static int counter = 0;
 
-    @Autowired
-    public StartService(@Lazy WebDriver webDriver, RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate) {
-        this.webDriver = webDriver;
+    public StartService(RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
         this.restTemplate = restTemplate;
         this.dataSetRepository = dataSetRepository;
         this.testScenarioService = testScenarioService;
@@ -71,25 +70,33 @@ public class StartService {
         this.userService = userService;
         this.runResultRepository = runResultRepository;
         this.messagingTemplate = messagingTemplate;
+        this.environmentService = environmentService;
     }
 
     public void execute(Long id) throws TestScenarioNotFoundException {
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--headless");
+        options.addArguments("--lang=en");
+        WebDriver driver = new ChromeDriver(options);
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
           for (int i = 0; i < testCaseResponses.size(); i++) {
-            runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId());
+            runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
         }
+          driver.quit();
         log.info("testCaseResponses are {}", testCaseResponses);
         testCaseResponses.clear();
     }
 
     @Transactional
-    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
-
-        Environment environment = new Environment();
+    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
+        Environment environment = checkSQLEnvironment(testCaseResponse);
         log.info("dataset{}", dataSet);
         try {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
@@ -126,7 +133,7 @@ public class StartService {
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
-        StartService.testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
+        testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
 
         return resultFromDb;
     }
@@ -136,6 +143,7 @@ public class StartService {
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
+                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
@@ -191,5 +199,12 @@ public class StartService {
         validationResponse.setDataSetName(dataSet.getName());
 
         return validationResponse;
+    }
+
+    private Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
+        if (testCaseResponse.getEnvironmentId() == null) {
+            return new Environment();
+        }
+        return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
     }
 }

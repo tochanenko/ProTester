@@ -68,7 +68,6 @@ export class CreateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('SUBMIT');
     const f = this.formControls;
 
 
@@ -105,8 +104,6 @@ export class CreateComponent implements OnInit {
         libraryCreateRequest['components'].push(compound_step);
       })
     }
-
-    console.log(libraryCreateRequest)
 
     this.libraryService.createLibrary(libraryCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/libraries').then();
@@ -172,7 +169,7 @@ export class CreateComponent implements OnInit {
   getAllActionsForBottomSheet(): void {
     this.libraryService.getAllActions().subscribe(data => {
       data['list'].forEach(item => {
-        item.description = this.parseDescription(item.description);
+        item.name = this.parseDescription(item.name);
       })
       this.bottomSheetData['actions'] = data['list'];
     });
@@ -181,7 +178,7 @@ export class CreateComponent implements OnInit {
   getAllCompoundsForBottomSheet(): void {
     this.libraryService.getAllCompounds().subscribe(data => {
       data['list'].forEach(item => {
-        item.description = this.parseDescription(item.description);
+        item.name = this.parseDescription(item.name);
       })
       this.bottomSheetData['compounds'] = data['list'];
     });

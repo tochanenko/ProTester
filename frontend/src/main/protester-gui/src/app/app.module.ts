@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {CommonModule} from "@angular/common";
+import {CommonModule, DatePipe} from "@angular/common";
 import {AuthInterceptor} from "./services/auth/auth.interceptor";
 import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
@@ -23,6 +23,7 @@ import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.modul
 import {BreadcrumbComponent} from './components/breadcrumb/breadcrumb.component';
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-scenario.module";
+import { DialogUtilComponent } from './components/dialog-util/dialog-util.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-sce
     AppComponent,
     HeaderComponent,
     BottomSheetComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    DialogUtilComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,7 @@ import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-sce
     BreadcrumbModule,
     TestScenarioModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {

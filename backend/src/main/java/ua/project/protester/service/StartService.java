@@ -16,12 +16,7 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.Environment;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.*;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -74,6 +69,8 @@ public class StartService {
     }
 
     public void execute(Long id) throws TestScenarioNotFoundException {
+
+        System.setProperty("webdriver.chrome.driver", "webdriver\\chromedriver.exe");
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-gpu");
@@ -143,6 +140,7 @@ public class StartService {
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
+                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);

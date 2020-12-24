@@ -34,7 +34,7 @@ public class CustomRestAction extends AbstractAction {
 
             return new ActionResultRestDto(
                     requestBody,
-                    response.getBody(),
+                    response.getBody() != null ? response.getBody() : "",
                     response.getStatusCodeValue());
 
         } catch (Exception e) {

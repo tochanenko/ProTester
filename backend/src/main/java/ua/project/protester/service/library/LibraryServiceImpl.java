@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.Step;
@@ -23,50 +22,47 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public void createLibrary(LibraryRequestModel libraryRequest) throws LibraryAlreadyExistsException {
-        try {
-            Library newLibrary = new Library();
-            newLibrary.setName(libraryRequest.getName());
-            newLibrary.setDescription(libraryRequest.getDescription());
-            newLibrary.setComponents(
-                    libraryRequest.getComponents()
-                            .stream()
-                            .map(componentRepresentation -> new Step(
-                                    componentRepresentation.getId(),
-                                    componentRepresentation.isAction(),
-                                    null,
-                                    componentRepresentation.getParameters()
+    public void createLibrary(LibraryRequestModel libraryRequest) {
 
-                            )).collect(Collectors.toList())
-            );
-            libraryRepository.createLibrary(newLibrary);
-        } catch (Exception e) {
-            throw  new LibraryAlreadyExistsException("Library already exists", e);
-        }
+        Library newLibrary = new Library();
+        newLibrary.setName(libraryRequest.getName());
+        newLibrary.setDescription(libraryRequest.getDescription());
+        newLibrary.setComponents(
+                libraryRequest.getComponents()
+                        .stream()
+                        .map(componentRepresentation -> new Step(
+                                componentRepresentation.getId(),
+                                componentRepresentation.isAction(),
+                                null,
+                                componentRepresentation.getParameters()
+
+                        )).collect(Collectors.toList())
+        );
+
+        libraryRepository.createLibrary(newLibrary);
+
     }
 
     @Override
     @Transactional
-    public void updateLibrary(LibraryRequestModel libraryRequest, int id)  throws LibraryAlreadyExistsException {
-        try {
-            Library updateLibrary = new Library();
-            updateLibrary.setName(libraryRequest.getName());
-            updateLibrary.setDescription(libraryRequest.getDescription());
-            updateLibrary.setComponents(
-                    libraryRequest.getComponents()
-                            .stream()
-                            .map(componentRepresentation -> new Step(
-                                    componentRepresentation.getId(),
-                                    componentRepresentation.isAction(),
-                                    null,
-                                    componentRepresentation.getParameters()
+    public void updateLibrary(LibraryRequestModel libraryRequest, int id) {
 
-                            )).collect(Collectors.toList())
-            );
-            libraryRepository.updateLibrary(updateLibrary, id);
-        } catch (Exception e) {
-            throw  new LibraryAlreadyExistsException("Library already exists", e);
-        }
+        Library updateLibrary = new Library();
+        updateLibrary.setName(libraryRequest.getName());
+        updateLibrary.setDescription(libraryRequest.getDescription());
+        updateLibrary.setComponents(
+                libraryRequest.getComponents()
+                        .stream()
+                        .map(componentRepresentation -> new Step(
+                                componentRepresentation.getId(),
+                                componentRepresentation.isAction(),
+                                null,
+                                componentRepresentation.getParameters()
+
+                        )).collect(Collectors.toList())
+        );
+
+        libraryRepository.updateLibrary(updateLibrary, id);
     }
 
     @Override
@@ -81,12 +77,16 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public Library getLibraryById(int id) throws LibraryNotFoundException {
-        return libraryRepository.findLibraryById(id).orElseThrow(() -> new LibraryNotFoundException(id));
+        return libraryRepository.findLibraryById(id).orElseThrow(() -> new LibraryNotFoundException("Can`t find library by id=" + id));
     }
 
     @Override
     @Transactional
     public void deleteLibraryById(int id) throws LibraryNotFoundException {
-        libraryRepository.deleteLibraryById(id);
+        try {
+            libraryRepository.deleteLibraryById(id);
+        } catch (Exception e) {
+            throw new LibraryNotFoundException("Can`t find library with id=" + id);
+        }
     }
 }

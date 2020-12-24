@@ -1,7 +1,6 @@
 package ua.project.protester.service.library;
 
 import org.springframework.transaction.annotation.Transactional;
-import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.request.LibraryRequestModel;
@@ -11,10 +10,10 @@ import ua.project.protester.utils.PaginationLibrary;
 
 public interface LibraryService {
     @Transactional
-    void createLibrary(LibraryRequestModel libraryRequest) throws LibraryAlreadyExistsException;
+    void createLibrary(LibraryRequestModel libraryRequest);
 
     @Transactional
-    void updateLibrary(LibraryRequestModel libraryRequest, int id) throws LibraryAlreadyExistsException;
+    void updateLibrary(LibraryRequestModel libraryRequest, int id);
 
     @Transactional
     Page<Library> findAll(PaginationLibrary paginationLibrary);

@@ -1,0 +1,2 @@
+<p>{{data.error_name}}</p>
+<a *ngFor="let link of data.links" [routerLink]="link" (click)="onNoClick()"> {{link}} </a>

@@ -7,13 +7,15 @@ import { SearchComponent } from "./search/search.component";
 import { ViewComponent } from "./view/view.component";
 import { MaterialModule } from "../../../services/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { EditComponent } from './edit/edit.component';
 
 
 @NgModule({
   declarations: [
     CreateComponent,
     SearchComponent,
-    ViewComponent
+    ViewComponent,
+    EditComponent
   ],
   imports: [
     CommonModule,

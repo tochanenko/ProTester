@@ -82,7 +82,7 @@ export class ViewComponent implements OnInit {
   }
 
   parseDescription(description: string) {
-    const regexp = new RegExp('(\\${\\w*})');
+    const regexp = new RegExp('(\\$\\{.+?\\})');
     let splitted = description.split(regexp);
     return splitted.map(sub_string => {
       if (sub_string.includes("${")) {

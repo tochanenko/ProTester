@@ -52,30 +52,29 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of actions">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      {{component.name}}
+                      <div class="panel-content">
+                        <ng-container *ngFor="let sub_string of component.name">
+                          <div *ngIf="sub_string['input']">
+                            <div class="description-input-disabled mat-elevation-z6">
+                              <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                            </div>
+                          </div>
+                          <div *ngIf="!sub_string['input']" class="description-text">
+                            <span>{{sub_string['text']}}</span>
+                          </div>
+                        </ng-container>
+                      </div>
                     </mat-panel-title>
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <div class="panel-content">
-                    <ng-container *ngFor="let sub_string of component.description">
-                      <div *ngIf="sub_string['input']">
-                        <div class="description-input-disabled mat-elevation-z6">
-                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-                        </div>
-                      </div>
-                      <div *ngIf="!sub_string['input']" class="description-text">
-                        <span>{{sub_string['text']}}</span>
-                      </div>
-                    </ng-container>
-                  </div>
                   <button mat-icon-button (click)="deleteComponentFromArray(actions, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <button type="button" mat-icon-button type="button" (click)="openBottomSheetWithActions()">
+            <button mat-icon-button type="button" (click)="openBottomSheetWithActions()">
               <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
             </button>
           </div>
@@ -89,30 +88,29 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of compounds">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      {{component.name}}
+                      <div class="panel-content">
+                        <ng-container *ngFor="let sub_string of component.name">
+                          <div *ngIf="sub_string['input']">
+                            <div class="description-input-disabled mat-elevation-z6">
+                              <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                            </div>
+                          </div>
+                          <div *ngIf="!sub_string['input']" class="description-text">
+                            <span>{{sub_string['text']}}</span>
+                          </div>
+                        </ng-container>
+                      </div>
                     </mat-panel-title>
                     <mat-panel-description>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
-                  <div class="panel-content">
-                    <ng-container *ngFor="let sub_string of component.description">
-                      <div *ngIf="sub_string['input']">
-                        <div class="description-input-disabled mat-elevation-z6">
-                          <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-                        </div>
-                      </div>
-                      <div *ngIf="!sub_string['input']" class="description-text">
-                        <span>{{sub_string['text']}}</span>
-                      </div>
-                    </ng-container>
-                  </div>
                   <button mat-icon-button (click)="deleteComponentFromArray(compounds, component.id)">
                     <mat-icon class="material-icons add_circle_outline">delete</mat-icon>
                   </button>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <button type="button" mat-icon-button type="button" (click)="openBottomSheetWithCompounds()">
+            <button mat-icon-button type="button" (click)="openBottomSheetWithCompounds()">
               <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
             </button>
           </div>

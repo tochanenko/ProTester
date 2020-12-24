@@ -171,7 +171,6 @@ public class ActionRepository {
 
     private List<String> scanForActionClassesInCode() {
         List<String> actionClassesInCode = new LinkedList<>();
-        reflections.getSubTypesOf(AbstractAction.class);
         Set<Class<? extends AbstractAction>> actionCandidates = reflections.getSubTypesOf(AbstractAction.class);
         for (Class<? extends AbstractAction> actionCandidate : actionCandidates) {
             try {

@@ -73,9 +73,6 @@ export class CompoundEditComponent implements OnInit {
     })
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.components, event.previousIndex, event.currentIndex);
-  }
 
   getIdFromParams(): void {
     this.subscription = this.activateRoute.params.subscribe(params => this.compound_id=params['id']);
@@ -149,7 +146,7 @@ export class CompoundEditComponent implements OnInit {
 
   parseDescription(description: string | Object) {
     if (typeof description !== "object") {
-      const regexp = new RegExp('(\\${\\w*})');
+      const regexp = new RegExp('(\\$\\{.+?\\})');
       let splitted = description.split(regexp);
       return splitted.map(sub_string => {
         if (sub_string.includes("${")) {

@@ -17,7 +17,11 @@ export class CompoundManageService {
   constructor(private http: HttpClient) { }
 
   getAllActions(): Observable<Action[]> {
-    return this.http.get<Action[]>("api/actions", httpOptions);
+    let params = new HttpParams();
+    params = params.append('pageSize', String(1000));
+    params = params.append('pageNumber', String(1));
+    params = params.append('compoundName', String(''));
+    return this.http.get<Action[]>("api/actions", {params});
   }
 
   getAllCompoundsWithFilter(filter: CompoundFilter): Observable<OuterComponent[]> {

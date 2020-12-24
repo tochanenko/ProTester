@@ -37,6 +37,9 @@
             <button (click)="goToView(row.id)" mat-menu-item>
               <span>View</span>
             </button>
+            <button (click)="goToEdit(row.id)" mat-menu-item>
+              <span>Edit</span>
+            </button>
             <button mat-menu-item (click)="deleteScenario(row.id)" class="mat-menu-delete-button">
               <span>Delete</span>
             </button>

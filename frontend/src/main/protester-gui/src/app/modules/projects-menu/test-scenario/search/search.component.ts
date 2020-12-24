@@ -50,6 +50,12 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  goToEdit(id): void {
+    if (id) {
+      this.router.navigate([`projects-menu/scenarios/${id}/edit`]).then();
+    }
+  }
+
   deleteScenario(id): void {
     this.subscription = this.scenarioService.delete(id).subscribe(data =>{
       if (data) {

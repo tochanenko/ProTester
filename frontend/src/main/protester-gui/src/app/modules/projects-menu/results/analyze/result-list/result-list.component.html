@@ -56,32 +56,59 @@
 
         <mat-card-content>
 
-          <table class="table-info">
-            <tr>
-              <td class="column-name">Name</td>
-              <td class="second-column">{{item.action.name}}</td>
-            </tr>
-            <tr *ngIf="item.startDate">
-              <td class="column-name">Start date</td>
-              <td class="second-column">{{item.startDate | date:'medium'}}</td>
-            </tr>
-            <tr *ngIf="item.endDate">
-              <td class="column-name">End date</td>
-              <td class="second-column">{{item.endDate | date:'medium'}}</td>
-            </tr>
-            <tr *ngIf="item.action.type === 'REST' && item.request">
-              <td class="column-name"> Request</td>
-              <td class="second-column">{{item.request}}</td>
-            </tr>
-            <tr *ngIf="item.action.type === 'REST' && item.response">
-              <td class="column-name"> Response</td>
-              <td class="second-column">{{item.response}}</td>
-            </tr>
-            <tr *ngIf="item.action.type === 'REST' && item.statusCode">
-              <td class="column-name"> Code</td>
-              <td class="second-column">{{item.statusCode}}</td>
-            </tr>
-          </table>
+          <div class="table-view">
+            <p class="column-name"> Name </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.action.name}}</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.startDate">
+            <p class="column-name"> Start date </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.startDate | date:'medium'}}</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.endDate">
+            <p class="column-name"> End date </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.endDate | date:'medium'}}</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'REST' && item.request">
+            <p class="column-name"> Request </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.request}}</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'REST' && item.response">
+            <p class="column-name"> Response </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.response}}</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'REST' && item.statusCode">
+            <p class="column-name"> Code </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.statusCode}}</th>
+              </tr>
+            </table>
+          </div>
 
           <div class="table-view" *ngIf="item.inputParameters">
             <p class="column-name"> Parameters </p>
@@ -96,6 +123,7 @@
               </tr>
             </table>
           </div>
+
 
           <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns.length > 0">
             <p class="column-name"> Output </p>
@@ -113,10 +141,14 @@
             </table>
           </div>
 
-          <tr>
-            <td class="column-name" *ngIf="item.message">Message</td>
-            <td class="second-column">{{item.message}}</td>
-          </tr>
+          <div class="table-view" *ngIf="item.message">
+            <p class="column-name"> Message </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">{{item.message}}</th>
+              </tr>
+            </table>
+          </div>
 
         </mat-card-content>
 

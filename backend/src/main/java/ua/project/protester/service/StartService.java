@@ -86,7 +86,6 @@ public class StartService {
 
     @Transactional
     void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId) throws TestScenarioNotFoundException {
-
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
         Environment environment = checkSQLEnvironment(testCaseResponse);

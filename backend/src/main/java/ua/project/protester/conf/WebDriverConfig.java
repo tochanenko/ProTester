@@ -13,7 +13,7 @@ public class WebDriverConfig {
     @Bean
     @Scope("prototype")
     public WebDriver getDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\vovan\\Downloads\\chromedriver_win32\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "webdriver\\chromedriver.exe");
         return new ChromeDriver();
     }
 

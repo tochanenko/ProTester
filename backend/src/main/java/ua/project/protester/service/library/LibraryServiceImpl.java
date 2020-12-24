@@ -23,7 +23,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public void createLibrary(LibraryRequestModel libraryRequest) {
-        System.out.println(libraryRequest.toString());
+
         Library newLibrary = new Library();
         newLibrary.setName(libraryRequest.getName());
         newLibrary.setDescription(libraryRequest.getDescription());
@@ -38,12 +38,15 @@ public class LibraryServiceImpl implements LibraryService {
 
                         )).collect(Collectors.toList())
         );
+
         libraryRepository.createLibrary(newLibrary);
+
     }
 
     @Override
     @Transactional
     public void updateLibrary(LibraryRequestModel libraryRequest, int id) {
+
         Library updateLibrary = new Library();
         updateLibrary.setName(libraryRequest.getName());
         updateLibrary.setDescription(libraryRequest.getDescription());
@@ -58,6 +61,7 @@ public class LibraryServiceImpl implements LibraryService {
 
                         )).collect(Collectors.toList())
         );
+
         libraryRepository.updateLibrary(updateLibrary, id);
     }
 
@@ -73,16 +77,16 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public Library getLibraryById(int id) throws LibraryNotFoundException {
-        try {
-            return libraryRepository.findLibraryById(id).orElseThrow(LibraryNotFoundException::new);
-        } catch (LibraryNotFoundException e) {
-            throw new LibraryNotFoundException();
-        }
+        return libraryRepository.findLibraryById(id).orElseThrow(() -> new LibraryNotFoundException("Can`t find library by id=" + id));
     }
 
     @Override
     @Transactional
-    public void deleteLibraryById(int id) {
-        libraryRepository.deleteLibraryById(id);
+    public void deleteLibraryById(int id) throws LibraryNotFoundException {
+        try {
+            libraryRepository.deleteLibraryById(id);
+        } catch (Exception e) {
+            throw new LibraryNotFoundException("Can`t find library with id=" + id);
+        }
     }
 }

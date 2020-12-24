@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TestCaseResultService} from "../../../../services/test-case-result.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
+import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-test-case-result-table',
@@ -11,8 +12,15 @@ import {DatePipe} from "@angular/common";
 export class TestCaseResultTableComponent implements OnInit {
 
   displayedColumns = ['caseName', 'user', 'status', 'start', 'finish'];
+  testCaseResults = [];
   dataSource = [];
   projectId = -1;
+  processed = false;
+
+  pageEvent: PageEvent;
+  pageIndex = 0;
+  pageSize = 10;
+  length: number;
 
   constructor(
     private testCaseResultService: TestCaseResultService,
@@ -41,10 +49,20 @@ export class TestCaseResultTableComponent implements OnInit {
                 status: result['status']
               })
             });
-            this.dataSource = testCaseResults;
+            this.testCaseResults = testCaseResults;
+            this.length = testCaseResults.length;
+            this.dataSource = this.testCaseResults.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+            this.processed = true;
           }
         );
       })
+  }
+
+  updateList(event?: PageEvent): PageEvent {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.dataSource = this.testCaseResults.slice(event.pageIndex * event.pageSize, (event.pageIndex + 1) * event.pageSize);
+    return event;
   }
 }
 

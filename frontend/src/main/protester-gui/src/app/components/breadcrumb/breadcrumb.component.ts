@@ -24,10 +24,6 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
   userSubscription: Subscription;
   navigationSubscription: Subscription;
 
-  compoundSubscription: Subscription;
-  projectSubscription: Subscription;
-  librarySubscription: Subscription;
-
   user: User = new User();
 
   constructor(

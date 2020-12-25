@@ -111,7 +111,7 @@ public class RunResultRepository {
         List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(scenarioId).getSteps()
                 .stream()).collect(Collectors.toList());
 
-        String findResults = isByTestCaseWrapper ? "findActionWrapperResultsByTestCaseResultId" : "findActionWrapperResultsByTestCaseWrapperId";
+        String findResults = isByTestCaseWrapper ? "findActionWrapperResultsByTestCaseWrapperId" : "findActionWrapperResultsByTestCaseResultId";
         try {
             List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
                     extract(env, findResults),

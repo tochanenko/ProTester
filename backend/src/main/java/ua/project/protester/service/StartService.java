@@ -6,7 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +48,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO: delete @SuppressWarnings
 @Service
 @Slf4j
-@SuppressWarnings("PMD")
 public class StartService {
 
     private RestTemplate restTemplate;
@@ -82,6 +82,7 @@ public class StartService {
 
     public void execute(Long id) throws TestScenarioNotFoundException {
         WebDriver driver = null;
+        //TODO if you run from local - add System.setProperties()
         try {
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--disable-gpu");
@@ -95,10 +96,7 @@ public class StartService {
             for (int i = 0; i < testCaseResponses.size(); i++) {
                 runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
-            log.info("testCaseResponses are {}", testCaseResponses);
         } catch (WebDriverException exception) {
-            testCaseResponses.clear();
-            Objects.requireNonNull(driver).quit();
             log.error("webdriver exception {}", exception.getClass().getName());
         } finally {
             log.info("driver was closed");
@@ -111,11 +109,8 @@ public class StartService {
     void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
-        Environment environment = checkSQLEnvironment(testCaseResponse);
-
         try {
-            // TODO: pass JdbcTemplate
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), null, webDriver, restTemplate, getConsumer(testCaseResultId));
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), checkSQLEnvironment(testCaseResponse), webDriver, restTemplate, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
@@ -233,10 +228,18 @@ public class StartService {
         return validationResponse;
     }
 
-    private Environment checkSQLEnvironment(TestCaseResponse testCaseResponse) {
-        if (testCaseResponse.getEnvironmentId() == null) {
-            return new Environment();
+    private JdbcTemplate checkSQLEnvironment(TestCaseResponse testCaseResponse) {
+        if (testCaseResponse.getEnvironmentId() != null) {
+            Environment environment = environmentService.findById(testCaseResponse.getEnvironmentId())
+                    .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+
+            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+            dataSourceBuilder.driverClassName("org.postgresql.Driver");
+            dataSourceBuilder.url(environment.getUrl());
+            dataSourceBuilder.username(environment.getUsername());
+            dataSourceBuilder.password(environment.getPassword());
+            return new JdbcTemplate(dataSourceBuilder.build());
         }
-        return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+        return null;
     }
 }

@@ -28,6 +28,7 @@ import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.repository.result.ActionResultRepository;
 import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
@@ -42,12 +43,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
 public class StartService {
 
-    private  RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
     private ModelMapper modelMapper;
@@ -59,8 +61,9 @@ public class StartService {
     private List<TestCaseResponse> testCaseResponses;
     private EnvironmentService environmentService;
     private static int counter = 0;
+    private OuterComponentRepository outerComponentRepository;
 
-    public StartService(RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
+    public StartService(RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService, OuterComponentRepository outerComponentRepository) {
         this.restTemplate = restTemplate;
         this.dataSetRepository = dataSetRepository;
         this.testScenarioService = testScenarioService;
@@ -71,6 +74,7 @@ public class StartService {
         this.runResultRepository = runResultRepository;
         this.messagingTemplate = messagingTemplate;
         this.environmentService = environmentService;
+        this.outerComponentRepository = outerComponentRepository;
     }
 
     public void execute(Long id) throws TestScenarioNotFoundException {
@@ -84,10 +88,10 @@ public class StartService {
         WebDriver driver = new ChromeDriver(options);
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
-          for (int i = 0; i < testCaseResponses.size(); i++) {
+        for (int i = 0; i < testCaseResponses.size(); i++) {
             runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
         }
-          driver.quit();
+        driver.quit();
         log.info("testCaseResponses are {}", testCaseResponses);
         testCaseResponses.clear();
     }
@@ -97,7 +101,7 @@ public class StartService {
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
         Environment environment = checkSQLEnvironment(testCaseResponse);
-        log.info("dataset{}", dataSet);
+
         try {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
@@ -129,7 +133,10 @@ public class StartService {
         for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
             TestCaseResponse currentTestCaseResponse = runTestCaseRequest.getTestCaseResponseList().get(i);
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
-            List<Step> step = testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps();
+
+            List<Step> step = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps()
+                    .stream()).collect(Collectors.toList());
+
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
@@ -139,11 +146,20 @@ public class StartService {
     }
 
 
+    private Stream<Step> findStepsRecursively(Stream<Step> initial) {
+        return initial.flatMap(s -> {
+            if (s.isAction()) {
+                return Stream.of(s);
+            } else {
+                return findStepsRecursively(outerComponentRepository.findOuterComponentById(s.getComponent().getId(), true).getSteps().stream());
+            }
+        });
+    }
+
     @Transactional
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
-                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
@@ -160,7 +176,7 @@ public class StartService {
                 messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultDto);
                 counter++;
 
-            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation  illegalActionLogicImplementation) {
+            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation illegalActionLogicImplementation) {
                 illegalActionLogicImplementation.printStackTrace();
             }
         };

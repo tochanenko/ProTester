@@ -1,6 +1,7 @@
 package ua.project.protester.action;
 
 import org.openqa.selenium.WebDriver;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
@@ -19,7 +20,7 @@ import java.util.Map;
 )
 public class SaveToContextAction extends AbstractAction {
     @Override
-    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
+    protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate) {
         try {
             context.put(params.get("key"), params.get("value"));
             return new ActionResultTechnicalDto();

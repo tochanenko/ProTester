@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.annotation.Action;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class CustomRestAction extends AbstractAction {
 
     @Override
-    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, Environment environment, RestTemplate restTemplate) {
+    protected ActionResultRestDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate) {
         String requestBody = params.get("body");
         try {
             ResponseEntity<String> response = restTemplate.exchange(

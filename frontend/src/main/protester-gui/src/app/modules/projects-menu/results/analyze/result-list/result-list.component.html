@@ -141,6 +141,18 @@
             </table>
           </div>
 
+          <div class="table-view" *ngIf="item.action.type === 'UI'">
+            <p class="column-name" *ngIf="imagePath"> Image </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">
+                  <img [src]="item.path" class="image" alt="image">
+                </th>
+              </tr>
+            </table>
+          </div>
+
+
           <div class="table-view" *ngIf="item.message">
             <p class="column-name"> Message </p>
             <table class="values-table">

@@ -13,7 +13,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Get value from the context by key ${key} and check if it equals ${value}",
+        name = "Get value from the context by ${key} and check if it equals ${value}",
         type = ExecutableComponentType.TECHNICAL,
         description = "Check if context variables value equals provided value",
         parameterNames = {"key", "value"}

@@ -14,7 +14,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Input text ${text} into field with id ${id}",
+        name = "Input ${text} into field with ${id}",
         type = ExecutableComponentType.TECHNICAL,
         description = "Input provided text into field with the specified id",
         parameterNames = {"text", "id"}

@@ -13,7 +13,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Save value ${value} with key ${key} to context",
+        name = "Set ${key} = ${value} in context",
         type = ExecutableComponentType.TECHNICAL,
         description = "Save the specified pair (key,value) to context",
         parameterNames = {"value", "key"}

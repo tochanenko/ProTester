@@ -19,7 +19,8 @@ import java.util.Map;
 
 @Action(
         name = "Take screenshot",
-        type = ExecutableComponentType.UI
+        type = ExecutableComponentType.UI,
+        description = "Take screenshot"
 )
 public class SaveScreenshotAction extends AbstractAction {
     @Override

@@ -14,9 +14,9 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Input ${text} into field with specified ${xpath}",
+        name = "Input ${text} into field with ${xpath}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Input text into field wtih id action",
+        description = "Input provided text into field with the specified xpath",
         parameterNames = {"text", "xpath"}
 )
 public class InputTextIntoFieldWithXPathAction extends AbstractAction {

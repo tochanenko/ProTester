@@ -16,7 +16,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 import java.util.Map;
 
 @Action(
-        name = "Send ${method} request to url ${url} with body ${body} and fail if code is 4xx or 5xx",
+        name = "Send ${method} request to ${url} with ${body} and fail if code is 4xx or 5xx",
         type = ExecutableComponentType.REST,
         description = "Send request with the specified method to the specified url with the specified body. Fail if response code is 4xx or 5xx",
         parameterNames = {"method", "url", "body"}

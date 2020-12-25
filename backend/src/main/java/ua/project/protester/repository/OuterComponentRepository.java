@@ -249,6 +249,30 @@ public class OuterComponentRepository {
                         rs.getInt("compoundId")));
     }
 
+    public List<Step> findAllOuterComponentStepsByIdResult(Integer id, boolean isCompound) {
+        String sql = isCompound
+                ? PropertyExtractor.extract(env, "findAllCompoundStepsByIdResult")
+                : PropertyExtractor.extract(env, "findAllTestScenarioStepsByIdResult");
+
+        return namedParameterJdbcTemplate.query(
+                sql,
+                new MapSqlParameterSource()
+                        .addValue("id", id),
+                (rs, rowNum) -> initOuterComponentStep(
+                        rs.getInt("id"),
+                        rs.getBoolean("isAction"),
+                        rs.getInt("actionId"),
+                        rs.getInt("compoundId")));
+    }
+
+    public int findCompoundId(int testScenarioId) {
+        String sql = PropertyExtractor.extract(env, "findCompoundIdWhenItIsNotTestScenario");
+        return namedParameterJdbcTemplate.queryForObject(
+                sql,
+                new MapSqlParameterSource()
+                        .addValue("id", testScenarioId), Integer.class);
+    }
+
     private Step initOuterComponentStep(int id, boolean isAction, int actionId, int outerComponentId) {
         try {
             ExecutableComponent component =

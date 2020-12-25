@@ -17,10 +17,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Action(
-        name = "",
+        name = "Execute ${query} and return table",
         type = ExecutableComponentType.SQL,
-        description = "",
-        parameterNames = {""}
+        description = "Execute the specified query and return result table",
+        parameterNames = {"query"}
 )
 public class SqlAction extends AbstractAction {
 

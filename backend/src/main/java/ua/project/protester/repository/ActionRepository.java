@@ -7,6 +7,7 @@ import org.reflections.Reflections;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -116,7 +117,7 @@ public class ActionRepository {
     private void checkLogicReturningType(Class<? extends AbstractAction> actionClass, ExecutableComponentType declaredReturnType) throws IllegalActionLogicImplementation {
         try {
             Class<?> actualReturnTypeClass = actionClass
-                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, ua.project.protester.model.Environment.class, RestTemplate.class)
+                    .getDeclaredMethod("logic", Map.class, Map.class, WebDriver.class, JdbcTemplate.class, RestTemplate.class)
                     .getReturnType();
 
             switch (declaredReturnType) {

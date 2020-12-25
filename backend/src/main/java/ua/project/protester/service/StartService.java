@@ -46,8 +46,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO: delete @SuppressWarnings
 @Service
 @Slf4j
+@SuppressWarnings("PMD")
 public class StartService {
 
     private RestTemplate restTemplate;
@@ -112,7 +114,8 @@ public class StartService {
         Environment environment = checkSQLEnvironment(testCaseResponse);
 
         try {
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
+            // TODO: pass JdbcTemplate
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), null, webDriver, restTemplate, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {

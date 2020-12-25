@@ -19,14 +19,4 @@ public class RunResult {
         this.id = id;
     }
 
-    //first - testCaseResultId, second - wrapper
-    //private Map<Integer, List<ActionWrapper>> actionWrapper = new HashMap<>();
-
-//    public RunResult(Long id, Long userId) {
-//        this.id = id;
-//        this.userId = userId;
-//    }
-
-
-
 }

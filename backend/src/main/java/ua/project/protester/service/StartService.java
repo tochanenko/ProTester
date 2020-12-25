@@ -87,7 +87,7 @@ public class StartService {
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--headless");
             options.addArguments("--lang=en");
-            driver = new ChromeDriver();
+            driver = new ChromeDriver(options);
             RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
             List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
             for (int i = 0; i < testCaseResponses.size(); i++) {
@@ -144,7 +144,8 @@ public class StartService {
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
 
             List<Step> step = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps()
-                    .stream()).collect(Collectors.toList());
+                    .stream())
+                    .collect(Collectors.toList());
 
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
@@ -156,7 +157,7 @@ public class StartService {
 
 
     @Transactional
-    private Stream<Step> findStepsRecursively(Stream<Step> initial) {
+    Stream<Step> findStepsRecursively(Stream<Step> initial) {
         return initial.flatMap(s -> {
             if (s.isAction()) {
                 return Stream.of(s);
@@ -181,8 +182,6 @@ public class StartService {
                     actionResultDto.setLast(true);
                 }
 
-                log.info("action result {}", actionResultDto.getClass().getName());
-                log.info("actionWrapper {}", actionWrappers.get(counter));
                 messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultDto);
                 counter++;
 
@@ -210,7 +209,6 @@ public class StartService {
     }
 
     public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
-       log.info("test case {}", testCaseResponse);
         DataSet dataSet = dataSetRepository.findDataSetById(testCaseResponse.getDataSetResponseList()
                 .stream()
                 .filter(Objects::nonNull).findFirst().orElseThrow().getId())

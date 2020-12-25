@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,7 +111,8 @@ public class StartService {
         TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
         DataSet dataSet = testCase.getDataSetList().get(0);
         try {
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), checkSQLEnvironment(testCaseResponse), webDriver, restTemplate, getConsumer(testCaseResultId));
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue())
+                    .execute(dataSet.getParameters(), checkSQLEnvironment(testCaseResponse), webDriver, restTemplate, getEnvironment(testCaseResponse), getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
@@ -170,7 +172,7 @@ public class StartService {
         return (action) -> {
             try {
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
-                        runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
+                        runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId), false);
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
                 actionResultDto.setEndDateStr(LocalDateTime.from(actionResultDto.getEndDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                 actionResultDto.setStartDateStr(LocalDateTime.from(actionResultDto.getStartDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -239,6 +241,14 @@ public class StartService {
             dataSourceBuilder.username(environment.getUsername());
             dataSourceBuilder.password(environment.getPassword());
             return new JdbcTemplate(dataSourceBuilder.build());
+        }
+        return null;
+    }
+
+    private Environment getEnvironment(TestCaseResponse testCaseResponse) {
+        if (testCaseResponse.getEnvironmentId() != null) {
+            return environmentService.findById(testCaseResponse.getEnvironmentId())
+                    .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
         }
         return null;
     }

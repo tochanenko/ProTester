@@ -107,41 +107,16 @@ public class RunResultRepository {
         return runResult;
     }
 
-    public List<ActionWrapper> findActionWrapperByTestCaseResult(Integer testCaseResultId, Integer scenarioId) throws TestScenarioNotFoundException {
+    public List<ActionWrapper> findActionWrapperByTestCaseResult(Integer testCaseResultId, Integer scenarioId, boolean isByTestCaseWrapper) throws TestScenarioNotFoundException {
         List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(scenarioId).getSteps()
                 .stream()).collect(Collectors.toList());
+
+        String findResults = isByTestCaseWrapper ? "findActionWrapperResultsByTestCaseResultId" : "findActionWrapperResultsByTestCaseWrapperId";
         try {
             List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
-                    extract(env, "findActionWrapperResultsByTestCaseResultId"),
+                    extract(env, findResults),
                     new MapSqlParameterSource()
                             .addValue("test_case_result", testCaseResultId),
-                    (rs, rowNum) -> new ActionWrapper(
-                            rs.getInt("action_wrapper_id"),
-                            rs.getInt("step_id"))
-            );
-            if (actionWrapperList.size() == 0) {
-                return Collections.emptyList();
-            }
-            return actionWrapperList.stream()
-                    .map(actionWrapper -> connectActionWrapperWithStep(actionWrapper.getId(), steps.stream()
-                            .filter(step -> step.getId().equals(actionWrapper.getStepId()))
-                            .findFirst().orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapperw was not found")))
-                            .orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapperw was not found")))
-                    .collect(Collectors.toList());
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("action wrappers were not found");
-            return Collections.emptyList();
-        }
-    }
-
-    private List<ActionWrapper> findActionWrapperByTestCaseWrapperResult(Integer testCaseWrapperId, Integer scenarioId) throws TestScenarioNotFoundException {
-        List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(scenarioId).getSteps()
-                .stream()).collect(Collectors.toList());
-        try {
-            List<ActionWrapper> actionWrapperList = namedParameterJdbcTemplate.query(
-                    extract(env, "findActionWrapperResultsByTestCaseWrapperId"),
-                    new MapSqlParameterSource()
-                            .addValue("test_case_wrapper_id", testCaseWrapperId),
                     (rs, rowNum) -> new ActionWrapper(
                             rs.getInt("action_wrapper_id"),
                             rs.getInt("step_id"))
@@ -236,7 +211,7 @@ public class RunResultRepository {
             testCaseWrapperResults.forEach(result -> {
                 try {
                     result.setActionWrapperList(
-                            findActionWrapperByTestCaseWrapperResult(result.getId(), result.getScenarioId())
+                            findActionWrapperByTestCaseResult(result.getId(), result.getScenarioId(), false)
                     );
                 } catch (TestScenarioNotFoundException e) {
                     e.printStackTrace();

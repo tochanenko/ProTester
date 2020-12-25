@@ -102,7 +102,7 @@ public class StartService {
         log.info("dataset{}", dataSet);
         try {
             // TODO: pass JdbcTemplate
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), null, webDriver, restTemplate, getConsumer(testCaseResultId));
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), null, webDriver, restTemplate, environment, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {

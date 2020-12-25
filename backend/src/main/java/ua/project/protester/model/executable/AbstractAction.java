@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.Environment;
 import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
 
@@ -30,10 +31,10 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public void execute(Map<String, String> params, Map<String, String> context, JdbcTemplate jdbcTemplate, WebDriver driver, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+    public void execute(Map<String, String> params, Map<String, String> context, JdbcTemplate jdbcTemplate, WebDriver driver, Environment environment, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
         OffsetDateTime startDate = OffsetDateTime.now();
 
-        ActionResultDto actionResult = logic(params, context, driver, jdbcTemplate, restTemplate);
+        ActionResultDto actionResult = logic(params, context, driver, jdbcTemplate, environment, restTemplate);
 
         actionResult.setEndDate(OffsetDateTime.now());
         actionResult.setStartDate(startDate);
@@ -54,5 +55,5 @@ public abstract class AbstractAction extends ExecutableComponent {
         }
     }
 
-    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, RestTemplate restTemplate);
+    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate);
 }

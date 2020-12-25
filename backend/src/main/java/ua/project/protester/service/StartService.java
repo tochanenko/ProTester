@@ -2,6 +2,7 @@ package ua.project.protester.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -40,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -84,6 +86,8 @@ public class StartService {
         options.addArguments("--headless");
         options.addArguments("--lang=en");
         WebDriver driver = new ChromeDriver(options);
+        driver.manage().window().setSize(new Dimension(800, 600));
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
           for (int i = 0; i < testCaseResponses.size(); i++) {

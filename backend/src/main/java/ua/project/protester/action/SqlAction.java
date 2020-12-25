@@ -10,10 +10,8 @@ import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultSqlDto;
 import ua.project.protester.model.executable.result.subtype.SqlColumnDto;
+import ua.project.protester.utils.SqlConverter;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.*;
 
 @Action(
@@ -24,37 +22,13 @@ import java.util.*;
 )
 public class SqlAction extends AbstractAction {
 
-    private static List<SqlColumnDto> extractTableFromResultSet(ResultSet resultSet) {
-        try {
-            ResultSetMetaData metaData = resultSet.getMetaData();
-
-            List<SqlColumnDto> sqlTable = new ArrayList<>(metaData.getColumnCount());
-
-            for (int i = 0; i < metaData.getColumnCount(); i++) {
-                sqlTable.set(i, new SqlColumnDto(
-                        metaData.getColumnName(i),
-                        new LinkedList<>()));
-            }
-
-            while (resultSet.next()) {
-                for (int i = 0; i < sqlTable.size(); i++) {
-                    sqlTable.get(i).getRows().add(resultSet.getString(i + 1));
-                }
-            }
-
-            return sqlTable;
-        } catch (SQLException e) {
-            return Collections.emptyList();
-        }
-    }
-
     @Override
     protected ActionResultSqlDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate) {
         String query = params.get("query");
         try {
             List<SqlColumnDto> table = jdbcTemplate.query(
                     query,
-                    SqlAction::extractTableFromResultSet);
+                    SqlConverter::convertResultSetToTable);
 
             if (table != null) {
                 return new ActionResultSqlDto(

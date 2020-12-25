@@ -67,15 +67,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     const observables: Observable<TestCaseResultModel>[] = [];
 
     this.testCaseWrapperResult.forEach((item) => {
-      item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
+        item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
-      observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-        map((result) => {
-          const innerResultsTemp: ActionResultModel[] = [];
-          result.innerResults.forEach(i => innerResultsTemp.push(i));
+        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+          map((result) => {
+            const innerResultsTemp: ActionResultModel[] = [];
+            result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-          item.actionWrapperList.slice(result.innerResults.length)
-            .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
+            item.actionWrapperList.slice(result.innerResults.length)
+              .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
 
             result.innerResults = innerResultsTemp;
 

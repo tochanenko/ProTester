@@ -25,7 +25,6 @@ public class CheckValueFromContextAction extends AbstractAction {
         try {
             String contextValue = context.get(params.get("key"));
             String providedValue = params.get("value");
-
             if (providedValue.equals(contextValue)) {
                 return new ActionResultTechnicalDto();
             } else {

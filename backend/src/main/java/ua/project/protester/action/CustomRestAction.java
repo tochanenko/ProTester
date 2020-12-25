@@ -16,7 +16,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 import java.util.Map;
 
 @Action(
-        name = "Send ${method} request to url ${url} with body ${body}",
+        name = "Send ${method} request to ${url} with ${body}",
         type = ExecutableComponentType.REST,
         description = "Send request with the specified method to the specified url with the specified body",
         parameterNames = {"method", "url", "body"}

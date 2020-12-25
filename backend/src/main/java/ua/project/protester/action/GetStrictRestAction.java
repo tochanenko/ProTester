@@ -15,7 +15,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 import java.util.Map;
 
 @Action(
-        name = "Send get request to url ${url} and fail if code is 4xx or 5xx",
+        name = "Send get request to ${url} and fail if code is 4xx or 5xx",
         type = ExecutableComponentType.REST,
         description = "Send get request to the specified url. Fail if response code is 4xx or 5xx",
         parameterNames = {"url"}

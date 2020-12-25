@@ -5,29 +5,30 @@ import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
 import ua.project.protester.exception.DataSetNotFoundException;
 import ua.project.protester.exception.EnvironmentNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.action.ActionExecutionException;
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.Environment;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.*;
+import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.repository.DataSetRepository;
+import ua.project.protester.repository.OuterComponentRepository;
 import ua.project.protester.repository.result.ActionResultRepository;
 import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
@@ -42,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -59,6 +61,8 @@ public class StartService {
     private List<TestCaseResponse> testCaseResponses;
     private EnvironmentService environmentService;
     private static int counter = 0;
+    @Autowired
+    private OuterComponentRepository outerComponentRepository;
 
     public StartService(RestTemplate restTemplate, DataSetRepository dataSetRepository, TestScenarioService testScenarioService, ModelMapper modelMapper, ActionResultRepository actionResultRepository, TestCaseResultRepository resultRepository, UserService userService, RunResultRepository runResultRepository, SimpMessagingTemplate messagingTemplate, EnvironmentService environmentService) {
         this.restTemplate = restTemplate;
@@ -75,13 +79,14 @@ public class StartService {
 
     public void execute(Long id) throws TestScenarioNotFoundException {
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-gpu");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--headless");
-        options.addArguments("--lang=en");
-        WebDriver driver = new ChromeDriver(options);
+        System.setProperty("webdriver.chrome.driver", "webdriver\\chromedriver.exe");
+//        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--disable-gpu");
+//        options.addArguments("--no-sandbox");
+//        options.addArguments("--disable-dev-shm-usage");
+//        options.addArguments("--headless");
+//        options.addArguments("--lang=en");
+        WebDriver driver = new ChromeDriver();
         RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
         List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
           for (int i = 0; i < testCaseResponses.size(); i++) {
@@ -99,7 +104,8 @@ public class StartService {
         Environment environment = checkSQLEnvironment(testCaseResponse);
         log.info("dataset{}", dataSet);
         try {
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
+            OuterComponent outerComponent = testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue());
+            outerComponent.execute(dataSet.getParameters(), environment, webDriver, restTemplate, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
@@ -109,7 +115,7 @@ public class StartService {
     }
 
     @Transactional
-    public RunResult getTestCaseExecutionResult(RunTestCaseRequest runTestCaseRequest) throws TestScenarioNotFoundException {
+    public RunResult getTestCaseExecutionResult(RunTestCaseRequest runTestCaseRequest) throws TestScenarioNotFoundException, CompoundNotFoundException, OuterComponentNotFoundException {
 
         RunResult resultFromDb = runResultRepository.saveRunResult(runTestCaseRequest.getUserId());
 
@@ -129,7 +135,7 @@ public class StartService {
         for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
             TestCaseResponse currentTestCaseResponse = runTestCaseRequest.getTestCaseResponseList().get(i);
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
-            List<Step> step = testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps();
+            List<Step> step = findActions(testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps().stream()).collect(Collectors.toList());
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), step);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
@@ -138,29 +144,39 @@ public class StartService {
         return resultFromDb;
     }
 
+    private Stream<Step> findActions(Stream<Step> innerSteps) {
+        return innerSteps
+                .flatMap( action -> {
+                    if (action.isAction()) {
+                        return Stream.of(action);
+                    } else {
+                        try {
+                            return findActions(outerComponentRepository.findOuterComponentById(action.getComponent().getId(), true).getSteps().stream());
+                        } catch (OuterComponentNotFoundException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
+    }
 
     @Transactional
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
-                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId));
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
                 actionResultDto.setEndDateStr(LocalDateTime.from(actionResultDto.getEndDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                 actionResultDto.setStartDateStr(LocalDateTime.from(actionResultDto.getStartDate()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                 actionWrappers.get(counter).setActionResultDtoId(actionResultDto.getId());
-
                 if (counter == actionWrappers.size() - 1 || actionResultDto.getStatus().equals(ResultStatus.FAILED)) {
+
                     actionResultDto.setLast(true);
                 }
-
-                log.info("action result {}", actionResultDto.getClass().getName());
-                log.info("actionWrapper {}", actionWrappers.get(counter));
                 messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultDto);
                 counter++;
-
-            } catch (TestScenarioNotFoundException | IllegalActionLogicImplementation  illegalActionLogicImplementation) {
+            } catch (IllegalActionLogicImplementation | TestScenarioNotFoundException illegalActionLogicImplementation) {
                 illegalActionLogicImplementation.printStackTrace();
             }
         };
@@ -183,8 +199,8 @@ public class StartService {
                 .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
     }
 
+    @Transactional
     public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
-       log.info("test case {}", testCaseResponse);
         DataSet dataSet = dataSetRepository.findDataSetById(testCaseResponse.getDataSetResponseList().stream().filter(Objects::nonNull).findFirst().get().getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found"));
         OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseResponse.getScenarioId().intValue());
         List<String> names = Arrays.asList(testScenario.getParameterNames());

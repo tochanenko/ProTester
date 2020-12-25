@@ -89,6 +89,7 @@ public class RunResultRepository {
     public RunResult saveRunResult(Long userId) {
         RunResult runResult = new RunResult();
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        log.info("user id {}", userId);
         namedParameterJdbcTemplate.update(
                 extract(env, "saveRunResult"),
                 new MapSqlParameterSource()

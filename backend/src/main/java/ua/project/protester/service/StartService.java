@@ -20,12 +20,7 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.ActionWrapper;
-import ua.project.protester.model.TestCase;
-import ua.project.protester.model.Environment;
+import ua.project.protester.model.*;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -37,7 +32,6 @@ import ua.project.protester.repository.result.ActionResultRepository;
 import ua.project.protester.repository.result.RunResultRepository;
 import ua.project.protester.repository.result.TestCaseResultRepository;
 import ua.project.protester.request.RunTestCaseRequest;
-import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.response.ValidationDataSetStatus;
 
@@ -63,7 +57,7 @@ public class StartService {
     private UserService userService;
     private RunResultRepository runResultRepository;
     private SimpMessagingTemplate messagingTemplate;
-    private List<TestCaseResponse> testCaseResponses;
+    private List<TestCaseDto> testCasesDto = new ArrayList<>();
     private EnvironmentService environmentService;
     private OuterComponentRepository outerComponentRepository;
     private static int counter = 0;
@@ -85,37 +79,39 @@ public class StartService {
     public void execute(Long id) throws TestScenarioNotFoundException {
         WebDriver driver = null;
         try {
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--disable-gpu");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--headless");
-            options.addArguments("--lang=en");
+//            ChromeOptions options = new ChromeOptions();
+//            options.addArguments("--disable-gpu");
+//            options.addArguments("--no-sandbox");
+//            options.addArguments("--disable-dev-shm-usage");
+//            options.addArguments("--headless");
+//            options.addArguments("--lang=en");
+            System.setProperty("webdriver.chrome.driver","\\webdriver\\chromedriver.exe");
             driver = new ChromeDriver();
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
             List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
-            for (int i = 0; i < testCaseResponses.size(); i++) {
-                runTestCase(testCaseResponses.get(i), testCaseResults.get(i).getTestResultId(), driver);
+            for (int i = 0; i < testCasesDto.size(); i++) {
+                runTestCase(testCasesDto.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
         } catch (WebDriverException exception) {
             log.error("webdriver exception {}", exception.getClass().getName());
         } finally {
             log.info("driver was closed");
             Objects.requireNonNull(driver).quit();
-            testCaseResponses.clear();
+            testCasesDto.clear();
         }
     }
 
     @Transactional
-    void runTestCase(TestCaseResponse testCaseResponse, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
-        TestCase testCase = fromTestCaseResponseToModel(testCaseResponse);
-        DataSet dataSet = testCase.getDataSetList().get(0);
-        Environment environment = getEnvironment(testCaseResponse);
+    void runTestCase(TestCaseDto testCaseDto, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
+        TestCase testCase = modelMapper.map(testCaseDto, TestCase.class);
+        DataSet dataSet = dataSetRepository.findDataSetById(testCase.getDataSetId())
+                .orElseThrow(() -> new DataSetNotFoundException("Data set was not found"));
+        Environment environment = getEnvironment(testCaseDto);
         log.info("dataset{}", dataSet);
         try {
-            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), getTemplate(testCaseResponse), webDriver, restTemplate, environment, getConsumer(testCaseResultId));
+            testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), getTemplate(testCaseDto), webDriver, restTemplate, environment, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
@@ -131,7 +127,7 @@ public class StartService {
 
         resultFromDb.setTestCaseResults(runTestCaseRequest.getTestCaseResponseList().stream()
                 .map(response -> {
-                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(response.getAuthorId()).orElseThrow(), fromTestCaseResponseToModel(response));
+                    TestCaseResultDto testCaseResult = new TestCaseResultDto(userService.findUserById(response.getAuthorId()).orElseThrow(), modelMapper.map(response, TestCase.class));
                     List<ActionResultDto> actionResult = new ArrayList<>();
                     testCaseResult.setStatus(ResultStatus.IN_PROGRESS);
                     testCaseResult.setStartDate(OffsetDateTime.now());
@@ -143,14 +139,14 @@ public class StartService {
                 .collect(Collectors.toList()));
 
         for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
-            TestCaseResponse currentTestCaseResponse = runTestCaseRequest.getTestCaseResponseList().get(i);
+            TestCaseDto currentTestCaseDto = runTestCaseRequest.getTestCaseResponseList().get(i);
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
-            List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseResponse.getScenarioId().intValue()).getSteps().stream())
+            List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseDto.getScenarioId().intValue()).getSteps().stream())
                     .collect(Collectors.toList());
             List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), steps);
             resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
         }
-        testCaseResponses = runTestCaseRequest.getTestCaseResponseList();
+        testCasesDto = runTestCaseRequest.getTestCaseResponseList();
 
         return resultFromDb;
     }
@@ -184,17 +180,6 @@ public class StartService {
     }
 
     @Transactional
-    TestCase fromTestCaseResponseToModel(TestCaseResponse testCaseResponse) {
-        TestCase testCase = modelMapper.map(testCaseResponse, TestCase.class);
-        List<DataSet> dataSets = new ArrayList<>();
-
-        testCaseResponse.getDataSetResponseList()
-                .forEach(dataSetResponse -> dataSets.add(dataSetRepository.findDataSetById(dataSetResponse.getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was not found"))));
-        testCase.setDataSetList(dataSets);
-        return testCase;
-    }
-
-    @Transactional
     public RunResult findById(Long id) {
         return runResultRepository.findRunResultById(id)
                 .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
@@ -211,12 +196,11 @@ public class StartService {
                 });
     }
 
-    public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
-       log.info("test case {}", testCaseResponse);
-        DataSet dataSet = dataSetRepository.findDataSetById(testCaseResponse.getDataSetResponseList().stream()
-                .filter(Objects::nonNull)
-                .findFirst().orElseThrow().getId()).orElseThrow(() -> new DataSetNotFoundException("DataSet was`nt found"));
-        OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseResponse.getScenarioId().intValue());
+    public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
+       log.info("test case {}", testCaseDto);
+        DataSet dataSet = dataSetRepository.findDataSetById(testCaseDto.getDataSetId())
+                .orElseThrow(() -> new DataSetNotFoundException("DataSet was not found"));
+        OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseDto.getScenarioId().intValue());
         List<String> names = Arrays.asList(testScenario.getParameterNames());
         Set<String> dataSetKeys = dataSet.getParameters().keySet();
 
@@ -231,16 +215,16 @@ public class StartService {
         return validationResponse;
     }
 
-    private Environment getEnvironment(TestCaseResponse testCaseResponse) {
-        if (testCaseResponse.getEnvironmentId() != null) {
-            return environmentService.findById(testCaseResponse.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+    private Environment getEnvironment(TestCaseDto testCaseDto) {
+        if (testCaseDto.getEnvironmentId() != null) {
+            return environmentService.findById(testCaseDto.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
         }
         return new Environment();
     }
 
-    private JdbcTemplate getTemplate(TestCaseResponse testCaseResponse) {
-        if (testCaseResponse.getEnvironmentId() != null) {
-            Environment environment = environmentService.findById(testCaseResponse.getEnvironmentId())
+    private JdbcTemplate getTemplate(TestCaseDto testCaseDto) {
+        if (testCaseDto.getEnvironmentId() != null) {
+            Environment environment = environmentService.findById(testCaseDto.getEnvironmentId())
                     .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
 
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();

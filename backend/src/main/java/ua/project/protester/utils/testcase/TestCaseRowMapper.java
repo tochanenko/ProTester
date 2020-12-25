@@ -19,6 +19,7 @@ public class TestCaseRowMapper implements RowMapper<TestCase> {
         testCase.setProjectId(resultSet.getLong("project_id"));
         testCase.setAuthorId(resultSet.getLong("author_id"));
         testCase.setScenarioId(resultSet.getLong("scenario_id"));
+        testCase.setDataSetId(resultSet.getLong("data_set_id"));
 
         return testCase;
     }

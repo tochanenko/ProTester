@@ -30,6 +30,10 @@ public class SaveScreenshotAction extends AbstractAction {
             String filename = "screenshots/" + new Date().getTime() + ".png";
             File destFile = new File(filename);
             FileUtils.copyFile(screenshot, destFile);
+            Runtime.getRuntime().exec("echo Screenshot file name : " + destFile.getAbsolutePath());
+            Runtime.getRuntime().exec("ls /");
+            Runtime.getRuntime().exec("ls /app/");
+            Runtime.getRuntime().exec("ls /app/screenshots/");
             return new ActionResultUiDto(filename);
         } catch (Exception e) {
             return new ActionResultUiDto(

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.model.executable.Step;
@@ -22,7 +23,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public void createLibrary(LibraryRequestModel libraryRequest) {
+    public void createLibrary(LibraryRequestModel libraryRequest) throws LibraryAlreadyExistsException {
 
         Library newLibrary = new Library();
         newLibrary.setName(libraryRequest.getName());
@@ -39,13 +40,17 @@ public class LibraryServiceImpl implements LibraryService {
                         )).collect(Collectors.toList())
         );
 
-        libraryRepository.createLibrary(newLibrary);
+        try {
+            libraryRepository.createLibrary(newLibrary);
+        } catch (Exception e) {
+            throw new LibraryAlreadyExistsException("Library already exists", e);
+        }
 
     }
 
     @Override
     @Transactional
-    public void updateLibrary(LibraryRequestModel libraryRequest, int id) {
+    public void updateLibrary(LibraryRequestModel libraryRequest, int id) throws LibraryAlreadyExistsException {
 
         Library updateLibrary = new Library();
         updateLibrary.setName(libraryRequest.getName());
@@ -62,7 +67,11 @@ public class LibraryServiceImpl implements LibraryService {
                         )).collect(Collectors.toList())
         );
 
-        libraryRepository.updateLibrary(updateLibrary, id);
+        try {
+            libraryRepository.updateLibrary(updateLibrary, id);
+        } catch (Exception e) {
+            throw new LibraryAlreadyExistsException("Library already exists", e);
+        }
     }
 
     @Override

@@ -159,6 +159,16 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(LibraryAlreadyExistsException.class)
+    public ResponseEntity<Object> handleLibraryAlreadyExistsException(
+            LibraryAlreadyExistsException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Library already exists!");
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(LibraryNotFoundException.class)
     public ResponseEntity<Object> handleLibraryNotFoundException(
             LibraryNotFoundException ex, WebRequest request) {

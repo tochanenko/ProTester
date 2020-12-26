@@ -76,7 +76,7 @@ CREATE TABLE compounds (
 
 CREATE TABLE libraries (
     library_id 			SERIAL PRIMARY KEY,
-    library_name 		VARCHAR(32) NOT NULL,
+    library_name 		VARCHAR(32) UNIQUE NOT NULL,
     library_description TEXT
 );
 

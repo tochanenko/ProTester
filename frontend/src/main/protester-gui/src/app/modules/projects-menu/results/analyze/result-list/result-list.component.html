@@ -145,20 +145,23 @@
             </div>
           </div>
 
-          <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns">
-            <p class="column-name"> Output </p>
-            <table class="sql-table">
-              <tr>
-                <th class="sql-tr-td" *ngFor="let header of item.columns">{{ header.name }}</th>
-              </tr>
-              <tr>
-                <td *ngFor="let i of item.columns">
-                  <table>
-                    <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
+          <div *ngIf="item.action.type === 'SQL' && item.columns">
+            <br>
+            <div class="table-view">
+              <p class="column-name"> Output </p>
+              <table class="sql-table">
+                <tr>
+                  <th class="sql-tr-td" *ngFor="let header of item.columns"><b>{{ header.name }}</b></th>
+                </tr>
+                <tr>
+                  <td *ngFor="let i of item.columns">
+                    <table>
+                      <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
 
           <div class="table-view" *ngIf="item.action.type === 'UI'">

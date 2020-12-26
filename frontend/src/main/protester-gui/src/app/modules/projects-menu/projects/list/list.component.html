@@ -31,14 +31,14 @@
     <ng-container matColumnDef="NAME">
       <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a [routerLink]="'/projects-menu/projects/' + element.projectId + '/test-cases'">{{element.projectName}}</a>
+        <a title="go to test cases list" [routerLink]="'/projects-menu/projects/' + element.projectId + '/test-cases'">{{element.projectName}}</a>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="LINK">
       <mat-header-cell *matHeaderCellDef class="header">LINK</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a title="go to link" target="_blank" href="{{element.projectWebsiteLink}}"> {{element.projectWebsiteLink}}</a>
+        <a title="go to website link" target="_blank" href="{{element.projectWebsiteLink}}"> {{element.projectWebsiteLink}}</a>
       </mat-cell>
     </ng-container>
 

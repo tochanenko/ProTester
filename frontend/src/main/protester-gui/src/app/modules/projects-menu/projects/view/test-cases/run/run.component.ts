@@ -14,7 +14,10 @@ import {TestScenarioService} from '../../../../../../services/test-scenario/test
 import {MatDialog} from '@angular/material/dialog';
 import {StorageService} from '../../../../../../services/auth/storage.service';
 import {EnvironmentService} from '../../../../../../services/environment/environment.service';
-import {ValidationDataSetResponseModel, ValidationDataSetStatusModel} from '../../../../../../models/run-analyze/validation-data-set-response.model';
+import {
+  ValidationDataSetResponseModel,
+  ValidationDataSetStatusModel
+} from '../../../../../../models/run-analyze/validation-data-set-response.model';
 import {ValidationComponent} from '../validation/validation.component';
 import {map, mergeMap, switchMap} from 'rxjs/operators';
 import {DatasetService} from '../../../../../../services/dataset.service';
@@ -167,11 +170,13 @@ export class RunComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.isLoading = true;
+
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
-        result => this.router.navigate(['projects-menu/results/', result.id]).then(),
-        () => this.isError = true
-      )
+          result => this.router.navigate(['projects-menu/results/', result.id]).then(),
+          () => this.isError = true
+        )
     );
   }
 

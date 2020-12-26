@@ -40,12 +40,15 @@
 
       <mat-form-field class="full-width-input" appearance="outline">
         <mat-label>Password</mat-label>
-        <input matInput type="text" id="password" class="form-control" name="password" formControlName="password"
-               [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required>
+        <input matInput [type]="'password'" id="password" class="form-control"
+               name="password"
+               formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required>
+        <mat-icon matSuffix>visibility_off</mat-icon>
         <mat-error *ngIf="submitted && f.password.errors" class="invalid-input">
           <mat-error *ngIf="f.password.errors.minLength">Min length is 4</mat-error>
         </mat-error>
       </mat-form-field>
+
 
       <mat-form-field class="full-width-input" appearance="outline">
         <mat-label>Url</mat-label>

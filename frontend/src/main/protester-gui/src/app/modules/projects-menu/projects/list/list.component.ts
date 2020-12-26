@@ -26,6 +26,7 @@ export class ListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['NAME', 'LINK', 'CREATOR', 'STATUS', 'CONF'];
   private subscription: Subscription = new Subscription();
   isError = false;
+  isLoading = true;
 
   constructor(private projectService: ProjectService,
               private router: Router,
@@ -43,6 +44,7 @@ export class ListComponent implements OnInit, OnDestroy {
         data => {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
+          this.isLoading = false;
         },
         () => this.isError = true
       ));
@@ -51,6 +53,7 @@ export class ListComponent implements OnInit, OnDestroy {
         data => {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
+          this.isLoading = false;
         },
         () => this.isError = true
       ));

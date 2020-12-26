@@ -20,6 +20,7 @@ export class ListComponent implements OnInit, OnDestroy {
   pageEvent: PageEvent;
   projectId: number;
   isError = false;
+  isLoading = true;
 
   environmentFilter: EnvironmentFilterModel = new EnvironmentFilterModel();
   environmentsCount = 10;
@@ -57,6 +58,7 @@ export class ListComponent implements OnInit, OnDestroy {
         data => {
           this.dataSource = data.list;
           this.environmentsCount = data.totalItems;
+          this.isLoading = false;
         },
         () => this.isError = true
       )

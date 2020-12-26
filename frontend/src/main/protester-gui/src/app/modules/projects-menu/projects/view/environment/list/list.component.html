@@ -1,4 +1,6 @@
-<mat-card class="env-list">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="env-list" *ngIf="!isLoading">
 
   <div class="search-env">
     <mat-form-field appearance="outline">

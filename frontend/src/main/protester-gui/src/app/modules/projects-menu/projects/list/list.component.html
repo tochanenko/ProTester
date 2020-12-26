@@ -1,4 +1,6 @@
-<mat-card class="project-list">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="project-list" *ngIf="!isLoading">
 
   <div class="search-project">
 

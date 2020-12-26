@@ -1,4 +1,6 @@
-<mat-card class="test-case-run">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="test-case-run" *ngIf="!isLoading">
 
   <div class="search-test-case">
 
@@ -48,16 +50,12 @@
 
     <ng-container matColumnDef="SCENARIO">
       <mat-header-cell *matHeaderCellDef class="header">SCENARIO</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      <mat-cell *matCellDef="let element">{{element.scenarioName}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="DATASET">
       <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
-      <mat-cell *matCellDef="let element" class="header">
-        <ng-container *ngFor="let datasets of element.dataSetResponseList">
-          <a [routerLink]="'/projects-menu/datasets'">{{datasets.name}}</a>
-        </ng-container>
-      </mat-cell>
+      <mat-cell *matCellDef="let element">{{element.dataSetName}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

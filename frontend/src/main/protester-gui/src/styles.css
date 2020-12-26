@@ -13,3 +13,12 @@ body {
   background: #F2F2F2;
   overflow: auto;
 }
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}

@@ -36,8 +36,8 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
     private final DataSetRepository dataSetRepository;
 
     @Override
-    public TestCase create(TestCase testCase, List<Long> dataSet) throws TestCaseCreateException {
-        log.info("IN TestCaseRepositoryImpl create - testCase: {}, dataSet: {}", testCase, dataSet);
+    public TestCase create(TestCase testCase) throws TestCaseCreateException {
+        log.info("IN TestCaseRepositoryImpl create - testCase: {}", testCase);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -48,7 +48,8 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("project_id", testCase.getProjectId())
                         .addValue("description", testCase.getDescription())
                         .addValue("author_id", testCase.getAuthorId())
-                        .addValue("scenario_id", testCase.getScenarioId()),
+                        .addValue("scenario_id", testCase.getScenarioId())
+                        .addValue("data_set_id", testCase.getDataSetId()),
                 keyHolder);
 
         Integer id = (Integer) (Optional.ofNullable(keyHolder.getKeys())
@@ -57,16 +58,13 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
 
         testCase.setId(id.longValue());
 
-        saveDataSet(testCase.getId(), dataSet);
-
         log.info("IN TestCaseRepositoryImpl - saved testCase {}", testCase);
-
         return testCase;
     }
 
     @Override
-    public TestCase update(TestCase testCase, List<Long> dataSet) {
-        log.info("IN TestCaseRepositoryImpl update - testCase: {}, dataSet: {}", testCase, dataSet);
+    public TestCase update(TestCase testCase) {
+        log.info("IN TestCaseRepositoryImpl update - testCase: {}", testCase);
 
         namedJdbcTemplate.update(
                 PropertyExtractor.extract(env, "updateTestCase"),
@@ -74,18 +72,16 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("test_case_id", testCase.getId())
                         .addValue("name", testCase.getName())
                         .addValue("description", testCase.getDescription())
-                        .addValue("scenario_id", testCase.getScenarioId()));
+                        .addValue("scenario_id", testCase.getScenarioId())
+                        .addValue("data_set_id", testCase.getDataSetId()));
 
         log.info("updating testCase {}", testCase.getName());
-        deleteDataSet(testCase.getId());
-        saveDataSet(testCase.getId(), dataSet);
         return testCase;
     }
 
     @Override
     public void delete(Long id) {
         log.info("IN TestCaseRepositoryImpl delete id={}", id);
-        deleteDataSet(id);
 
         namedJdbcTemplate.update(
                 PropertyExtractor.extract(env, "deleteTestCase"),
@@ -99,14 +95,13 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         log.info("IN TestCaseRepositoryImpl findById id={}", id);
 
         try {
-            Optional<TestCase> testCase = Optional.ofNullable(namedJdbcTemplate.queryForObject(
+
+            return Optional.ofNullable(namedJdbcTemplate.queryForObject(
                     PropertyExtractor.extract(env, "findTestCaseById"),
                     new MapSqlParameterSource()
                             .addValue("test_case_id", id),
                     testCaseRowMapper));
 
-            testCase.ifPresent(t -> t.setDataSetList(dataSetRepository.findDataSetByTestCaseId(t.getId())));
-            return testCase;
         } catch (EmptyResultDataAccessException e) {
             log.warn("testCase with id {} was not found", id);
             return Optional.empty();
@@ -118,50 +113,33 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         log.info("IN TestCaseRepositoryImpl findAllProjectTestCases pagination={}, projectId={}",
                 pagination, projectId);
 
-        MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("pageSize", pagination.getPageSize());
-        namedParams.addValue("offset", pagination.getOffset());
-        namedParams.addValue("filterName", pagination.getSearchField() + "%");
-        namedParams.addValue("project_id", projectId);
-
-        List<TestCase> testCaseList = namedJdbcTemplate.query(
+        return namedJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findAllByProject"),
-                namedParams,
+                new MapSqlParameterSource()
+                        .addValue("pageSize", pagination.getPageSize())
+                        .addValue("offset", pagination.getOffset())
+                        .addValue("filterName", pagination.getSearchField() + "%")
+                        .addValue("project_id", projectId),
                 testCaseRowMapper);
-
-        testCaseList.forEach(
-                list -> list.setDataSetList(dataSetRepository.findDataSetByTestCaseId(list.getId()))
-        );
-
-        testCaseList.forEach(System.out::print);
-        return testCaseList;
     }
 
     @Override
     public Optional<TestCase> findProjectTestCase(Long projectId, Long testCaseId) {
         log.info("IN TestCaseRepositoryImpl findAllProjectTestCases  projectId={} testCaseId={}", projectId, testCaseId);
 
-        MapSqlParameterSource namedParams = new MapSqlParameterSource();
-        namedParams.addValue("project_id", projectId);
-        namedParams.addValue("test_case_id", testCaseId);
-
         try {
-            TestCase testCase = namedJdbcTemplate.queryForObject(
-                    PropertyExtractor.extract(env, "findTestCaseByProjectIdAndTestCaseId"),
-                    namedParams,
-                    testCaseRowMapper);
-
-            if (testCase != null) {
-                testCase.setDataSetList(dataSetRepository.findDataSetByTestCaseId(testCaseId));
-                return Optional.of(testCase);
-            }
+            return Optional.ofNullable(
+                    namedJdbcTemplate.queryForObject(
+                            PropertyExtractor.extract(env, "findTestCaseByProjectIdAndTestCaseId"),
+                            new MapSqlParameterSource()
+                                    .addValue("project_id", projectId)
+                                    .addValue("test_case_id", testCaseId),
+                            testCaseRowMapper));
 
         } catch (EmptyResultDataAccessException e) {
             log.warn("test cases were`nt found");
             return Optional.empty();
         }
-
-        return Optional.empty();
     }
 
     @Override
@@ -187,29 +165,6 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
         } catch (DataAccessException e) {
             return Collections.emptyList();
         }
-    }
-
-    private void saveDataSet(Long testCaseId, Long dataSetId) {
-        log.info("IN TestCaseRepositoryImpl saveDataSet testCaseId={}, dataSetId={}", testCaseId, dataSetId);
-
-        namedJdbcTemplate.update(
-                PropertyExtractor.extract(env, "saveTestCaseDataSet"),
-                new MapSqlParameterSource()
-                        .addValue("test_case_id", testCaseId)
-                        .addValue("data_set_id", dataSetId));
-    }
-
-    public void saveDataSet(Long testCaseId, List<Long> dataSetId) {
-        dataSetId.forEach(dataSet -> saveDataSet(testCaseId, dataSet));
-    }
-
-    private void deleteDataSet(Long id) {
-        log.info("IN TestCaseRepositoryImpl deleteDataSet id={}", id);
-
-        namedJdbcTemplate.update(
-                PropertyExtractor.extract(env, "deleteDataSetsByTestCaseId"),
-                new MapSqlParameterSource().addValue("test_case_id", id));
-
     }
 
 }

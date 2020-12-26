@@ -34,7 +34,6 @@
                [ngClass]="{ 'is-invalid': submitted && f.username.errors }" required>
         <mat-error *ngIf="submitted && f.username.errors" class="invalid-input">
           <mat-error *ngIf="f.username.errors.minLength">Min length is 4</mat-error>
-          <mat-error *ngIf="f.username.errors.maxLength">Max length is 50</mat-error>
         </mat-error>
       </mat-form-field>
 
@@ -48,7 +47,6 @@
         </mat-icon>
         <mat-error *ngIf="submitted && f.password.errors" class="invalid-input">
           <mat-error *ngIf="f.password.errors.minLength">Min length is 4</mat-error>
-          <mat-error *ngIf="f.password.errors.maxLength">Max length is 50</mat-error>
         </mat-error>
       </mat-form-field>
 
@@ -58,7 +56,6 @@
                [ngClass]="{ 'is-invalid': submitted && f.url.errors }" required>
         <mat-error *ngIf="submitted && f.url.errors" class="invalid-input">
           <mat-error *ngIf="f.url.errors.minLength">Min length is 4</mat-error>
-          <mat-error *ngIf="f.url.errors.maxLength">Max length is 50</mat-error>
         </mat-error>
       </mat-form-field>
 

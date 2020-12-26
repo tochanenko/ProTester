@@ -8,8 +8,8 @@ import ua.project.protester.exception.executable.OuterComponentNotFoundException
 import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCaseDto;
 import ua.project.protester.request.RunTestCaseRequest;
-import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.service.StartService;
 
@@ -38,7 +38,7 @@ public class RunController {
     }
 
     @PostMapping("/validate")
-    public ValidationDataSetResponse validate(@RequestBody TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
-        return startService.validateDataSetWithTestScenario(testCaseResponse);
+    public ValidationDataSetResponse validate(@RequestBody TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
+        return startService.validateDataSetWithTestScenario(testCaseDto);
     }
 }

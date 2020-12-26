@@ -41,18 +41,15 @@ export class EditComponent implements OnInit {
       ],
       username: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       password: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       url: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       projectId: []
     });

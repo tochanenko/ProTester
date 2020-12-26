@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface TestCaseRepository {
 
-    TestCase create(TestCase testCase, List<Long> dataSet) throws TestCaseCreateException;
+    TestCase create(TestCase testCase) throws TestCaseCreateException;
 
-    TestCase update(TestCase testCase, List<Long> dataSet);
+    TestCase update(TestCase testCase);
 
     void delete(Long id);
 

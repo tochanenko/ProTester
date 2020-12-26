@@ -38,11 +38,20 @@ export class LibraryManageService {
   }
 
   getAllActions(): Observable<Action[]> {
-    return this.http.get<Action[]>("api/actions", httpOptions);
+    let params = new HttpParams();
+    params = params.append('pageSize', '999');
+    params = params.append('pageNumber', '1');
+    params = params.append('actionName', '');
+    return this.http.get<Action[]>("api/actions", {params});
   }
 
   getAllCompounds(): Observable<OuterComponent[]> {
-    return this.http.get<OuterComponent[]>("api/compounds", httpOptions);
+    let params = new HttpParams();
+    params = params.append('pageSize', '999');
+    params = params.append('pageNumber', '1');
+    params = params.append('compoundName', '');
+    params = params.append('loadSteps', 'false');
+    return this.http.get<OuterComponent[]>("api/compounds", {params});
   }
 
   createLibrary(library): Observable<any> {

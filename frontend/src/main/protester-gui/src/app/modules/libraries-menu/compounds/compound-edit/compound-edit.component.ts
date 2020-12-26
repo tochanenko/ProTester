@@ -9,6 +9,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {StepRepresentation} from "../../../../models/StepRepresentation";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {DialogWarningModel} from "../../../../models/dialog-warning.model";
+import {DialogUtilComponent} from "../../../../components/dialog-util/dialog-util.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-compound-edit',
@@ -51,7 +54,9 @@ export class CompoundEditComponent implements OnInit {
     private compoundService: CompoundManageService,
     private interactionService: LibraryBottomsheetInteractionService,
     private router: Router,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private dialog: MatDialog
+
 
   ) {
   }
@@ -193,9 +198,22 @@ export class CompoundEditComponent implements OnInit {
     this.compoundService.updateCompound(this.compound_id, this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();
       },
-      () => {
-        console.error("Error of creation");
-      })
+      (error) => {
+        console.error(error);
+        const warning: DialogWarningModel = {
+          error_name: error.error.message,
+          message: 'Please edit or delete relevant compounds:',
+          links: error.error.outerComponents.map(component => `/libraries-menu/compounds/${component.id}`)
+        }
+        const dialogRef = this.dialog.open(DialogUtilComponent, {
+          width: '40%',
+          data: warning
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      });
   }
 
   get formControls() {

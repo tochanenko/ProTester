@@ -270,3 +270,16 @@
   align-items: center;
   justify-content: center;
 }
+
+.button-flex-container {
+  background: #5C6BC0;
+  height: 50px;
+  width: 84.5%;
+  margin-left: 8%;
+  margin-bottom: 8%;
+  margin-top: 13%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

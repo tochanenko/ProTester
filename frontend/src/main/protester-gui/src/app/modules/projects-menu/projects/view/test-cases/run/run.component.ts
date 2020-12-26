@@ -4,7 +4,7 @@ import {PageEvent} from '@angular/material/paginator';
 import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filter';
 import {SelectionModel} from '@angular/cdk/collections';
 import {RunTestCaseModel} from '../../../../../../models/run-analyze/run-test-case.model';
-import {Observable, of, Subscription} from 'rxjs';
+import {of, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SelectEnvComponent} from '../select-env/select-env.component';
 import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
@@ -14,10 +14,7 @@ import {TestScenarioService} from '../../../../../../services/test-scenario/test
 import {MatDialog} from '@angular/material/dialog';
 import {StorageService} from '../../../../../../services/auth/storage.service';
 import {EnvironmentService} from '../../../../../../services/environment/environment.service';
-import {
-  ValidationDataSetResponseModel,
-  ValidationDataSetStatusModel
-} from '../../../../../../models/run-analyze/validation-data-set-response.model';
+import {ValidationDataSetResponseModel, ValidationDataSetStatusModel} from '../../../../../../models/run-analyze/validation-data-set-response.model';
 import {ValidationComponent} from '../validation/validation.component';
 import {map, switchMap} from 'rxjs/operators';
 
@@ -41,6 +38,7 @@ export class RunComponent implements OnInit, OnDestroy {
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['select', 'NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET'];
   private subscription: Subscription = new Subscription();
+  isError = false;
 
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
@@ -64,9 +62,9 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   masterToggle(): void {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.forEach(row => this.selectTestCase(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.forEach(row => this.selectTestCase(row));
   }
 
   checkboxLabel(row?: TestCaseModel): string {
@@ -84,7 +82,7 @@ export class RunComponent implements OnInit, OnDestroy {
           this.dataSource = data.list;
           this.testCasesCount = data.totalItems;
         },
-        error => console.log('error in initDataSource')
+        () => this.isError = true
       )
     );
   }
@@ -93,10 +91,8 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.environmentService.findAll(this.projectId)
         .subscribe(
-          data => {
-            this.environmentList = data;
-          },
-          error => console.log('env load error')
+          data => this.environmentList = data,
+          () => this.isError = true
         )
     );
   }
@@ -119,8 +115,11 @@ export class RunComponent implements OnInit, OnDestroy {
             }
           }
         )
-      ).subscribe(result => console.log('success'),
-        error => console.log('error'));
+      ).subscribe(
+        () => {
+        },
+        () => this.isError = true
+      );
       this.selection.toggle(testCase);
     }
   }
@@ -136,15 +135,13 @@ export class RunComponent implements OnInit, OnDestroy {
     this.subscription.add(
       updateDialogRef.afterClosed().subscribe(result => {
 
-          if (result === undefined) {
-            this.selection.deselect(testCase);
-          } else {
-            console.log(result + '-------');
-            testCase.environmentId = result;
-            this.selection.select(testCase);
-          }
+        if (result === undefined) {
+          this.selection.deselect(testCase);
+        } else {
+          testCase.environmentId = result;
+          this.selection.select(testCase);
         }
-      )
+      })
     );
   }
 
@@ -178,16 +175,15 @@ export class RunComponent implements OnInit, OnDestroy {
 
     this.runTestCaseModel.testCaseResponseList = this.selection.selected;
     this.runTestCaseModel.userId = this.storageService.getUser.id;
+
     if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }
 
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
-        result => {
-          this.router.navigate(['projects-menu/results/', result.id]).then();
-
-        }, error => console.log('IN saveTestCaseResult - error')
+        result => this.router.navigate(['projects-menu/results/', result.id]).then(),
+        () => this.isError = true
       )
     );
   }
@@ -197,6 +193,8 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

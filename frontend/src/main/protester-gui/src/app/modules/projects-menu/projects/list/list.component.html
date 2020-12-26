@@ -36,7 +36,7 @@
     <ng-container matColumnDef="LINK">
       <mat-header-cell *matHeaderCellDef class="header">LINK</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a  title="go to link" target="_blank" href="{{element.projectWebsiteLink}}"> {{element.projectWebsiteLink}}</a>
+        <a title="go to link" target="_blank" href="{{element.projectWebsiteLink}}"> {{element.projectWebsiteLink}}</a>
       </mat-cell>
     </ng-container>
 
@@ -44,7 +44,8 @@
       <mat-header-cell *matHeaderCellDef class="header">CREATOR</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <a *ngIf="!canViewCreatorProfile()">{{element.creatorUsername}}</a>
-        <a [href]="'/#/account/users/' + element.creatorId" title="show profile" *ngIf="canViewCreatorProfile()">{{element.creatorUsername}}</a>
+        <a [href]="'/#/account/users/' + element.creatorId" title="show profile"
+           *ngIf="canViewCreatorProfile()">{{element.creatorUsername}}</a>
       </mat-cell>
     </ng-container>
 

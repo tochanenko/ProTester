@@ -19,6 +19,7 @@ export class ListComponent implements OnInit, OnDestroy {
   dataSource: EnvironmentModel[];
   pageEvent: PageEvent;
   projectId: number;
+  isError = false;
 
   environmentFilter: EnvironmentFilterModel = new EnvironmentFilterModel();
   environmentsCount = 10;
@@ -51,13 +52,15 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchEnvironments(): void {
-    this.subscription.add(this.environmentService.findAllPaginated(this.projectId, this.environmentFilter).subscribe(
-      data => {
-        this.dataSource = data.list;
-        this.environmentsCount = data.totalItems;
-      },
-      error => console.log('error in initDataSource')
-    ));
+    this.subscription.add(
+      this.environmentService.findAllPaginated(this.projectId, this.environmentFilter).subscribe(
+        data => {
+          this.dataSource = data.list;
+          this.environmentsCount = data.totalItems;
+        },
+        () => this.isError = true
+      )
+    );
   }
 
   openUpdateDialog(environmentToUpdate: EnvironmentModel): void {
@@ -69,15 +72,13 @@ export class ListComponent implements OnInit, OnDestroy {
     });
 
     this.subscription.add(
-      updateDialogRef.afterClosed().subscribe(env => {
-        this.environmentService.update(env)
-          .subscribe(
-            () => {
-              this.searchEnvironments();
-            },
-            error => console.log('error')
+      updateDialogRef.afterClosed()
+        .subscribe(env => {
+          this.environmentService.update(env).subscribe(
+            () => this.searchEnvironments(),
+            () => this.isError = true
           );
-      })
+        })
     );
   }
 
@@ -91,11 +92,10 @@ export class ListComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       createDialogRef.afterClosed().subscribe(env => {
-        this.environmentService.create(env)
-          .subscribe(
-            () => this.searchEnvironments(),
-            error => console.log('error')
-          );
+        this.environmentService.create(env).subscribe(
+          () => this.searchEnvironments(),
+          () => this.isError = true
+        );
       })
     );
   }
@@ -103,7 +103,7 @@ export class ListComponent implements OnInit, OnDestroy {
   deleteEnvironment(id: number): void {
     this.subscription.add(this.environmentService.delete(id).subscribe(
       () => this.searchEnvironments(),
-      () => console.log('error')
+      () => this.isError = true
       )
     );
   }

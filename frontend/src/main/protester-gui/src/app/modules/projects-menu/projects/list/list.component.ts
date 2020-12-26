@@ -9,7 +9,6 @@ import {StorageService} from '../../../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
-import {Role} from '../../../../models/role.model';
 
 @Component({
   selector: 'app-list',
@@ -26,6 +25,7 @@ export class ListComponent implements OnInit, OnDestroy {
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'LINK', 'CREATOR', 'STATUS', 'CONF'];
   private subscription: Subscription = new Subscription();
+  isError = false;
 
   constructor(private projectService: ProjectService,
               private router: Router,
@@ -44,7 +44,7 @@ export class ListComponent implements OnInit, OnDestroy {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
         },
-        error => console.log('error in initDataSource')
+        () => this.isError = true
       ));
     } else {
       this.subscription.add(this.projectService.getAllFiltered(this.projectFilter).subscribe(
@@ -52,7 +52,7 @@ export class ListComponent implements OnInit, OnDestroy {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
         },
-        error => console.log('error in initDataSource')
+        () => this.isError = true
       ));
     }
   }
@@ -81,8 +81,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
   changeStatus(id: number): void {
     this.subscription.add(this.projectService.changeStatus(id).subscribe(
-      data => this.searchProjects(),
-      error => console.log('not changed')
+      () => this.searchProjects(),
+      () => this.isError = true
     ));
   }
 
@@ -95,10 +95,9 @@ export class ListComponent implements OnInit, OnDestroy {
     });
 
     this.subscription.add(
-      updateDialogRef.afterClosed().subscribe(() => {
-          this.searchProjects();
-        },
-        error => console.log('error'))
+      updateDialogRef.afterClosed().subscribe(
+        () => this.searchProjects(),
+        () => this.isError = true)
     );
   }
 
@@ -113,7 +112,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.subscription.add(
       createDialogRef.afterClosed().subscribe(
         () => this.searchProjects(),
-        error => console.log('error'))
+        () => this.isError = true)
     );
   }
 
@@ -124,6 +123,7 @@ export class ListComponent implements OnInit, OnDestroy {
   canViewCreatorProfile(): boolean {
     return this.storageService.getUser.role === 'ADMIN';
   }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

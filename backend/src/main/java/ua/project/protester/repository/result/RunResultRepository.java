@@ -14,11 +14,11 @@ import ua.project.protester.exception.ActionWrapperWasNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.ActionWrapper;
 import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCaseDto;
 import ua.project.protester.model.TestCaseWrapperResult;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.service.TestScenarioService;
 
 import java.util.Collections;
@@ -42,15 +42,15 @@ public class RunResultRepository {
     private final TestScenarioService testScenarioService;
     private final OuterComponentRepository outerComponentRepository;
 
-    public TestCaseWrapperResult saveTestCaseWrapperResult(TestCaseResponse testCaseResponse, Integer runResultId, Integer testCaseResultId) {
+    public TestCaseWrapperResult saveTestCaseWrapperResult(TestCaseDto testCaseDto, Integer runResultId, Integer testCaseResultId) {
         TestCaseWrapperResult wrapperResult = new TestCaseWrapperResult();
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        log.info("saving  test case wrapper result with scenarioId {}", testCaseResponse.getScenarioId());
+        log.info("saving  test case wrapper result with scenarioId {}", testCaseDto.getScenarioId());
 
         namedParameterJdbcTemplate.update(
                 extract(env, "saveTestCaseWrapper"),
                 new MapSqlParameterSource()
-                        .addValue("scenario_id", testCaseResponse.getScenarioId())
+                        .addValue("scenario_id", testCaseDto.getScenarioId())
                         .addValue("run_result_id", runResultId)
                         .addValue("test_case_result", testCaseResultId),
                 keyHolder,

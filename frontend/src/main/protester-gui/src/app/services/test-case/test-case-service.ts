@@ -62,8 +62,9 @@ export class TestCaseService {
     return this.http.get<void>(`/api/test/${id}`, httpOptions);
   }
 
-  isEnvRequired(projectId: number, testCaseId: number): Observable<boolean> {
-    return this.http.get<boolean>(`/api/testCase/project/${projectId}/${testCaseId}`, httpOptions);
+  isEnvRequired(scenarioId: number): Observable<boolean> {
+    console.log('99999999999999---------' + scenarioId);
+    return this.http.get<boolean>(`/api/testCase/environment/${scenarioId}`, httpOptions);
   }
 
   loadEnvironments(id: number): Observable<EnvironmentModel[]> {

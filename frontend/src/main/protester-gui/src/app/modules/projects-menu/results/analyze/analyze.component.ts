@@ -7,12 +7,7 @@ import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {
-  ActionResultModel,
-  ExecutableComponentTypeModel,
-  StatusModel,
-  TestCaseResultModel
-} from '../../../../models/run-analyze/result.model';
+import {ActionResultModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
 
 
@@ -31,6 +26,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   private idToRun: number;
   private subscription: Subscription = new Subscription();
   private testCaseWrapperResult: TestCaseWrapperResultModel[];
+  private socketEndpoint = '/topic/public/';
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
@@ -48,7 +44,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         concatMap((item) => {
           this.testCaseWrapperResult = item.testCaseResults;
           item.testCaseResults.forEach(i => this.idTestCaseList.push(i.testResultId));
-
           return of({});
         }),
         concatMap(() => {
@@ -62,8 +57,9 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
         })
       ).subscribe(
-        () => console.log('successfully'),
-        () => console.log('error')
+        () => {
+        },
+        () => this.isError = true
       )
     );
   }
@@ -74,23 +70,23 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     this.testCaseWrapperResult.forEach((item) => {
         item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
-        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-          map((result) => {
-            const innerResultsTemp: ActionResultModel[] = [];
-            result.innerResults.forEach(i => {
-              innerResultsTemp.push(i);
-            });
+        observables.push(
+          this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+            map((result) => {
+              const innerResultsTemp: ActionResultModel[] = [];
 
-            innerResultsTemp.forEach(res => this.convertActionToJson(res));
+              result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-            item.actionWrapperList.slice(result.innerResults.length)
-              .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
+              innerResultsTemp.forEach(res => this.convertActionToJson(res));
 
-            result.innerResults = innerResultsTemp;
+              item.actionWrapperList.slice(result.innerResults.length)
+                .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
 
-            this.resultList.push(result);
-            return result;
-          }))
+              result.innerResults = innerResultsTemp;
+
+              this.resultList.push(result);
+              return result;
+            }))
         );
       }
     );
@@ -99,7 +95,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   }
 
   openWebSocketWithActionResults(): Observable<any> {
-
     return of(this.websocketsService.connect(() => {
 
         this.subscription.add(
@@ -108,8 +103,9 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
               return this.testCaseService.runTestCase(this.idToRun);
             })
           ).subscribe(
-            () => console.log('running'),
-            () => console.log('error')
+            () => {
+            },
+            () => this.isError = true
           )
         );
       })
@@ -120,7 +116,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     for (const testCase of this.testCaseWrapperResult) {
       for (const wrapper of testCase.actionWrapperList) {
         this.websocketsService.getStompClient()
-          .subscribe('/topic/public/' + wrapper.id, (actionFromMessage) => {
+          .subscribe(this.socketEndpoint + wrapper.id, (actionFromMessage) => {
             this.onMessageReceive(actionFromMessage, wrapper.id, testCase.testResultId);
           });
       }
@@ -154,7 +150,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
       }
       this.onAllTestCasesAreFinished();
-
     }
 
     this.testCaseInfoComponents

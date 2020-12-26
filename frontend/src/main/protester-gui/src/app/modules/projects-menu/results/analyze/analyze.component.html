@@ -5,7 +5,7 @@
   </div>
 </div>
 
-<ng-template #noerror >
+<ng-template #noerror>
   <div *ngIf="isLoading; else content" class="loading">
     <p class="loading-info">Loading...</p>
     <mat-spinner></mat-spinner>
@@ -15,20 +15,21 @@
 
     <div fxLayout="row" class="test-case-analyze">
 
-      <mat-card class="test-case-info-card" >
+      <mat-card class="test-case-info-card">
         <mat-card-content>
           <app-test-case-info #child
                               *ngFor="let result of resultList"
-                              [testCaseResult]="result"
-          ></app-test-case-info>
+                              [testCaseResult]="result">
+
+          </app-test-case-info>
         </mat-card-content>
       </mat-card>
 
-      <div class="result-list-card" >
+      <div class="result-list-card">
         <app-result-list
           *ngFor="let result of resultList"
-          [testCaseResult]="result"
-        ></app-result-list>
+          [testCaseResult]="result">
+        </app-result-list>
       </div>
     </div>
 

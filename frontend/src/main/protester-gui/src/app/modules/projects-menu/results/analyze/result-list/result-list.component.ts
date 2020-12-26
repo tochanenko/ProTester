@@ -11,8 +11,6 @@ export class ResultListComponent implements OnChanges {
   @Input() testCaseResult: TestCaseResultModel;
   panelOpenState = true;
 
-  constructor() { }
-
   updateTestCaseResult(result): void {
     this.testCaseResult = result;
   }

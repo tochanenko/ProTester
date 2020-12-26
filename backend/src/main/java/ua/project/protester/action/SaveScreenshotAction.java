@@ -31,7 +31,9 @@ public class SaveScreenshotAction extends AbstractAction {
             System.out.println(filename);
             File destFile = new File(filename);
             FileUtils.copyFile(screenshot, destFile);
-            filename = filename.replace('\\', '/');
+            filename = filename
+                    .replace('\\', '/')
+                    .replace("~", "app");
             System.out.println(filename);
             return new ActionResultUiDto(filename);
         } catch (Exception e) {

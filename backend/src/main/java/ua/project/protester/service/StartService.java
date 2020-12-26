@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -83,8 +84,16 @@ public class StartService {
     public void execute(Long id) {
         WebDriver driver = null;
         try {
-            System.setProperty("webdriver.chrome.driver", "\\webdriver\\chromedriver.exe");
-            driver = new ChromeDriver();
+
+            ChromeOptions options = new ChromeOptions();
+
+            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--headless");
+            options.addArguments("--lang=en");
+            driver = new ChromeDriver(options);
+
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();

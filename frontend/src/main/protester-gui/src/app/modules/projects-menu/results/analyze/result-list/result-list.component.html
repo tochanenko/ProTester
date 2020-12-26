@@ -125,7 +125,7 @@
           </div>
 
 
-          <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns.length > 0">
+          <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns">
             <p class="column-name"> Output </p>
             <table class="sql-table">
               <tr>
@@ -142,7 +142,7 @@
           </div>
 
           <div class="table-view" *ngIf="item.action.type === 'UI'">
-            <p class="column-name" *ngIf="imagePath"> Image </p>
+            <p class="column-name"> Image </p>
             <table class="values-table">
               <tr class="values-tr">
                 <th class="parameters-tr-td">

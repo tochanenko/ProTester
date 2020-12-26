@@ -4,7 +4,7 @@ import {PageEvent} from '@angular/material/paginator';
 import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filter';
 import {SelectionModel} from '@angular/cdk/collections';
 import {RunTestCaseModel} from '../../../../../../models/run-analyze/run-test-case.model';
-import {Subscription} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SelectEnvComponent} from '../select-env/select-env.component';
 import {EnvironmentModel} from '../../../../../../models/environment/environment.model';
@@ -19,6 +19,7 @@ import {
   ValidationDataSetStatusModel
 } from '../../../../../../models/run-analyze/validation-data-set-response.model';
 import {ValidationComponent} from '../validation/validation.component';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-run',
@@ -104,21 +105,22 @@ export class RunComponent implements OnInit, OnDestroy {
     if (this.selection.isSelected(testCase)) {
       this.selection.deselect(testCase);
     } else {
-
-      this.testCaseService.validateTestCaseDataSet(testCase).subscribe(
-        validationResult => {
-          if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
-            this.openTestCaseDataSetErrorForm(validationResult, testCase);
-          } else {
-            if (this.testCaseService.isEnvRequired(this.projectId, testCase.id)._isScalar) {
-              this.openSelectEnvironmentView(testCase);
+      this.testCaseService.validateTestCaseDataSet(testCase).pipe(
+        switchMap(validationResult => {
+            if (validationResult.status === ValidationDataSetStatusModel.FAILED) {
+              return of(this.openTestCaseDataSetErrorForm(validationResult, testCase));
             } else {
-              this.selection.select(testCase);
+              return this.testCaseService.isEnvRequired(testCase.scenarioId).pipe(
+                map((data: boolean) => {
+                  return data
+                    ? of(this.openSelectEnvironmentView(testCase))
+                    : of(this.selection.select(testCase));
+                }));
             }
           }
-        },
-        () => console.log('error')
-      );
+        )
+      ).subscribe(result => console.log('success'),
+        error => console.log('error'));
       this.selection.toggle(testCase);
     }
   }
@@ -137,6 +139,7 @@ export class RunComponent implements OnInit, OnDestroy {
           if (result === undefined) {
             this.selection.deselect(testCase);
           } else {
+            console.log(result + '-------');
             testCase.environmentId = result;
             this.selection.select(testCase);
           }

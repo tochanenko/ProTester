@@ -143,6 +143,7 @@ table, th, td {
   color: rgba(0, 0, 0, 0.6);
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+  white-space: normal;
   left: 5px;
   width: 0.1%;
 }
@@ -171,4 +172,9 @@ table, th, td {
   width: 60%;
   min-width: 200px;
   color: rgba(0, 0, 0, 0.6);
+}
+
+.image {
+  max-height: 400px;
+  width:  auto;
 }

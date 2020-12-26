@@ -87,7 +87,7 @@
             <p class="column-name"> Request </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.request}}</th>
+                <th class="parameters-tr-td"><pre>{{ item.request | json }}</pre></th>
               </tr>
             </table>
           </div>
@@ -96,7 +96,7 @@
             <p class="column-name"> Response </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.response}}</th>
+                <th class="parameters-tr-td"><pre>{{ item.response | json }}</pre></th>
               </tr>
             </table>
           </div>
@@ -140,6 +140,18 @@
               </tr>
             </table>
           </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'UI'">
+            <p class="column-name" *ngIf="imagePath"> Image </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">
+                  <img [src]="item.path" class="image" alt="image">
+                </th>
+              </tr>
+            </table>
+          </div>
+
 
           <div class="table-view" *ngIf="item.message">
             <p class="column-name"> Message </p>

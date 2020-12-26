@@ -64,7 +64,9 @@ export class SearchComponent implements OnInit {
 
   openDialogDelete(id): void {
     this.compoundService.deleteCompound(id).subscribe((data) => {
-
+      if (data) {
+        this.searchByFilter();
+      }
       }, error => {
       console.log(error);
       const warning: DialogWarningModel = {
@@ -88,14 +90,6 @@ export class SearchComponent implements OnInit {
     this.subscription = this.compoundService.getAllCompounds().subscribe(data => {
       this.librariesCount = data["totalItems"];
     });
-  }
-
-  deleteCompound(id): void {
-    this.subscription = this.compoundService.deleteCompound(id).subscribe(data => {
-      if (data) {
-        this.searchByFilter();
-      }
-    }, error => console.error(error.error.message));
   }
 
   onPaginateChange(event): void {

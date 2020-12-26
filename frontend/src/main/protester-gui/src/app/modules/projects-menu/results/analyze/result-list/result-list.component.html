@@ -87,7 +87,7 @@
             <p class="column-name"> Request </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.request}}</th>
+                <th class="parameters-tr-td"><pre>{{ item.request | json }}</pre></th>
               </tr>
             </table>
           </div>
@@ -96,7 +96,7 @@
             <p class="column-name"> Response </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.response}}</th>
+                <th class="parameters-tr-td"><pre>{{ item.response | json }}</pre></th>
               </tr>
             </table>
           </div>

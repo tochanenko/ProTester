@@ -7,7 +7,12 @@ import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {ActionResultModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
+import {
+  ActionResultModel,
+  ExecutableComponentTypeModel,
+  StatusModel,
+  TestCaseResultModel
+} from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
 
 
@@ -72,7 +77,11 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
           map((result) => {
             const innerResultsTemp: ActionResultModel[] = [];
-            result.innerResults.forEach(i => innerResultsTemp.push(i));
+            result.innerResults.forEach(i => {
+              innerResultsTemp.push(i);
+            });
+
+            innerResultsTemp.forEach(res => this.convertActionToJson(res));
 
             item.actionWrapperList.slice(result.innerResults.length)
               .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
@@ -124,6 +133,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
+    this.convertActionToJson(actionToAdd);
+
     const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === testCaseId);
 
@@ -167,6 +178,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           test.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
         }
       }
+    }
+  }
+
+  convertActionToJson(action: ActionResultModel): void {
+    if (action.request) {
+      action.request = JSON.parse(action.request);
+    }
+    if (action.response) {
+      action.response = JSON.parse(action.response);
     }
   }
 

@@ -14,9 +14,9 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Click on link with specified ${text}",
+        name = "Click on link with ${text}",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Click on link",
+        description = "Click on link with the specified text",
         parameterNames = {"text"}
 )
 public class ClickOnLinkWithTextAction extends AbstractAction {

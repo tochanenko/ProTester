@@ -14,19 +14,20 @@ import ua.project.protester.model.executable.result.subtype.ActionResultTechnica
 import java.util.Map;
 
 @Action(
-        name = "Input ${text} into field with ${id}",
+        name = "Set ${key} = label of element with ${id} in context",
         type = ExecutableComponentType.TECHNICAL,
-        description = "Input provided text into field with the specified id",
-        parameterNames = {"text", "id"}
+        description = "Save element label to context",
+        parameterNames = {"key", "id"}
 )
-public class InputTextIntoFieldWithIdAction extends AbstractAction {
+public class SaveLabelByIdAction extends AbstractAction {
     @Override
     protected ActionResultTechnicalDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate) {
         try {
-            driver.findElement(By.id(params.get("id"))).sendKeys(params.get("text"));
-            return new ActionResultTechnicalDto();
+            String text = driver.findElement(By.id(params.get("id"))).getText();
+            context.put(params.get("key"), text);
+            return new ActionResultTechnicalDto(Map.of("label", text));
         } catch (Exception e) {
-            return new ActionResultTechnicalDto(new ActionExecutionException(e.getClass().getName()));
+            return new ActionResultTechnicalDto(new ActionExecutionException(e.getMessage()));
         }
     }
 }

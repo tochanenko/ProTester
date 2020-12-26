@@ -15,7 +15,7 @@ import ua.project.protester.model.executable.result.subtype.ActionResultRestDto;
 import java.util.Map;
 
 @Action(
-        name = "Send get request to url ${url}",
+        name = "Send get request to ${url}",
         type = ExecutableComponentType.REST,
         description = "Send get request to the specified url",
         parameterNames = {"url"}

@@ -9,6 +9,7 @@ import {StorageService} from '../../../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
+import {Role} from '../../../../models/role.model';
 
 @Component({
   selector: 'app-list',
@@ -116,7 +117,13 @@ export class ListComponent implements OnInit, OnDestroy {
     );
   }
 
+  openCreatorProfile(creatorId: number): void {
+    this.router.navigate(['/account/users/', creatorId]).then();
+  }
 
+  canViewCreatorProfile(): boolean {
+    return this.storageService.getUser.role === 'ADMIN';
+  }
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

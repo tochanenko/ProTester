@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +18,13 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.*;
+import ua.project.protester.model.RunResult;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.TestCaseDto;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -76,16 +80,10 @@ public class StartService {
         this.outerComponentRepository = outerComponentRepository;
     }
 
-    public void execute(Long id) throws TestScenarioNotFoundException {
+    public void execute(Long id) {
         WebDriver driver = null;
         try {
-//            ChromeOptions options = new ChromeOptions();
-//            options.addArguments("--disable-gpu");
-//            options.addArguments("--no-sandbox");
-//            options.addArguments("--disable-dev-shm-usage");
-//            options.addArguments("--headless");
-//            options.addArguments("--lang=en");
-            System.setProperty("webdriver.chrome.driver","\\webdriver\\chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "\\webdriver\\chromedriver.exe");
             driver = new ChromeDriver();
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -94,8 +92,8 @@ public class StartService {
             for (int i = 0; i < testCasesDto.size(); i++) {
                 runTestCase(testCasesDto.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
-        } catch (WebDriverException exception) {
-            log.error("webdriver exception {}", exception.getClass().getName());
+        } catch (Exception exception) {
+            log.error("exception {}", exception.getClass().getName());
         } finally {
             log.info("driver was closed");
             Objects.requireNonNull(driver).quit();
@@ -196,6 +194,7 @@ public class StartService {
                 });
     }
 
+    @Transactional
     public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
        log.info("test case {}", testCaseDto);
         DataSet dataSet = dataSetRepository.findDataSetById(testCaseDto.getDataSetId())

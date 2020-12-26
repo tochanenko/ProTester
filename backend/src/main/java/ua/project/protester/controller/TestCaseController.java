@@ -54,11 +54,10 @@ public class TestCaseController {
     }
 
 
-    @GetMapping("/project/{projectId}/{testCaseId}")
-    public boolean findAllProjectTestCases(@PathVariable Long projectId,
-                                                          @PathVariable Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
+    @GetMapping("/environment/{scenarioId}")
+    public boolean findSqlActions(@PathVariable Integer scenarioId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
 
-        return testCaseService.findSqlActionsInTestCaseByProjectIdAndTestCaseId(projectId, testCaseId);
+        return testCaseService.findSqlActionsInTestCaseByProjectIdAndTestCaseId(scenarioId);
     }
 
 }

@@ -19,6 +19,6 @@ public interface TestCaseService {
 
     Page<TestCaseDto> findAllProjectTestCases(Pagination pagination, Long projectId);
 
-    boolean findSqlActionsInTestCaseByProjectIdAndTestCaseId(Long projectId, Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException;
+    boolean findSqlActionsInTestCaseByProjectIdAndTestCaseId(Integer scenarioId) throws TestCaseNotFoundException, TestScenarioNotFoundException;
 
 }

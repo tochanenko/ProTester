@@ -27,14 +27,12 @@ public class SaveScreenshotAction extends AbstractAction {
     protected ActionResultUiDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate) {
         try {
             File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            String filename = "~\\frontend\\src\\main\\protester-gui\\src\\assets\\screenshots\\" + new Date().getTime() + ".png";
+            String filename = "~\\screenshots\\" + new Date().getTime() + ".png";
+            System.out.println(filename);
             File destFile = new File(filename);
             FileUtils.copyFile(screenshot, destFile);
-            Runtime.getRuntime().exec("echo Screenshot file name : " + destFile.getAbsolutePath());
-            Runtime.getRuntime().exec("ls /");
-            Runtime.getRuntime().exec("ls /app/");
-            Runtime.getRuntime().exec("ls /app/screenshots/");
             filename = filename.replace('\\', '/');
+            System.out.println(filename);
             return new ActionResultUiDto(filename);
         } catch (Exception e) {
             return new ActionResultUiDto(

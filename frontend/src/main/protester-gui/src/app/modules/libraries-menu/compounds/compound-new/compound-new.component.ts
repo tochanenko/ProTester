@@ -98,7 +98,6 @@ export class CreateComponent implements OnInit {
     if (typeof description !== "object") {
       const regexp = new RegExp('(\\$\\{.+?\\})');
       let splitted = description.split(regexp);
-      console.log(splitted)
       return splitted.map(sub_string => {
         if (sub_string.includes("${")) {
           return {

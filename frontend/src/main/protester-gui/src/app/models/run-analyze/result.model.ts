@@ -38,8 +38,8 @@ export class ActionResultModel {
   message?: string;
 
   // rest
-  request?: string;
-  response?: string;
+  request?: any;
+  response?: any;
   statusCode?: number;
 
   // sql

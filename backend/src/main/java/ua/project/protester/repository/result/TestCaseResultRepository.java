@@ -21,11 +21,11 @@ import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.repository.StatusRepository;
 import ua.project.protester.repository.UserRepository;
 import ua.project.protester.repository.testCase.TestCaseRepository;
+import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @PropertySource("classpath:queries/test-case-result.properties")
 @Repository
@@ -60,19 +60,25 @@ public class TestCaseResultRepository {
                         .addValue("endDate", endDate));
     }
 
-    @Transactional
-    public List<TestCaseResultDto> findAllByProjectId(Long projectId) {
-        List<Integer> list = namedParameterJdbcTemplate.queryForList(
+    public List<TestCaseResultDto> findAllByProjectId(Pagination pagination, Long projectId) {
+        return namedParameterJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findTestCaseResultsByProjectId"),
                 new MapSqlParameterSource()
-                        .addValue("projectId", projectId), Integer.class);
-        return list.stream().map(id -> {
-            try {
-                return findById(id);
-            } catch (TestCaseResultNotFoundException e) {
-                return null;
-            }
-        }).collect(Collectors.toList());
+                        .addValue("pageSize", pagination.getPageSize())
+                        .addValue("offset", pagination.getOffset())
+                        .addValue("filterName", pagination.getSearchField() + "%")
+                        .addValue("project_id", projectId),
+                new BeanPropertyRowMapper<>(TestCaseResultDto.class));
+    }
+
+    public Long countTestCaseResult(Pagination pagination, Long projectId) {
+
+        return namedParameterJdbcTemplate.queryForObject(
+                PropertyExtractor.extract(env, "countTestCaseResult"),
+                new MapSqlParameterSource()
+                        .addValue("filterName", pagination.getSearchField() + "%")
+                        .addValue("project_id", projectId),
+                Long.class);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

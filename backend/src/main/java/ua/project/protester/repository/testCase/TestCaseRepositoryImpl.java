@@ -49,7 +49,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("description", testCase.getDescription())
                         .addValue("author_id", testCase.getAuthorId())
                         .addValue("scenario_id", testCase.getScenarioId())
-                        .addValue("data_set_id", testCase.getScenarioId()),
+                        .addValue("data_set_id", testCase.getDataSetId()),
                 keyHolder);
 
         Integer id = (Integer) (Optional.ofNullable(keyHolder.getKeys())
@@ -73,7 +73,7 @@ public class TestCaseRepositoryImpl implements TestCaseRepository {
                         .addValue("name", testCase.getName())
                         .addValue("description", testCase.getDescription())
                         .addValue("scenario_id", testCase.getScenarioId())
-                        .addValue("data_set_id", testCase.getScenarioId()));
+                        .addValue("data_set_id", testCase.getDataSetId()));
 
         log.info("updating testCase {}", testCase.getName());
         return testCase;

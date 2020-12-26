@@ -4,6 +4,7 @@ import {SearchComponent} from "./compound-search/compound-search.component";
 import {ViewComponent} from "./compound-view/compound-view.component";
 import {CreateComponent} from "./compound-new/compound-new.component";
 import {CompoundEditComponent} from "./compound-edit/compound-edit.component";
+import {EditableColumn} from "primeng/table";
 
 const routes: Routes = [
   {
@@ -39,14 +40,16 @@ const routes: Routes = [
             },
             component: ViewComponent
           },
-          {
-            path: 'edit',
-            data: {
-              breadcrumb: 'Compound'
-            },
-            component: CompoundEditComponent
-          }
-        ]
+              {
+                path: 'edit',
+                data: {
+                  breadcrumb: 'Edit'
+                },
+                component: CompoundEditComponent
+              }
+            ]
+
+
       }
     ]
   }

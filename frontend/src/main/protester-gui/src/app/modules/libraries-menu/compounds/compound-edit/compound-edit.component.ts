@@ -189,7 +189,6 @@ export class CompoundEditComponent implements OnInit {
       return step;
     });
 
-    console.log("SUBMIT");
 
     this.compoundService.updateCompound(this.compound_id, this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();
@@ -237,13 +236,13 @@ export class CompoundEditComponent implements OnInit {
       parentParams[param] = "${" + param + "}";
       this.compoundUpdateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
     });
-    console.log(component.steps)
     if (component.steps) {
       let mappingParams = {};
+      console.log(parentParams)
       this.recursiveStepParsing(component.steps, mappingParams, parentParams);
     }
-    console.log(this.formControls)
     this.components.push(step);
+    console.log(this.formControls)
 
   }
 
@@ -262,7 +261,8 @@ export class CompoundEditComponent implements OnInit {
           }
           if (!this.checkIfParamInterpolated(value.toString())) {
             clonedMappingParams[key] = value;
-          } else {
+          }
+          else {
             let param = this.cleanParam(value.toString());
             if (clonedMappingParams[param]) {
               item.parameters[key] = clonedMappingParams[param]

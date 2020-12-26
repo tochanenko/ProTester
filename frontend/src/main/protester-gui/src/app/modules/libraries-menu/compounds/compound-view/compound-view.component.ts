@@ -151,6 +151,12 @@ export class ViewComponent implements OnInit {
     })
   }
 
+  goToEdit(id): void {
+    if (id) {
+      this.router.navigate([`libraries-menu/compounds/${id}/edit`]).then();
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

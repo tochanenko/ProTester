@@ -92,10 +92,10 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public void deleteLibraryById(int id) throws LibraryNotFoundException {
-        try {
+        if (libraryRepository.findLibraryById(id).isPresent()) {
             libraryRepository.deleteLibraryById(id);
-        } catch (Exception e) {
-            throw new LibraryNotFoundException("Can`t find library with id=" + id);
+        } else {
+           throw new LibraryNotFoundException("Can`t find library by id=" + id);
         }
     }
 }

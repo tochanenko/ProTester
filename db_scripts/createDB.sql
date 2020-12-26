@@ -1,11 +1,9 @@
 DROP TABLE IF EXISTS roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tokens CASCADE;
-DROP TABLE IF EXISTS action_declarations CASCADE;
 DROP TABLE IF EXISTS actions CASCADE;
 DROP TABLE IF EXISTS action_parameters CASCADE;
 DROP TABLE IF EXISTS compounds CASCADE;
-DROP TABLE IF EXISTS compounds_actions CASCADE;
 DROP TABLE IF EXISTS libraries CASCADE;
 DROP TABLE IF EXISTS libraries_storage CASCADE;
 DROP TABLE IF EXISTS tests_scenarios CASCADE;
@@ -43,10 +41,10 @@ CREATE TABLE roles
 
 CREATE TABLE users
 (
-    user_id            SERIAL PRIMARY KEY,
-    role_id            INTEGER               NOT NULL,
-    user_username      VARCHAR(32) UNIQUE    NOT NULL,
-    user_password	VARCHAR(60) 		   NOT NULL,
+    user_id         SERIAL PRIMARY KEY,
+    role_id         INTEGER            NOT NULL,
+    user_username   VARCHAR(32) UNIQUE NOT NULL,
+    user_password	VARCHAR(60) 	   NOT NULL,
     user_email 		VARCHAR(32) UNIQUE NOT NULL,
     user_active		BOOLEAN			   NOT NULL,
     user_first_name	VARCHAR(32) 	   NOT NULL,
@@ -69,9 +67,9 @@ CREATE TABLE actions (
 );
 
 CREATE TABLE compounds (
-    compound_id				SERIAL PRIMARY KEY,
-    compound_name			TEXT    	NOT NULL,
-    compound_description 	TEXT        NOT NULL
+    compound_id				SERIAL  PRIMARY KEY,
+    compound_name			TEXT    NOT NULL,
+    compound_description    TEXT    NOT NULL
 );
 
 CREATE TABLE libraries (
@@ -86,15 +84,15 @@ CREATE TABLE libraries_storage (
     action_id	INTEGER,
     compound_id INTEGER,
     is_action   BOOLEAN NOT NULL,
-    CONSTRAINT ls_library_fk FOREIGN KEY (library_id) REFERENCES libraries (library_id) ON DELETE CASCADE,
-    CONSTRAINT ls_action_fk  FOREIGN KEY (action_id)  REFERENCES actions (action_id)    ON DELETE CASCADE,
+    CONSTRAINT ls_library_fk  FOREIGN KEY (library_id)  REFERENCES libraries (library_id)  ON DELETE CASCADE,
+    CONSTRAINT ls_action_fk   FOREIGN KEY (action_id)   REFERENCES actions (action_id)     ON DELETE CASCADE,
     CONSTRAINT ls_compound_fk FOREIGN KEY (compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tests_scenarios (
-    scenario_id 			SERIAL PRIMARY KEY,
-    scenario_name 			TEXT        NOT NULL,
-    scenario_description 	TEXT        NOT NULL
+    scenario_id 			SERIAL  PRIMARY KEY,
+    scenario_name 			TEXT    NOT NULL,
+    scenario_description 	TEXT    NOT NULL
 );
 
 CREATE TABLE steps (
@@ -107,9 +105,9 @@ CREATE TABLE steps (
     inner_compound_id      INTEGER,
     step_order             INTEGER NOT NULL,
     CONSTRAINT step_outer_test_scenario_id_fk FOREIGN KEY (outer_test_scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE,
-    CONSTRAINT step_outer_compound_id_fk FOREIGN KEY (outer_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE,
-    CONSTRAINT step_inner_compound_id_fk FOREIGN KEY (inner_compound_id) REFERENCES compounds (compound_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT step_inner_action_id_fk FOREIGN KEY (inner_action_id) REFERENCES actions (action_id) ON DELETE CASCADE
+    CONSTRAINT step_outer_compound_id_fk      FOREIGN KEY (outer_compound_id)      REFERENCES compounds (compound_id)       ON DELETE CASCADE,
+    CONSTRAINT step_inner_compound_id_fk      FOREIGN KEY (inner_compound_id)      REFERENCES compounds (compound_id)       ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT step_inner_action_id_fk        FOREIGN KEY (inner_action_id)        REFERENCES actions (action_id)           ON DELETE CASCADE
 );
 
 CREATE TABLE step_params (
@@ -155,95 +153,95 @@ CREATE TABLE test_cases (
     project_id            INTEGER      NOT NULL,
     author_id             INTEGER      NOT NULL,
     scenario_id           INTEGER      NOT NULL,
-    CONSTRAINT tc_project_fk FOREIGN KEY (project_id) REFERENCES projects (project_id) ON DELETE CASCADE,
-    CONSTRAINT tc_author_fk FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    CONSTRAINT tc_ts_fk FOREIGN KEY (scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE
+    CONSTRAINT tc_project_fk FOREIGN KEY (project_id)  REFERENCES projects (project_id)         ON DELETE CASCADE,
+    CONSTRAINT tc_author_fk  FOREIGN KEY (author_id)   REFERENCES users (user_id)               ON DELETE CASCADE,
+    CONSTRAINT tc_ts_fk      FOREIGN KEY (scenario_id) REFERENCES tests_scenarios (scenario_id) ON DELETE CASCADE
 );
 
 CREATE TABLE test_case_data_sets (
     test_case_id INTEGER NOT NULL,
     data_set_id  INTEGER NOT NULL,
     CONSTRAINT tcw_testcase_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id),
-    CONSTRAINT tcw_dataset_fk FOREIGN KEY (data_set_id) REFERENCES data_sets (data_set_id)
+    CONSTRAINT tcw_dataset_fk  FOREIGN KEY (data_set_id)  REFERENCES data_sets (data_set_id)
 );
 
 CREATE TABLE test_cases_watchers (
     test_case_id INTEGER NOT NULL,
     user_id      INTEGER NOT NULL,
     CONSTRAINT tcw_testcase_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id),
-    CONSTRAINT tcw_watcher_fk FOREIGN KEY (user_id) REFERENCES users (user_id)
+    CONSTRAINT tcw_watcher_fk  FOREIGN KEY (user_id)      REFERENCES users (user_id)
 );
 
 CREATE TABLE test_case_result (
     test_case_result_id SERIAL PRIMARY KEY,
-    user_id INTEGER,
-    test_case_id INTEGER,
-    status_id INTEGER NOT NULL,
-    start_date TIMESTAMPTZ NOT NULL,
-    end_date TIMESTAMPTZ,
-    CONSTRAINT test_case_result_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE SET NULL,
+    user_id             INTEGER,
+    test_case_id        INTEGER,
+    status_id           INTEGER NOT NULL,
+    start_date          TIMESTAMPTZ NOT NULL,
+    end_date            TIMESTAMPTZ,
+    CONSTRAINT test_case_result_user_id_fk      FOREIGN KEY (user_id)      REFERENCES users (user_id)           ON DELETE SET NULL,
     CONSTRAINT test_case_result_test_case_id_fk FOREIGN KEY (test_case_id) REFERENCES test_cases (test_case_id) ON DELETE SET NULL,
-    CONSTRAINT test_case_result_status_id_fk FOREIGN KEY (status_id) REFERENCES statuses (status_id)
+    CONSTRAINT test_case_result_status_id_fk    FOREIGN KEY (status_id)    REFERENCES statuses (status_id)
 );
 
 CREATE TABLE action_result (
-    action_result_id SERIAL PRIMARY KEY,
-    test_case_result_id INTEGER NOT NULL,
-    action_id INTEGER,
-    start_date TIMESTAMPTZ NOT NULL,
-    end_date TIMESTAMPTZ NOT NULL,
-    status_id INTEGER NOT NULL,
-    message TEXT,
+    action_result_id    SERIAL PRIMARY KEY,
+    test_case_result_id INTEGER     NOT NULL,
+    action_id           INTEGER,
+    start_date          TIMESTAMPTZ NOT NULL,
+    end_date            TIMESTAMPTZ NOT NULL,
+    status_id           INTEGER     NOT NULL,
+    message             TEXT,
     CONSTRAINT action_result_test_case_result_id_fk FOREIGN KEY (test_case_result_id) REFERENCES test_case_result (test_case_result_id) ON DELETE CASCADE,
-    CONSTRAINT action_result_action_id_fk FOREIGN KEY (action_id) REFERENCES actions (action_id) ON DELETE SET NULL,
-    CONSTRAINT action_result_status_id_fk FOREIGN KEY (status_id) REFERENCES statuses (status_id)
+    CONSTRAINT action_result_action_id_fk           FOREIGN KEY (action_id)           REFERENCES actions (action_id)                    ON DELETE SET NULL,
+    CONSTRAINT action_result_status_id_fk           FOREIGN KEY (status_id)           REFERENCES statuses (status_id)
 );
 
 CREATE TABLE action_result_input_param (
     action_result_input_param_id SERIAL PRIMARY KEY,
-    action_result_id INTEGER NOT NULL,
-    key VARCHAR(128) NOT NULL,
-    value TEXT NOT NULL,
+    action_result_id             INTEGER      NOT NULL,
+    key                          VARCHAR(128) NOT NULL,
+    value                        TEXT         NOT NULL,
     CONSTRAINT action_result_input_param_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE action_result_ui (
     action_result_ui_id SERIAL PRIMARY KEY,
-    action_result_id INTEGER,
-    path VARCHAR(512) NOT NULL,
+    action_result_id    INTEGER,
+    path                VARCHAR(512) NOT NULL,
     CONSTRAINT action_result_ui_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE action_result_technical_extra (
     action_result_technical_id SERIAL PRIMARY KEY,
-    action_result_id INTEGER NOT NULL,
-    key VARCHAR(128) NOT NULL,
-    value TEXT NOT NULL,
+    action_result_id           INTEGER      NOT NULL,
+    key                        VARCHAR(128) NOT NULL,
+    value                      TEXT NOT NULL,
     CONSTRAINT action_result_technical_extra_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE action_result_rest (
     action_result_rest_id SERIAL PRIMARY KEY,
-    action_result_id INTEGER NOT NULL,
-    request TEXT NOT NULL,
-    response TEXT NOT NULL,
-    status_code INTEGER NOT NULL,
+    action_result_id      INTEGER NOT NULL,
+    request               TEXT    NOT NULL,
+    response              TEXT    NOT NULL,
+    status_code           INTEGER NOT NULL,
     CONSTRAINT action_result_rest_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE action_result_sql (
     action_result_sql_id SERIAL PRIMARY KEY,
-    action_result_id INTEGER NOT NULL,
-    connection_url VARCHAR(512) NOT NULL,
-    username VARCHAR(128) NOT NULL,
-    query VARCHAR(512) NOT NULL,
+    action_result_id    INTEGER      NOT NULL,
+    connection_url      VARCHAR(512) NOT NULL,
+    username            VARCHAR(128) NOT NULL,
+    query               VARCHAR(512) NOT NULL,
     CONSTRAINT action_result_sql_action_result_id_fk FOREIGN KEY (action_result_id) REFERENCES action_result (action_result_id) ON DELETE CASCADE
 );
 
 CREATE TABLE sql_column(
     sql_column_id SERIAL PRIMARY KEY,
     action_result_sql_id INTEGER NOT NULL,
-    name VARCHAR(64) NOT NULL,
+    name                 VARCHAR(64) NOT NULL,
     CONSTRAINT sql_column_action_result_sql_id_fk FOREIGN KEY (action_result_sql_id) REFERENCES action_result_sql (action_result_sql_id) ON DELETE CASCADE
 );
 

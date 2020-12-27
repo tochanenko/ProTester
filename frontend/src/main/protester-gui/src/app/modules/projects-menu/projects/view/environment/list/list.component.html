@@ -1,6 +1,6 @@
 <mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
 
-<mat-card class="env-list" *ngIf="isLoading">
+<mat-card class="env-list" *ngIf="!isLoading">
 
   <mat-error *ngIf="isError">
     Something went wrong...

@@ -121,7 +121,8 @@ export class RunComponent implements OnInit, OnDestroy {
             }
           })
         ).subscribe(
-          () => {},
+          () => {
+          },
           () => this.isError = true)
       );
       this.selection.toggle(testCase);
@@ -170,8 +171,6 @@ export class RunComponent implements OnInit, OnDestroy {
     if (this.runTestCaseModel.testCaseResponseList.length === 0) {
       return;
     }
-
-    this.isLoading = true;
 
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(

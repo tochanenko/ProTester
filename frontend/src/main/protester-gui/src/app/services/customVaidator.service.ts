@@ -18,7 +18,7 @@ export class CustomValidator {
       let controls = formGroup.controls;
       const name_field = controls['name'];
       Object.keys(controls).forEach( key => {
-        if (controls[key].value.includes("${") && !name_field.value.includes(controls[key].value)) {
+        if (controls[key].value.includes("${") && !name_field.value.includes(controls[key].value) && !items.includes(controls[key].value)) {
           items += controls[key].value + " ";
         }
       })

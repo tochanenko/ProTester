@@ -40,6 +40,8 @@ import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.response.ValidationDataSetStatus;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +55,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class StartService {
 
-    private  RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     private DataSetRepository dataSetRepository;
     private TestScenarioService testScenarioService;
     private ModelMapper modelMapper;
@@ -81,26 +83,24 @@ public class StartService {
         this.outerComponentRepository = outerComponentRepository;
     }
 
-    public void execute(Long id) {
+    public void execute(Long runId) {
         WebDriver driver = null;
         try {
-
             ChromeOptions options = new ChromeOptions();
-
             options.addArguments("--disable-gpu");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--headless");
             options.addArguments("--lang=en");
             driver = new ChromeDriver(options);
-
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            RunResult runResult = runResultRepository.findRunResultById(id).orElseThrow();
+            RunResult runResult = runResultRepository.findRunResultById(runId).orElseThrow();
             List<TestCaseWrapperResult> testCaseResults = runResult.getTestCaseResults();
             for (int i = 0; i < testCasesDto.size(); i++) {
                 runTestCase(testCasesDto.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
+
         } catch (Exception exception) {
             log.error("exception {}", exception.getClass().getName());
         } finally {
@@ -116,14 +116,15 @@ public class StartService {
         DataSet dataSet = dataSetRepository.findDataSetById(testCase.getDataSetId())
                 .orElseThrow(() -> new DataSetNotFoundException("Data set was not found"));
         Environment environment = getEnvironment(testCaseDto);
-        log.info("dataset{}", dataSet);
         try {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), getTemplate(testCaseDto), webDriver, restTemplate, environment, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
+            closeConnection(environment);
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
             counter = 0;
+            closeConnection(environment);
         }
     }
 
@@ -148,10 +149,10 @@ public class StartService {
         for (int i = 0; i < runTestCaseRequest.getTestCaseResponseList().size(); i++) {
             TestCaseDto currentTestCaseDto = runTestCaseRequest.getTestCaseResponseList().get(i);
             TestCaseWrapperResult currentTestCaseWrapperResult = resultFromDb.getTestCaseResults().get(i);
-            List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseDto.getScenarioId().intValue()).getSteps().stream())
+            List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(currentTestCaseDto.getScenarioId().intValue()).getSteps()
+                    .stream())
                     .collect(Collectors.toList());
-            List<ActionWrapper> actionWrappers = runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), steps);
-            resultFromDb.getTestCaseResults().get(i).setActionWrapperList(actionWrappers);
+            runResultRepository.saveActionWrappersByTestCaseResultWrapperId(currentTestCaseWrapperResult.getId(), steps);
         }
         testCasesDto = runTestCaseRequest.getTestCaseResponseList();
 
@@ -163,7 +164,6 @@ public class StartService {
     Consumer<ActionResultDto> getConsumer(Integer testCaseResultId) {
         return (action) -> {
             try {
-                log.info("action {}",  action);
                 List<ActionWrapper> actionWrappers = runResultRepository.findActionWrapperByTestCaseResult(testCaseResultId,
                         runResultRepository.findScenarioIdByTestCaseWrapperResult(testCaseResultId), false);
                 ActionResultDto actionResultDto = actionResultRepository.save(testCaseResultId, action);
@@ -175,8 +175,6 @@ public class StartService {
                     actionResultDto.setLast(true);
                 }
 
-                log.info("action result {}", actionResultDto.getClass().getName());
-                log.info("actionWrapper {}", actionWrappers.get(counter));
                 messagingTemplate.convertAndSend("/topic/public/" + actionWrappers.get(counter).getId(), actionResultDto);
                 counter++;
 
@@ -205,7 +203,6 @@ public class StartService {
 
     @Transactional
     public ValidationDataSetResponse validateDataSetWithTestScenario(TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
-       log.info("test case {}", testCaseDto);
         DataSet dataSet = dataSetRepository.findDataSetById(testCaseDto.getDataSetId())
                 .orElseThrow(() -> new DataSetNotFoundException("DataSet was not found"));
         OuterComponent testScenario = testScenarioService.getTestScenarioById(testCaseDto.getScenarioId().intValue());
@@ -225,7 +222,9 @@ public class StartService {
 
     private Environment getEnvironment(TestCaseDto testCaseDto) {
         if (testCaseDto.getEnvironmentId() != null) {
-            return environmentService.findById(testCaseDto.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            Environment environment = environmentService.findById(testCaseDto.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            environment.setDataSource(createDataSource(environment));
+            return environment;
         }
         return new Environment();
     }
@@ -234,14 +233,31 @@ public class StartService {
         if (testCaseDto.getEnvironmentId() != null) {
             Environment environment = environmentService.findById(testCaseDto.getEnvironmentId())
                     .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            environment.setDataSource(createDataSource(environment));
+            return new JdbcTemplate(environment.getDataSource());
+        }
+        return null;
+    }
 
+    private DataSource createDataSource(Environment environment) {
+        if (environment.getId() != null) {
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
             dataSourceBuilder.driverClassName("org.postgresql.Driver");
             dataSourceBuilder.url(environment.getUrl());
             dataSourceBuilder.username(environment.getUsername());
             dataSourceBuilder.password(environment.getPassword());
-            return new JdbcTemplate(dataSourceBuilder.build());
+            return dataSourceBuilder.build();
         }
         return null;
+    }
+
+    private void closeConnection(Environment environment) {
+        if (environment.getDataSource() != null) {
+            try {
+                environment.getDataSource().getConnection().close();
+            } catch (SQLException e) {
+                log.warn("SQL exception{}", e.getClass().getName());
+            }
+        }
     }
 }

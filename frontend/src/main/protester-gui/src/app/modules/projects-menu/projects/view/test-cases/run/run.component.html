@@ -1,4 +1,10 @@
-<mat-card class="test-case-run">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="test-case-run" *ngIf="!isLoading">
+
+  <mat-error *ngIf="isError">
+    Something went wrong...
+  </mat-error>
 
   <div class="search-test-case">
 
@@ -21,7 +27,6 @@
 
   <mat-table [dataSource]="dataSource">
 
-    <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef class="header">
         <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -37,13 +42,11 @@
       </mat-cell>
     </ng-container>
 
-    <!-- Weight Column -->
     <ng-container matColumnDef="NAME">
       <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
     </ng-container>
 
-    <!-- Symbol Column -->
     <ng-container matColumnDef="DESCRIPTION">
       <mat-header-cell *matHeaderCellDef class="header">DESCRIPTION</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
@@ -51,21 +54,17 @@
 
     <ng-container matColumnDef="SCENARIO">
       <mat-header-cell *matHeaderCellDef class="header">SCENARIO</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      <mat-cell *matCellDef="let element">{{element.scenarioName}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="DATASET">
       <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
-      <mat-cell *matCellDef="let element" class="header">
-        <ng-container *ngFor="let datasets of element.dataSetResponseList" >
-          <a [routerLink]="'/projects-menu/datasets'">{{datasets.name}}</a>
-        </ng-container>
-      </mat-cell>
+      <mat-cell *matCellDef="let element">{{element.dataSetName}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"
-        (click)="selectTestCase(row)">
+             (click)="selectTestCase(row)">
     </mat-row>
   </mat-table>
   <mat-paginator class="header"

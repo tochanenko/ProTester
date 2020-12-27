@@ -25,7 +25,9 @@ import ua.project.protester.utils.Pagination;
 import ua.project.protester.utils.PropertyExtractor;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource("classpath:queries/test-case-result.properties")
 @Repository
@@ -61,14 +63,23 @@ public class TestCaseResultRepository {
     }
 
     public List<TestCaseResultDto> findAllByProjectId(Pagination pagination, Long projectId) {
-        return namedParameterJdbcTemplate.query(
+        List<TestCaseResult> results = namedParameterJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findTestCaseResultsByProjectId"),
                 new MapSqlParameterSource()
                         .addValue("pageSize", pagination.getPageSize())
                         .addValue("offset", pagination.getOffset())
                         .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("project_id", projectId),
-                new BeanPropertyRowMapper<>(TestCaseResultDto.class));
+                        .addValue("projectId", projectId),
+                new BeanPropertyRowMapper<>(TestCaseResult.class));
+
+        if (results.size() > 0) {
+            return results
+                    .stream()
+                    .map(this::getDtoFromModel)
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
     }
 
     public Long countTestCaseResult(Pagination pagination, Long projectId) {

@@ -36,7 +36,9 @@
 
     <ng-container matColumnDef="SCENARIO">
       <mat-header-cell *matHeaderCellDef class="header">TEST-SCENARIO</mat-header-cell>
-      <mat-cell *matCellDef="let element"><a > {{element.scenarioName}}</a></mat-cell>
+      <mat-cell *matCellDef="let element">
+        <a [routerLink]="'/projects-menu/scenarios/'+element.scenarioId">{{element.scenarioName}}</a>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="DATASET">

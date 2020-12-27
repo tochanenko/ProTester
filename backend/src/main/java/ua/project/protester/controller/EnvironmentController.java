@@ -18,7 +18,8 @@ public class EnvironmentController {
 
     @GetMapping("/{id}")
     public Environment findById(@PathVariable Long id) {
-        return environmentService.findById(id).orElseThrow(() -> new EnvironmentNotFoundException("Environment not found"));
+        return environmentService.findById(id)
+                .orElseThrow(() -> new EnvironmentNotFoundException("Environment not found"));
     }
 
     @PostMapping
@@ -50,7 +51,6 @@ public class EnvironmentController {
 
     @GetMapping("findAll/{projectId}")
     public List<Environment> findAll(@PathVariable Long projectId) {
-        System.out.println(projectId);
         return environmentService.findAll(projectId);
     }
 }

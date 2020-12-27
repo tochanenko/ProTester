@@ -10,8 +10,6 @@ import ua.project.protester.request.UserModificationDto;
 import ua.project.protester.response.UserResponse;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -20,13 +18,6 @@ public class UserMapper {
     @Autowired
     public UserMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    public UserModificationDto toUserModificationRequestDtoFromUser(User user) {
-        if (user != null) {
-            return modelMapper.map(user, UserModificationDto.class);
-        }
-        return null;
     }
 
     public User toUserFromUserRequest(UserCreationRequestDto user) {
@@ -41,10 +32,6 @@ public class UserMapper {
             return modelMapper.map(user, UserResponse.class);
         }
         return null;
-    }
-
-    public List<UserResponse> toUserRest(List<User> users) {
-        return users.stream().map(user -> modelMapper.map(user, UserResponse.class)).collect(Collectors.toList());
     }
 
     public User toUserFromUserModificationDto(UserModificationDto user) {
@@ -73,7 +60,4 @@ public class UserMapper {
         destination.setRole(source.getRole().getName());
     }
 
-    public ModelMapper getModelMapper() {
-        return modelMapper;
-    }
 }

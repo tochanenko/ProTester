@@ -2,13 +2,15 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Project} from '../../../../models/project/project.model';
 import {PageEvent} from '@angular/material/paginator';
 import {ProjectFilter} from '../../../../models/project/project-filter.model';
-import {Subscription} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {ProjectService} from '../../../../services/project.service';
 import {Router} from '@angular/router';
 import {StorageService} from '../../../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
+import {switchMap} from 'rxjs/operators';
+import {ProjectResponse} from '../../../../models/project/project-response.model';
 
 @Component({
   selector: 'app-list',
@@ -20,16 +22,20 @@ export class ListComponent implements OnInit, OnDestroy {
   dataSource: Project[];
   pageEvent: PageEvent;
 
-  projectFilter: ProjectFilter = new ProjectFilter();
+  projectFilter: ProjectFilter;
   projectsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'LINK', 'CREATOR', 'STATUS', 'CONF'];
-  private subscription: Subscription = new Subscription();
+  subscription: Subscription;
+  isError = false;
+  isLoading = true;
 
   constructor(private projectService: ProjectService,
               private router: Router,
               private storageService: StorageService,
               public dialog: MatDialog) {
+    this.subscription = new Subscription();
+    this.projectFilter = new ProjectFilter();
   }
 
   ngOnInit(): void {
@@ -37,24 +43,22 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchProjects(): void {
-    if (this.projectFilter.projectActive === '') {
-      this.subscription.add(this.projectService.getAll(this.projectFilter).subscribe(
+    const observable: Observable<ProjectResponse> = this.projectFilter.projectActive === ''
+      ? this.projectService.getAll(this.projectFilter)
+      : this.projectService.getAllFiltered(this.projectFilter);
+
+    this.subscription.add(
+      observable.subscribe(
         data => {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
+          this.isLoading = false;
         },
-        error => console.log('error in initDataSource')
-      ));
-    } else {
-      this.subscription.add(this.projectService.getAllFiltered(this.projectFilter).subscribe(
-        data => {
-          this.dataSource = data.list;
-          this.projectsCount = data.totalItems;
-        },
-        error => console.log('error in initDataSource')
-      ));
-    }
+        () => this.isError = true
+      )
+    );
   }
+
 
   onPaginateChange(event: PageEvent): void {
     this.projectFilter.pageNumber = event.pageIndex;
@@ -80,8 +84,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
   changeStatus(id: number): void {
     this.subscription.add(this.projectService.changeStatus(id).subscribe(
-      data => this.searchProjects(),
-      error => console.log('not changed')
+      () => this.searchProjects(),
+      () => this.isError = true
     ));
   }
 
@@ -94,10 +98,9 @@ export class ListComponent implements OnInit, OnDestroy {
     });
 
     this.subscription.add(
-      updateDialogRef.afterClosed().subscribe(() => {
-          this.searchProjects();
-        },
-        error => console.log('error'))
+      updateDialogRef.afterClosed().subscribe(
+        () => this.searchProjects(),
+        () => this.isError = true)
     );
   }
 
@@ -112,10 +115,17 @@ export class ListComponent implements OnInit, OnDestroy {
     this.subscription.add(
       createDialogRef.afterClosed().subscribe(
         () => this.searchProjects(),
-        error => console.log('error'))
+        () => this.isError = true)
     );
   }
 
+  openCreatorProfile(creatorId: number): void {
+    this.router.navigate(['/account/users/', creatorId]).then();
+  }
+
+  canViewCreatorProfile(): boolean {
+    return this.storageService.getUser.role === 'ADMIN';
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {

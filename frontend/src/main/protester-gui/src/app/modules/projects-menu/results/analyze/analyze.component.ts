@@ -7,7 +7,12 @@ import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {ActionResultModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
+import {
+  ActionResultModel,
+  ExecutableComponentTypeModel,
+  StatusModel,
+  TestCaseResultModel
+} from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
 
 
@@ -101,7 +106,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           of(this.subscribeToResult()).pipe(
             mergeMap(() => this.testCaseService.runTestCase(this.idToRun))
           ).subscribe(
-            () => {},
+            () => {
+            },
             () => this.isError = true
           )
         );
@@ -126,6 +132,20 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
+    if (actionToAdd.action.type === ExecutableComponentTypeModel.UI) {
+      this.subscription.add(
+        this.analyzeService.getImage(actionToAdd.path).subscribe(
+          (item) => {
+            console.log('-------------------no--error-----1');
+            console.log(item);
+            const reader = new FileReader();
+            reader.onload = (e) => actionToAdd.image = e.target.result;
+            reader.readAsDataURL(new Blob([item]));
+            console.log('-------------------no--error-----');
+          },
+            () => console.log('----------error------'))
+      );
+    }
     this.convertActionToJson(actionToAdd);
 
     const indexOfTestCase: number = this.resultList

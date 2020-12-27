@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.project.protester.exception.ScreenshotNotFoundException;
+import ua.project.protester.service.ScreenshotService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Collections;
 import java.util.Map;
 
 @PreAuthorize("isAuthenticated()")
@@ -22,15 +19,10 @@ import java.util.Map;
 @Slf4j
 public class ScreenshotController {
 
+    private final ScreenshotService screenshotService;
+
     @GetMapping("/{name}")
-    public Map<String, String> test(@PathVariable String name) {
-        try {
-            File imageFile = new File("~\\screenshots\\" + name + ".png");
-            String encodedImage = Base64.getEncoder().withoutPadding().encodeToString(Files.readAllBytes(imageFile.toPath()));
-            return Map.of("content", encodedImage);
-        } catch (IOException e) {
-            log.warn(e.getMessage());
-            return Collections.emptyMap();
-        }
+    public Map<String, String> test(@PathVariable String name) throws ScreenshotNotFoundException {
+        return screenshotService.getByName(name);
     }
 }

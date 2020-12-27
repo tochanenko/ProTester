@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AuthService} from "../../../services/auth/auth.service";
-import {Router} from "@angular/router";
-import {StorageService} from "../../../services/auth/storage.service";
-import {Subscription} from "rxjs";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../../services/auth/auth.service';
+import {Router} from '@angular/router';
+import {StorageService} from '../../../services/auth/storage.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-login',

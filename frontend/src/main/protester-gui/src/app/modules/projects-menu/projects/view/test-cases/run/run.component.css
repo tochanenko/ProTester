@@ -108,3 +108,7 @@ mat-card {
 .run {
   color: #5C6BC0;
 }
+
+mat-error {
+  padding-bottom: 20px;
+}

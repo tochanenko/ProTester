@@ -1,4 +1,10 @@
-<mat-card class="project-list">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="project-list" *ngIf="!isLoading">
+
+  <mat-error *ngIf="isError">
+    Something went wrong...
+  </mat-error>
 
   <div class="search-project">
 
@@ -29,23 +35,29 @@
     <ng-container matColumnDef="NAME">
       <mat-header-cell *matHeaderCellDef class="header">NAME</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a [routerLink]="'/projects-menu/projects/' + element.projectId + '/test-cases'">{{element.projectName}}</a>
+        <a title="go to test cases list" [routerLink]="'/projects-menu/projects/' + element.projectId + '/test-cases'">{{element.projectName}}</a>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="LINK">
       <mat-header-cell *matHeaderCellDef class="header">LINK</mat-header-cell>
-      <mat-cell *matCellDef="let element"><a> {{element.projectWebsiteLink}}</a></mat-cell>
+      <mat-cell *matCellDef="let element">
+        <a title="go to website link" target="_blank" href="{{element.projectWebsiteLink}}"> {{element.projectWebsiteLink}}</a>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="CREATOR">
       <mat-header-cell *matHeaderCellDef class="header">CREATOR</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.creatorUsername}}</mat-cell>
+      <mat-cell *matCellDef="let element">
+        <a *ngIf="!canViewCreatorProfile()">{{element.creatorUsername}}</a>
+        <a [href]="'/#/account/users/' + element.creatorId" title="show profile"
+           *ngIf="canViewCreatorProfile()">{{element.creatorUsername}}</a>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="STATUS">
       <mat-header-cell *matHeaderCellDef class="header">STATUS</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.projectActive == true ? 'isActive' : 'Disabled'}}</mat-cell>
+      <mat-cell *matCellDef="let element">{{element.projectActive == true ? 'Active' : 'Disabled'}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="CONF">

@@ -241,16 +241,4 @@ public class RunResultRepository {
         }
     }
 
-    public void clearWrappers(List<TestCaseWrapperResult> testCaseWrapperResults) {
-        testCaseWrapperResults.forEach(result -> clearWrapperByTestCaseWrapperResultId(result.getId()));
-    }
-
-    private void clearWrapperByTestCaseWrapperResultId(Integer id) {
-        log.warn("action wrappers with test_case_wrapper_id {} was cleaned", id);
-        namedParameterJdbcTemplate.update(
-                extract(env, "deleteActionWrappers"),
-                new MapSqlParameterSource()
-                        .addValue("id", id));
-    }
-
 }

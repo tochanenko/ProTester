@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.exception.TestCaseNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
-import ua.project.protester.request.TestCaseRequest;
-import ua.project.protester.response.TestCaseResponse;
+import ua.project.protester.model.TestCaseDto;
 import ua.project.protester.service.testcase.TestCaseService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
@@ -23,12 +22,12 @@ public class TestCaseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TestCaseResponse createTestCase(@RequestBody TestCaseRequest testCase) throws TestCaseCreateException {
+    public TestCaseDto createTestCase(@RequestBody TestCaseDto testCase) throws TestCaseCreateException {
         return testCaseService.create(testCase);
     }
 
     @PutMapping
-    public TestCaseResponse updateTestCase(@RequestBody TestCaseRequest testCase) {
+    public TestCaseDto updateTestCase(@RequestBody TestCaseDto testCase) {
         return testCaseService.update(testCase);
     }
 
@@ -38,12 +37,12 @@ public class TestCaseController {
     }
 
     @GetMapping("/{id}")
-    public TestCaseResponse findTestCaseById(@PathVariable Long id) throws TestCaseNotFoundException {
+    public TestCaseDto findTestCaseById(@PathVariable Long id) throws TestCaseNotFoundException {
         return testCaseService.findById(id);
     }
 
     @GetMapping("/project/{projectId}")
-    public Page<TestCaseResponse> findAllProjectTestCases(
+    public Page<TestCaseDto> findAllProjectTestCases(
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
             @RequestParam(value = "testCaseName", defaultValue = "") String testCaseName,
@@ -55,11 +54,10 @@ public class TestCaseController {
     }
 
 
-    @GetMapping("/project/{projectId}/{testCaseId}")
-    public boolean findAllProjectTestCases(@PathVariable Long projectId,
-                                                          @PathVariable Long testCaseId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
+    @GetMapping("/environment/{scenarioId}")
+    public boolean findSqlActions(@PathVariable Integer scenarioId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
 
-        return testCaseService.findSqlActionsInTestCaseByProjectIdAndTestCaseId(projectId, testCaseId);
+        return testCaseService.findSqlActionsInTestCaseByProjectIdAndTestCaseId(scenarioId);
     }
 
 }

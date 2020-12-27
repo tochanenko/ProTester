@@ -13,16 +13,17 @@ export class EditComponent implements OnInit {
   envUpdateForm: FormGroup;
   submitted = false;
 
-  constructor( public dialogRef: MatDialogRef<EditComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: { environment: EnvironmentModel},
-               private formBuilder: FormBuilder) { }
+  constructor(public dialogRef: MatDialogRef<EditComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: { environment: EnvironmentModel },
+              private formBuilder: FormBuilder) {
+  }
 
   ngOnInit(): void {
     this.createEnvUpdateForm();
     this.envUpdateForm.setValue(this.data.environment);
   }
 
-  get f(): {[p: string]: AbstractControl} {
+  get f(): { [p: string]: AbstractControl } {
     return this.envUpdateForm.controls;
   }
 
@@ -41,18 +42,15 @@ export class EditComponent implements OnInit {
       ],
       username: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       password: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       url: [null, Validators.compose([
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       projectId: []
     });

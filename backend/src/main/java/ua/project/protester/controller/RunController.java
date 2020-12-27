@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
-import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCaseDto;
 import ua.project.protester.request.RunTestCaseRequest;
-import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.service.StartService;
 
@@ -21,14 +20,13 @@ public class RunController {
     private final StartService startService;
 
     @PostMapping
-    public RunResult save(@RequestBody RunTestCaseRequest testCase) throws TestScenarioNotFoundException, CompoundNotFoundException, OuterComponentNotFoundException {
-        log.info("test case response{}", testCase);
+    public RunResult save(@RequestBody RunTestCaseRequest testCase) throws TestScenarioNotFoundException, OuterComponentNotFoundException {
        return startService.getTestCaseExecutionResult(testCase);
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public void run(@PathVariable Long id) throws TestScenarioNotFoundException {
+    public void run(@PathVariable Long id) {
         startService.execute(id);
     }
 
@@ -38,7 +36,7 @@ public class RunController {
     }
 
     @PostMapping("/validate")
-    public ValidationDataSetResponse validate(@RequestBody TestCaseResponse testCaseResponse) throws TestScenarioNotFoundException {
-        return startService.validateDataSetWithTestScenario(testCaseResponse);
+    public ValidationDataSetResponse validate(@RequestBody TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
+        return startService.validateDataSetWithTestScenario(testCaseDto);
     }
 }

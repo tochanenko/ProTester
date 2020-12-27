@@ -4,10 +4,6 @@ import {Observable} from 'rxjs';
 import {User} from '../../models/user.model';
 import {StorageService} from './storage.service';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +13,7 @@ export class AuthService {
   }
 
   login(user: any): Observable<any> {
-    return this.http.post('/api/signin', user, httpOptions);
+    return this.http.post('/api/signin', user);
   }
 
   register(user: User): Observable<any> {
@@ -31,6 +27,6 @@ export class AuthService {
   }
 
   getRoles(): Observable<any> {
-    return this.http.get('/api/roles', httpOptions);
+    return this.http.get('/api/roles');
   }
 }

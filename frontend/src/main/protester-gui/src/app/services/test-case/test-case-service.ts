@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {DataSetRequestResponse} from '../../models/data-set-request-response';
@@ -13,10 +13,6 @@ import {RunResultModel} from '../../models/run-analyze/run-result.model';
 import {RunTestCaseModel} from '../../models/run-analyze/run-test-case.model';
 
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,11 +21,11 @@ export class TestCaseService {
   }
 
   create(testCase: TestCaseModel): Observable<any> {
-    return this.http.post('/api/testCase', testCase, httpOptions);
+    return this.http.post('/api/testCase', testCase);
   }
 
   update(testCase: TestCaseModel): Observable<any> {
-    return this.http.put('/api/testCase', testCase, httpOptions);
+    return this.http.put('/api/testCase', testCase);
   }
 
   getAll(projectId: number, filter: TestCaseFilter): Observable<TestCaseResponse> {
@@ -55,27 +51,27 @@ export class TestCaseService {
   }
 
   saveTestCaseResult(runTestCase: RunTestCaseModel): Observable<RunResultModel> {
-    return this.http.post<RunResultModel>('/api/test', runTestCase, httpOptions);
+    return this.http.post<RunResultModel>('/api/test', runTestCase);
   }
 
   runTestCase(id: number): Observable<void> {
-    return this.http.get<void>(`/api/test/${id}`, httpOptions);
+    return this.http.get<void>(`/api/test/${id}`);
   }
 
-  isEnvRequired(projectId: number, testCaseId: number): Observable<boolean> {
-    return this.http.get<boolean>(`/api/testCase/project/${projectId}/${testCaseId}`, httpOptions);
+  isEnvRequired(scenarioId: number): Observable<boolean> {
+    return this.http.get<boolean>(`/api/testCase/environment/${scenarioId}`);
   }
 
   loadEnvironments(id: number): Observable<EnvironmentModel[]> {
-    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${id}`, httpOptions);
+    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${id}`);
   }
 
   findRunResultByID(id: number): Observable<RunResultModel> {
-    return this.http.get<RunResultModel>(`/api/test/result/${id}`, httpOptions);
+    return this.http.get<RunResultModel>(`/api/test/result/${id}`);
   }
 
 
   validateTestCaseDataSet(testCase: TestCaseModel): Observable<ValidationDataSetResponseModel> {
-    return this.http.post<ValidationDataSetResponseModel>(`/api/test/validate`, testCase, httpOptions);
+    return this.http.post<ValidationDataSetResponseModel>(`/api/test/validate`, testCase);
   }
 }

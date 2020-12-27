@@ -26,6 +26,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   private idToRun: number;
   private subscription: Subscription = new Subscription();
   private testCaseWrapperResult: TestCaseWrapperResultModel[];
+  private socketEndpoint = '/topic/public/';
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
@@ -43,7 +44,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         concatMap((item) => {
           this.testCaseWrapperResult = item.testCaseResults;
           item.testCaseResults.forEach(i => this.idTestCaseList.push(i.testResultId));
-
           return of({});
         }),
         concatMap(() => {
@@ -57,8 +57,9 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
         })
       ).subscribe(
-        () => console.log('successfully'),
-        () => console.log('error')
+        () => {
+        },
+        () => this.isError = true
       )
     );
   }
@@ -69,19 +70,23 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     this.testCaseWrapperResult.forEach((item) => {
         item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
-        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-          map((result) => {
-            const innerResultsTemp: ActionResultModel[] = [];
-            result.innerResults.forEach(i => innerResultsTemp.push(i));
+        observables.push(
+          this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+            map((result) => {
+              const innerResultsTemp: ActionResultModel[] = [];
 
-            item.actionWrapperList.slice(result.innerResults.length)
-              .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
+              result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-            result.innerResults = innerResultsTemp;
+              innerResultsTemp.forEach(res => this.convertActionToJson(res));
 
-            this.resultList.push(result);
-            return result;
-          }))
+              item.actionWrapperList.slice(result.innerResults.length)
+                .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
+
+              result.innerResults = innerResultsTemp;
+
+              this.resultList.push(result);
+              return result;
+            }))
         );
       }
     );
@@ -90,17 +95,14 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   }
 
   openWebSocketWithActionResults(): Observable<any> {
-
     return of(this.websocketsService.connect(() => {
 
         this.subscription.add(
           of(this.subscribeToResult()).pipe(
-            mergeMap(() => {
-              return this.testCaseService.runTestCase(this.idToRun);
-            })
+            mergeMap(() => this.testCaseService.runTestCase(this.idToRun))
           ).subscribe(
-            () => console.log('running'),
-            () => console.log('error')
+            () => {},
+            () => this.isError = true
           )
         );
       })
@@ -111,7 +113,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     for (const testCase of this.testCaseWrapperResult) {
       for (const wrapper of testCase.actionWrapperList) {
         this.websocketsService.getStompClient()
-          .subscribe('/topic/public/' + wrapper.id, (actionFromMessage) => {
+          .subscribe(this.socketEndpoint + wrapper.id, (actionFromMessage) => {
             this.onMessageReceive(actionFromMessage, wrapper.id, testCase.testResultId);
           });
       }
@@ -124,13 +126,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
+    this.convertActionToJson(actionToAdd);
+
     const indexOfTestCase: number = this.resultList
       .findIndex(e => e.id === testCaseId);
 
     const testCase = this.resultList[indexOfTestCase];
 
     const actionIndex = testCase.innerResults
-      .findIndex(item => item.id === wrapperId);
+      .findIndex(item => item.actionWrapperId === wrapperId);
 
     actionIndex === -1
       ? testCase.innerResults.push(actionToAdd)
@@ -143,7 +147,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
       }
       this.onAllTestCasesAreFinished();
-
     }
 
     this.testCaseInfoComponents
@@ -167,6 +170,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           test.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
         }
       }
+    }
+  }
+
+  convertActionToJson(action: ActionResultModel): void {
+    if (action.request) {
+      action.request = JSON.parse(action.request);
+    }
+    if (action.response) {
+      action.response = JSON.parse(action.response);
     }
   }
 

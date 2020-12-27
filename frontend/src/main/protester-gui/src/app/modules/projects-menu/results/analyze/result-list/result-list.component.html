@@ -87,7 +87,9 @@
             <p class="column-name"> Request </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.request}}</th>
+                <th class="parameters-tr-td">
+                  <pre>{{ item.request | json }}</pre>
+                </th>
               </tr>
             </table>
           </div>
@@ -96,7 +98,9 @@
             <p class="column-name"> Response </p>
             <table class="values-table">
               <tr class="values-tr">
-                <th class="parameters-tr-td">{{item.response}}</th>
+                <th class="parameters-tr-td">
+                  <pre>{{ item.response | json }}</pre>
+                </th>
               </tr>
             </table>
           </div>
@@ -114,8 +118,8 @@
             <p class="column-name"> Parameters </p>
             <table class="parameters-table">
               <tr>
-                <th class="parameters-tr-td">name</th>
-                <th class="parameters-tr-td">value</th>
+                <th class="parameters-tr-td"><b>name</b></th>
+                <th class="parameters-tr-td"><b>value</b></th>
               </tr>
               <tr class="parameters-tr-td" *ngFor="let i of item.inputParameters | keyvalue">
                 <td class="parameters-tr-td">{{ i.key }}</td>
@@ -124,22 +128,53 @@
             </table>
           </div>
 
+          <div *ngIf="item.action.type === 'TECHNICAL'">
+            <br>
+            <div class="table-view">
+              <p class="column-name"> Results </p>
+              <table class="parameters-table">
+                <tr>
+                  <th class="parameters-tr-td"><b>name</b></th>
+                  <th class="parameters-tr-td"><b>value</b></th>
+                </tr>
+                <tr class="parameters-tr-td" *ngFor="let i of item.extra | keyvalue">
+                  <td class="parameters-tr-td">{{ i.key }}</td>
+                  <td class="parameters-tr-td">{{ i.value }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
 
-          <div class="table-view" *ngIf="item.action.type === 'SQL' && item.columns.length > 0">
-            <p class="column-name"> Output </p>
-            <table class="sql-table">
-              <tr>
-                <th class="sql-tr-td" *ngFor="let header of item.columns">{{ header.name }}</th>
-              </tr>
-              <tr>
-                <td *ngFor="let i of item.columns">
-                  <table>
-                    <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
-                  </table>
-                </td>
+          <div *ngIf="item.action.type === 'SQL' && item.columns">
+            <br>
+            <div class="table-view">
+              <p class="column-name"> Output </p>
+              <table class="sql-table">
+                <tr>
+                  <th class="sql-tr-td" *ngFor="let header of item.columns"><b>{{ header.name }}</b></th>
+                </tr>
+                <tr>
+                  <td *ngFor="let i of item.columns">
+                    <table>
+                      <tr class="sql-tr-td-inner" *ngFor="let j of i.rows">{{j}}</tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-view" *ngIf="item.action.type === 'UI'">
+            <p class="column-name"> Image </p>
+            <table class="values-table">
+              <tr class="values-tr">
+                <th class="parameters-tr-td">
+                  <img [src]="item.path" class="image" alt="image">
+                </th>
               </tr>
             </table>
           </div>
+
 
           <div class="table-view" *ngIf="item.message">
             <p class="column-name"> Message </p>

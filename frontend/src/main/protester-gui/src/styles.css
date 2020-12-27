@@ -14,6 +14,15 @@ body {
   overflow: auto;
 }
 
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
 .mat-expansion-panel {
   border: 1px solid #D9D5EC ;
 }

@@ -5,10 +5,6 @@ import {ProjectFilter} from '../models/project/project-filter.model';
 import {Project} from '../models/project/project.model';
 import {ProjectResponse} from '../models/project/project-response.model';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,12 +13,12 @@ export class ProjectService {
   constructor(private http: HttpClient) {
   }
 
-  create(project: Project): Observable<any> {
-    return this.http.post<any>('/api/project/create', project, httpOptions);
+  create(project: Project): Observable<Project> {
+    return this.http.post<Project>('/api/project', project);
   }
 
-  update(project: Project): Observable<any> {
-    return this.http.put('/api/project/update', project, httpOptions);
+  update(project: Project): Observable<Project> {
+    return this.http.put<Project>('/api/project', project);
   }
 
   getAll(filter: ProjectFilter): Observable<ProjectResponse> {
@@ -48,12 +44,8 @@ export class ProjectService {
     return this.http.get<Project>(`/api/project/${id}`);
   }
 
-  getPageCount(): Observable<any> {
-    return this.http.get<number>('/api/project/countOfProjects');
-  }
-
   changeStatus(id: number): Observable<any> {
-    return this.http.put(`/api/project/changeStatus/${id}`, {}, httpOptions);
+    return this.http.put(`/api/project/changeStatus/${id}`, {});
   }
 
 }

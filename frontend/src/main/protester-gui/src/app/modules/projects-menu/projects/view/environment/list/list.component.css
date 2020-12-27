@@ -118,3 +118,7 @@ button.mat-button .mat-icon {
   color: #5C6BC0;
   margin-left: 10px;
 }
+
+mat-error {
+  padding-bottom: 20px;
+}

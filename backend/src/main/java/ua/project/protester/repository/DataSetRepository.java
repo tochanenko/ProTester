@@ -39,7 +39,7 @@ public class DataSetRepository {
                 new String[]{"data_set_id"});
         log.info("saving {} dataset with description {}", dataSet.getName(), dataSet.getDescription());
         Integer id = (Integer) keyHolder.getKey();
-        dataSet.setId(id.longValue());
+        dataSet.setId(Objects.requireNonNull(id).longValue());
         dataSet.getParameters().forEach((key, value) -> saveParams(id.longValue(), key, value));
         return dataSet;
     }

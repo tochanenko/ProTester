@@ -23,7 +23,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public ProjectDto createProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
+    public ProjectDto create(ProjectDto projectDto) throws ProjectAlreadyExistsException {
         log.info("IN ProjectServiceImpl createProject, projectDto: {}", projectDto);
 
         Project savedProjectFromBd;
@@ -44,7 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public ProjectDto updateProject(ProjectDto projectDto) throws ProjectAlreadyExistsException {
+    public ProjectDto update(ProjectDto projectDto) throws ProjectAlreadyExistsException {
         log.info("IN ProjectServiceImpl updateProject, projectDto: {}", projectDto);
 
         Project updatedProjectFromBd;
@@ -62,12 +62,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public ProjectDto changeProjectStatus(Long projectId) throws ProjectNotFoundException {
+    public ProjectDto changeStatus(Long projectId) throws ProjectNotFoundException {
         log.info("IN changeProjectStatus, projectId: {}", projectId);
 
         Project projectToChangeStatus = getProjectById(projectId);
 
-        Project updatedProjectFromBd = projectRepository.changeProjectStatus(
+        Project updatedProjectFromBd = projectRepository.changeStatus(
                 projectToChangeStatus,
                 !projectToChangeStatus.getProjectActive()
         );
@@ -78,7 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Page<ProjectDto> findAllProjects(Pagination pagination) {
+    public Page<ProjectDto> findAll(Pagination pagination) {
         log.info("IN findAllProjects");
         return new Page<>(
                 projectRepository.findAll(pagination),
@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Page<ProjectDto> findAllProjectsByStatus(Pagination pagination, Boolean isActive) {
+    public Page<ProjectDto> findAllByStatus(Pagination pagination, Boolean isActive) {
         log.info("IN findAllProjectsByStatus");
         return new Page<>(
                 projectRepository.findAllByStatus(pagination, isActive),
@@ -97,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDto getProjectDtoById(Long id) throws ProjectNotFoundException {
+    public ProjectDto getById(Long id) throws ProjectNotFoundException {
         log.info("IN getProjectDtoById");
 
         Project project = getProjectById(id);

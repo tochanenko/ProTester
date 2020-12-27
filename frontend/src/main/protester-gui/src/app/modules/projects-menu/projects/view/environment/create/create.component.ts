@@ -13,15 +13,16 @@ export class CreateComponent implements OnInit {
   submitted = false;
   hidePasswordField = true;
 
-  constructor( public dialogRef: MatDialogRef<CreateComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: { projectId: number},
-               private formBuilder: FormBuilder) { }
+  constructor(public dialogRef: MatDialogRef<CreateComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: { projectId: number },
+              private formBuilder: FormBuilder) {
+  }
 
   ngOnInit(): void {
     this.createEnvCreateForm();
   }
 
-  get f(): {[p: string]: AbstractControl} {
+  get f(): { [p: string]: AbstractControl } {
     return this.envCreateForm.controls;
   }
 
@@ -36,16 +37,13 @@ export class CreateComponent implements OnInit {
         Validators.maxLength(50)])
       ],
       username: [null, Validators.compose([
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       password: [null, Validators.compose([
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       url: [null, Validators.compose([
-        Validators.minLength(4),
-        Validators.maxLength(50)])
+        Validators.minLength(4)])
       ],
       projectId: []
     });

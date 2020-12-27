@@ -14,11 +14,11 @@ import ua.project.protester.exception.ActionWrapperWasNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.ActionWrapper;
 import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCaseDto;
 import ua.project.protester.model.TestCaseWrapperResult;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ResultStatus;
 import ua.project.protester.repository.OuterComponentRepository;
-import ua.project.protester.response.TestCaseResponse;
 import ua.project.protester.service.TestScenarioService;
 
 import java.util.Collections;
@@ -42,15 +42,15 @@ public class RunResultRepository {
     private final TestScenarioService testScenarioService;
     private final OuterComponentRepository outerComponentRepository;
 
-    public TestCaseWrapperResult saveTestCaseWrapperResult(TestCaseResponse testCaseResponse, Integer runResultId, Integer testCaseResultId) {
+    public TestCaseWrapperResult saveTestCaseWrapperResult(TestCaseDto testCaseDto, Integer runResultId, Integer testCaseResultId) {
         TestCaseWrapperResult wrapperResult = new TestCaseWrapperResult();
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        log.info("saving  test case wrapper result with scenarioId {}", testCaseResponse.getScenarioId());
+        log.info("saving  test case wrapper result with scenarioId {}", testCaseDto.getScenarioId());
 
         namedParameterJdbcTemplate.update(
                 extract(env, "saveTestCaseWrapper"),
                 new MapSqlParameterSource()
-                        .addValue("scenario_id", testCaseResponse.getScenarioId())
+                        .addValue("scenario_id", testCaseDto.getScenarioId())
                         .addValue("run_result_id", runResultId)
                         .addValue("test_case_result", testCaseResultId),
                 keyHolder,
@@ -62,13 +62,11 @@ public class RunResultRepository {
         return wrapperResult;
     }
 
-    public List<ActionWrapper> saveActionWrappersByTestCaseResultWrapperId(Integer testCaseWrapperResultId, List<Step> step) {
-        return step.stream()
-                .map(step1 -> saveActionWrapperWithStep(testCaseWrapperResultId, step1))
-                .collect(Collectors.toList());
+    public void saveActionWrappersByTestCaseResultWrapperId(Integer testCaseWrapperResultId, List<Step> step) {
+        step.forEach(step1 -> saveActionWrapperWithStep(testCaseWrapperResultId, step1));
     }
 
-    private ActionWrapper saveActionWrapperWithStep(Integer testCaseResultWrapperId, Step step) {
+    private void saveActionWrapperWithStep(Integer testCaseResultWrapperId, Step step) {
         ActionWrapper wrapperResult = new ActionWrapper();
         wrapperResult.setResultStatus(ResultStatus.IN_PROGRESS);
         wrapperResult.setName(step.getComponent().getName());
@@ -88,7 +86,6 @@ public class RunResultRepository {
         Integer id = (Integer) keyHolder.getKey();
 
         wrapperResult.setId(id);
-        return wrapperResult;
     }
 
     public RunResult saveRunResult(Long userId) {
@@ -109,7 +106,8 @@ public class RunResultRepository {
 
     public List<ActionWrapper> findActionWrapperByTestCaseResult(Integer testCaseResultId, Integer scenarioId, boolean isByTestCaseWrapper) throws TestScenarioNotFoundException {
         List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(scenarioId).getSteps()
-                .stream()).collect(Collectors.toList());
+                .stream())
+                .collect(Collectors.toList());
 
         String findResults = isByTestCaseWrapper ? "findActionWrapperResultsByTestCaseWrapperId" : "findActionWrapperResultsByTestCaseResultId";
         try {
@@ -127,8 +125,8 @@ public class RunResultRepository {
             return actionWrapperList.stream()
                     .map(actionWrapper -> connectActionWrapperWithStep(actionWrapper.getId(), steps.stream()
                             .filter(step -> step.getId().equals(actionWrapper.getStepId()))
-                            .findFirst().orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapperw was not found")))
-                            .orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapperw was not found")))
+                            .findFirst().orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapper was not found")))
+                            .orElseThrow(() -> new ActionWrapperWasNotFoundException("Action wrapper was not found")))
                     .collect(Collectors.toList());
         } catch (EmptyResultDataAccessException e) {
             log.warn("action wrappers were not found");

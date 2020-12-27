@@ -1,16 +1,12 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ua.project.protester.exception.ProjectNotFoundException;
+import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.result.TestCaseResultNotFoundException;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
 import ua.project.protester.service.TestCaseResultService;
-
-import java.util.List;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.Pagination;
 
 //@PreAuthorize("isAuthenticated()")
 @RestController
@@ -26,7 +22,14 @@ public class TestCaseResultController {
     }
 
     @GetMapping("/project/{projectId}")
-    public List<TestCaseResultDto> findAllTestCaseResultsByProjectId(@PathVariable Long projectId) throws ProjectNotFoundException {
-        return testCaseResultService.findAllByProjectId(projectId);
+    public Page<TestCaseResultDto> findAllProjectTestCases(
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+            @RequestParam(value = "projectName", defaultValue = "") String projectName,
+            @PathVariable(name = "projectId") Long projectId) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
+
+        return testCaseResultService.findAllResultsByProject(pagination, projectId);
     }
 }

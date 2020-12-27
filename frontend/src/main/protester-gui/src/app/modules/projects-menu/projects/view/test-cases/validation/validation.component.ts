@@ -9,14 +9,11 @@ import {Router} from '@angular/router';
   templateUrl: './validation.component.html',
   styleUrls: ['./validation.component.css']
 })
-export class ValidationComponent implements OnInit {
+export class ValidationComponent {
 
   constructor(public dialogRef: MatDialogRef<RunComponent>,
               @Inject(MAT_DIALOG_DATA) public data: { result: ValidationDataSetResponseModel },
               private router: Router) {
-  }
-
-  ngOnInit(): void {
   }
 
   forwardToDataSetList(): void {

@@ -11,8 +11,9 @@ export class SelectEnvComponent implements OnInit {
 
   selectedEnv: number;
 
-  constructor( public dialogRef: MatDialogRef<SelectEnvComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: { environments: EnvironmentModel[], testCaseName: string}) { }
+  constructor(public dialogRef: MatDialogRef<SelectEnvComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: { environments: EnvironmentModel[], testCaseName: string }) {
+  }
 
   ngOnInit(): void {
   }

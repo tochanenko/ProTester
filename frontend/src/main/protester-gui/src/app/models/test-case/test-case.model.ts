@@ -8,8 +8,8 @@ export class TestCaseModel {
   projectId?: number;
   authorId?: number;
   scenarioId: number;
-  dataSetResponseList?: Array<DataSetResponse>;
-  dataSetId?: Array<number>;
+  dataSetId?: number;
+  dataSetName?: string;
   scenarioName?: string | Object;
   environmentId?: number;
 }

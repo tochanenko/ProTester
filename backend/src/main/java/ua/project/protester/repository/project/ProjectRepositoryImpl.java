@@ -77,7 +77,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Project changeProjectStatus(Project project, Boolean isActive) {
+    public Project changeStatus(Project project, Boolean isActive) {
 
         log.info("IN ProjectRepositoryImpl changeProjectStatus - project: {}, isActive: {}", project, isActive);
 

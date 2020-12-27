@@ -14,7 +14,6 @@ import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ public class SaveScreenshotAction extends AbstractAction {
             String path = "~\\screenshots\\" + filename + ".png";
             File destFile = new File(path);
             FileUtils.copyFile(screenshot, destFile);
-            System.out.println(Arrays.toString(FileUtils.readFileToByteArray(new File("~\\screenshots\\" + filename + ".png"))));
             return new ActionResultUiDto(filename);
         } catch (Exception e) {
             return new ActionResultUiDto(

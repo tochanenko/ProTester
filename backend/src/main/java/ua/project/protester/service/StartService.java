@@ -111,7 +111,7 @@ public class StartService {
     }
 
     @Transactional
-    void runTestCase(TestCaseDto testCaseDto, int testCaseResultId, @Lazy WebDriver webDriver) throws TestScenarioNotFoundException {
+    void runTestCase(TestCaseDto testCaseDto, int testCaseResultId, @Lazy WebDriver webDriver)  {
         TestCase testCase = modelMapper.map(testCaseDto, TestCase.class);
         DataSet dataSet = dataSetRepository.findDataSetById(testCase.getDataSetId())
                 .orElseThrow(() -> new DataSetNotFoundException("Data set was not found"));
@@ -121,7 +121,7 @@ public class StartService {
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
             closeConnection(environment);
-        } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
+        } catch (ActionExecutionException | IllegalActionLogicImplementation | TestScenarioNotFoundException e) {
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
             counter = 0;
             closeConnection(environment);

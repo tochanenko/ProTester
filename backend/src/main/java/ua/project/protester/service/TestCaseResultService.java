@@ -20,7 +20,6 @@ public class TestCaseResultService {
         return testCaseResultRepository.findById(id);
     }
 
-
     @Transactional
     public Page<TestCaseResultDto> findAllResultsByProject(Pagination pagination, Long projectId) {
         return new Page<>(

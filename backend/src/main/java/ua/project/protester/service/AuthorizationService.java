@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ua.project.protester.exception.RoleNotFoundException;
+import ua.project.protester.exception.UserNotExistException;
 import ua.project.protester.model.User;
 import ua.project.protester.model.UserDto;
 import ua.project.protester.repository.UserRepository;
@@ -31,9 +33,13 @@ public class AuthorizationService {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).findFirst().get();
-        User user = userRepository.findUserByEmail(userDetails.getUsername()).get();
+        String role = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElseThrow(() -> new RoleNotFoundException("No role was not found!"));
+        User user = userRepository.findUserByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotExistException("User with email" + userDetails.getUsername() + "was`nt found!"));
         return new UserLoginResponse(user.getId(), user.getUsername(), user.getEmail(), bearer + jwt, role);
     }
 }

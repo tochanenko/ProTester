@@ -46,8 +46,10 @@ export class ActionResultModel {
 
   path?: string;
 
+  actionWrapperId?: number;
+
   constructor(actionWrapper: ActionWrapperModel) {
-    this.id = actionWrapper.id;
+    this.actionWrapperId = actionWrapper.id;
 
     const tempAction: AbstractActionModel = new AbstractActionModel();
     tempAction.name = actionWrapper.name;

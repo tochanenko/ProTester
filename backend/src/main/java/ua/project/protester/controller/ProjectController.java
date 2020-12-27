@@ -19,20 +19,20 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProjectDto create(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
-        return projectService.createProject(project);
+        return projectService.create(project);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ProjectDto update(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
-        return projectService.updateProject(project);
+        return projectService.update(project);
     }
 
     @PutMapping("/changeStatus/{id}")
     public ProjectDto changeStatus(@PathVariable Long id) throws ProjectNotFoundException {
-        return projectService.changeProjectStatus(id);
+        return projectService.changeStatus(id);
     }
 
     @GetMapping
@@ -42,7 +42,7 @@ public class ProjectController {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
-        return projectService.findAllProjects(pagination);
+        return projectService.findAll(pagination);
     }
 
     @GetMapping("/filter")
@@ -53,12 +53,12 @@ public class ProjectController {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
-        return projectService.findAllProjectsByStatus(pagination, projectActive);
+        return projectService.findAllByStatus(pagination, projectActive);
     }
 
     @GetMapping("/{id}")
     public ProjectDto getById(@PathVariable Long id) throws ProjectNotFoundException {
-        return projectService.getProjectDtoById(id);
+        return projectService.getById(id);
     }
 
 }

@@ -2,6 +2,10 @@
 
 <mat-card class="test-case-run" *ngIf="!isLoading">
 
+  <mat-error *ngIf="isError">
+    Something went wrong...
+  </mat-error>
+
   <div class="search-test-case">
 
     <mat-form-field appearance="outline">

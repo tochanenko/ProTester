@@ -2,6 +2,10 @@
 
 <mat-card class="project-list" *ngIf="!isLoading">
 
+  <mat-error *ngIf="!isError">
+    Something went wrong...
+  </mat-error>
+
   <div class="search-project">
 
     <mat-form-field appearance="outline">

@@ -20,11 +20,11 @@ export class ListComponent implements OnInit, OnDestroy {
   dataSource: Project[];
   pageEvent: PageEvent;
 
-  projectFilter: ProjectFilter = new ProjectFilter();
+  projectFilter: ProjectFilter;
   projectsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'LINK', 'CREATOR', 'STATUS', 'CONF'];
-  private subscription: Subscription = new Subscription();
+  subscription: Subscription;
   isError = false;
   isLoading = true;
 
@@ -32,6 +32,8 @@ export class ListComponent implements OnInit, OnDestroy {
               private router: Router,
               private storageService: StorageService,
               public dialog: MatDialog) {
+    this.subscription = new Subscription();
+    this.projectFilter = new ProjectFilter();
   }
 
   ngOnInit(): void {

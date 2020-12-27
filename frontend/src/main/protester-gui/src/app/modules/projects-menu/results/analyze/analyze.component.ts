@@ -99,12 +99,9 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
 
         this.subscription.add(
           of(this.subscribeToResult()).pipe(
-            mergeMap(() => {
-              return this.testCaseService.runTestCase(this.idToRun);
-            })
+            mergeMap(() => this.testCaseService.runTestCase(this.idToRun))
           ).subscribe(
-            () => {
-            },
+            () => {},
             () => this.isError = true
           )
         );
@@ -137,7 +134,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     const testCase = this.resultList[indexOfTestCase];
 
     const actionIndex = testCase.innerResults
-      .findIndex(item => item.id === wrapperId);
+      .findIndex(item => item.actionWrapperId === wrapperId);
 
     actionIndex === -1
       ? testCase.innerResults.push(actionToAdd)

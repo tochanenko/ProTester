@@ -22,17 +22,19 @@ export class ListComponent implements OnInit, OnDestroy {
   isError = false;
   isLoading = true;
 
-  environmentFilter: EnvironmentFilterModel = new EnvironmentFilterModel();
+  environmentFilter: EnvironmentFilterModel;
   environmentsCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'USERNAME', 'PASSWORD', 'URL', 'CONF'];
-  subscription: Subscription = new Subscription();
+  subscription: Subscription;
 
   constructor(private environmentService: EnvironmentService,
               private router: Router,
               public dialog: MatDialog,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => this.projectId = params[`id`]);
+    this.environmentFilter = new EnvironmentFilterModel();
+    this.subscription = new Subscription();
   }
 
   ngOnInit(): void {

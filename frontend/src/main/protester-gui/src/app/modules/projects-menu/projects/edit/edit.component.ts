@@ -1,10 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Subscription} from "rxjs";
-import {Router} from "@angular/router";
-import {ProjectService} from "../../../../services/project.service";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {ListComponent} from "../list/list.component";
+import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
+import {ProjectService} from '../../../../services/project.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ListComponent} from '../list/list.component';
 
 @Component({
   selector: 'app-edit',
@@ -16,8 +16,7 @@ export class EditComponent implements OnInit, OnDestroy {
   projectUpdateForm: FormGroup;
   errorMessage = '';
   submitted = false;
-  isSuccessful = false;
-  isFailed = false;
+  isError = false;
   projectId: number;
   private subscription: Subscription;
 
@@ -27,23 +26,20 @@ export class EditComponent implements OnInit, OnDestroy {
               private dialogRef: MatDialogRef<ListComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.projectId = data.id;
+    this.subscription = new Subscription();
   }
 
   ngOnInit(): void {
     this.createProjectCreateForm();
 
-    this.subscription = this.projectService.getProjectById(this.projectId).subscribe(
-      data => {
-        this.projectUpdateForm.setValue(data);
-      },
-      error => {
-        console.log(error);
-        this.isFailed = true;
-        this.errorMessage = error;
-      });
+    this.subscription.add(
+      this.projectService.getProjectById(this.projectId).subscribe(
+        data => this.projectUpdateForm.setValue(data),
+        () => this.isError = true)
+    );
   }
 
-  get f() {
+  get f(): { [p: string]: AbstractControl } {
     return this.projectUpdateForm.controls;
   }
 
@@ -68,7 +64,6 @@ export class EditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('valid');
     const projectUpdateResponse = {
       projectId: this.f.projectId.value,
       projectName: this.f.projectName.value,
@@ -76,17 +71,13 @@ export class EditComponent implements OnInit, OnDestroy {
       projectActive: this.f.projectActive.value
     };
 
-    this.subscription = this.projectService.update(projectUpdateResponse)
-      .subscribe(
-        data => {
-          this.isSuccessful = true;
-          this.dialogRef.close();
-        },
-        err => {
-          this.errorMessage = err.error.message;
-          this.isFailed = true;
-        }
-      );
+    this.subscription.add(
+      this.projectService.update(projectUpdateResponse)
+        .subscribe(
+          () => this.dialogRef.close(),
+          () => this.isError = true
+        )
+    );
   }
 
   onNoClick(): void {

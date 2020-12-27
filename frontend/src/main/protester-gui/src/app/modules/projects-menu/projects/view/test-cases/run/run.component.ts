@@ -58,11 +58,13 @@ export class RunComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchCases().pipe(
-      mergeMap(() => this.loadEnvironments())
-    ).subscribe(
-      () => this.isLoading = false,
-      () => this.isError = true
+    this.subscription.add(
+      this.searchCases().pipe(
+        mergeMap(() => this.loadEnvironments())
+      ).subscribe(
+        () => this.isLoading = false,
+        () => this.isError = true
+      )
     );
   }
 
@@ -119,8 +121,7 @@ export class RunComponent implements OnInit, OnDestroy {
             }
           })
         ).subscribe(
-          () => {
-          },
+          () => {},
           () => this.isError = true)
       );
       this.selection.toggle(testCase);
@@ -174,9 +175,9 @@ export class RunComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.testCaseService.saveTestCaseResult(this.runTestCaseModel).subscribe(
-          result => this.router.navigate(['projects-menu/results/', result.id]).then(),
-          () => this.isError = true
-        )
+        result => this.router.navigate(['projects-menu/results/', result.id]).then(),
+        () => this.isError = true
+      )
     );
   }
 

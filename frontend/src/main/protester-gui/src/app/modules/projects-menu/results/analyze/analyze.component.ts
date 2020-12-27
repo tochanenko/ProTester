@@ -14,6 +14,7 @@ import {
   TestCaseResultModel
 } from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
               private websocketsService: WebsocketService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
     this.route.params.subscribe(params => this.idToRun = params.id);
   }
 
@@ -139,8 +141,11 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
             console.log('-------------------no--error-----1');
             console.log(item);
             const reader = new FileReader();
-            reader.onload = (e) => actionToAdd.image = e.target.result;
+            let data;
+            reader.onload = (e) => data = e.target.result;
             reader.readAsDataURL(new Blob([item]));
+            actionToAdd.image =  this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64,' + data);
+            console.log(actionToAdd.image);
             console.log('-------------------no--error-----');
           },
             () => console.log('----------error------'))

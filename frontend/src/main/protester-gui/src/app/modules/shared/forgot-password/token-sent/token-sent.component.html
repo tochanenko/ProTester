@@ -18,14 +18,16 @@
             <mat-error *ngIf="f.email.errors.required">Field is required</mat-error>
           </mat-error>
         </mat-form-field>
+
+        <mat-error class="error-info" *ngIf="notFound">User with specified email was not found!</mat-error>
+
         <button mat-raised-button class="button-flex-container">
           <p class="button-text">
             SEND
           </p>
         </button>
         <div class="more-info">
-          Don’t have an account?<a class="btn btn-outline-primary" style="width: 50%" routerLink="/account/registration"> Contact
-          your administrator. </a>
+          Don’t have an account? Contact your administrator.
         </div>
       </form>
     </mat-card-content>

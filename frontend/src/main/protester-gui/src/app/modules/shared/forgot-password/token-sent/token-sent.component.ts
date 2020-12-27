@@ -14,6 +14,7 @@ export class TokenSentComponent implements OnInit, OnDestroy {
   recoveryForm: FormGroup;
   submitted = false;
   image = 'assets/logo.png';
+  notFound = false;
 
   subscriptions = [];
 
@@ -35,6 +36,7 @@ export class TokenSentComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    this.notFound = false;
     this.submitted = true;
 
     if (this.recoveryForm.invalid) {
@@ -46,9 +48,8 @@ export class TokenSentComponent implements OnInit, OnDestroy {
     }
 
     this.subscriptions.push(this.passwordService.forgotPassword(recoveryResponse).subscribe(
-      email => {
-        this.router.navigateByUrl('/pending-password').then();
-      }
+      email => this.router.navigateByUrl('/pending-password').then(),
+      err => this.notFound = true
     ));
   }
 

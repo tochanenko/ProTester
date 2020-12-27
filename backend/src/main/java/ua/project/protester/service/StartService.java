@@ -86,13 +86,14 @@ public class StartService {
     public void execute(Long runId) {
         WebDriver driver = null;
         try {
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--disable-gpu");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--headless");
-            options.addArguments("--lang=en");
-            driver = new ChromeDriver(options);
+//            ChromeOptions options = new ChromeOptions();
+//            options.addArguments("--disable-gpu");
+//            options.addArguments("--no-sandbox");
+//            options.addArguments("--disable-dev-shm-usage");
+//            options.addArguments("--headless");
+//            options.addArguments("--lang=en");
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\vovan\\Downloads\\chromedriver_win32");
+            driver = new ChromeDriver();
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             RunResult runResult = runResultRepository.findRunResultById(runId).orElseThrow();

@@ -33,7 +33,6 @@ public class SaveScreenshotAction extends AbstractAction {
             FileUtils.copyFile(screenshot, destFile);
             return new ActionResultUiDto(filename);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ActionResultUiDto(
                     new ActionExecutionException(e.getMessage()),
                     "");

@@ -2,13 +2,14 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Project} from '../../../../models/project/project.model';
 import {PageEvent} from '@angular/material/paginator';
 import {ProjectFilter} from '../../../../models/project/project-filter.model';
-import {Subscription} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {ProjectService} from '../../../../services/project.service';
 import {Router} from '@angular/router';
 import {StorageService} from '../../../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-list',
@@ -41,25 +42,19 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchProjects(): void {
-    if (this.projectFilter.projectActive === '') {
-      this.subscription.add(this.projectService.getAll(this.projectFilter).subscribe(
+    this.subscription.add(
+      of(this.projectFilter).pipe(
+        switchMap(i => i.projectActive === ''
+          ? this.projectService.getAll(i)
+          : this.projectService.getAllFiltered(i))).subscribe(
         data => {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
           this.isLoading = false;
         },
         () => this.isError = true
-      ));
-    } else {
-      this.subscription.add(this.projectService.getAllFiltered(this.projectFilter).subscribe(
-        data => {
-          this.dataSource = data.list;
-          this.projectsCount = data.totalItems;
-          this.isLoading = false;
-        },
-        () => this.isError = true
-      ));
-    }
+      )
+    );
   }
 
   onPaginateChange(event: PageEvent): void {

@@ -1,0 +1,41 @@
+.dialog-util-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  justify-content: space-between;
+
+}
+
+.dialog-util-content {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  margin-bottom: 15px;
+}
+
+.dialog-util-error-title {
+  text-transform: uppercase;
+  color: #e50606;
+  text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.dialog-util-message {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.button-flex-container {
+  background: #5C6BC0;
+  height: 50px;
+  width: 84.5%;
+  margin-left: 8%;
+  margin-bottom: 8%;
+  margin-top: 13%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

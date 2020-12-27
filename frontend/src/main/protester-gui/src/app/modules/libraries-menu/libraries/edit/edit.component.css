@@ -137,8 +137,8 @@ mat-error {
   margin-top: 5px;
   margin-bottom: 10px;
   height: 95%;
+  max-width: 50%;
   min-height: 80px;
-  width: 100%;
   background: #F4F2FF;
 }
 

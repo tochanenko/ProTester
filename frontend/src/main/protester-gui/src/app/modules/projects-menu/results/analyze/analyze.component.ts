@@ -14,6 +14,7 @@ import {
   TestCaseResultModel
 } from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
               private websocketsService: WebsocketService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
     this.route.params.subscribe(params => this.idToRun = params.id);
   }
 
@@ -89,6 +91,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
 
               result.innerResults = innerResultsTemp;
 
+              result.innerResults.forEach(i => this.loadImage(i));
+
               this.resultList.push(result);
               return result;
             }))
@@ -132,20 +136,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
-    if (actionToAdd.action.type === ExecutableComponentTypeModel.UI) {
-      this.subscription.add(
-        this.analyzeService.getImage(actionToAdd.path).subscribe(
-          (item) => {
-            console.log('-------------------no--error-----1');
-            console.log(item);
-            const reader = new FileReader();
-            reader.onload = (e) => actionToAdd.image = e.target.result;
-            reader.readAsDataURL(new Blob([item]));
-            console.log('-------------------no--error-----');
-          },
-            () => console.log('----------error------'))
-      );
-    }
+    this.loadImage(actionToAdd);
     this.convertActionToJson(actionToAdd);
 
     const indexOfTestCase: number = this.resultList
@@ -199,6 +190,24 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     }
     if (action.response) {
       action.response = JSON.parse(action.response);
+    }
+  }
+
+  loadImage(actionUI: ActionResultModel): void {
+    if (actionUI.action.type === ExecutableComponentTypeModel.UI) {
+      this.subscription.add(
+        this.analyzeService.getImage(actionUI.path).subscribe(
+          (it) => {
+            console.log('-------------------no--error-----1');
+
+            const objectURL = 'data:image/jpeg;base64,' + it.content;
+
+            actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+
+            console.log('-------------------no--error-----');
+          },
+          () => console.log('----------error------'))
+      );
     }
   }
 

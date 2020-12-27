@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {SearchComponent} from "./compound-search/compound-search.component";
 import {ViewComponent} from "./compound-view/compound-view.component";
 import {CreateComponent} from "./compound-new/compound-new.component";
@@ -37,14 +37,22 @@ const routes: Routes = [
             data: {
               breadcrumb: 'Compound'
             },
-            component: ViewComponent
-          },
-          {
-            path: 'edit',
-            data: {
-              breadcrumb: 'Compound'
-            },
-            component: CompoundEditComponent
+            children: [
+              {
+                path: '',
+                data: {
+                  breadcrumb: null
+                },
+                component: ViewComponent
+              },
+              {
+                path: 'edit',
+                data: {
+                  breadcrumb: 'Edit'
+                },
+                component: CompoundEditComponent
+              }
+            ]
           }
         ]
       }
@@ -56,4 +64,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CompoundsRoutingModule { }
+export class CompoundsRoutingModule {
+}

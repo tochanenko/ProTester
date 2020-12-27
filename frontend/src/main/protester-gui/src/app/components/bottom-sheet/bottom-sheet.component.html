@@ -2,62 +2,66 @@
   <button mat-icon-button (click)="close($event);">
     <mat-icon class="material-icons close-icon">keyboard_arrow_down</mat-icon>
   </button>
-<ng-container *ngIf="data.components.actions">
-  <mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        ACTIONS
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.actions">
+  <ng-container *ngIf="data.components.actions">
+    <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <ng-container *ngFor="let sub_string of component.name">
-            <div *ngIf="sub_string['input']">
-              <div class="description-input-disabled mat-elevation-z6">
-                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-              </div>
-            </div>
-            <div *ngIf="!sub_string['input']" class="description-text">
-              <span>{{sub_string['text']}}</span>
-            </div>
-          </ng-container>
+          ACTIONS
         </mat-panel-title>
-        <button mat-icon-button (click)="onClick(component, true)">
-          <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
-        </button>
       </mat-expansion-panel-header>
+      <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.actions">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="description-container">
+              <ng-container *ngFor="let sub_string of component.name">
+                <div *ngIf="sub_string['input']">
+                  <div class="description-input-disabled mat-elevation-z6">
+                    <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                  </div>
+                </div>
+                <div *ngIf="!sub_string['input']" class="description-text">
+                  <span>{{sub_string['text']}}</span>
+                </div>
+              </ng-container>
+            </div>
+          </mat-panel-title>
+          <button mat-icon-button (click)="onClick(component, true)">
+            <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+          </button>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
     </mat-expansion-panel>
-  </mat-expansion-panel>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="data.components.compounds">
+  <ng-container *ngIf="data.components.compounds">
 
-  <mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        COMPOUNDS
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.compounds">
+    <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <ng-container *ngFor="let sub_string of component.name">
-            <div *ngIf="sub_string['input']">
-              <div class="description-input-disabled mat-elevation-z6">
-                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
-              </div>
-            </div>
-            <div *ngIf="!sub_string['input']" class="description-text">
-              <span>{{sub_string['text']}}</span>
-            </div>
-          </ng-container>
+          COMPOUNDS
         </mat-panel-title>
-        <button mat-icon-button (click)="onClick(component, false)">
-          <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
-        </button>
       </mat-expansion-panel-header>
+      <mat-expansion-panel disabled="true" hideToggle *ngFor="let component of data.components.compounds">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="description-container">
+              <ng-container *ngFor="let sub_string of component.name">
+                <div *ngIf="sub_string['input']">
+                  <div class="description-input-disabled mat-elevation-z6">
+                    <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                  </div>
+                </div>
+                <div *ngIf="!sub_string['input']" class="description-text">
+                  <span>{{sub_string['text']}}</span>
+                </div>
+              </ng-container>
+            </div>
+          </mat-panel-title>
+          <button mat-icon-button (click)="onClick(component, false)">
+            <mat-icon class="material-icons add_circle_outline">add_circle_outline</mat-icon>
+          </button>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
     </mat-expansion-panel>
-  </mat-expansion-panel>
-</ng-container>
+  </ng-container>
 </div>

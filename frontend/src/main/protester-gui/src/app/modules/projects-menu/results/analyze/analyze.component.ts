@@ -141,10 +141,10 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
             console.log('-------------------no--error-----1');
             console.log(item);
             const reader = new FileReader();
-            // let data;
-            // reader.onload = (e) => data = e.target.result;
-            // reader.readAsDataURL(new Blob([item]));
-            actionToAdd.image =  this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64,' + item);
+            let data;
+            reader.onload = (e) => data = e.target.result;
+            reader.readAsDataURL(new Blob([item]));
+            actionToAdd.image =  this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64,' + data);
             console.log(actionToAdd.image);
             console.log('-------------------no--error-----');
           },

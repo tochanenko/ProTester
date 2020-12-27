@@ -119,13 +119,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(UserFoundException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserNotExistException.class)
     public ResponseEntity<Object> handleUserFoundException(
-            UserFoundException ex, WebRequest request) {
+            UserNotExistException ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("message", "User was`nt found!");
+        body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 

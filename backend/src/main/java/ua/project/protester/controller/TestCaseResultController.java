@@ -21,26 +21,26 @@ public class TestCaseResultController {
         return testCaseResultService.getTestCaseResultById(id);
     }
 
-    @GetMapping("/project")
-    public Page<TestCaseResultDto> findAllProjectsTestCases(
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-            @RequestParam(value = "projectName", defaultValue = "") String projectName) {
-
-        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
-
-        return testCaseResultService.findAllResultsByProject(pagination, null);
-    }
-
     @GetMapping("/project/{projectId}")
     public Page<TestCaseResultDto> findAllProjectTestCases(
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
             @RequestParam(value = "projectName", defaultValue = "") String projectName,
-            @PathVariable Long projectId) {
+            @PathVariable(name = "projectId") Long projectId) {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
         return testCaseResultService.findAllResultsByProject(pagination, projectId);
     }
+
+    @GetMapping("/project")
+    public Page<TestCaseResultDto> findAllProjectTestCases(
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, "");
+
+        return testCaseResultService.findAllResults(pagination);
+    }
+
 }

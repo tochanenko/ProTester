@@ -1,16 +1,22 @@
-<mat-card class="env-list">
+<mat-spinner *ngIf="isLoading" class="spinner"></mat-spinner>
+
+<mat-card class="env-list" *ngIf="!isLoading">
+
+  <mat-error *ngIf="isError">
+    Something went wrong...
+  </mat-error>
 
   <div class="search-env">
     <mat-form-field appearance="outline">
       <mat-label>Search environment</mat-label>
-      <input class="input-search" matInput type="text" id="searchProject" [(ngModel)]="environmentFilter.environmentName"
+      <input class="input-search" matInput type="text" id="searchProject"
+             [(ngModel)]="environmentFilter.environmentName"
              (keyup)="onFilterChange($event)">
     </mat-form-field>
 
     <button mat-icon-button class="filter-button" (click)="openCreateDialog()">
       Create
     </button>
-
 
   </div>
 

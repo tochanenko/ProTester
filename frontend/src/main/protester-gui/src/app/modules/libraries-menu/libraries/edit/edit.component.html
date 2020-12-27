@@ -52,7 +52,7 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of actions">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      <div class="panel-content">
+                      <div class="description-container">
                         <ng-container *ngFor="let sub_string of component.name">
                           <div *ngIf="sub_string['input']">
                             <div class="description-input-disabled mat-elevation-z6">
@@ -88,7 +88,7 @@
                 <mat-expansion-panel hideToggle *ngFor="let component of compounds">
                   <mat-expansion-panel-header>
                     <mat-panel-title color="#5C6BC0">
-                      <div class="panel-content">
+                      <div class="description-container">
                         <ng-container *ngFor="let sub_string of component.name">
                           <div *ngIf="sub_string['input']">
                             <div class="description-input-disabled mat-elevation-z6">

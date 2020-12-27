@@ -20,12 +20,19 @@ public class TestCaseResultService {
         return testCaseResultRepository.findById(id);
     }
 
-
     @Transactional
     public Page<TestCaseResultDto> findAllResultsByProject(Pagination pagination, Long projectId) {
         return new Page<>(
                 testCaseResultRepository.findAllByProjectId(pagination, projectId),
                 testCaseResultRepository.countTestCaseResult(pagination, projectId)
+        );
+    }
+
+    @Transactional
+    public Page<TestCaseResultDto> findAllResults(Pagination pagination) {
+        return new Page<>(
+                testCaseResultRepository.findAllProjectsResult(pagination),
+                testCaseResultRepository.countAllTestCases(pagination)
         );
     }
 }

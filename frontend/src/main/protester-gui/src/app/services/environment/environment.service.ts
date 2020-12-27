@@ -1,15 +1,10 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {EnvironmentModel} from '../../models/environment/environment.model';
-import {TestCaseFilter} from '../../models/test-case/test-case-filter';
-import {TestCaseResponse} from '../../models/test-case/test-case-response';
 import {EnvironmentFilterModel} from '../../models/environment/environment-filter.model';
 import {EnvironmentResponseModel} from '../../models/environment/environment-response.model';
 
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
-};
 
 @Injectable({
   providedIn: 'root'
@@ -20,19 +15,19 @@ export class EnvironmentService {
   }
 
   public create(environment: EnvironmentModel): Observable<EnvironmentModel> {
-    return this.http.post<EnvironmentModel>('/api/environment', environment, httpOptions);
+    return this.http.post<EnvironmentModel>('/api/environment', environment);
   }
 
   public update(environment: EnvironmentModel): Observable<EnvironmentModel> {
-    return this.http.put<EnvironmentModel>('/api/environment', environment, httpOptions);
+    return this.http.put<EnvironmentModel>('/api/environment', environment);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(`/api/environment/${id}`, httpOptions);
+    return this.http.delete<void>(`/api/environment/${id}`);
   }
 
   public findById(id: number): Observable<EnvironmentModel> {
-    return this.http.get<EnvironmentModel>(`/api/environment/${id}`, httpOptions);
+    return this.http.get<EnvironmentModel>(`/api/environment/${id}`);
   }
 
   findAllPaginated(projectId: number, filter: EnvironmentFilterModel): Observable<EnvironmentResponseModel> {
@@ -45,7 +40,7 @@ export class EnvironmentService {
   }
 
   public findAll(projectId: number): Observable<EnvironmentModel[]> {
-    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${projectId}`, httpOptions);
+    return this.http.get<EnvironmentModel[]>(`/api/environment/findAll/${projectId}`);
   }
 
 

@@ -53,9 +53,7 @@ export class EditComponent implements OnInit, OnDestroy {
       name: [''],
       type: [''],
       parameterNames: [''],
-      preparedParams: [''],
-      className: [''],
-      prepared: ['']
+      className: ['']
     });
   }
 

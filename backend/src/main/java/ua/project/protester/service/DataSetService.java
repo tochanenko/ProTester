@@ -66,7 +66,7 @@ public class DataSetService {
     public Page<DataSetResponse> findAllDataSets(Pagination pagination) {
         log.info("IN findAllDataSet");
         System.out.println(pagination.getSearchField());
-        return new Page<DataSetResponse>(
+        return new Page<>(
                 dataSetRepository.findAll(pagination)
                         .stream()
                         .map(dataSetMapper::toDataSetResponseFromDataSet)

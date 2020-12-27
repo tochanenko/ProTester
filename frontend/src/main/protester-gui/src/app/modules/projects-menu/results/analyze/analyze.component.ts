@@ -14,6 +14,7 @@ import {
   TestCaseResultModel
 } from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -31,13 +32,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   private idToRun: number;
   private subscription: Subscription = new Subscription();
   private testCaseWrapperResult: TestCaseWrapperResultModel[];
+  private socketEndpoint = '/topic/public/';
 
   @ViewChildren('child') testCaseInfoComponents: QueryList<TestCaseInfoComponent>;
 
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
               private websocketsService: WebsocketService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
     this.route.params.subscribe(params => this.idToRun = params.id);
   }
 
@@ -48,7 +51,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         concatMap((item) => {
           this.testCaseWrapperResult = item.testCaseResults;
           item.testCaseResults.forEach(i => this.idTestCaseList.push(i.testResultId));
-
           return of({});
         }),
         concatMap(() => {
@@ -62,8 +64,9 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           return this.isAllTestCasesCompleted() ? of({}) : of(this.openWebSocketWithActionResults());
         })
       ).subscribe(
-        () => console.log('successfully'),
-        () => console.log('error')
+        () => {
+        },
+        () => this.isError = true
       )
     );
   }
@@ -74,23 +77,25 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     this.testCaseWrapperResult.forEach((item) => {
         item.actionWrapperList.forEach(i => this.idWrapperList.push(i.id));
 
-        observables.push(this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
-          map((result) => {
-            const innerResultsTemp: ActionResultModel[] = [];
-            result.innerResults.forEach(i => {
-              innerResultsTemp.push(i);
-            });
+        observables.push(
+          this.analyzeService.loadTestCasesResults(item.testResultId).pipe(
+            map((result) => {
+              const innerResultsTemp: ActionResultModel[] = [];
 
-            innerResultsTemp.forEach(res => this.convertActionToJson(res));
+              result.innerResults.forEach(i => innerResultsTemp.push(i));
 
-            item.actionWrapperList.slice(result.innerResults.length)
-              .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
+              innerResultsTemp.forEach(res => this.convertActionToJson(res));
 
-            result.innerResults = innerResultsTemp;
+              item.actionWrapperList.slice(result.innerResults.length)
+                .forEach(i => innerResultsTemp.push(new ActionResultModel(i)));
 
-            this.resultList.push(result);
-            return result;
-          }))
+              result.innerResults = innerResultsTemp;
+
+              result.innerResults.forEach(i => this.loadImage(i));
+
+              this.resultList.push(result);
+              return result;
+            }))
         );
       }
     );
@@ -99,17 +104,15 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   }
 
   openWebSocketWithActionResults(): Observable<any> {
-
     return of(this.websocketsService.connect(() => {
 
         this.subscription.add(
           of(this.subscribeToResult()).pipe(
-            mergeMap(() => {
-              return this.testCaseService.runTestCase(this.idToRun);
-            })
+            mergeMap(() => this.testCaseService.runTestCase(this.idToRun))
           ).subscribe(
-            () => console.log('running'),
-            () => console.log('error')
+            () => {
+            },
+            () => this.isError = true
           )
         );
       })
@@ -120,7 +123,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     for (const testCase of this.testCaseWrapperResult) {
       for (const wrapper of testCase.actionWrapperList) {
         this.websocketsService.getStompClient()
-          .subscribe('/topic/public/' + wrapper.id, (actionFromMessage) => {
+          .subscribe(this.socketEndpoint + wrapper.id, (actionFromMessage) => {
             this.onMessageReceive(actionFromMessage, wrapper.id, testCase.testResultId);
           });
       }
@@ -133,6 +136,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
+    this.loadImage(actionToAdd);
     this.convertActionToJson(actionToAdd);
 
     const indexOfTestCase: number = this.resultList
@@ -141,7 +145,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     const testCase = this.resultList[indexOfTestCase];
 
     const actionIndex = testCase.innerResults
-      .findIndex(item => item.id === wrapperId);
+      .findIndex(item => item.actionWrapperId === wrapperId);
 
     actionIndex === -1
       ? testCase.innerResults.push(actionToAdd)
@@ -154,7 +158,6 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
         testCase.innerResults.slice(actionIndex + 1).forEach(item => item.status = StatusModel.NOT_STARTED);
       }
       this.onAllTestCasesAreFinished();
-
     }
 
     this.testCaseInfoComponents
@@ -187,6 +190,24 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     }
     if (action.response) {
       action.response = JSON.parse(action.response);
+    }
+  }
+
+  loadImage(actionUI: ActionResultModel): void {
+    if (actionUI.action.type === ExecutableComponentTypeModel.UI) {
+      this.subscription.add(
+        this.analyzeService.getImage(actionUI.path).subscribe(
+          (it) => {
+            console.log('-------------------no--error-----1');
+
+            const objectURL = 'data:image/jpeg;base64,' + it.content;
+
+            actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+
+            console.log('-------------------no--error-----');
+          },
+          () => console.log('----------error------'))
+      );
     }
   }
 

@@ -15,16 +15,13 @@ export class TestCaseInfoComponent implements OnInit {
   dataSource: MatTreeNestedDataSource<TestCaseResultModel>;
   treeControl: NestedTreeControl<ActionResultModel, ActionResultModel>;
 
-  constructor() {
-  }
-
   ngOnInit(): void {
     this.treeControl = new NestedTreeControl<any>(node => node.innerResults);
     this.dataSource = new MatTreeNestedDataSource<TestCaseResultModel>();
     this.dataSource.data = [this.testCaseResult];
   }
 
-  refreshTree(): void{
+  refreshTree(): void {
     const dataToRefresh = this.dataSource.data;
     this.dataSource.data = null;
     this.dataSource.data = dataToRefresh;

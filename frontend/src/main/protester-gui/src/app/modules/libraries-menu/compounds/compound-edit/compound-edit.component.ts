@@ -9,6 +9,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {StepRepresentation} from "../../../../models/StepRepresentation";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {DialogWarningModel} from "../../../../models/dialog-warning.model";
+import {DialogUtilComponent} from "../../../../components/dialog-util/dialog-util.component";
+import {MatDialog} from "@angular/material/dialog";
+import {CustomValidator} from "../../../../services/customVaidator.service";
 
 @Component({
   selector: 'app-compound-edit',
@@ -51,7 +55,9 @@ export class CompoundEditComponent implements OnInit {
     private compoundService: CompoundManageService,
     private interactionService: LibraryBottomsheetInteractionService,
     private router: Router,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private dialog: MatDialog
+
 
   ) {
   }
@@ -68,9 +74,10 @@ export class CompoundEditComponent implements OnInit {
 
   createForm(): void {
     this.compoundUpdateForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
+      name: ['', []],
       description: ['', [Validators.required]]
     })
+    this.compoundUpdateForm.controls['name'].setValidators([Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), CustomValidator.placeholderValidator(this.compoundUpdateForm)])
   }
 
 
@@ -189,14 +196,26 @@ export class CompoundEditComponent implements OnInit {
       return step;
     });
 
-    console.log("SUBMIT");
 
     this.compoundService.updateCompound(this.compound_id, this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/libraries-menu/compounds').then();
       },
-      () => {
-        console.error("Error of creation");
-      })
+      (error) => {
+        console.error(error);
+        const warning: DialogWarningModel = {
+          error_name: error.error.message,
+          message: 'Please edit or delete relevant compounds:',
+          links: error.error.outerComponents.map(component => ({link: `/libraries-menu/compounds/${component.id}/edit`, name: component.name}))
+        }
+        const dialogRef = this.dialog.open(DialogUtilComponent, {
+          width: '40%',
+          data: warning
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      });
   }
 
   get formControls() {
@@ -237,13 +256,13 @@ export class CompoundEditComponent implements OnInit {
       parentParams[param] = "${" + param + "}";
       this.compoundUpdateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
     });
-    console.log(component.steps)
     if (component.steps) {
       let mappingParams = {};
+      console.log(parentParams)
       this.recursiveStepParsing(component.steps, mappingParams, parentParams);
     }
-    console.log(this.formControls)
     this.components.push(step);
+    console.log(this.formControls)
 
   }
 
@@ -262,7 +281,8 @@ export class CompoundEditComponent implements OnInit {
           }
           if (!this.checkIfParamInterpolated(value.toString())) {
             clonedMappingParams[key] = value;
-          } else {
+          }
+          else {
             let param = this.cleanParam(value.toString());
             if (clonedMappingParams[param]) {
               item.parameters[key] = clonedMappingParams[param]

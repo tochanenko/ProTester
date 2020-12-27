@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ua.project.protester.exception.LibraryAlreadyExistsException;
 import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.model.Library;
 import ua.project.protester.request.LibraryRequestModel;
@@ -21,13 +22,13 @@ public class LibraryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createLibrary(@RequestBody LibraryRequestModel request) {
+    public void createLibrary(@RequestBody LibraryRequestModel request) throws LibraryAlreadyExistsException {
         libraryService.createLibrary(request);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateLibrary(@RequestBody LibraryRequestModel request, @PathVariable int id) {
+    public void updateLibrary(@RequestBody LibraryRequestModel request, @PathVariable int id) throws LibraryAlreadyExistsException {
         libraryService.updateLibrary(request, id);
     }
 

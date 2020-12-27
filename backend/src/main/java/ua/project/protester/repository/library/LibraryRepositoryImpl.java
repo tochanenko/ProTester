@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ua.project.protester.exception.LibraryNotFoundException;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
 import ua.project.protester.exception.executable.action.ActionNotFoundException;
@@ -130,7 +129,7 @@ public class LibraryRepositoryImpl implements LibraryRepository {
     }
 
     @Override
-    public void deleteLibraryById(Integer id) throws LibraryNotFoundException {
+    public void deleteLibraryById(Integer id) {
         String sql = PropertyExtractor.extract(env, "deleteLibraryById");
 
         namedParameterJdbcTemplate.update(

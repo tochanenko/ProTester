@@ -75,14 +75,12 @@ public class OuterComponent extends ExecutableComponent {
     }
 
     public void execute(Map<String, String> params, JdbcTemplate jdbcTemplate, WebDriver driver, RestTemplate restTemplate, Environment environment, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
-        for (Step step : steps) {
-            step.getComponent().execute(
-                    fitInputParameters(params, step.getParameters()),
-                    new HashMap<>(),
-                    jdbcTemplate,
-                    driver,
-                    environment,
-                    restTemplate, callback);
-        }
+        execute(
+                params,
+                new HashMap<>(),
+                jdbcTemplate,
+                driver,
+                environment,
+                restTemplate, callback);
     }
 }

@@ -90,7 +90,7 @@ public class StartService {
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--headless");
             options.addArguments("--lang=en");
-            driver = new ChromeDriver();
+            driver = new ChromeDriver(options);
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             RunResult runResult = runResultRepository.findRunResultById(runId).orElseThrow();

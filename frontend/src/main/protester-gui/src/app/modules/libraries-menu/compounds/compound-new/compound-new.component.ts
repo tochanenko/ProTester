@@ -63,10 +63,10 @@ export class CreateComponent implements OnInit {
 
   createForm(): void {
     this.compoundCreateForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
+      name: ['', ],
       description: ['', [Validators.required]]
     })
-    this.compoundCreateForm.controls['name'].setValidators(CustomValidator.placeholderValidator(this.compoundCreateForm))
+    this.compoundCreateForm.controls['name'].setValidators([Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), CustomValidator.placeholderValidator(this.compoundCreateForm)])
   }
 
   getComponentsOfSteps(steps) {

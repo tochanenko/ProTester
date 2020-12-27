@@ -74,10 +74,10 @@ export class CompoundEditComponent implements OnInit {
 
   createForm(): void {
     this.compoundUpdateForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
+      name: ['', []],
       description: ['', [Validators.required]]
     })
-    this.compoundUpdateForm.controls['name'].setValidators(CustomValidator.placeholderValidator(this.compoundUpdateForm))
+    this.compoundUpdateForm.controls['name'].setValidators([Validators.required, Validators.minLength(this.validatorsConfig.name.minLength), CustomValidator.placeholderValidator(this.compoundUpdateForm)])
   }
 
 

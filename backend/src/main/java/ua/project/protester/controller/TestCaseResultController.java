@@ -26,7 +26,7 @@ public class TestCaseResultController {
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
             @RequestParam(value = "projectName", defaultValue = "") String projectName,
-            @PathVariable Long projectId) {
+            @PathVariable(name = "projectId") Long projectId) {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 

@@ -100,7 +100,7 @@ public class StartService {
             for (int i = 0; i < testCasesDto.size(); i++) {
                 runTestCase(testCasesDto.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
-            runResultRepository.clearWrappers(testCaseResults);
+
         } catch (Exception exception) {
             log.error("exception {}", exception.getClass().getName());
         } finally {

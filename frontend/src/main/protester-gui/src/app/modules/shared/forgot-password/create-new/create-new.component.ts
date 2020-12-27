@@ -32,20 +32,6 @@ export class CreateNewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.route.queryParams.subscribe(params => {
-    //   this.token = params['t'];
-    //   this.passwordService.confirmReset(this.token).subscribe(
-    //     email => {
-    //       if (email == null || email.length == 0) {
-    //         this.router.navigateByUrl('/account/forgot-password/invalid-token').then();
-    //       } else {
-    //         this.email = email;
-    //       }
-    //     },
-    //     err => this.router.navigateByUrl('/account/forgot-password/invalid-token').then()
-    //   )
-    // });
-
     this.subscriptions.push(
       this.route.queryParams.pipe(
         mergeMap(params => {

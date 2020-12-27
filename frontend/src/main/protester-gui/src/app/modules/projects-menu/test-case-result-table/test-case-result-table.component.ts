@@ -38,9 +38,6 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
       this.route.params.pipe(
         switchMap(params => {
           this.projectId = params['id'];
-          console.log(params);
-          console.log(this.projectId);
-          console.log(params['id']);
           if (this.projectId != undefined) {
             return this.testCaseResultService.getForProject(this.projectId, this.pageSize, this.pageIndex + 1);
           } else {

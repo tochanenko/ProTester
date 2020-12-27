@@ -73,35 +73,6 @@ export class EditComponent implements OnInit, OnDestroy {
         active: [this.active]
       });
     }));
-
-    // this.route.params.subscribe(
-    //   params => {
-    //     this.id = params['id'];
-    //     this.userService.getUserById(this.id).subscribe(
-    //       user => {
-    //
-    //         this.username = user['username'];
-    //         this.email = user['email'];
-    //         this.firstName = user['firstName'];
-    //         this.lastName = user['lastName'];
-    //         this.role = user['role'];
-    //         this.active = user['active'];
-    //
-    //         this.isActive = this.active;
-    //         this.selectedValue = this.role;
-    //
-    //         this.editUserForm = this.formBuilder.group({
-    //           username: [this.username],
-    //           email: [this.email],
-    //           firstName: [this.firstName],
-    //           lastName: [this.lastName],
-    //           role: this.role,
-    //           active: [this.active]
-    //         });
-    //       }
-    //     );
-    //   }
-    // );
   }
 
   ngOnInit(): void {

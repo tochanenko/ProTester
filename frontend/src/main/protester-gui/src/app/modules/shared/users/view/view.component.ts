@@ -32,25 +32,6 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.route.params.subscribe(params => {
-    //   this.userId = params['id'];
-    //
-    //   this.userService.getUserById(this.userId).subscribe(
-    //     user => {
-    //       this.user.id = user['id'];
-    //       this.user.email = user['email'];
-    //       this.user.firstName = user['firstName'];
-    //       this.user.lastName = user['lastName'];
-    //       this.user.isActive = user['active'];
-    //       this.user.role = user['role'];
-    //       this.user.username = user['username'];
-    //
-    //       this.completed = true;
-    //     },
-    //     err => console.log(err)
-    //   )
-    // });
-
     this.subscriptions.push(
       this.route.params.pipe(
         switchMap(params => {

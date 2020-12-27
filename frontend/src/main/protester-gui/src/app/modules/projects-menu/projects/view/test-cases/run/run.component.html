@@ -18,7 +18,7 @@
       Environments
     </button>
 
-    <button mat-icon-button class="run-button" (click)="runTestCases()">
+    <button mat-icon-button [disabled]="isDisabled" class="run-button" (click)="runTestCases()">
       <span class="material-icons run">play_circle_filled</span>
       RUN
     </button>
@@ -54,12 +54,16 @@
 
     <ng-container matColumnDef="SCENARIO">
       <mat-header-cell *matHeaderCellDef class="header">SCENARIO</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.scenarioName}}</mat-cell>
+      <mat-cell *matCellDef="let element">
+        <a [routerLink]="'/projects-menu/scenarios/'+element.scenarioId">{{element.scenarioName}}</a>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="DATASET">
       <mat-header-cell *matHeaderCellDef class="header">DATASET</mat-header-cell>
-      <mat-cell *matCellDef="let element">{{element.dataSetName}}</mat-cell>
+      <mat-cell *matCellDef="let element">
+        <a [routerLink]="'/projects-menu/datasets'">{{element.dataSetName}}</a>
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

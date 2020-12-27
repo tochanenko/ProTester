@@ -63,7 +63,7 @@
           <button mat-menu-item (click)="openUpdateDialog(row.projectId)">
             <span>Edit</span>
           </button>
-          <button mat-menu-item [routerLink]="'/projects-menu/projects/' + row.projectId + '/results'">
+          <button mat-menu-item routerLink="/projects-menu/table/{{row.projectId}}">
             <span>Results</span>
           </button>
           <button mat-menu-item (click)="changeStatus(row.projectId)" *ngIf="!row.projectActive">

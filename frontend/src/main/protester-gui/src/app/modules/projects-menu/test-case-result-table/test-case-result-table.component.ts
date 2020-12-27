@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {TestCaseResultService} from "../../../../services/test-case-result.service";
+import {TestCaseResultService} from "../../../services/test-case-result.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {PageEvent} from "@angular/material/paginator";
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-test-case-result-table',
@@ -18,7 +19,7 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
   processed = false;
 
   pageEvent: PageEvent;
-  pageIndex = 1;
+  pageIndex = 0;
   pageSize = 10;
   length: number;
 
@@ -35,15 +36,18 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(
       this.route.params.pipe(
-        params => {
+        switchMap(params => {
           this.projectId = params['id'];
-          if (this.projectId != null) {
-            return this.testCaseResultService.getForProject(this.projectId, this.pageSize, this.pageIndex);
+          console.log(params);
+          console.log(this.projectId);
+          console.log(params['id']);
+          if (this.projectId != undefined) {
+            return this.testCaseResultService.getForProject(this.projectId, this.pageSize, this.pageIndex + 1);
           } else {
-            return this.testCaseResultService.getForProject('', this.pageSize, this.pageIndex);
+            return this.testCaseResultService.getForProject('', this.pageSize, this.pageIndex + 1);
           }
         }
-      ).subscribe(
+        )).subscribe(
         results => {
           let testCaseResults = [];
           results['list'].forEach(result => {
@@ -55,10 +59,12 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
               // caseName: result['testCase']['name'],
               // userId: result['user']['id'],
               // userName: result['user']['username'],
+              // TODO DELETE
               caseId: 5,
               caseName: "Bobby's Work",
               userId: 3,
               userName: "Bobby Himself",
+              // TODO DELETE
               status: result['status']
             })
           });
@@ -75,9 +81,9 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
     this.pageSize = event.pageSize;
     this.subscriptions.push(
       this.testCaseResultService.getForProject(
-        this.projectId,
+        this.projectId == undefined ? '' : this.projectId,
         event.pageSize,
-        event.pageIndex
+        event.pageIndex + 1
       ).subscribe(
         results => {
           let testCaseResults = [];
@@ -90,10 +96,12 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
               // caseName: result['testCase']['name'],
               // userId: result['user']['id'],
               // userName: result['user']['username'],
+              // TODO DELETE
               caseId: 5,
               caseName: "Bobby's Work",
               userId: 3,
               userName: "Bobby Himself",
+              // TODO DELETE
               status: result['status']
             })
           });

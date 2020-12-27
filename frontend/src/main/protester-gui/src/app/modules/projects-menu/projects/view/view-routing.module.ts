@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {TestCaseResultTableComponent} from "../test-case-result-table/test-case-result-table.component";
 
 const routes: Routes = [
   {
@@ -27,13 +26,6 @@ const routes: Routes = [
           breadcrumb: null
         },
         loadChildren: 'src/app/modules/projects-menu/projects/view/environment/environment.module#EnvironmentModule'
-      },
-      {
-        path: 'results',
-        data: {
-          breadcrumb: 'Results'
-        },
-        component: TestCaseResultTableComponent
       }
     ]
   }

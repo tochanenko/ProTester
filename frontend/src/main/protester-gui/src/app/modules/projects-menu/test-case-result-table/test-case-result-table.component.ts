@@ -51,17 +51,10 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
             testCaseResults.push({
               startDate: this.datePipe.transform(result['startDate'], 'short'),
               endDate: this.datePipe.transform(result['endDate'], 'short'),
-              // TODO: Uncomment these four lines and delete next four lines
-              // caseId: result['testCase']['id'],
-              // caseName: result['testCase']['name'],
-              // userId: result['user']['id'],
-              // userName: result['user']['username'],
-              // TODO DELETE
-              caseId: 5,
-              caseName: "Bobby's Work",
-              userId: 3,
-              userName: "Bobby Himself",
-              // TODO DELETE
+              caseId: result['testCase']['id'],
+              caseName: result['testCase']['name'],
+              userId: result['user']['id'],
+              userName: result['user']['username'],
               status: result['status']
             })
           });
@@ -88,17 +81,10 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
             testCaseResults.push({
               startDate: this.datePipe.transform(result['startDate'], 'short'),
               endDate: this.datePipe.transform(result['endDate'], 'short'),
-              // TODO: Uncomment these four lines and delete next four lines
-              // caseId: result['testCase']['id'],
-              // caseName: result['testCase']['name'],
-              // userId: result['user']['id'],
-              // userName: result['user']['username'],
-              // TODO DELETE
-              caseId: 5,
-              caseName: "Bobby's Work",
-              userId: 3,
-              userName: "Bobby Himself",
-              // TODO DELETE
+              caseId: result['testCase']['id'],
+              caseName: result['testCase']['name'],
+              userId: result['user']['id'],
+              userName: result['user']['username'],
               status: result['status']
             })
           });

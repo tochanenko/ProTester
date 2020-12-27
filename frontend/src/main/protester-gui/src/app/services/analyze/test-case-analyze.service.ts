@@ -5,6 +5,10 @@ import {TestCaseModel} from '../../models/test-case/test-case.model';
 import {TestCaseResultModel} from '../../models/run-analyze/result.model';
 
 
+const httpOptions = {
+  responseType  : 'arraybuffer' as 'json'
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +25,8 @@ export class TestCaseAnalyzeService {
     return this.http.get<TestCaseModel>(`/api/testCase/${id}`);
   }
 
+
   getImage(path: string): Observable<any> {
-    return this.http.get(`/api/screenshots/${path}`);
+    return this.http.get(`/api/screenshots/${path}`, httpOptions);
   }
 }

@@ -134,7 +134,12 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
 
     if (actionToAdd.action.type === ExecutableComponentTypeModel.UI) {
       this.subscription.add(
-        this.analyzeService.getImage(actionToAdd.path).subscribe(item => console.log(item), error => console.log('error'))
+        this.analyzeService.getImage(actionToAdd.path).subscribe(
+          item => {
+            console.log('-------------------no--error-----');
+            console.log(item);
+          },
+            () => console.log('----------error------'))
       );
     }
     this.convertActionToJson(actionToAdd);

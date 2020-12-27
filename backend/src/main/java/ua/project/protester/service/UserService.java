@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.RoleNotFoundException;
-import ua.project.protester.exception.UserFoundException;
+import ua.project.protester.exception.UserNotExistException;
 import ua.project.protester.exception.MailSendException;
 import ua.project.protester.exception.UsernameDuplicateException;
 import ua.project.protester.exception.UnauthorizedUserException;
@@ -62,53 +62,42 @@ public class UserService {
 
     @Transactional
     public Optional<User> findUserById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            Long roleId = user.getRole().getId();
-            user.setRole(roleService.findRoleById(roleId)
-                    .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotExistException("User with id" + id + "does`nt exist"));
+        Long roleId = user.getRole().getId();
+        user.setRole(roleService.findRoleById(roleId)
+                .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
             return Optional.of(user);
-        }
-        return Optional.empty();
     }
 
     @Transactional
     public Optional<User> findUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email).orElse(null);
-
-        if (user != null) {
-            Long roleId = user.getRole().getId();
-            user.setRole(roleService.findRoleById(roleId)
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotExistException("User with email" + email + "does`nt exist"));
+        Long roleId = user.getRole().getId();
+        user.setRole(roleService.findRoleById(roleId)
                     .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
-            logger.info("User with email {} was found {}", email, user);
-            return Optional.of(user);
-        }
-            return Optional.empty();
+        return Optional.of(user);
     }
 
     @Transactional
     public Optional<User> findUserByUsername(String username) {
-        User user = userRepository.findUserByUsername(username).orElse(null);
-        if (user != null) {
-            Long roleId = user.getRole().getId();
-            user.setRole(roleService.findRoleById(roleId)
+        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new UserNotExistException("User with username" + username + "does`nt exist"));
+        Long roleId = user.getRole().getId();
+        user.setRole(roleService.findRoleById(roleId)
                     .orElseThrow(() -> new RoleNotFoundException("Role was`nt found!")));
-            logger.info("User with username {} was found {}", username, user);
             return Optional.of(user);
-        }
-        return Optional.empty();
     }
 
     public UserResponse getUser(Long id) {
         return userMapper
                 .toUserRest(findUserById(id)
-                .orElseThrow(() -> new UserFoundException("User with id " + id + " wasn`t found")));
+                .orElseThrow(() -> new UserNotExistException("User with id " + id + " was`nt found")));
     }
 
     public UserResponse findUsersByUsername(String username) {
         return userMapper
                 .toUserRest(findUserByUsername(username)
-                        .orElseThrow(() -> new UserFoundException("Username " + username + " was not found")));
+                        .orElseThrow(() -> new UserNotExistException("Username " + username + " was not found")));
     }
 
     public UserResponse findUsersByEmail(String email) {
@@ -175,7 +164,7 @@ public class UserService {
         User user = currentUser()
                 .orElseThrow(() -> new UnauthorizedUserException("You are not authorized!"));
         User userFromDB = findUserById(userDto.getId())
-                .orElseThrow(() -> new UserFoundException("User was not found"));
+                .orElseThrow(() -> new UserNotExistException("User was not found"));
 
         if (user.getId().equals(userDto.getId()) || user.getRole().getName().equals("ADMIN")) {
             if (!userFromDB.getEmail().equals(userDto.getEmail()) & findUserByEmail(userDto.getEmail()).isPresent()) {

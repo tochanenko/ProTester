@@ -3,10 +3,11 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Router} from '@angular/router';
 import {tap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+import {AuthService} from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -27,8 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (err.status !== 401) {
           return;
         }
-        window.sessionStorage.removeItem('token');
-        window.sessionStorage.removeItem('user');
+        this.authService.logout();
         this.router.navigate(['/login']).then();
       }));
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PasswordService} from "../../../../services/password.service.ts.service";
 import {Router} from "@angular/router";
@@ -9,11 +9,13 @@ import {StorageService} from "../../../../services/auth/storage.service";
   templateUrl: './token-sent.component.html',
   styleUrls: ['./token-sent.component.css']
 })
-export class TokenSentComponent implements OnInit {
+export class TokenSentComponent implements OnInit, OnDestroy {
 
   recoveryForm: FormGroup;
   submitted = false;
   image = 'assets/logo.png';
+
+  subscriptions = [];
 
   constructor(private passwordService: PasswordService,
               private router: Router,
@@ -43,10 +45,14 @@ export class TokenSentComponent implements OnInit {
       email: this.f.email.value
     }
 
-    this.passwordService.forgotPassword(recoveryResponse).subscribe(
+    this.subscriptions.push(this.passwordService.forgotPassword(recoveryResponse).subscribe(
       email => {
         this.router.navigateByUrl('/pending-password').then();
       }
-    )
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PasswordService} from "../../../../services/password.service.ts.service";
 import {StorageService} from "../../../../services/auth/storage.service";
 import {CustomValidator} from "../../../../services/customVaidator.service";
+import {mergeMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-create-new',
   templateUrl: './create-new.component.html',
   styleUrls: ['./create-new.component.css']
 })
-export class CreateNewComponent implements OnInit {
+export class CreateNewComponent implements OnInit, OnDestroy {
   recoveryForm: FormGroup;
   submitted = false;
   hideNewPasswordField = true;
@@ -19,6 +20,8 @@ export class CreateNewComponent implements OnInit {
   image = 'assets/logo.png';
   token = '';
   email = '';
+
+  subscriptions = [];
 
   constructor(private route: ActivatedRoute,
               private passwordService: PasswordService,
@@ -29,9 +32,27 @@ export class CreateNewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.token = params['t'];
-      this.passwordService.confirmReset(this.token).subscribe(
+    // this.route.queryParams.subscribe(params => {
+    //   this.token = params['t'];
+    //   this.passwordService.confirmReset(this.token).subscribe(
+    //     email => {
+    //       if (email == null || email.length == 0) {
+    //         this.router.navigateByUrl('/account/forgot-password/invalid-token').then();
+    //       } else {
+    //         this.email = email;
+    //       }
+    //     },
+    //     err => this.router.navigateByUrl('/account/forgot-password/invalid-token').then()
+    //   )
+    // });
+
+    this.subscriptions.push(
+      this.route.queryParams.pipe(
+        mergeMap(params => {
+          this.token = params['t'];
+          return this.passwordService.confirmReset(this.token);
+        })
+      ).subscribe(
         email => {
           if (email == null || email.length == 0) {
             this.router.navigateByUrl('/account/forgot-password/invalid-token').then();
@@ -41,7 +62,7 @@ export class CreateNewComponent implements OnInit {
         },
         err => this.router.navigateByUrl('/account/forgot-password/invalid-token').then()
       )
-    });
+    );
 
     this.recoveryForm = this.formBuilder.group({
       password: [null, Validators.compose([
@@ -75,10 +96,16 @@ export class CreateNewComponent implements OnInit {
       password: this.f.password.value
     }
 
-    this.passwordService.resetPassword(recoveryResponse).subscribe(
-      data => {
-        this.router.navigateByUrl('/account/login').then();
-      }
-    )
+    this.subscriptions.push(
+      this.passwordService.resetPassword(recoveryResponse).subscribe(
+        data => {
+          this.router.navigateByUrl('/account/login').then();
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

@@ -14,6 +14,7 @@ import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.result.subtype.ActionResultUiDto;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -31,10 +32,12 @@ public class SaveScreenshotAction extends AbstractAction {
             System.out.println(filename);
             File destFile = new File(filename);
             FileUtils.copyFile(screenshot, destFile);
+            System.out.println(Arrays.toString(FileUtils.readFileToByteArray(new File(filename))));
             filename = filename
                     .replace('\\', '/')
                     .replace("~", "app");
             System.out.println(filename);
+            System.out.println(Arrays.toString(FileUtils.readFileToByteArray(new File(filename))));
             return new ActionResultUiDto(filename);
         } catch (Exception e) {
             return new ActionResultUiDto(

@@ -135,9 +135,13 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     if (actionToAdd.action.type === ExecutableComponentTypeModel.UI) {
       this.subscription.add(
         this.analyzeService.getImage(actionToAdd.path).subscribe(
-          item => {
-            console.log('-------------------no--error-----');
+          (item) => {
+            console.log('-------------------no--error-----1');
             console.log(item);
+            const reader = new FileReader();
+            reader.onload = (e) => actionToAdd.image = e.target.result;
+            reader.readAsDataURL(new Blob([item]));
+            console.log('-------------------no--error-----');
           },
             () => console.log('----------error------'))
       );

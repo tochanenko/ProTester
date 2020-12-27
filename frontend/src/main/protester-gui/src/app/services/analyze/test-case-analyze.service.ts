@@ -1,13 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {TestCaseModel} from '../../models/test-case/test-case.model';
 import {TestCaseResultModel} from '../../models/run-analyze/result.model';
-
-
-const httpOptions = {
-  responseType  : 'arraybuffer' as 'json'
-};
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +21,7 @@ export class TestCaseAnalyzeService {
   }
 
 
-  getImage(path: string): Observable<any> {
-    return this.http.get(`/api/screenshots/${path}`, httpOptions);
+  getImage(path: string): Observable<Blob> {
+    return this.http.get(`/api/screenshots/${path}`,  { responseType: 'blob' });
   }
 }

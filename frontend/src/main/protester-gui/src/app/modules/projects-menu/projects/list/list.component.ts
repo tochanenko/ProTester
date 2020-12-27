@@ -9,7 +9,8 @@ import {StorageService} from '../../../../services/auth/storage.service';
 import {MatDialog} from '@angular/material/dialog';
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
-import {switchMap} from "rxjs/operators";
+import {switchMap} from 'rxjs/operators';
+import {ProjectResponse} from '../../../../models/project/project-response.model';
 
 @Component({
   selector: 'app-list',
@@ -42,11 +43,12 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchProjects(): void {
+    const observable: Observable<ProjectResponse> = this.projectFilter.projectActive === ''
+      ? this.projectService.getAll(this.projectFilter)
+      : this.projectService.getAllFiltered(this.projectFilter);
+
     this.subscription.add(
-      of(this.projectFilter).pipe(
-        switchMap(i => i.projectActive === ''
-          ? this.projectService.getAll(i)
-          : this.projectService.getAllFiltered(i))).subscribe(
+      observable.subscribe(
         data => {
           this.dataSource = data.list;
           this.projectsCount = data.totalItems;
@@ -56,6 +58,7 @@ export class ListComponent implements OnInit, OnDestroy {
       )
     );
   }
+
 
   onPaginateChange(event: PageEvent): void {
     this.projectFilter.pageNumber = event.pageIndex;

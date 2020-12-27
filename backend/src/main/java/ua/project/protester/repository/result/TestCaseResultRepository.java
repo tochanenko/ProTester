@@ -61,23 +61,36 @@ public class TestCaseResultRepository {
     }
 
     public List<TestCaseResultDto> findAllByProjectId(Pagination pagination, Long projectId) {
+        if (projectId == null) {
+            return namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findTestCaseResultsForAllProjects"),
+                    new MapSqlParameterSource()
+                            .addValue("pageSize", pagination.getPageSize())
+                            .addValue("offset", pagination.getOffset()),
+                    new BeanPropertyRowMapper<>(TestCaseResultDto.class));
+        }
         return namedParameterJdbcTemplate.query(
                 PropertyExtractor.extract(env, "findTestCaseResultsByProjectId"),
                 new MapSqlParameterSource()
                         .addValue("pageSize", pagination.getPageSize())
                         .addValue("offset", pagination.getOffset())
                         .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("project_id", projectId),
+                        .addValue("projectId", projectId),
                 new BeanPropertyRowMapper<>(TestCaseResultDto.class));
     }
 
     public Long countTestCaseResult(Pagination pagination, Long projectId) {
-
+        if (projectId == null) {
+            return namedParameterJdbcTemplate.queryForObject(
+                    PropertyExtractor.extract(env, "countAllTestCaseResults"),
+                    new MapSqlParameterSource(),
+                    Long.class);
+        }
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "countTestCaseResult"),
                 new MapSqlParameterSource()
                         .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("project_id", projectId),
+                        .addValue("projectId", projectId),
                 Long.class);
     }
 

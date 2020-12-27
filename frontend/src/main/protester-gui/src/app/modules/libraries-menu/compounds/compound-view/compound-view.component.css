@@ -13,14 +13,6 @@
   border-radius: 4px;
 }
 
-.name-text {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  margin-left: 2%;
-  color: #303030;
-}
-
 .mat-card-title {
   display: flex;
   justify-content: center;
@@ -72,7 +64,9 @@
   color: #4F4F4F;
 }
 
-
+.name-label {
+ margin-top: 10px;
+}
 
 .form {
   height: 100%;
@@ -159,6 +153,8 @@
 
 .mat-accordion {
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .mat-expansion-panel {
@@ -175,6 +171,7 @@
   align-items: center;
   width: 100%;
   color: #000000;
+  height: 100%;
 
 }
 
@@ -183,15 +180,13 @@
   align-content: center;
   display: flex;
   min-height: 70px;
-
+  height: 100%;
 }
 
 .description-input-disabled {
   display: flex;
   flex-direction: row;
-  margin-left: 10px;
-  margin-right: 10px;
-
+  margin: 5px 10px;
   background: #F4F2FF;
 
   border-radius: 5px;
@@ -240,8 +235,8 @@
   display: flex;
   width: 100%;
   justify-self: flex-start;
-  justify-content: space-around;
-  flex-direction: row;
+  justify-content: flex-start;
+  flex-flow: row wrap;
   align-items: center;
   font-size: 16px;
 }
@@ -273,4 +268,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button-flex-container {
+  background: #5C6BC0;
+  height: 50px;
+  width: 84.5%;
+  margin-left: 8%;
+  margin-bottom: 8%;
+  margin-top: 13%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

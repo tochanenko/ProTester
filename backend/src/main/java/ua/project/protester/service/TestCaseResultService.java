@@ -27,4 +27,12 @@ public class TestCaseResultService {
                 testCaseResultRepository.countTestCaseResult(pagination, projectId)
         );
     }
+
+    @Transactional
+    public Page<TestCaseResultDto> findAllResults(Pagination pagination) {
+        return new Page<>(
+                testCaseResultRepository.findAllProjectsResult(pagination),
+                testCaseResultRepository.countAllTestCases(pagination)
+        );
+    }
 }

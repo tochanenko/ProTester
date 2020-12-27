@@ -32,4 +32,15 @@ public class TestCaseResultController {
 
         return testCaseResultService.findAllResultsByProject(pagination, projectId);
     }
+
+    @GetMapping("/project")
+    public Page<TestCaseResultDto> findAllProjectTestCases(
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, "");
+
+        return testCaseResultService.findAllResults(pagination);
+    }
+
 }

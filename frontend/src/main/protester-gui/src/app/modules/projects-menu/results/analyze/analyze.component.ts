@@ -7,8 +7,9 @@ import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {ActionResultModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
+import {ActionResultModel, ExecutableComponentTypeModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   constructor(private analyzeService: TestCaseAnalyzeService,
               private testCaseService: TestCaseService,
               private websocketsService: WebsocketService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
     this.route.params.subscribe(params => this.idToRun = params.id);
   }
 
@@ -84,6 +86,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
 
               result.innerResults = innerResultsTemp;
 
+              result.innerResults.forEach(i => this.loadImage(i));
+
               this.resultList.push(result);
               return result;
             }))
@@ -101,7 +105,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
           of(this.subscribeToResult()).pipe(
             mergeMap(() => this.testCaseService.runTestCase(this.idToRun))
           ).subscribe(
-            () => {},
+            () => {
+            },
             () => this.isError = true
           )
         );
@@ -126,6 +131,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
+    this.loadImage(actionToAdd);
     this.convertActionToJson(actionToAdd);
 
     const indexOfTestCase: number = this.resultList
@@ -179,6 +185,19 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     }
     if (action.response) {
       action.response = JSON.parse(action.response);
+    }
+  }
+
+  loadImage(actionUI: ActionResultModel): void {
+    if (actionUI.action.type === ExecutableComponentTypeModel.UI && actionUI.path) {
+      this.subscription.add(
+        this.analyzeService.getImage(actionUI.path).subscribe(
+          (it) => {
+            const objectURL = 'data:image/jpeg;base64,' + it.content;
+            actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          },
+          () => this.isError = true)
+      );
     }
   }
 

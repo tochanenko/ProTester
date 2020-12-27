@@ -60,7 +60,6 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
     }
 
     let id = route.snapshot.params['id'];
-    console.log(id)
 
     let label = child.snapshot.data[BreadcrumbComponent.ROUTE_DATA_BREADCRUMB];
     if (!(label === null || label === undefined)) {

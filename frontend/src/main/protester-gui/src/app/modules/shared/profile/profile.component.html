@@ -24,7 +24,7 @@
       </tr>
       <tr>
         <td><b>Status</b></td>
-        <td>{{user.isActive}}</td>
+        <td><span *ngIf="user.isActive">ACTIVE</span><span *ngIf="!user.isActive">DEACTIVATED</span></td>
       </tr>
     </table>
   </mat-card>

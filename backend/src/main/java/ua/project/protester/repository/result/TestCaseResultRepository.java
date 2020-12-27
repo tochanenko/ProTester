@@ -88,7 +88,9 @@ public class TestCaseResultRepository {
                 PropertyExtractor.extract(env, "countTestCaseResult"),
                 new MapSqlParameterSource()
                         .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("project_id", projectId),
+                        .addValue("projectId", projectId)
+                        .addValue("pageSize", pagination.getPageSize())
+                        .addValue("offset", pagination.getOffset()),
                 Long.class);
     }
 

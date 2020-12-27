@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {PasswordService} from "../../../../services/password.service.ts.service";
@@ -9,11 +9,14 @@ import {StorageService} from "../../../../services/auth/storage.service";
   templateUrl: './restore-request.component.html',
   styleUrls: ['./restore-request.component.css']
 })
-export class RestoreRequestComponent implements OnInit {
+export class RestoreRequestComponent implements OnInit, OnDestroy {
 
   recoveryForm: FormGroup;
   submitted = false;
   image = 'assets/logo.png';
+  notFound = false;
+
+  subscriptions = [];
 
   constructor(private passwordService: PasswordService,
               private router: Router,
@@ -32,6 +35,7 @@ export class RestoreRequestComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.notFound = false;
     this.submitted = true;
 
     if (this.recoveryForm.invalid) {
@@ -42,11 +46,18 @@ export class RestoreRequestComponent implements OnInit {
       email: this.f.email.value
     }
 
-    this.passwordService.forgotPassword(recoveryResponse).subscribe(
+    this.subscriptions.push(this.passwordService.forgotPassword(recoveryResponse).subscribe(
       email => {
         this.router.navigateByUrl('account/forgot-password/token-sent').then();
+      },
+      error => {
+        this.notFound = true;
       }
-    )
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 }

@@ -19,7 +19,13 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.*;
+import ua.project.protester.model.RunResult;
+import ua.project.protester.model.TestCaseWrapperResult;
+import ua.project.protester.model.ActionWrapper;
+import ua.project.protester.model.DataSet;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.TestCaseDto;
+import ua.project.protester.model.TestCase;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -80,14 +86,13 @@ public class StartService {
     public void execute(Long runId) {
         WebDriver driver = null;
         try {
-//            ChromeOptions options = new ChromeOptions();
-//            options.addArguments("--disable-gpu");
-//            options.addArguments("--no-sandbox");
-//            options.addArguments("--disable-dev-shm-usage");
-//            options.addArguments("--headless");
-//            options.addArguments("--lang=en");
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\vovan\\Downloads\\chromedriver_win32");
-            driver = new ChromeDriver();
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--headless");
+            options.addArguments("--lang=en");
+            driver = new ChromeDriver(options);
             driver.manage().window().setSize(new Dimension(800, 600));
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             RunResult runResult = runResultRepository.findRunResultById(runId).orElseThrow();

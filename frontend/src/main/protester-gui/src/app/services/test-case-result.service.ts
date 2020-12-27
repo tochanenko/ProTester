@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
@@ -11,17 +11,24 @@ const httpOptions = {
 })
 export class TestCaseResultService {
 
-  constructor(private http: HttpClient) { }
-
-  getAll(): Observable<any> {
-    return this.http.get("/api/test-case-results/all", httpOptions);
+  constructor(private http: HttpClient) {
   }
 
   getAllProjects(): Observable<any> {
-    return this.http.get("/api/project")
+    return this.http.get("/api/projects");
   }
 
-  getForProject(id: any): Observable<any> {
-    return this.http.get('/api/test-case-results/project/' + id, httpOptions);
+  getForProject(id: any = '', size: number = null, page: number = null): Observable<any> {
+    let params = {};
+
+    if (size != null) {
+      params['pageSize'] = size.toString();
+    }
+
+    if (page != null) {
+      params['pageNumber'] = page.toString();
+    }
+
+    return this.http.get('/api/test-case-results/project/' + id, {params: params});
   }
 }

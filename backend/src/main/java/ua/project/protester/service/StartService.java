@@ -242,7 +242,7 @@ public class StartService {
             dataSource.setUsername(environment.getUsername());
             dataSource.setPassword(environment.getPassword());
             dataSource.setMaximumPoolSize(1);
-            dataSource.setMaxLifetime(10000);
+            dataSource.setMaxLifetime(30000);
             dataSource.setMinimumIdle(1);
             dataSource.setAutoCommit(false);
             return dataSource;

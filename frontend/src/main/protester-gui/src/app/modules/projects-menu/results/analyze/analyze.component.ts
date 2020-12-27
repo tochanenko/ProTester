@@ -7,12 +7,7 @@ import {WebsocketService} from '../../../../services/websocket.service';
 import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {concatMap, map, mergeMap} from 'rxjs/operators';
-import {
-  ActionResultModel,
-  ExecutableComponentTypeModel,
-  StatusModel,
-  TestCaseResultModel
-} from '../../../../models/run-analyze/result.model';
+import {ActionResultModel, ExecutableComponentTypeModel, StatusModel, TestCaseResultModel} from '../../../../models/run-analyze/result.model';
 import {TestCaseWrapperResultModel} from '../../../../models/run-analyze/wrapper.model';
 import {DomSanitizer} from '@angular/platform-browser';
 
@@ -194,19 +189,14 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
   }
 
   loadImage(actionUI: ActionResultModel): void {
-    if (actionUI.action.type === ExecutableComponentTypeModel.UI) {
+    if (actionUI.action.type === ExecutableComponentTypeModel.UI && actionUI.path) {
       this.subscription.add(
         this.analyzeService.getImage(actionUI.path).subscribe(
           (it) => {
-            console.log('-------------------no--error-----1');
-
             const objectURL = 'data:image/jpeg;base64,' + it.content;
-
             actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-
-            console.log('-------------------no--error-----');
           },
-          () => console.log('----------error------'))
+          () => this.isError = true)
       );
     }
   }

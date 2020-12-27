@@ -20,7 +20,7 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
 
   pageEvent: PageEvent;
   pageIndex = 0;
-  pageSize = 10;
+  pageSize = 5;
   length: number;
 
   subscriptions = [];

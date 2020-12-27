@@ -19,7 +19,7 @@ public class ScreenshotController {
     @GetMapping("/{name}")
     public byte[] test(@PathVariable String name) {
         try {
-            return FileUtils.readFileToByteArray(new File("/app/screenshots/" + name + ".png"));
+            return FileUtils.readFileToByteArray(new File("~\\screenshots\\" + name + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

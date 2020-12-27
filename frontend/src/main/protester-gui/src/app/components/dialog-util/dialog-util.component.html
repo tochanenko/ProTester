@@ -6,7 +6,7 @@
   <span class="dialog-util-message">
     {{data.message}}
   </span>
-    <a *ngFor="let link of data.links" [routerLink]="link" (click)="onNoClick()"> {{link}} </a>
+    <a *ngFor="let link of data.links" [routerLink]="link.link" (click)="onNoClick()"> {{link['name']}} </a>
   </div>
   <button mat-raised-button class="button-flex-container" (click)="onNoClick()">
     <p class="button-text">OK</p>

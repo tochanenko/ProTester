@@ -8,6 +8,7 @@ import {Step} from "../../../../models/step.model";
 import {Router} from "@angular/router";
 import {CompoundManageService} from "../../../../services/compound-manage.service";
 import {StepRepresentation} from "../../../../models/StepRepresentation";
+import {CustomValidator} from "../../../../services/customVaidator.service";
 
 @Component({
   selector: 'app-library-new',
@@ -31,6 +32,7 @@ export class CreateComponent implements OnInit {
   compoundCreateForm: FormGroup;
 
   components: Step[] = [];
+  needToAdd = [];
   step_id: number = 1;
   bottomSheetData = {};
   componentCtx = {
@@ -64,6 +66,7 @@ export class CreateComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
       description: ['', [Validators.required]]
     })
+    this.compoundCreateForm.controls['name'].setValidators(CustomValidator.placeholderValidator(this.compoundCreateForm))
   }
 
   getComponentsOfSteps(steps) {
@@ -178,13 +181,12 @@ export class CreateComponent implements OnInit {
     let parentParams = {};
     component.parameterNames.forEach(param => {
       parentParams[param] = "${" + param + "}";
-      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', Validators.required));
+      this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', [Validators.required]));
     });
     if (component.steps) {
       let mappingParams = {};
       this.recursiveStepParsing(component.steps, mappingParams, parentParams);
     }
-
     this.components.push(step);
 
   }

@@ -12,6 +12,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {DialogWarningModel} from "../../../../models/dialog-warning.model";
 import {DialogUtilComponent} from "../../../../components/dialog-util/dialog-util.component";
 import {MatDialog} from "@angular/material/dialog";
+import {CustomValidator} from "../../../../services/customVaidator.service";
 
 @Component({
   selector: 'app-compound-edit',
@@ -76,6 +77,7 @@ export class CompoundEditComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(this.validatorsConfig.name.minLength)]],
       description: ['', [Validators.required]]
     })
+    this.compoundUpdateForm.controls['name'].setValidators(CustomValidator.placeholderValidator(this.compoundUpdateForm))
   }
 
 
@@ -203,7 +205,7 @@ export class CompoundEditComponent implements OnInit {
         const warning: DialogWarningModel = {
           error_name: error.error.message,
           message: 'Please edit or delete relevant compounds:',
-          links: error.error.outerComponents.map(component => `/libraries-menu/compounds/${component.id}`)
+          links: error.error.outerComponents.map(component => ({link: `/libraries-menu/compounds/${component.id}/edit`, name: component.name}))
         }
         const dialogRef = this.dialog.open(DialogUtilComponent, {
           width: '40%',

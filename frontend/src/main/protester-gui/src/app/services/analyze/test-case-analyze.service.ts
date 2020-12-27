@@ -20,4 +20,8 @@ export class TestCaseAnalyzeService {
   getTestCaseById(id: number): Observable<TestCaseModel> {
     return this.http.get<TestCaseModel>(`/api/testCase/${id}`);
   }
+
+  getImage(path: string): Observable<any> {
+    return this.http.get(`/api/screenshots/${path}`);
+  }
 }

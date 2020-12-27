@@ -23,8 +23,8 @@ public class SqlConverter {
             List<SqlColumnDto> sqlTable = new ArrayList<>(metaData.getColumnCount());
 
             for (int i = 0; i < metaData.getColumnCount(); i++) {
-                sqlTable.set(i, new SqlColumnDto(
-                        metaData.getColumnName(i),
+                sqlTable.add(new SqlColumnDto(
+                        metaData.getColumnName(i + 1),
                         new LinkedList<>()));
             }
 

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
-import ua.project.protester.exception.executable.compound.CompoundNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.RunResult;
 import ua.project.protester.model.TestCaseDto;
@@ -21,14 +20,13 @@ public class RunController {
     private final StartService startService;
 
     @PostMapping
-    public RunResult save(@RequestBody RunTestCaseRequest testCase) throws TestScenarioNotFoundException, CompoundNotFoundException, OuterComponentNotFoundException {
-        log.info("test case response{}", testCase);
+    public RunResult save(@RequestBody RunTestCaseRequest testCase) throws TestScenarioNotFoundException, OuterComponentNotFoundException {
        return startService.getTestCaseExecutionResult(testCase);
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public void run(@PathVariable Long id) throws TestScenarioNotFoundException {
+    public void run(@PathVariable Long id) {
         startService.execute(id);
     }
 

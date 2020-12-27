@@ -13,8 +13,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   projectCreateForm: FormGroup;
   errorMessage = '';
   submitted = false;
-  isSuccessful = false;
-  isFailed = false;
+  isError = false;
   subscription: Subscription;
 
   constructor(public dialogRef: MatDialogRef<CreateComponent>,
@@ -65,7 +64,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.projectService.create(projectCreateResponse)
         .subscribe(
           () => this.dialogRef.close(),
-          () => this.isFailed = true
+          () => this.isError = true
         )
     );
   }

@@ -10,6 +10,7 @@ import {TestCaseFilter} from '../../../../../../models/test-case/test-case-filte
 import {EditComponent} from '../edit/edit.component';
 import {CreateComponent} from '../create/create.component';
 import {TestCaseModel} from '../../../../../../models/test-case/test-case.model';
+import {DatasetService} from "../../../../../../services/dataset.service";
 
 @Component({
   selector: 'app-list',
@@ -30,6 +31,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
+              private dataSetService: DatasetService,
               private route: ActivatedRoute,
               public dialog: MatDialog,
               private router: Router) {
@@ -47,6 +49,9 @@ export class ListComponent implements OnInit, OnDestroy {
         this.dataSource.forEach(item => {
           this.testScenarioService.getById(item.scenarioId).subscribe(test => {
             item.scenarioName = test.name;
+          });
+          this.dataSetService.getDataSetById(item.dataSetId).subscribe(test => {
+            item.dataSetName = test.name;
           });
         });
         this.testCasesCount = data.totalItems;

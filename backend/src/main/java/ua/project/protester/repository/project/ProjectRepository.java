@@ -14,7 +14,7 @@ public interface ProjectRepository {
 
     Project update(Project project);
 
-    Project changeProjectStatus(Project project, Boolean isActive);
+    Project changeStatus(Project project, Boolean isActive);
 
     List<ProjectDto> findAll(Pagination pagination);
 

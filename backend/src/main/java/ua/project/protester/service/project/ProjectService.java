@@ -8,16 +8,16 @@ import ua.project.protester.utils.Pagination;
 
 public interface ProjectService {
 
-    ProjectDto createProject(ProjectDto projectDto) throws ProjectAlreadyExistsException;
+    ProjectDto create(ProjectDto projectDto) throws ProjectAlreadyExistsException;
 
-    ProjectDto updateProject(ProjectDto projectDto) throws ProjectAlreadyExistsException;
+    ProjectDto update(ProjectDto projectDto) throws ProjectAlreadyExistsException;
 
-    ProjectDto changeProjectStatus(Long projectId) throws ProjectNotFoundException;
+    ProjectDto changeStatus(Long projectId) throws ProjectNotFoundException;
 
-    Page<ProjectDto> findAllProjects(Pagination pagination);
+    Page<ProjectDto> findAll(Pagination pagination);
 
-    Page<ProjectDto> findAllProjectsByStatus(Pagination pagination, Boolean isActive);
+    Page<ProjectDto> findAllByStatus(Pagination pagination, Boolean isActive);
 
-    ProjectDto getProjectDtoById(Long id) throws ProjectNotFoundException;
+    ProjectDto getById(Long id) throws ProjectNotFoundException;
 
 }

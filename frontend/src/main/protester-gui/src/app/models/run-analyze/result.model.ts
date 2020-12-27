@@ -26,37 +26,30 @@ export class ActionResultModel {
   action?: AbstractActionModel;
   startDate = '';
   endDate = '';
-
   startDateStr = '';
   endDateStr = '';
   status?: StatusModel;
   inputParameters?: { [name: string]: string };
-
   last?: boolean;
-
-  exception?: ActionExecutionExceptionModel;
   message?: string;
 
-  // rest
   request?: any;
   response?: any;
   statusCode?: number;
 
-  // sql
   connectionUrl?: string;
   username?: string;
   query?: string;
   columns?: SqlColumnDtoModel[];
 
-  // technical
   extra?: { [name: string]: string };
 
-  // ui
   path?: string;
 
+  actionWrapperId?: number;
 
   constructor(actionWrapper: ActionWrapperModel) {
-    this.id = actionWrapper.id;
+    this.actionWrapperId = actionWrapper.id;
 
     const tempAction: AbstractActionModel = new AbstractActionModel();
     tempAction.name = actionWrapper.name;
@@ -71,9 +64,6 @@ export class ActionResultModel {
     this.inputParameters = actionWrapper.parameters;
     this.message = actionWrapper.message;
   }
-}
-
-export class ActionExecutionExceptionModel {
 }
 
 export class SqlColumnDtoModel {

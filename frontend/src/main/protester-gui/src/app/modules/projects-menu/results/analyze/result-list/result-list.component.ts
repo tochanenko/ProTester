@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {TestCaseResultModel} from '../../../../../models/run-analyze/result.model';
 
 @Component({
@@ -6,18 +6,13 @@ import {TestCaseResultModel} from '../../../../../models/run-analyze/result.mode
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnChanges {
+export class ResultListComponent {
 
   @Input() testCaseResult: TestCaseResultModel;
   panelOpenState = true;
 
-  constructor() { }
-
   updateTestCaseResult(result): void {
     this.testCaseResult = result;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
   }
 
 }

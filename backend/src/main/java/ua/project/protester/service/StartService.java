@@ -40,6 +40,8 @@ import ua.project.protester.request.RunTestCaseRequest;
 import ua.project.protester.response.ValidationDataSetResponse;
 import ua.project.protester.response.ValidationDataSetStatus;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -98,7 +100,7 @@ public class StartService {
             for (int i = 0; i < testCasesDto.size(); i++) {
                 runTestCase(testCasesDto.get(i), testCaseResults.get(i).getTestResultId(), driver);
             }
-
+            runResultRepository.clearWrappers(testCaseResults);
         } catch (Exception exception) {
             log.error("exception {}", exception.getClass().getName());
         } finally {
@@ -118,9 +120,11 @@ public class StartService {
             testScenarioService.getTestScenarioById(testCase.getScenarioId().intValue()).execute(dataSet.getParameters(), getTemplate(testCaseDto), webDriver, restTemplate, environment, getConsumer(testCaseResultId));
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.PASSED, OffsetDateTime.now());
             counter = 0;
+            closeConnection(environment);
         } catch (ActionExecutionException | IllegalActionLogicImplementation e) {
             resultRepository.updateStatusAndEndDate(testCaseResultId, ResultStatus.FAILED, OffsetDateTime.now());
             counter = 0;
+            closeConnection(environment);
         }
     }
 
@@ -218,7 +222,9 @@ public class StartService {
 
     private Environment getEnvironment(TestCaseDto testCaseDto) {
         if (testCaseDto.getEnvironmentId() != null) {
-            return environmentService.findById(testCaseDto.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            Environment environment = environmentService.findById(testCaseDto.getEnvironmentId()).orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            environment.setDataSource(createDataSource(environment));
+            return environment;
         }
         return new Environment();
     }
@@ -227,14 +233,31 @@ public class StartService {
         if (testCaseDto.getEnvironmentId() != null) {
             Environment environment = environmentService.findById(testCaseDto.getEnvironmentId())
                     .orElseThrow(() -> new EnvironmentNotFoundException("Environment was not found"));
+            environment.setDataSource(createDataSource(environment));
+            return new JdbcTemplate(environment.getDataSource());
+        }
+        return null;
+    }
 
+    private DataSource createDataSource(Environment environment) {
+        if (environment.getId() != null) {
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
             dataSourceBuilder.driverClassName("org.postgresql.Driver");
             dataSourceBuilder.url(environment.getUrl());
             dataSourceBuilder.username(environment.getUsername());
             dataSourceBuilder.password(environment.getPassword());
-            return new JdbcTemplate(dataSourceBuilder.build());
+            return dataSourceBuilder.build();
         }
         return null;
+    }
+
+    private void closeConnection(Environment environment) {
+        if (environment.getDataSource() != null) {
+            try {
+                environment.getDataSource().getConnection().close();
+            } catch (SQLException e) {
+                log.warn("SQL exception{}", e.getClass().getName());
+            }
+        }
     }
 }

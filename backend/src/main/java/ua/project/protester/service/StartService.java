@@ -1,12 +1,12 @@
 package ua.project.protester.service;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -19,13 +19,7 @@ import ua.project.protester.exception.executable.action.ActionExecutionException
 import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.exception.result.RunResultNotFoundException;
-import ua.project.protester.model.RunResult;
-import ua.project.protester.model.DataSet;
-import ua.project.protester.model.ActionWrapper;
-import ua.project.protester.model.TestCaseWrapperResult;
-import ua.project.protester.model.TestCaseDto;
-import ua.project.protester.model.Environment;
-import ua.project.protester.model.TestCase;
+import ua.project.protester.model.*;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.model.executable.result.ActionResultDto;
@@ -241,12 +235,17 @@ public class StartService {
 
     private DataSource createDataSource(Environment environment) {
         if (environment.getId() != null) {
-            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-            dataSourceBuilder.driverClassName("org.postgresql.Driver");
-            dataSourceBuilder.url(environment.getUrl());
-            dataSourceBuilder.username(environment.getUsername());
-            dataSourceBuilder.password(environment.getPassword());
-            return dataSourceBuilder.build();
+
+            HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setDriverClassName("org.postgresql.Driver");
+            dataSource.setJdbcUrl(environment.getUrl());
+            dataSource.setUsername(environment.getUsername());
+            dataSource.setPassword(environment.getPassword());
+            dataSource.setMaximumPoolSize(1);
+            dataSource.setMaxLifetime(10000);
+            dataSource.setMinimumIdle(1);
+            dataSource.setAutoCommit(false);
+            return dataSource;
         }
         return null;
     }

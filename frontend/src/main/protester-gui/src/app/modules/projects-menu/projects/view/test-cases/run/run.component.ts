@@ -45,6 +45,7 @@ export class RunComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   isError = false;
   isLoading = true;
+  isDisabled = false;
 
   constructor(private testCaseService: TestCaseService,
               private testScenarioService: TestScenarioService,
@@ -106,6 +107,7 @@ export class RunComponent implements OnInit, OnDestroy {
     if (this.selection.isSelected(testCase)) {
       this.selection.deselect(testCase);
     } else {
+      this.isDisabled = true;
       this.subscription.add(
         this.testCaseService.validateTestCaseDataSet(testCase).pipe(
           switchMap(validationResult => {
@@ -114,6 +116,7 @@ export class RunComponent implements OnInit, OnDestroy {
             } else {
               return this.testCaseService.isEnvRequired(testCase.scenarioId).pipe(
                 map((data: boolean) => {
+                  data ? this.isDisabled = true : this.isDisabled = false;
                   return data
                     ? of(this.openSelectEnvironmentView(testCase))
                     : of(this.selection.select(testCase));
@@ -146,6 +149,7 @@ export class RunComponent implements OnInit, OnDestroy {
           testCase.environmentId = result;
           this.selection.select(testCase);
         }
+        this.isDisabled = false;
       }));
   }
 

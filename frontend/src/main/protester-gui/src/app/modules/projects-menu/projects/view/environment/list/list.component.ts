@@ -16,7 +16,7 @@ import {EnvironmentFilterModel} from '../../../../../../models/environment/envir
 })
 export class ListComponent implements OnInit, OnDestroy {
 
-  dataSource: EnvironmentModel[];
+  dataSource: EnvironmentModel[] = [];
   pageEvent: PageEvent;
   projectId: number;
   isError = false;
@@ -79,8 +79,7 @@ export class ListComponent implements OnInit, OnDestroy {
       updateDialogRef.afterClosed()
         .subscribe(env => {
           this.environmentService.update(env).subscribe(
-            () => this.searchEnvironments(),
-            () => this.isError = true
+            () => this.searchEnvironments()
           );
         })
     );

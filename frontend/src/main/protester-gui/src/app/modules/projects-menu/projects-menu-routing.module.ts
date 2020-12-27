@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ViewComponent} from "./view/view.component";
+import {TestCaseResultTableComponent} from "./test-case-result-table/test-case-result-table.component";
 
 const routes: Routes = [
   {
@@ -44,6 +45,20 @@ const routes: Routes = [
         },
         loadChildren: 'src/app/modules/projects-menu/results/results.module#ResultsModule'
       },
+      {
+        path: 'table/:id',
+        data: {
+          breadcrumb: 'Table'
+        },
+        component: TestCaseResultTableComponent
+      },
+      {
+        path: 'table',
+        data: {
+          breadcrumb: 'Table'
+        },
+        component: TestCaseResultTableComponent
+      }
     ]
   }
 ];

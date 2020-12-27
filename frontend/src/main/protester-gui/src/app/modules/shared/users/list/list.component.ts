@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {PageEvent} from "@angular/material/paginator";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,7 +10,7 @@ import {UserService} from "../../../../services/user/user.service";
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'role', 'status', 'actions'];
   dataSource = new MatTableDataSource();
@@ -24,6 +24,8 @@ export class ListComponent implements OnInit {
   completed = false;
 
   currentUser: any;
+
+  subscriptions = [];
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -42,21 +44,21 @@ export class ListComponent implements OnInit {
   }
 
   activate(id: any) {
-    this.userService.activateUser(id).subscribe(
+    this.subscriptions.push(this.userService.activateUser(id).subscribe(
       () => {
         this.getUsersList();
       },
       err => console.log(err)
-    );
+    ));
   }
 
   deactivate(id: any) {
-    this.userService.deactivateUser(id).subscribe(
+    this.subscriptions.push(this.userService.deactivateUser(id).subscribe(
       () => {
         this.getUsersList();
       },
       err => console.log(err)
-    );
+    ));
   }
 
   goToUser(id: any) {
@@ -68,7 +70,7 @@ export class ListComponent implements OnInit {
   }
 
   getUsersList() {
-    this.userService.getAll().subscribe(
+    this.subscriptions.push(this.userService.getAll().subscribe(
       users => {
         this.length = users.length;
         this.usersList = users;
@@ -76,6 +78,10 @@ export class ListComponent implements OnInit {
         this.completed = true;
       },
       err => console.log(err)
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe);
   }
 }

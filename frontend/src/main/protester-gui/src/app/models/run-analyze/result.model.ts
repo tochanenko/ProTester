@@ -45,6 +45,7 @@ export class ActionResultModel {
   extra?: { [name: string]: string };
 
   path?: string;
+  image?: any;
 
   actionWrapperId?: number;
 

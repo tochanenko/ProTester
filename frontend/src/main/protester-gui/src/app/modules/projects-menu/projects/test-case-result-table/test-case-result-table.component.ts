@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TestCaseResultService} from "../../../../services/test-case-result.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
@@ -9,7 +9,7 @@ import {PageEvent} from "@angular/material/paginator";
   templateUrl: './test-case-result-table.component.html',
   styleUrls: ['./test-case-result-table.component.css']
 })
-export class TestCaseResultTableComponent implements OnInit {
+export class TestCaseResultTableComponent implements OnInit, OnDestroy {
 
   displayedColumns = ['caseName', 'user', 'status', 'start', 'finish'];
   testCaseResults = [];
@@ -18,9 +18,11 @@ export class TestCaseResultTableComponent implements OnInit {
   processed = false;
 
   pageEvent: PageEvent;
-  pageIndex = 0;
+  pageIndex = 1;
   pageSize = 10;
   length: number;
+
+  subscriptions = [];
 
   constructor(
     private testCaseResultService: TestCaseResultService,
@@ -31,37 +33,82 @@ export class TestCaseResultTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(
-      params => {
-        this.projectId = params['id'];
-        this.testCaseResultService.getForProject(this.projectId).subscribe(
-          results => {
-            let testCaseResults = [];
-            results.forEach(result => {
-              testCaseResults.push({
-                startDate: this.datePipe.transform(result['startDate'], 'short'),
-                endDate: this.datePipe.transform(result['endDate'], 'short'),
-                caseId: result['id'],
-                caseName: result['testCase']['name'],
-                userId: result['user']['id'],
-                userName: result['user']['username'],
-                status: result['status']
-              })
-            });
-            this.testCaseResults = testCaseResults;
-            this.length = testCaseResults.length;
-            this.dataSource = this.testCaseResults.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
-            this.processed = true;
+    this.subscriptions.push(
+      this.route.params.pipe(
+        params => {
+          this.projectId = params['id'];
+          if (this.projectId != null) {
+            return this.testCaseResultService.getForProject(this.projectId, this.pageSize, this.pageIndex);
+          } else {
+            return this.testCaseResultService.getForProject('', this.pageSize, this.pageIndex);
           }
-        );
-      })
+        }
+      ).subscribe(
+        results => {
+          let testCaseResults = [];
+          results['list'].forEach(result => {
+            testCaseResults.push({
+              startDate: this.datePipe.transform(result['startDate'], 'short'),
+              endDate: this.datePipe.transform(result['endDate'], 'short'),
+              // TODO: Uncomment these four lines and delete next four lines
+              // caseId: result['testCase']['id'],
+              // caseName: result['testCase']['name'],
+              // userId: result['user']['id'],
+              // userName: result['user']['username'],
+              caseId: 5,
+              caseName: "Bobby's Work",
+              userId: 3,
+              userName: "Bobby Himself",
+              status: result['status']
+            })
+          });
+          this.length = results['totalItems'];
+          this.dataSource = testCaseResults;
+          this.processed = true;
+        }
+      )
+    );
   }
 
   updateList(event?: PageEvent): PageEvent {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.dataSource = this.testCaseResults.slice(event.pageIndex * event.pageSize, (event.pageIndex + 1) * event.pageSize);
+    this.subscriptions.push(
+      this.testCaseResultService.getForProject(
+        this.projectId,
+        event.pageSize,
+        event.pageIndex
+      ).subscribe(
+        results => {
+          let testCaseResults = [];
+          results['list'].forEach(result => {
+            testCaseResults.push({
+              startDate: this.datePipe.transform(result['startDate'], 'short'),
+              endDate: this.datePipe.transform(result['endDate'], 'short'),
+              // TODO: Uncomment these four lines and delete next four lines
+              // caseId: result['testCase']['id'],
+              // caseName: result['testCase']['name'],
+              // userId: result['user']['id'],
+              // userName: result['user']['username'],
+              caseId: 5,
+              caseName: "Bobby's Work",
+              userId: 3,
+              userName: "Bobby Himself",
+              status: result['status']
+            })
+          });
+          this.length = results['totalItems'];
+          this.dataSource = testCaseResults;
+          this.processed = true;
+        }
+      )
+    );
+
     return event;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }
 

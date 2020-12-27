@@ -10,6 +10,9 @@ import {CompoundManageService} from "../../../../services/compound-manage.servic
 import {StepRepresentation} from "../../../../models/StepRepresentation";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {TestScenarioService} from "../../../../services/test-scenario/test-scenario-service";
+import {DialogWarningModel} from "../../../../models/dialog-warning.model";
+import {DialogUtilComponent} from "../../../../components/dialog-util/dialog-util.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-edit',
@@ -53,7 +56,8 @@ export class EditComponent implements OnInit {
     private scenarioService: TestScenarioService,
     private interactionService: LibraryBottomsheetInteractionService,
     private router: Router,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private dialog: MatDialog
 
   ) {
   }
@@ -199,8 +203,21 @@ export class EditComponent implements OnInit {
     this.scenarioService.updateScenario(this.compound_id, this.compoundCreateRequest).subscribe(() => {
         this.router.navigateByUrl('/projects-menu/scenarios').then();
       },
-      () => {
-        console.error("Error of creation");
+      (error) => {
+        console.error(error);
+        const warning: DialogWarningModel = {
+          error_name: error.error.message,
+          message: '',
+          links: error.error.outerComponents.map(component =>  `/libraries-menu/compounds/${component.id}` )
+        }
+        const dialogRef = this.dialog.open(DialogUtilComponent, {
+          width: '350px',
+          data: warning
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
       })
   }
 

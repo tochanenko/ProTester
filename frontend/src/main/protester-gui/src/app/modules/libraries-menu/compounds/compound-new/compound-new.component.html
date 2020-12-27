@@ -18,6 +18,7 @@
               - {{validatorsConfig.name.minLength}} symbols
             </mat-error>
             <mat-error *ngIf="formControls.name.errors.required">Name is required</mat-error>
+            <mat-error *ngIf="formControls.name.errors.needToAdd"> Need to add param: {{formControls.name.errors.needToAdd}}</mat-error>
           </mat-error>
         </mat-form-field>
       </div>

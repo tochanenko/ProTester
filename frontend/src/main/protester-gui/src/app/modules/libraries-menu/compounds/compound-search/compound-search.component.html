@@ -10,9 +10,9 @@
         </mat-form-field>
       </form>
       <div class="button_wrapper">
-      <button mat-raised-button [routerLink]="['new']" class="button-flex-container">
-        <p class="button-text">NEW COMPOUND</p>
-      </button>
+        <button mat-raised-button [routerLink]="['new']" class="button-flex-container">
+          <p class="button-text">NEW COMPOUND</p>
+        </button>
       </div>
     </div>
 
@@ -20,22 +20,26 @@
       <ng-container matColumnDef="NAME">
         <mat-header-cell *matHeaderCellDef class="header"> NAME</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <ng-container *ngFor="let sub_string of element.name">
-            <div *ngIf="sub_string['input']">
-              <div class="description-input-disabled mat-elevation-z3">
-                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of element.name">
+              <div *ngIf="sub_string['input']">
+                <div class="description-input-disabled mat-elevation-z3">
+                  <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+                </div>
               </div>
-            </div>
-            <div *ngIf="!sub_string['input']" class="description-text">
-              <span>{{sub_string['text']}}</span>
-            </div>
-          </ng-container>
+              <div *ngIf="!sub_string['input']" class="description-text">
+                <span>{{sub_string['text']}}</span>
+              </div>
+            </ng-container>
+          </div>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="DESCRIPTION">
         <mat-header-cell *matHeaderCellDef class="header th-left"> DESCRIPTION</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="description-column"> <div>{{element.description}}</div>  </mat-cell>
+        <mat-cell *matCellDef="let element" class="description-column">
+          <div>{{element.description}}</div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="CONF">

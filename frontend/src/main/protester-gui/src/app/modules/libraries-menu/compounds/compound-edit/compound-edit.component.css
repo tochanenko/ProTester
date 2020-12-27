@@ -177,7 +177,7 @@ mat-error {
   align-items: center;
   width: 100%;
   color: #000000;
-
+  height: 100%;
 }
 
 .mat-expansion-panel-header-title {
@@ -185,14 +185,12 @@ mat-error {
   align-content: center;
   display: flex;
   min-height: 70px;
-
 }
 
 .description-input-disabled {
   display: flex;
   flex-direction: row;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 5px 10px;
 
   background: #F4F2FF;
 
@@ -241,8 +239,9 @@ mat-error {
 .description-container {
   display: flex;
   width: 100%;
+  word-wrap: break-word;
   justify-self: flex-start;
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: center;
   font-size: 16px;
 }

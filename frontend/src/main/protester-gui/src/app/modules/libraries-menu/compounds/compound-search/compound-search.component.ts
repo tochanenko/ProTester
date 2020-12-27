@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
       const warning: DialogWarningModel = {
         error_name: error.error.message,
         message: '',
-        links: error.error.outerComponents.map(component =>  `/libraries-menu/compounds/${component.id}` )
+        links: error.error.outerComponents.map(component =>  ({link: `/libraries-menu/compounds/${component.id}/edit`, name: component.name}) )
       }
         const dialogRef = this.dialog.open(DialogUtilComponent, {
           width: '350px',

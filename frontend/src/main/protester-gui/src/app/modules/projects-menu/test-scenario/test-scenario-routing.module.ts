@@ -37,14 +37,22 @@ const routes: Routes = [
             data: {
               breadcrumb: 'Scenario'
             },
-            component: ViewComponent
-          },
-          {
-            path: 'edit',
-            data: {
-              breadcrumb: 'Scenario'
-            },
-            component: EditComponent
+            children: [
+              {
+                path: '',
+                data: {
+                  breadcrumb: null
+                },
+                component: ViewComponent
+              },
+              {
+                path: 'edit',
+                data: {
+                  breadcrumb: 'Edit'
+                },
+                component: EditComponent
+              }
+            ]
           }
         ]
       }

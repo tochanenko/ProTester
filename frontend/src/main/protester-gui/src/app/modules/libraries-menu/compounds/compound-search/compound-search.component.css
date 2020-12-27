@@ -65,8 +65,7 @@ form {
 
 .mat-column-NAME {
   flex: 0 0 40%;
-  align-items: center;
-  padding-left: 0;
+  padding-left: 3%;
 }
 
 .mat-column-DESCRIPTION {
@@ -77,12 +76,14 @@ form {
 .mat-column-CONF {
   flex: 0 0 5%;
   padding-right: 0;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .mat-cell {
+  display: flex;
   text-align: center;
   justify-content: center;
+  align-content: center;
   font-family: Inter;
   font-style: normal;
   font-weight: 500;
@@ -96,7 +97,7 @@ form {
   display: flex;
   align-content: flex-start;
   justify-content: flex-start;
-  font-family: Inter;
+  font-family: Inter, serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -106,6 +107,16 @@ form {
   color: #4F4F4F;
 }
 
+.description-container {
+  display: flex;
+  width: 100%;
+  justify-self: flex-start;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  align-items: center;
+  font-size: 16px;
+}
+
 .mat-menu-delete-button {
   color: #711313;
 }
@@ -113,8 +124,7 @@ form {
 .description-input-disabled {
   display: flex;
   flex-direction: row;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 5px 10px;
 
   background: #F4F2FF;
 

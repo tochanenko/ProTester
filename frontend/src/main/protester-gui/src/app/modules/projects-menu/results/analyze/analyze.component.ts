@@ -91,6 +91,8 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
 
               result.innerResults = innerResultsTemp;
 
+              result.innerResults.forEach(i => this.loadImage(i));
+
               this.resultList.push(result);
               return result;
             }))
@@ -134,23 +136,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     actionToAdd.startDate = actionToAdd.startDateStr;
     actionToAdd.endDate = actionToAdd.endDateStr;
 
-    if (actionToAdd.action.type === ExecutableComponentTypeModel.UI) {
-      this.subscription.add(
-        this.analyzeService.getImage(actionToAdd.path).subscribe(
-          (item) => {
-            console.log('-------------------no--error-----1');
-            console.log(item);
-            const reader = new FileReader();
-            let data;
-            reader.onload = (e) => data = e.target.result;
-            reader.readAsDataURL(new Blob([item]));
-            actionToAdd.image =  this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64,' + data);
-            console.log(actionToAdd.image);
-            console.log('-------------------no--error-----');
-          },
-            () => console.log('----------error------'))
-      );
-    }
+    this.loadImage(actionToAdd);
     this.convertActionToJson(actionToAdd);
 
     const indexOfTestCase: number = this.resultList
@@ -204,6 +190,24 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
     }
     if (action.response) {
       action.response = JSON.parse(action.response);
+    }
+  }
+
+  loadImage(actionUI: ActionResultModel): void {
+    if (actionUI.action.type === ExecutableComponentTypeModel.UI) {
+      this.subscription.add(
+        this.analyzeService.getImage(actionUI.path).subscribe(
+          (it) => {
+            console.log('-------------------no--error-----1');
+
+            const objectURL = 'data:image/jpeg;base64,' + it.content;
+
+            actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+
+            console.log('-------------------no--error-----');
+          },
+          () => console.log('----------error------'))
+      );
     }
   }
 

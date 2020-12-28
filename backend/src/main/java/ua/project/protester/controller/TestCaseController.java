@@ -3,6 +3,7 @@ package ua.project.protester.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.TestCaseCreateException;
 import ua.project.protester.exception.TestCaseNotFoundException;
@@ -54,6 +55,7 @@ public class TestCaseController {
     }
 
 
+    @Transactional
     @GetMapping("/environment/{scenarioId}")
     public boolean findSqlActions(@PathVariable Integer scenarioId) throws TestCaseNotFoundException, TestScenarioNotFoundException {
 

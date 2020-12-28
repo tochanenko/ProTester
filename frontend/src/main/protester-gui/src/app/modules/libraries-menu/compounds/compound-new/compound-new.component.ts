@@ -182,6 +182,9 @@ export class CreateComponent implements OnInit {
     component.parameterNames.forEach(param => {
       parentParams[param] = "${" + param + "}";
       this.compoundCreateForm.addControl(step.id + '-' + param, new FormControl('', [Validators.required]));
+      this.formControls[step.id + '-' + param].valueChanges.subscribe((value) => {
+        this.formControls['name'].updateValueAndValidity();
+      })
     });
     if (component.steps) {
       let mappingParams = {};

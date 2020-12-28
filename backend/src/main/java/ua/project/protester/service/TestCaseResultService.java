@@ -32,7 +32,7 @@ public class TestCaseResultService {
     public Page<TestCaseResultDto> findAllResults(Pagination pagination) {
         return new Page<>(
                 testCaseResultRepository.findAllProjectsResult(pagination),
-                testCaseResultRepository.countAllTestCases(pagination)
+                testCaseResultRepository.countAllTestCases()
         );
     }
 }

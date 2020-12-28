@@ -68,14 +68,13 @@ public class TestCaseResultRepository {
                 new MapSqlParameterSource()
                         .addValue("pageSize", pagination.getPageSize())
                         .addValue("offset", pagination.getOffset())
-                        .addValue("filterName", pagination.getSearchField() + "%")
                         .addValue("projectId", projectId),
                 new BeanPropertyRowMapper<>(TestCaseResult.class));
 
         if (results.size() > 0) {
             return results
                     .stream()
-                    .map(this::getDtoFromModel)
+                    .map(result -> getDtoFromModel(result, false))
                     .collect(Collectors.toList());
         }
 
@@ -93,18 +92,16 @@ public class TestCaseResultRepository {
         if (results.size() > 0) {
             return results
                     .stream()
-                    .map(this::getDtoFromModel)
+                    .map(result -> getDtoFromModel(result, false))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    public Long countAllTestCases(Pagination pagination) {
+    public Long countAllTestCases() {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "countAllTestCasesResult"),
-                new MapSqlParameterSource()
-                        .addValue("pageSize", pagination.getPageSize())
-                        .addValue("offset", pagination.getOffset()),
+                new MapSqlParameterSource(),
                 Long.class);
     }
 
@@ -113,10 +110,7 @@ public class TestCaseResultRepository {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "countTestCaseResult"),
                 new MapSqlParameterSource()
-                        .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("projectId", projectId)
-                        .addValue("pageSize", pagination.getPageSize())
-                        .addValue("offset", pagination.getOffset()),
+                        .addValue("projectId", projectId),
                 Long.class);
     }
 
@@ -131,7 +125,7 @@ public class TestCaseResultRepository {
             if (result == null) {
                 throw new TestCaseResultNotFoundException(id);
             }
-            return getDtoFromModel(result);
+            return getDtoFromModel(result, true);
         } catch (DataAccessException e) {
             log.warn(e.getMessage(), e);
             throw new TestCaseResultNotFoundException(id, e);
@@ -145,10 +139,11 @@ public class TestCaseResultRepository {
                 dto.getTestCase() != null ? dto.getTestCase().getId() : null,
                 statusRepository.getIdByLabel(dto.getStatus()),
                 dto.getStartDate(),
-                dto.getEndDate());
+                dto.getEndDate(),
+                dto.getRunResultId());
     }
 
-    private TestCaseResultDto getDtoFromModel(TestCaseResult result) {
+    private TestCaseResultDto getDtoFromModel(TestCaseResult result, boolean loadInnerResults) {
         return new TestCaseResultDto(
                 result.getId(),
                 userRepository.findById(result.getUserId()).orElse(null),
@@ -156,6 +151,7 @@ public class TestCaseResultRepository {
                 statusRepository.getLabelById(result.getStatusId()),
                 result.getStartDate(),
                 result.getEndDate(),
-                actionResultRepository.findByTestCaseResultId(result.getId()));
+                loadInnerResults ? actionResultRepository.findByTestCaseResultId(result.getId()) : null,
+                result.getRunResultId());
     }
 }

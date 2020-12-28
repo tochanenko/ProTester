@@ -190,7 +190,7 @@ public class StartService {
                 .orElseThrow(() -> new RunResultNotFoundException("Run result not found"));
     }
 
-    private Stream<Step> findStepsRecursively(Stream<Step> initial) {
+    public Stream<Step> findStepsRecursively(Stream<Step> initial) {
         return initial
                 .flatMap(s -> {
                     if (s.isAction()) {

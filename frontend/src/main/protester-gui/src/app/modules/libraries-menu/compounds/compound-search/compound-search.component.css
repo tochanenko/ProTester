@@ -61,11 +61,20 @@ form {
   justify-content: center;
   align-items: flex-start;
   font-weight: 600;
+
+}
+
+.header-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: 600;
+  padding-left: 3.5%;
 }
 
 .mat-column-NAME {
   flex: 0 0 40%;
-  padding-left: 3%;
 }
 
 .mat-column-DESCRIPTION {

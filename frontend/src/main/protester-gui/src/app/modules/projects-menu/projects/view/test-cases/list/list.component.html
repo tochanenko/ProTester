@@ -59,10 +59,10 @@
         </button>
 
         <mat-menu #menuTable="matMenu">
-          <button mat-menu-item (click)="openUpdateDialog(element.id)">
+          <button mat-menu-item (click)="openUpdateDialog(row.id)">
             <span>Edit</span>
           </button>
-          <button mat-menu-item (click)="deleteCase(element.id)">
+          <button mat-menu-item (click)="deleteCase(row.id)">
             <span>Delete</span>
           </button>
         </mat-menu>

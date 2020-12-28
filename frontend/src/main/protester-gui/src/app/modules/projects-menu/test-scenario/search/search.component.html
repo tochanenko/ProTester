@@ -18,7 +18,7 @@
 
     <mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="NAME">
-        <mat-header-cell *matHeaderCellDef class="header"> NAME</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="header"> <span> NAME </span> </mat-header-cell>
         <mat-cell *matCellDef="let element">
           <ng-container *ngFor="let sub_string of element.name">
             <div *ngIf="sub_string['input']">

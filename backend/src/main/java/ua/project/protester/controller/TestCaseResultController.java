@@ -9,7 +9,7 @@ import ua.project.protester.service.TestCaseResultService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/test-case-results")

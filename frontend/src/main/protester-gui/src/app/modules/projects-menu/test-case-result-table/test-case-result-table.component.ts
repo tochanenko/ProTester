@@ -51,7 +51,7 @@ export class TestCaseResultTableComponent implements OnInit, OnDestroy {
             testCaseResults.push({
               startDate: this.datePipe.transform(result['startDate'], 'short'),
               endDate: this.datePipe.transform(result['endDate'], 'short'),
-              caseId: result['testCase']['id'],
+              caseId: result['runResultId'],
               caseName: result['testCase']['name'],
               userId: result['user']['id'],
               userName: result['user']['username'],

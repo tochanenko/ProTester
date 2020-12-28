@@ -35,7 +35,7 @@ export class TestScenarioService {
     let params = new HttpParams();
     params = params.append('pageSize', String(filter.pageSize));
     params = params.append('pageNumber', String(filter.pageNumber));
-    params = params.append('compoundName', String(filter.scenarioName));
+    params = params.append('scenarioName', String(filter.scenarioName));
     params = params.append('loadSteps', "false");
     return this.http.get<TestScenarioRequestResponse[]>("/api/test-scenarios", {params});
   }

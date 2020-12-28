@@ -196,7 +196,7 @@ export class AnalyzeComponent implements OnInit, OnDestroy {
             const objectURL = 'data:image/jpeg;base64,' + it.content;
             actionUI.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
           },
-          () => this.isError = true)
+          () => actionUI.image = '')
       );
     }
   }

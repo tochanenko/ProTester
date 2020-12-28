@@ -139,7 +139,8 @@ public class TestCaseResultRepository {
                 dto.getTestCase() != null ? dto.getTestCase().getId() : null,
                 statusRepository.getIdByLabel(dto.getStatus()),
                 dto.getStartDate(),
-                dto.getEndDate());
+                dto.getEndDate(),
+                dto.getRunResultId());
     }
 
     private TestCaseResultDto getDtoFromModel(TestCaseResult result, boolean loadInnerResults) {
@@ -150,6 +151,7 @@ public class TestCaseResultRepository {
                 statusRepository.getLabelById(result.getStatusId()),
                 result.getStartDate(),
                 result.getEndDate(),
-                loadInnerResults ? actionResultRepository.findByTestCaseResultId(result.getId()) : null);
+                loadInnerResults ? actionResultRepository.findByTestCaseResultId(result.getId()) : null,
+                result.getRunResultId());
     }
 }

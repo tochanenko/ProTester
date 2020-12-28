@@ -22,11 +22,22 @@ public class TestCaseResultDto {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private List<ActionResultDto> innerResults;
+    private Long runResultId;
 
     public TestCaseResultDto(User user, TestCase testCase) {
         this.user = user;
         this.testCase = testCase;
         this.status = ResultStatus.IN_PROGRESS;
         this.startDate = OffsetDateTime.now();
+    }
+
+    public TestCaseResultDto(Integer id, User user, TestCase testCase, ResultStatus status, OffsetDateTime startDate, OffsetDateTime endDate, List<ActionResultDto> innerResults) {
+        this.id = id;
+        this.user = user;
+        this.testCase = testCase;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.innerResults = innerResults;
     }
 }

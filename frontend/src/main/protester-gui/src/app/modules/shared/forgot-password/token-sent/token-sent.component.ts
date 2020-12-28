@@ -48,7 +48,7 @@ export class TokenSentComponent implements OnInit, OnDestroy {
     }
 
     this.subscriptions.push(this.passwordService.forgotPassword(recoveryResponse).subscribe(
-      email => this.router.navigateByUrl('/pending-password').then(),
+      email => this.router.navigateByUrl('account/forgot-password/token-sent').then(),
       err => this.notFound = true
     ));
   }

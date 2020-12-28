@@ -53,9 +53,7 @@ form {
 }
 
 .mat-column-NAME {
-  flex: 0 0 30%;
-  align-items: center;
-  padding-left: 0;
+  flex: 0 0 40%;
 }
 
 .mat-column-DESCRIPTION {
@@ -71,7 +69,6 @@ form {
 
 .mat-cell {
   text-align: center;
-  justify-content: center;
   font-family: Inter;
   font-style: normal;
   font-weight: 500;
@@ -113,3 +110,22 @@ form {
 .description-input-disabled-span {
   margin: 5px;
 }
+
+.mat-header-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: 600;
+
+}
+
+.header-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: 600;
+  padding-left: 3.5%;
+}
+

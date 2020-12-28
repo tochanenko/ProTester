@@ -1,7 +1,7 @@
 .test-case-list {
   height: 100%;
   width: 90%;
-  margin: 0 auto;
+  margin: 50px auto;
 }
 
 mat-card {
@@ -33,19 +33,19 @@ mat-card {
 }
 
 .mat-column-NAME {
+  flex: 0 0 20%;
+}
+
+.mat-column-DESCRIPTION {
   flex: 0 0 30%;
 }
 
-.mat-column-LINK {
-  flex: 0 0 30%;
+.mat-column-SCENARIO {
+  flex: 0 0 20%;
 }
 
-.mat-column-CREATOR {
-  flex: 0 0 22%;
-}
-
-.mat-column-STATUS {
-  flex: 0 0 8%;
+.mat-column-DATASET {
+  flex: 0 0 20%;
 }
 
 .mat-column-CONF {
@@ -129,4 +129,14 @@ button.mat-button .mat-icon {
 
 .run {
   color: #5C6BC0;
+}
+
+.run-button {
+  background: #FFFFFF;
+  border: 1px solid rgba(92, 107, 192, 0.54);
+  box-sizing: border-box;
+  border-radius: 6px;
+  width: 20%;
+  height: 50px;
+  margin-top: 0.4%;
 }

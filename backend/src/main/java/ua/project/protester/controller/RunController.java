@@ -35,6 +35,7 @@ public class RunController {
         return startService.findById(id);
     }
 
+    @Transactional
     @PostMapping("/validate")
     public ValidationDataSetResponse validate(@RequestBody TestCaseDto testCaseDto) throws TestScenarioNotFoundException {
         return startService.validateDataSetWithTestScenario(testCaseDto);

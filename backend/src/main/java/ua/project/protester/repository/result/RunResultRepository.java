@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.ActionWrapperWasNotFoundException;
 import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
 import ua.project.protester.model.ActionWrapper;
@@ -88,6 +89,7 @@ public class RunResultRepository {
         wrapperResult.setId(id);
     }
 
+    @Transactional
     public RunResult saveRunResult(Long userId) {
         RunResult runResult = new RunResult();
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -104,6 +106,7 @@ public class RunResultRepository {
         return runResult;
     }
 
+    @Transactional
     public List<ActionWrapper> findActionWrapperByTestCaseResult(Integer testCaseResultId, Integer scenarioId, boolean isByTestCaseWrapper) throws TestScenarioNotFoundException {
         List<Step> steps = findStepsRecursively(testScenarioService.getTestScenarioById(scenarioId).getSteps()
                 .stream())
@@ -134,7 +137,7 @@ public class RunResultRepository {
         }
     }
 
-    private Stream<Step> findStepsRecursively(Stream<Step> initial) {
+    public Stream<Step> findStepsRecursively(Stream<Step> initial) {
         return initial
                 .flatMap(s -> {
                     if (s.isAction()) {

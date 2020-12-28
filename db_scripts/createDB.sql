@@ -262,7 +262,7 @@ CREATE TABLE run_result_users
 CREATE TABLE test_case_wrapper_result
 (
     case_wrapper_id  SERIAL PRIMARY KEY,
-    scenario_id      INTEGER NOT NULL,
+    scenario_id      INTEGER NULL ,
     run_result_id    INTEGER NOT NULL,
     test_case_result INTEGER NOT NULL,
     CONSTRAINT table_case_wrapper_run_user_result_id_fk FOREIGN KEY (run_result_id) REFERENCES run_result_users (run_id),
@@ -273,7 +273,7 @@ CREATE TABLE action_wrapper
 (
     action_wrapper_id    SERIAL PRIMARY KEY,
     test_case_wrapper_id INTEGER NOT NULL,
-    step_id              INTEGER NOT NULL,
+    step_id              INTEGER NULL ,
     CONSTRAINT action_wrapper_steps_step_id_fk FOREIGN KEY (step_id) REFERENCES steps (step_id) ON DELETE SET NULL ,
     CONSTRAINT action_wrapper_test_case_wrapper_result_case_wrapper_id_fk FOREIGN KEY (test_case_wrapper_id) REFERENCES test_case_wrapper_result (case_wrapper_id)
 

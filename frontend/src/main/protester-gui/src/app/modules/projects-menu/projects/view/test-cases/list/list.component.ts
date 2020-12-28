@@ -26,7 +26,7 @@ export class ListComponent implements OnInit, OnDestroy {
   testCaseFilter: TestCaseFilter = new TestCaseFilter();
   testCasesCount = 10;
   pageSizeOptions: number[] = [5, 10, 25, 50];
-  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'EDIT', 'DELETE'];
+  displayedColumns: string[] = ['NAME', 'DESCRIPTION', 'SCENARIO', 'DATASET', 'CONF'];
   private subscription: Subscription;
 
   constructor(private testCaseService: TestCaseService,

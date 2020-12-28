@@ -68,7 +68,6 @@ public class TestCaseResultRepository {
                 new MapSqlParameterSource()
                         .addValue("pageSize", pagination.getPageSize())
                         .addValue("offset", pagination.getOffset())
-                        .addValue("filterName", pagination.getSearchField() + "%")
                         .addValue("projectId", projectId),
                 new BeanPropertyRowMapper<>(TestCaseResult.class));
 
@@ -99,12 +98,10 @@ public class TestCaseResultRepository {
         return Collections.emptyList();
     }
 
-    public Long countAllTestCases(Pagination pagination) {
+    public Long countAllTestCases() {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "countAllTestCasesResult"),
-                new MapSqlParameterSource()
-                        .addValue("pageSize", pagination.getPageSize())
-                        .addValue("offset", pagination.getOffset()),
+                new MapSqlParameterSource(),
                 Long.class);
     }
 
@@ -113,10 +110,7 @@ public class TestCaseResultRepository {
         return namedParameterJdbcTemplate.queryForObject(
                 PropertyExtractor.extract(env, "countTestCaseResult"),
                 new MapSqlParameterSource()
-                        .addValue("filterName", pagination.getSearchField() + "%")
-                        .addValue("projectId", projectId)
-                        .addValue("pageSize", pagination.getPageSize())
-                        .addValue("offset", pagination.getOffset()),
+                        .addValue("projectId", projectId),
                 Long.class);
     }
 

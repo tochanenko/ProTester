@@ -1,6 +1,7 @@
 package ua.project.protester.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.result.TestCaseResultNotFoundException;
 import ua.project.protester.model.executable.result.TestCaseResultDto;
@@ -8,7 +9,7 @@ import ua.project.protester.service.TestCaseResultService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/test-case-results")
@@ -23,22 +24,21 @@ public class TestCaseResultController {
 
     @GetMapping("/project/{projectId}")
     public Page<TestCaseResultDto> findAllProjectTestCases(
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-            @RequestParam(value = "projectName", defaultValue = "") String projectName,
             @PathVariable(name = "projectId") Long projectId) {
 
-        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
+        Pagination pagination = new Pagination(pageSize, pageNumber, null);
 
         return testCaseResultService.findAllResultsByProject(pagination, projectId);
     }
 
     @GetMapping("/project")
     public Page<TestCaseResultDto> findAllProjectTestCases(
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber) {
 
-        Pagination pagination = new Pagination(pageSize, pageNumber, "");
+        Pagination pagination = new Pagination(pageSize, pageNumber, null);
 
         return testCaseResultService.findAllResults(pagination);
     }

@@ -1,0 +1,110 @@
+<div class="compound-view-form">
+  <mat-card class="card">
+    <mat-card-title>
+      <span class="material-icons chrome_reader_mode">chrome_reader_mode</span>
+      <span class="header-title"> view compound </span>
+    </mat-card-title>
+    <div class="form">
+      <div class="comp-title-container">
+        <mat-label class="name-label">Name:</mat-label>
+        <div class="name-text">
+          <ng-container *ngFor="let sub_string of compound.name">
+            <div *ngIf="sub_string['input']">
+              <div class="description-input-disabled mat-elevation-z3">
+                <span class="description-input-disabled-span"> {{sub_string['text']}} </span>
+              </div>
+            </div>
+            <div *ngIf="!sub_string['input']" class="description-text">
+              <span>{{sub_string['text']}}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="comp-title-container">
+        <mat-label>Description:</mat-label>
+        <mat-label class="name-text"> {{compound.description}} </mat-label>
+      </div>
+
+      <div class="component-table">
+        <div class="grid-header">
+          <p>ACTIONS & COMPOUNDS</p>
+        </div>
+        <div class="content">
+          <div class="compound-tile-inner actions-tile">
+            <div class="component-container">
+              <ng-container *ngTemplateOutlet="expansionListOuter; context: componentCtx"></ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<ng-template #expansionListOuter let-components="components">
+  <mat-accordion *ngIf="components.length > 0">
+    <mat-expansion-panel hideToggle [disabled]="component.component.type !== 'COMPOUND'" *ngFor="let component of components">
+      <mat-expansion-panel-header>
+        <mat-panel-title color="#5C6BC0">
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.name">
+              <div *ngIf="sub_string.input">
+                <div class="description-input-disabled mat-elevation-z3">
+                    <span class="description-input-disabled-span"> {{sub_string.text}}
+                      : {{component.parameters[sub_string.text]}} </span>
+                </div>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+              <p class="compound-label-text">Compound</p>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-container *ngIf="component.component['steps']">
+        <ng-container
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: component}"></ng-container>
+      </ng-container>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</ng-template>
+
+<ng-template #expansionListInner let-array="array" let-parent="parent">
+  <mat-accordion *ngIf="array.length > 0">
+    <mat-expansion-panel hideToggle [disabled]="component.component.type !== 'COMPOUND'" *ngFor="let component of array">
+      <mat-expansion-panel-header>
+        <mat-panel-title color="#5C6BC0">
+          <div class="description-container">
+            <ng-container *ngFor="let sub_string of component.component.name">
+              <div *ngIf="sub_string.input">
+                  <div class="description-input-disabled mat-elevation-z3">
+                    <span class="description-input-disabled-span"> {{sub_string.text}}
+                      : {{component.parameters[sub_string.text]}} </span>
+                  </div>
+              </div>
+              <div *ngIf="!sub_string.input" class="description-text">
+                <span>{{sub_string.text}}</span>
+              </div>
+            </ng-container>
+          </div>
+          <div class="panel-buttons-block">
+            <div *ngIf="component.component.type === 'COMPOUND'" class="compound-label mat-elevation-z3">
+              <p class="compound-label-text">Compound</p>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-container *ngIf="component.component['steps']">
+        <ng-container
+          *ngTemplateOutlet="expansionListInner; context: { array: component.component['steps'], parent: parent}"></ng-container>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</ng-template>

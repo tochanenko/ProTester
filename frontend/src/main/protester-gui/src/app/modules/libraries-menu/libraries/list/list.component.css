@@ -1,0 +1,68 @@
+.card {
+  height: 100%;
+  width: 70%;
+  margin: 50px auto;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.header {
+  background-color: #F4F2FF;
+  color: #5C6BC0;
+  align-items: flex-start;
+}
+
+.mat-header-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-weight: 600;
+}
+
+.mat-column-NAME {
+  flex: 0 0 30%;
+  align-items: center;
+  padding-left: 0;
+}
+
+.mat-column-DESCRIPTION {
+  padding-left: 5%;
+  padding-right: 0;
+}
+
+.mat-column-CONF {
+  flex: 0 0 5%;
+  padding-right: 0;
+  align-items: flex-end;
+}
+
+.mat-cell {
+  text-align: center;
+  justify-content: center;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  /* Fonts/Primary */
+  color: #25213B;
+}
+
+.mat-cell.description-column {
+  display: flex;
+  align-content: flex-start;
+  justify-content: flex-start;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: left;
+
+  color: #4F4F4F;
+}
+
+.mat-menu-delete-button {
+  color: #711313;
+}

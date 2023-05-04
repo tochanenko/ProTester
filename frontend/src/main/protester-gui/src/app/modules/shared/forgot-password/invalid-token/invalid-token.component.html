@@ -1,0 +1,29 @@
+<div class="login-form-flex">
+  <mat-card class="content">
+    <div class="logo">
+      <img [src]="image" class="logo-img" alt="Logo">
+    </div>
+    <mat-card-content>
+      <form>
+        <div class="more-info">
+          This token is expired or invalid.
+        </div>
+        <a routerLink="/login">
+          <button mat-raised-button class="button-flex-container">
+            <p class="button-text">
+              OK
+            </p>
+          </button>
+        </a>
+        <div class="more-info">
+          Don’t have an account?<a class="btn btn-outline-primary" style="width: 50%" routerLink="/account/registration"> Contact
+          your administrator. </a>
+          <div class="more-info">
+            Forgot your <a class="btn btn-outline-primary" style="width: 50%"
+                           routerLink="/account/forgot-password">Password?</a>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

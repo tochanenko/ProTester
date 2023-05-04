@@ -1,0 +1,34 @@
+<div class="login-form-flex">
+
+  <mat-spinner *ngIf="!completed"></mat-spinner>
+
+  <mat-card class="content" *ngIf="completed">
+    <h3 class="username">{{user.username}}</h3>
+    <table>
+      <tr>
+        <td><b>Login</b></td>
+        <td>{{user.username}}</td>
+      </tr>
+      <tr>
+        <td><b>Email</b></td>
+        <td>{{user.email}}</td>
+      </tr>
+      <tr>
+        <td><b>First Name</b></td>
+        <td>{{user.firstName}}</td>
+      </tr>
+      <tr>
+        <td><b>Last Name</b></td>
+        <td>{{user.lastName}}</td>
+      </tr>
+      <tr>
+        <td><b>Role</b></td>
+        <td>{{user.role}}</td>
+      </tr>
+      <tr>
+        <td><b>Status</b></td>
+        <td><span *ngIf="user.isActive">ACTIVE</span><span *ngIf="!user.isActive">DEACTIVATED</span></td>
+      </tr>
+    </table>
+  </mat-card>
+</div>

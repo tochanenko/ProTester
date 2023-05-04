@@ -4,11 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.RestTemplate;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.executable.result.ActionResultDto;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Setter
 @Getter
@@ -23,10 +29,8 @@ public class OuterComponent extends ExecutableComponent {
 
     protected static String extractParameterValue(String parameter) {
         return isParameterPlaceholder(parameter)
-                ?
-                parameter.substring(2, parameter.length() - 1)
-                :
-                parameter;
+                ? parameter.substring(2, parameter.length() - 1)
+                : parameter;
     }
 
     protected Map<String, String> fitInputParameters(Map<String, String> inputParameters, Map<String, String> mapping) {
@@ -57,16 +61,26 @@ public class OuterComponent extends ExecutableComponent {
         return parameterNames;
     }
 
-    public void print() {
-        System.out.println("Compound " + id + " " + name);
-        System.out.println("| " + description);
-        System.out.println("| " + Arrays.toString(getParameterNames()));
+    @Override
+    public void execute(Map<String, String> params, Map<String, String> context, JdbcTemplate jdbcTemplate, WebDriver driver, Environment environment, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        for (Step step : steps) {
+            step.getComponent().execute(
+                    fitInputParameters(params, step.getParameters()),
+                    context,
+                    jdbcTemplate,
+                    driver,
+                    environment,
+                    restTemplate, callback);
+        }
     }
 
-    @Override
-    public void execute(Map<String, String> params, WebDriver driver) {
-        steps.forEach(step -> step.getComponent().execute(
-                fitInputParameters(params, step.getParameters()),
-                driver));
+    public void execute(Map<String, String> params, JdbcTemplate jdbcTemplate, WebDriver driver, RestTemplate restTemplate, Environment environment, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        execute(
+                params,
+                new HashMap<>(),
+                jdbcTemplate,
+                driver,
+                environment,
+                restTemplate, callback);
     }
 }

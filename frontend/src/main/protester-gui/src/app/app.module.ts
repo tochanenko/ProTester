@@ -3,46 +3,36 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {RegistrationComponent} from "./components/registration/registration.component";
-import {LoginComponent} from "./components/login/login.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {CommonModule} from "@angular/common";
+import {CommonModule, DatePipe} from "@angular/common";
 import {AuthInterceptor} from "./services/auth/auth.interceptor";
 import {MatIconRegistry} from '@angular/material/icon';
 import {MaterialModule} from "./services/material.module";
 import {HeaderComponent} from './components/header/header.component';
-import {ProfileComponent} from './components/profile/profile.component';
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {ScrollingModule} from "@angular/cdk/scrolling";
+import {BottomSheetComponent} from './components/bottom-sheet/bottom-sheet.component';
+import {MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from "@angular/material/bottom-sheet";
+import {MatTabsModule} from "@angular/material/tabs";
+import {SharedModule} from "./modules/shared/shared.module";
+import {ProjectsMenuModule} from "./modules/projects-menu/projects-menu.module";
+import {LibrariesMenuModule} from "./modules/libraries-menu/libraries-menu.module";
+import {BreadcrumbComponent} from './components/breadcrumb/breadcrumb.component';
+import {BreadcrumbModule} from "primeng/breadcrumb";
+import {TestScenarioModule} from "./modules/projects-menu/test-scenario/test-scenario.module";
+import { DialogUtilComponent } from './components/dialog-util/dialog-util.component';
 
-import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { PendingPasswordComponent } from './components/pending-password/pending-password.component';
-import { ChangePasswordComponent } from './components/change-password/change-password.component';
-import { TokenExpiredComponent } from './components/token-expired/token-expired.component';
-import { ManageActionComponent } from './components/manage-action/manage-action.component';
-import {ProjectMenuComponent} from './project/project-menu/project-menu.component';
-import {ProjectCreateComponent} from './project/project-create/project-create.component';
-import {ProjectListComponent} from './project/project-list/project-list.component';
-import {ProjectUpdateComponent} from './project/project-update/project-update.component';
-import { UsersListComponent } from './components/users-list/users-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegistrationComponent,
-    LoginComponent,
     HeaderComponent,
-    ProfileComponent,
-    ForgotPasswordComponent,
-    PendingPasswordComponent,
-    ChangePasswordComponent,
-    TokenExpiredComponent,
-    ProjectMenuComponent,
-    ProjectCreateComponent,
-    ProjectListComponent,
-    ProjectUpdateComponent,
-    ManageActionComponent,
-    UsersListComponent
+    BottomSheetComponent,
+    BreadcrumbComponent,
+    DialogUtilComponent
   ],
   imports: [
     BrowserModule,
@@ -52,9 +42,19 @@ import { UsersListComponent } from './components/users-list/users-list.component
     CommonModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    NgxMatSelectSearchModule,
+    MatCheckboxModule,
+    NgxMatSelectSearchModule,
+    ScrollingModule,
+    MatTabsModule,
+    SharedModule,
+    ProjectsMenuModule,
+    LibrariesMenuModule,
+    BreadcrumbModule,
+    TestScenarioModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, MatIconRegistry],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, {provide: MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}} , MatIconRegistry, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {

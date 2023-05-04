@@ -9,6 +9,8 @@ import ua.project.protester.model.DataSet;
 import ua.project.protester.repository.DataSetRepository;
 import ua.project.protester.response.DataSetResponse;
 import ua.project.protester.utils.DataSetMapper;
+import ua.project.protester.utils.Page;
+import ua.project.protester.utils.Pagination;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,5 +60,18 @@ public class DataSetService {
                 .stream()
                 .map(dataSetMapper::toDataSetResponseFromDataSet)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Page<DataSetResponse> findAllDataSets(Pagination pagination) {
+        log.info("IN findAllDataSet");
+        System.out.println(pagination.getSearchField());
+        return new Page<>(
+                dataSetRepository.findAll(pagination)
+                        .stream()
+                        .map(dataSetMapper::toDataSetResponseFromDataSet)
+                .collect(Collectors.toList()),
+                dataSetRepository.count(pagination)
+        );
     }
 }

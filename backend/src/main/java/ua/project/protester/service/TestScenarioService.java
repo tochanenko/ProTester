@@ -4,70 +4,59 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
-import ua.project.protester.exception.executable.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
+import ua.project.protester.exception.executable.scenario.TestScenarioNotFoundException;
+import ua.project.protester.exception.executable.scenario.UsedTestScenarioDeleteException;
 import ua.project.protester.model.executable.OuterComponent;
-import ua.project.protester.model.executable.Step;
 import ua.project.protester.repository.OuterComponentRepository;
+import ua.project.protester.repository.testCase.TestCaseRepository;
 import ua.project.protester.request.OuterComponentFilter;
 import ua.project.protester.request.OuterComponentRepresentation;
+import ua.project.protester.response.LightTestCaseResponse;
 import ua.project.protester.utils.Page;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TestScenarioService {
     private final OuterComponentRepository outerComponentRepository;
+    private final TestCaseRepository testCaseRepository;
 
     @Transactional
-    public void saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) {
-        OuterComponent newOuterComponent = constructOuterComponentFromRepresentation(outerComponentRepresentation);
-        outerComponentRepository.saveOuterComponent(newOuterComponent, false);
+    public OuterComponent saveTestScenario(OuterComponentRepresentation outerComponentRepresentation) throws OuterComponentStepSaveException {
+        OuterComponent newOuterComponent = outerComponentRepresentation.getOuterComponent();
+        return outerComponentRepository.saveOuterComponent(newOuterComponent, false).orElse(null);
     }
 
     @Transactional
-    public void updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws TestScenarioNotFoundException {
-        if (outerComponentRepository.existsOuterComponentWithId(id, false)) {
-            OuterComponent updatedTestScenario = constructOuterComponentFromRepresentation(testScenarioRepresentation);
-            outerComponentRepository.updateTestScenario(id, updatedTestScenario);
-        } else {
-            throw new TestScenarioNotFoundException();
-        }
+    public OuterComponent updateTestScenario(int id, OuterComponentRepresentation testScenarioRepresentation) throws OuterComponentStepSaveException {
+        OuterComponent updatedTestScenario = testScenarioRepresentation.getOuterComponent();
+        return outerComponentRepository.updateOuterComponent(id, updatedTestScenario, false).orElse(null);
     }
 
-    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter) {
+    @Transactional
+    public Page<OuterComponent> getAllTestScenarios(OuterComponentFilter filter, boolean loadSteps) {
         return new Page<>(
-                outerComponentRepository.findAllOuterComponents(false, filter),
+                outerComponentRepository.findAllOuterComponents(false, filter, loadSteps),
                 outerComponentRepository.countOuterComponents(false, filter));
     }
 
+    @Transactional
     public OuterComponent getTestScenarioById(int id) throws TestScenarioNotFoundException {
         try {
-            return outerComponentRepository.findOuterComponentById(id, false)
-                    .orElseThrow(OuterComponentNotFoundException::new);
+            return outerComponentRepository.findOuterComponentById(id, false);
         } catch (OuterComponentNotFoundException e) {
             throw new TestScenarioNotFoundException(e);
         }
     }
 
     @Transactional
-    public void deleteTestScenarioById(int id) {
-        outerComponentRepository.deleteOuterComponentById(id, false);
-    }
-
-    private OuterComponent constructOuterComponentFromRepresentation(OuterComponentRepresentation representation) {
-        OuterComponent newOuterComponent = new OuterComponent();
-        newOuterComponent.setName(representation.getName());
-        newOuterComponent.setDescription(representation.getDescription());
-        newOuterComponent.setSteps(
-                representation.getSteps()
-                        .stream()
-                        .map(stepRepresentation -> new Step(
-                                stepRepresentation.getId(),
-                                stepRepresentation.isAction(),
-                                null,
-                                stepRepresentation.getParameters()))
-                        .collect(Collectors.toList()));
-        return newOuterComponent;
+    public OuterComponent deleteTestScenarioById(int id) throws UsedTestScenarioDeleteException {
+        List<LightTestCaseResponse> testCases = testCaseRepository.findTestCasesByTestScenarioId(id);
+        if (!testCases.isEmpty()) {
+            throw new UsedTestScenarioDeleteException("Attempt to delete used test scenario", testCases);
+        }
+        return outerComponentRepository.deleteOuterComponentById(id, false).orElse(null);
     }
 }

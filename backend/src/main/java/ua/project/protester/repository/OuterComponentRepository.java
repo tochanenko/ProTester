@@ -12,19 +12,21 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.project.protester.exception.executable.ExecutableComponentNotFoundException;
 import ua.project.protester.exception.executable.OuterComponentNotFoundException;
+import ua.project.protester.exception.executable.OuterComponentStepSaveException;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.ExecutableComponent;
 import ua.project.protester.model.executable.ExecutableComponentType;
 import ua.project.protester.model.executable.OuterComponent;
 import ua.project.protester.model.executable.Step;
 import ua.project.protester.request.OuterComponentFilter;
+import ua.project.protester.response.LightOuterComponentResponse;
 import ua.project.protester.utils.PropertyExtractor;
 
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @PropertySource("classpath:queries/outer-component.properties")
 @Repository
@@ -37,7 +39,8 @@ public class OuterComponentRepository {
     private final ActionRepository actionRepository;
     private final StepParameterRepository stepParameterRepository;
 
-    public void saveOuterComponent(OuterComponent outerComponent, boolean isCompound) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Optional<OuterComponent> saveOuterComponent(OuterComponent outerComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "saveCompound")
                 : PropertyExtractor.extract(env, "saveTestScenario");
@@ -52,9 +55,17 @@ public class OuterComponentRepository {
         Integer outerComponentId = (Integer) keyHolder.getKey();
 
         saveOuterComponentSteps(outerComponent, outerComponentId, isCompound);
+
+        try {
+            return Optional.of(findOuterComponentById(outerComponentId, isCompound));
+        } catch (OuterComponentNotFoundException e) {
+            log.warn(e.getMessage());
+            return Optional.empty();
+        }
     }
 
-    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public List<OuterComponent> findAllOuterComponents(boolean areCompounds, OuterComponentFilter filter, boolean loadSteps) {
         String sql = areCompounds
                 ? PropertyExtractor.extract(env, "findAllCompounds")
                 : PropertyExtractor.extract(env, "findAllTestScenarios");
@@ -72,11 +83,17 @@ public class OuterComponentRepository {
                 : ExecutableComponentType.TEST_SCENARIO;
 
         allOuterComponents
-                .forEach(outerComponent -> {
-                    outerComponent.setType(componentsType);
-                    outerComponent.setSteps(
-                            findAllOuterComponentStepsById(outerComponent.getId(), areCompounds));
-                });
+                .forEach(outerComponent -> outerComponent.setType(componentsType));
+        if (loadSteps) {
+            allOuterComponents
+                    .forEach(outerComponent ->
+                            outerComponent.setSteps(
+                                    findAllOuterComponentStepsById(outerComponent.getId(), areCompounds)));
+        } else {
+            allOuterComponents
+                    .forEach(outerComponent ->
+                            outerComponent.setSteps(Collections.emptyList()));
+        }
 
         return allOuterComponents;
     }
@@ -93,7 +110,8 @@ public class OuterComponentRepository {
                 Long.class);
     }
 
-    public Optional<OuterComponent> findOuterComponentById(Integer id, boolean isCompound) throws OuterComponentNotFoundException {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public OuterComponent findOuterComponentById(Integer id, boolean isCompound) throws OuterComponentNotFoundException {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "findCompoundById")
                 : PropertyExtractor.extract(env, "findTestScenarioById");
@@ -104,88 +122,94 @@ public class OuterComponentRepository {
                     new MapSqlParameterSource().addValue("id", id),
                     new BeanPropertyRowMapper<>(OuterComponent.class));
             if (outerComponent == null) {
-                return Optional.empty();
+                throw new OuterComponentNotFoundException(id, isCompound);
             }
 
             List<Step> steps = findAllOuterComponentStepsById(outerComponent.getId(), isCompound);
             outerComponent.setType(isCompound ? ExecutableComponentType.COMPOUND : ExecutableComponentType.TEST_SCENARIO);
             outerComponent.setSteps(steps);
-            return Optional.of(outerComponent);
+            return outerComponent;
         } catch (DataAccessException e) {
-            throw new OuterComponentNotFoundException();
+            throw new OuterComponentNotFoundException(id, isCompound, e);
         }
     }
 
-    public void deleteOuterComponentById(Integer id, boolean isCompound) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Optional<OuterComponent> deleteOuterComponentById(Integer id, boolean isCompound) {
         String sql = isCompound
                 ? PropertyExtractor.extract(env, "deleteCompoundById")
                 : PropertyExtractor.extract(env, "deleteTestScenarioById");
 
+        Optional<OuterComponent> deletedOuterComponent;
+        try {
+            deletedOuterComponent = Optional.of(findOuterComponentById(id, isCompound));
+        } catch (OuterComponentNotFoundException e) {
+            log.warn(e.getMessage());
+            deletedOuterComponent = Optional.empty();
+        }
         namedParameterJdbcTemplate.update(
                 sql,
                 new MapSqlParameterSource().addValue("id", id));
+        return deletedOuterComponent;
     }
 
-    public void deleteOuterComponentByName(String name, boolean isCompound) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Optional<OuterComponent> updateOuterComponent(int id, OuterComponent updatedOuterComponent, boolean isCompound) throws OuterComponentStepSaveException {
         String sql = isCompound
-                ? PropertyExtractor.extract(env, "deleteCompoundByName")
-                : PropertyExtractor.extract(env, "deleteTestScenarioByName");
-
-        namedParameterJdbcTemplate.update(
+                ? PropertyExtractor.extract(env, "updateCompound")
+                : PropertyExtractor.extract(env, "updateTestScenario");
+        int updatedRows = namedParameterJdbcTemplate.update(
                 sql,
-                new MapSqlParameterSource().addValue("name", name));
-    }
-
-    public void updateTestScenario(int id, OuterComponent updatedOuterComponent) {
-        namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "updateTestScenario"),
                 new MapSqlParameterSource()
                         .addValue("id", id)
                         .addValue("name", updatedOuterComponent.getName())
                         .addValue("description", updatedOuterComponent.getDescription()));
-        deleteTestScenarioSteps(id);
-        saveOuterComponentSteps(updatedOuterComponent, id, false);
+
+        if (updatedRows == 0) {
+            return Optional.empty();
+        }
+
+        deleteOuterComponentSteps(id, isCompound);
+        saveOuterComponentSteps(updatedOuterComponent, id, isCompound);
+        try {
+            return Optional.of(findOuterComponentById(id, isCompound));
+        } catch (OuterComponentNotFoundException e) {
+            log.warn(e.getMessage());
+            return Optional.empty();
+        }
     }
 
-    public boolean existsOuterComponentWithId(int id, boolean isCompound) {
+    public List<LightOuterComponentResponse> findOuterComponentsByInnerCompoundId(int id) {
+        try {
+            return namedParameterJdbcTemplate.query(
+                    PropertyExtractor.extract(env, "findOuterComponentsByInnerCompoundId"),
+                    new MapSqlParameterSource().addValue("id", id),
+                    new BeanPropertyRowMapper<>(LightOuterComponentResponse.class));
+        } catch (DataAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private void deleteOuterComponentSteps(Integer id, boolean isCompound) {
         String sql = isCompound
-                ? PropertyExtractor.extract(env, "findOuterCompoundIdByOuterCompoundId")
-                : PropertyExtractor.extract(env, "findOuterTestScenarioIdByOuterTestScenarioId");
-
-        try {
-            return null != namedParameterJdbcTemplate.queryForObject(
-                    sql,
-                    new MapSqlParameterSource().addValue("id", id),
-                    Integer.class);
-        } catch (DataAccessException e) {
-            return false;
-        }
-    }
-
-    public boolean compoundWithIdIsInnerComponent(int id) {
-        try {
-            return null != namedParameterJdbcTemplate.queryForObject(
-                    PropertyExtractor.extract(env, "findInnerCompoundIdByInnerCompoundId"),
-                    new MapSqlParameterSource().addValue("id", id),
-                    Integer.class);
-        } catch (DataAccessException e) {
-            return false;
-        }
-    }
-
-    private void deleteTestScenarioSteps(Integer id) {
+                ? PropertyExtractor.extract(env, "deleteStepsByCompoundId")
+                : PropertyExtractor.extract(env, "deleteStepsByTestScenarioId");
         namedParameterJdbcTemplate.update(
-                PropertyExtractor.extract(env, "deleteStepsByTestScenarioId"),
+                sql,
                 new MapSqlParameterSource().addValue("id", id));
     }
 
-    private void saveOuterComponentSteps(OuterComponent outerComponent, Integer outerComponentId, boolean isCompound) {
+    private void saveOuterComponentSteps(OuterComponent outerComponent, Integer outerComponentId, boolean isCompound) throws OuterComponentStepSaveException {
         ListIterator<Step> outerComponentStepsIterator = outerComponent.getSteps().listIterator();
         Step outerComponentStep;
         while (outerComponentStepsIterator.hasNext()) {
             int outerComponentStepOrder = outerComponentStepsIterator.nextIndex();
             outerComponentStep = outerComponentStepsIterator.next();
-            saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
+            try {
+                saveOuterComponentStep(outerComponentId, isCompound, outerComponentStep, outerComponentStepOrder);
+            } catch (DataAccessException e) {
+                throw new OuterComponentStepSaveException(e);
+            }
         }
     }
 
@@ -229,16 +253,14 @@ public class OuterComponentRepository {
         try {
             ExecutableComponent component =
                     isAction
-                            ?
-                            actionRepository.findActionById(actionId).orElseThrow(ExecutableComponentNotFoundException::new)
-                            :
-                            findOuterComponentById(outerComponentId, true).orElseThrow(ExecutableComponentNotFoundException::new);
+                            ? actionRepository.findActionById(actionId)
+                            : findOuterComponentById(outerComponentId, true);
 
             Map<String, String> parameters = stepParameterRepository.findAllDataSetParamsId(id);
 
             return new Step(id, isAction, component, parameters);
-        } catch (OuterComponentNotFoundException e) {
-            throw new ExecutableComponentNotFoundException();
+        } catch (OuterComponentNotFoundException | ActionNotFoundException e) {
+            throw new ExecutableComponentNotFoundException(e);
         }
     }
 }

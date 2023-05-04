@@ -13,3 +13,104 @@ body {
   background: #F2F2F2;
   overflow: auto;
 }
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+.mat-expansion-panel {
+  border: 1px solid #D9D5EC ;
+}
+
+.mat-expansion-panel-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #000000;
+  height: 100%;
+
+}
+
+.mat-expansion-panel-header-title {
+  justify-content: flex-start;
+  align-content: center;
+  display: flex;
+  min-height: 70px;
+  height: 100%;
+}
+
+.description-input-disabled {
+  display: flex;
+  flex-direction: row;
+  margin: 5px 10px;
+
+  background: #F4F2FF;
+
+  border-radius: 5px;
+}
+
+
+.description-container {
+  display: flex;
+  width: 100%;
+  justify-self: flex-start;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  align-items: center;
+  padding: 2%;
+  font-size: 16px;
+}
+
+.name-text {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin-left: 5px;
+  padding-top: 0;
+  color: #303030;
+}
+
+.compound-label {
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: 50%;
+  max-height: 40px;
+  background: #5C6BC0;
+  border-radius: 4px;
+  /*box-shadow: 1px 1px #4F4F4F;*/
+}
+
+.compound-label-text {
+  margin: 7px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 16px;
+
+  text-align: center;
+  letter-spacing: 0.5px;
+  /*text-shadow: 1px 1px #4F4F4F;*/
+
+  color: #FFFFFF;
+}
+
+.button-text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+
+  text-align: center;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+
+  color: #FFFFFF;
+}

@@ -1,0 +1,8 @@
+<div *ngIf="dataset" class="delete-form">
+  <h2 mat-dialog-title>Delete this dataset?</h2>
+  <mat-dialog-content class = "question-delete">This action will be delete dataset with name {{ dataset?.name }}.</mat-dialog-content>
+  <mat-dialog-actions>
+    <button (click)="deleteDataSet()" [mat-dialog-close]="true" mat-button>Delete</button>
+    <button (click)="onCancel()" mat-button mat-dialog-close class="button-no">Cancel</button>
+  </mat-dialog-actions>
+</div>

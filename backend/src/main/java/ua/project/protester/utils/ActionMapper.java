@@ -3,6 +3,7 @@ package ua.project.protester.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.project.protester.exception.ActionMapperException;
+import ua.project.protester.exception.executable.action.ActionNotFoundException;
 import ua.project.protester.model.executable.AbstractAction;
 import ua.project.protester.repository.ActionRepository;
 import ua.project.protester.request.ActionRequestModel;
@@ -21,10 +22,12 @@ public class ActionMapper {
 
     public Optional<AbstractAction> toAbstractActionFromActionRequest(ActionRequestModel action) {
         if (action != null) {
-            AbstractAction baseAction = actionRepository.findActionById(action.getId())
-                    .orElseThrow(() -> new ActionMapperException("Action" + action.getName() + "was'nt found"));
-            baseAction.prepare(action.getPreparedParams());
-            return Optional.of(baseAction);
+            try {
+                return Optional.of(actionRepository.findActionById(action.getId()));
+            } catch (ActionNotFoundException e) {
+                e.printStackTrace();
+                throw new ActionMapperException("Action" + action.getName() + "wasn't found");
+            }
         }
         return Optional.empty();
     }

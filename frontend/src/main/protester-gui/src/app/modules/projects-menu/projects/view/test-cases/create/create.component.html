@@ -1,0 +1,45 @@
+<div class="test-case-update-form-flex">
+
+  <mat-dialog-content class="mat-update">
+
+    <form (ngSubmit)="onSubmit()" [formGroup]="testCaseForm">
+      <h1>Create Test Case</h1>
+      <mat-form-field class="full-width-input" appearance="outline">
+        <mat-label>TestCase name </mat-label>
+        <input matInput type="text" id="name" class="form-control" name="name"
+               formControlName="name"
+               [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
+      </mat-form-field>
+
+      <mat-form-field class="full-width-input" appearance="outline">
+        <mat-label>TestCase description </mat-label>
+        <input matInput type="text" id="description" class="form-control" name="description"
+               formControlName="description"
+               [ngClass]="{ 'is-invalid': submitted && f.description.errors }" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" >
+        <mat-label>Test Scenario</mat-label>
+        <mat-select class="form-control" formControlName="scenarioId">
+          <mat-option *ngFor="let ts of testScenario" [value]="ts.id">
+            {{ts.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" >
+        <mat-label>DataSets</mat-label>
+        <mat-select class="form-control" formControlName="dataSetResponse">
+          <mat-option *ngFor="let dt of dataSet" [value]="dt.id">
+            <a >{{dt.name}}</a>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button class="button-flex-container" >
+        <p class="button-text">Create</p>
+      </button>
+
+    </form>
+  </mat-dialog-content>
+</div>

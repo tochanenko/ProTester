@@ -1,0 +1,78 @@
+<div class="create-form">
+  <mat-dialog-content class="mat-create">
+    <form (ngSubmit)="onSubmit()" [formGroup]="datasetCreateForm">
+
+      <mat-card-title>
+        <span class="header-title"> Create Dataset </span>
+      </mat-card-title>
+
+      <mat-form-field appearance="outline" class="full-width-input">
+        <mat-label>Name</mat-label>
+        <input [ngClass]="{ 'is-invalid': submitted && controls.name.errors }" class="form-control"
+                                         formControlName="name" id="name" matInput
+                                         name="name"
+                                         required type="text">
+        <mat-error *ngIf="submitted && controls.name.errors" class="invalid-input">
+          <mat-error *ngIf="controls.name.errors.minLength">Min length is 4</mat-error>
+          <mat-error *ngIf="controls.name.errors.maxLength">Max length is 50</mat-error>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width-input">
+        <mat-label>Description</mat-label>
+        <input [ngClass]="{ 'is-invalid': submitted && controls.description.errors }" class="form-control"
+               formControlName="description" id="description" matInput
+               name="description"
+               required type="text">
+      </mat-form-field>
+
+      <mat-error *ngIf="isFailed" class="error-info">
+        Dataset name already exists!
+      </mat-error>
+
+      <mat-table [dataSource]="newDatasetParameters">
+
+        <ng-container matColumnDef="NAME">
+          <mat-header-cell *matHeaderCellDef class="header">Name</mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <mat-form-field class="cell-field" floatLabel="never">
+              <input matInput placeholder="NAME" #inputNameElement
+                     [value]="element.name"
+                     (input)="newParameterNameChanged(inputNameElement, i)">
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="VALUE">
+          <mat-header-cell *matHeaderCellDef class="header">Value</mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index">
+            <mat-form-field class="cell-field" floatLabel="never">
+              <input matInput placeholder="VALUE" #inputValueElement
+                     [value]="element.value"
+                     (input)="newParameterValueChanged(inputValueElement, i)">
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="CONF">
+          <mat-header-cell *matHeaderCellDef class="header"></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button *ngIf="newDatasetParameters.length > 1" (click)="deleteRow(row)" mat-icon-button matTooltip="Click to Delete" class="icon-button">
+              <mat-icon aria-label="Delete">delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+      <button (click)="addRowTable()" class="button-flex-container" mat-raised-button type="button">
+        <p class="button-text">Add more parameters</p>
+      </button>
+      <button [disabled]="!datasetCreateForm.valid" class="button-flex-container" mat-raised-button type="submit">
+        <p class="button-text">CREATE</p>
+      </button>
+
+    </form>
+  </mat-dialog-content>
+</div>

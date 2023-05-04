@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.project.protester.exception.RoleNotFoundException;
 import ua.project.protester.model.Role;
 import ua.project.protester.model.User;
 import ua.project.protester.repository.RoleRepository;
@@ -30,21 +31,19 @@ public class RoleService {
 
     @Transactional
     public Optional<Role> findRoleById(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow(null);
-        if (role != null) {
-            List<User> users = userRepository.findUsersByRoleId(role.getId());
-            users.forEach(user -> user.getRole().setName(role.getName()));
-            role.setUsers(users);
-            return Optional.ofNullable(role);
-        }
-        return Optional.empty();
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException("Role with id " + id + "was not found!"));
+        List<User> users = userRepository.findUsersByRoleId(role.getId());
+        users.forEach(user -> user.getRole().setName(role.getName()));
+        role.setUsers(users);
+        return Optional.of(role);
     }
 
     @Transactional
     public List<Role> findAll() {
         List<Role> roles = roleRepository.findAll();
-        for (Role role:roles
-             ) {
+        for (Role role : roles
+        ) {
             List<User> users = userRepository.findUsersByRoleId(role.getId());
             users.forEach(user -> user.getRole().setName(role.getName()));
             role.setUsers(users);
@@ -54,16 +53,17 @@ public class RoleService {
 
     @Transactional
     public Optional<Role> findRoleByName(String name) {
-        Role role = roleRepository.findRoleByName(name).orElse(null);
-        if (role != null) {
+        Role role = roleRepository.findRoleByName(name).orElseThrow(() -> new RoleNotFoundException("Role with name " + name + "was`nt found!"));
         role.setUsers(userRepository.findUsersByRoleId(role.getId()));
         role.getUsers().forEach(user -> user.getRole().setName(role.getName()));
-        }
-        return Optional.empty();
+        return Optional.of(role);
     }
 
     public List<RoleResponse> getAllRoles() {
-        return findAll().stream().map(role -> modelMapper.map(role, RoleResponse.class)).collect(Collectors.toList());
+        return findAll()
+                .stream()
+                .map(role -> modelMapper.map(role, RoleResponse.class))
+                .collect(Collectors.toList());
     }
 
     public RoleResponse getRole(Long id) {

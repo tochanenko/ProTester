@@ -3,15 +3,23 @@ package ua.project.protester.model.executable;
 import lombok.Getter;
 import lombok.ToString;
 import org.openqa.selenium.WebDriver;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.RestTemplate;
+import ua.project.protester.exception.executable.action.ActionExecutionException;
+import ua.project.protester.exception.executable.action.IllegalActionLogicImplementation;
+import ua.project.protester.model.Environment;
+import ua.project.protester.model.executable.result.ActionResultDto;
+import ua.project.protester.model.executable.result.ResultStatus;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Getter
 @ToString
 public abstract class AbstractAction extends ExecutableComponent {
 
     protected String className;
-    protected Map<String, String> preparedParams;
 
     public void init(Integer id, String name, ExecutableComponentType type, String description, String className, String[] parameterNames) {
         this.id = id;
@@ -23,17 +31,29 @@ public abstract class AbstractAction extends ExecutableComponent {
     }
 
     @Override
-    public abstract void execute(Map<String, String> params, WebDriver driver);
+    public void execute(Map<String, String> params, Map<String, String> context, JdbcTemplate jdbcTemplate, WebDriver driver, Environment environment, RestTemplate restTemplate, Consumer<ActionResultDto> callback) throws ActionExecutionException, IllegalActionLogicImplementation {
+        OffsetDateTime startDate = OffsetDateTime.now();
 
-    public void execute(WebDriver driver) {
-        execute(preparedParams, driver);
+        ActionResultDto actionResult = logic(params, context, driver, jdbcTemplate, environment, restTemplate);
+
+        actionResult.setEndDate(OffsetDateTime.now());
+        actionResult.setStartDate(startDate);
+        actionResult.setInputParameters(params);
+        actionResult.setAction(this);
+
+        callback.accept(actionResult);
+
+        if (actionResult.getStatus() == null) {
+            throw new IllegalActionLogicImplementation("Action result status is null for action with name '" + name + "'. Please, specify status in logic implementation!");
+        }
+        if (actionResult.getStatus() == ResultStatus.FAILED) {
+            if (actionResult.getMessage() == null) {
+                throw new IllegalActionLogicImplementation("Action result status is " + ResultStatus.FAILED + ", but no exception is provided. Please, specify exception in logic implementation!");
+            } else {
+                throw new ActionExecutionException(actionResult.getMessage());
+            }
+        }
     }
 
-    public void prepare(Map<String, String> preparedParams) {
-        this.preparedParams = preparedParams;
-    }
-
-    public boolean isPrepared() {
-        return preparedParams != null && !preparedParams.isEmpty();
-    }
+    protected abstract ActionResultDto logic(Map<String, String> params, Map<String, String> context, WebDriver driver, JdbcTemplate jdbcTemplate, Environment environment, RestTemplate restTemplate);
 }

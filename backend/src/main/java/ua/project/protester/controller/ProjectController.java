@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import ua.project.protester.exception.ProjectAlreadyExistsException;
 import ua.project.protester.exception.ProjectNotFoundException;
 import ua.project.protester.model.ProjectDto;
-import ua.project.protester.service.ProjectService;
+import ua.project.protester.service.project.ProjectService;
 import ua.project.protester.utils.Page;
 import ua.project.protester.utils.Pagination;
 
-@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'ENGINEER')")
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
@@ -19,46 +19,46 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectDto createProject(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
-        return projectService.createProject(project);
+    public ProjectDto create(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
+        return projectService.create(project);
     }
 
-    @PutMapping("/update")
-    public ProjectDto updateProject(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
-        return projectService.updateProject(project);
+    @PutMapping
+    public ProjectDto update(@RequestBody ProjectDto project) throws ProjectAlreadyExistsException {
+        return projectService.update(project);
     }
 
     @PutMapping("/changeStatus/{id}")
-    public void changeProjectStatus(@PathVariable Long id) throws ProjectNotFoundException {
-        projectService.changeProjectStatus(id);
+    public ProjectDto changeStatus(@PathVariable Long id) throws ProjectNotFoundException {
+        return projectService.changeStatus(id);
     }
 
     @GetMapping
-    public Page<ProjectDto> getAllProjects(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+    public Page<ProjectDto> getAll(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                   @RequestParam(value = "projectName", defaultValue = "") String projectName) {
+
+        Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
+
+        return projectService.findAll(pagination);
+    }
+
+    @GetMapping("/filter")
+    public Page<ProjectDto> getAllByStatus(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                           @RequestParam(value = "projectActive") Boolean projectActive,
                                            @RequestParam(value = "projectName", defaultValue = "") String projectName) {
 
         Pagination pagination = new Pagination(pageSize, pageNumber, projectName);
 
-        return projectService.findAllProjects(pagination);
-    }
-
-    @GetMapping("/filter")
-    public Page<ProjectDto> getAllProjectsByStatus(@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                                   @RequestParam(value = "projectActive") Boolean projectActive,
-                                                   @RequestParam(value = "projectName", defaultValue = "") String projectName) {
-
-        Pagination pagination = new Pagination(pageSize, pageNumber, projectActive, projectName);
-
-        return projectService.findAllProjectsByStatus(pagination);
+        return projectService.findAllByStatus(pagination, projectActive);
     }
 
     @GetMapping("/{id}")
-    public ProjectDto getProjectById(@PathVariable Long id) throws ProjectNotFoundException {
-        return projectService.getProjectDtoById(id);
+    public ProjectDto getById(@PathVariable Long id) throws ProjectNotFoundException {
+        return projectService.getById(id);
     }
 
 }

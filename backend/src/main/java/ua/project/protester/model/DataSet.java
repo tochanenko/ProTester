@@ -1,13 +1,16 @@
 package ua.project.protester.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @ToString
 public class DataSet {
 
@@ -17,7 +20,9 @@ public class DataSet {
 
     private String description;
 
-    private Map<String, String> dataset;
+    private Map<String, String> parameters;
+
+    private List<Long> testScenarios;
 
     public DataSet(Long id, String name, String description) {
         this.id = id;

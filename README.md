@@ -15,6 +15,10 @@
 - Serhii Yablonovskyi
 - Yevhenii Deineka
 
+**Presentation (PDF)**
+
+[ProTester Presentation](ProTester.pdf)
+
 # How to understand and run project
 
 
